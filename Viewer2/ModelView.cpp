@@ -62,11 +62,10 @@ void CModelView::Dump(CDumpContext& dc) const
 
 void CModelView::Init()
 {
-	//DragAcceptFiles(TRUE);
-
 	m_filePath = "../media/data.dat";
 	m_model = new graphic::cModel();
 	m_model->Create( m_filePath );
+	m_model->SetAnimation( "../media/ani.ani");
 
 	m_camPos = Vector3(100,100,-500);
 	m_lookAtPos = Vector3(0,0,0);
@@ -190,13 +189,15 @@ BOOL CModelView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	dbg::Print( "%d %d", nFlags, zDelta);
 
 	Vector3 dir = m_lookAtPos - m_camPos;
+	const float len = dir.Length();
 	dir.Normalize();
 
-	float zoomLen = 50;
+	float zoomLen = (len > 100)? 50 : (len/3.f);
 	if (nFlags & 0x4)
 		zoomLen = 1;
 
 	m_camPos += (zDelta<0)? dir*-zoomLen : dir*zoomLen;
+
 	UpdateCamera();
 
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
@@ -219,9 +220,22 @@ void CModelView::OnRButtonUp(UINT nFlags, CPoint point)
 }
 
 
-bool CModelView::LoadModel(const string &fileName)
+bool CModelView::LoadFile(const string &fileName)
 {
 	m_rotateTm.SetIdentity();
 	m_filePath = fileName;
-	return m_model->Create(fileName);
+
+	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(fileName);
+	switch (type)
+	{
+	case graphic::RESOURCE_TYPE::MESH:
+		return m_model->Create(fileName);
+
+	case graphic::RESOURCE_TYPE::ANIMATION:
+		m_model->SetAnimation(fileName);
+		return true;
+	}
+
+	return false;
 }
+

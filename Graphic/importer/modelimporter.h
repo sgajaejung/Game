@@ -11,6 +11,8 @@ namespace graphic
 
 		bool ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &rawAni );
 
+		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
+
 	}
 }
 

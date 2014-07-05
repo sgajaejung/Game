@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "DxInit.h"
+#include "dxinit.h"
 
 using namespace graphic;
 

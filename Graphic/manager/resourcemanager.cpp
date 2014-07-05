@@ -112,3 +112,10 @@ void cResourceManager::Clear()
 	m_anies.clear();
 
 }
+
+
+// 파일 종류를 리턴한다.
+RESOURCE_TYPE::TYPE cResourceManager::GetFileKind( const string &fileName )
+{
+	return importer::GetFileKind(fileName);
+}

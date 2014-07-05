@@ -67,7 +67,8 @@ bool cViewer::OnInit()
 	m_model = new graphic::cModel();
 	m_model->Create( m_filePath );
 	//m_texture.Create("../media/001 copy.jpg");
-	m_model->SetAnimation("../media/ani.ani");
+	//m_model->SetAnimation("../media/ani.ani");
+	m_model->SetAnimation("../media/ani4.ani");
 	//m_texture.Create("../media/°­¼Ò¶ó.jpg");
 
 	m_mtrl.InitWhite();
@@ -153,6 +154,7 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 
 			m_filePath = filePath;
 			m_model->Create(filePath);
+			m_model->SetAnimation("../media/ani4.ani");
 		}
 		break;
 

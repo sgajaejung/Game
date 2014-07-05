@@ -11,7 +11,7 @@ using namespace common;
 #include "../wxMemMonitorLib/wxMemMonitor.h" // debug library
 
 
-
+#include "base/graphicdef.h"
 #include "base/material.h"
 #include "base/light.h"
 #include "base/vertexbuffer.h"
@@ -29,6 +29,8 @@ using namespace common;
 #include "model/skinnedmesh.h"
 #include "model/model.h"
 #include "manager/Renderer.h"
+#include "manager/resourcemanager.h"
+
 
 #pragma comment( lib, "d3d9.lib" )
 #pragma comment( lib, "d3dx9.lib" )

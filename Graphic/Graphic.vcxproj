@@ -67,7 +67,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="base\DxInit.h" />
+    <ClInclude Include="base\dxInit.h" />
+    <ClInclude Include="base\graphicdef.h" />
     <ClInclude Include="base\grid.h" />
     <ClInclude Include="base\grid2.h" />
     <ClInclude Include="base\indexbuffer.h" />
@@ -94,7 +95,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="base\DxInit.cpp" />
+    <ClCompile Include="base\dxinit.cpp" />
     <ClCompile Include="base\grid.cpp" />
     <ClCompile Include="base\grid2.cpp" />
     <ClCompile Include="base\indexbuffer.cpp" />

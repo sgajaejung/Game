@@ -7,6 +7,7 @@ namespace graphic
 	struct sRawAni;
 	struct sRawBone;
 
+
 	class cResourceManager : public common::cSingleton<cResourceManager>
 	{
 	public:
@@ -20,6 +21,8 @@ namespace graphic
 		sRawMeshGroup* FindModel( const string &fileName );
 		sRawAniGroup* FindAnimation( const string &fileName );
 		void Clear();
+
+		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
 
 
 	private:

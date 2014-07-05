@@ -10,7 +10,7 @@ public:
 
 public:
 	void Init();
-	bool LoadModel(const string &fileName);
+	bool LoadFile(const string &fileName);
 	void Update(const float elapseT);
 	void Render();
 	virtual void OnDraw(CDC* pDC);
@@ -27,6 +27,7 @@ protected:
 	bool m_LButtonDown;
 	bool m_RButtonDown;
 	CPoint m_curPos;
+
 
 public:
 #ifdef _DEBUG

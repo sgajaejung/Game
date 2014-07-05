@@ -49,11 +49,21 @@ HWND framework::InitWindow(HINSTANCE hInstance, const wstring &windowName, const
 	RECT rcClient = { 0, 0, WIDTH, HEIGHT};
 	AdjustWindowRect( &rcClient, WS_OVERLAPPEDWINDOW, FALSE );	//rcClient 크기를 작업 영영으로 할 윈도우 크기를 rcClient 에 대입되어 나온다.
 
+
+	const int width = rcClient.right - rcClient.left;
+	const int height = rcClient.bottom - rcClient.top;
+	const int screenCX = GetSystemMetrics(SM_CXSCREEN);
+	const int screenCY = GetSystemMetrics(SM_CYSCREEN);
+	const int x = screenCX/2 - width/2;
+	const int y = screenCY/2 - height/2;
+
+
 	//윈도우 크기와 윈도우 위치를 바꾸어준다.
-	SetWindowPos( hWnd, NULL, 0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top, 
-		SWP_NOZORDER | SWP_NOMOVE );
+	SetWindowPos( hWnd, NULL, 0, 0, width, height, SWP_NOZORDER | SWP_NOMOVE );
+
+	MoveWindow(hWnd, x, y, width, height, TRUE);
 
 	ShowWindow( hWnd, nCmdShow );
-
+	
 	return hWnd;
 }

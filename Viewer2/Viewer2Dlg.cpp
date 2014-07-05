@@ -211,7 +211,7 @@ void CViewer2Dlg::OnItemchangedFileList(NMHDR* pNMHDR, LRESULT* pResult)
 		CString str = m_FileList.GetItemText(pNMListView->iItem, 0);
 		
 		string filePath = common::wstr2str( (LPCTSTR)str );
-		m_pView->LoadModel(filePath);
+		m_pView->LoadFile(filePath);
 	}
 }
 
@@ -224,7 +224,7 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 	if (size == 0) 
 		return;// handle error...
 
-	m_pView->LoadModel(filePath);
+	m_pView->LoadFile(filePath);
 
 	wstring wstr = common::str2wstr(filePath);
 	CString str = wstr.c_str();

@@ -627,3 +627,31 @@ bool importer::ReadMaterial(std::ifstream &fin, const string &fileName, OUT sMat
 
 	return true;
 }
+
+
+// 파일 종류를 리턴한다.
+RESOURCE_TYPE::TYPE importer::GetFileKind( const string &fileName )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return RESOURCE_TYPE::NONE;
+
+	string version;
+	fin >> version;
+
+	string exportName;
+	fin >> exportName;
+
+	if (exportName == "ANIMATION_EXPORT")
+	{
+		return RESOURCE_TYPE::ANIMATION;
+	}
+	else if (exportName == "MESH_EXPORT")
+	{
+		return RESOURCE_TYPE::MESH;
+	}
+	
+	// exception
+	return RESOURCE_TYPE::NONE;
+}

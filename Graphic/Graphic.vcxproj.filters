@@ -13,9 +13,6 @@
     <ClInclude Include="model\model.h">
       <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="base\DxInit.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="base\indexbuffer.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -70,6 +67,12 @@
     <ClInclude Include="model\bonemgr.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="base\dxInit.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\graphicdef.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -81,9 +84,6 @@
     </ClCompile>
     <ClCompile Include="model\model.cpp">
       <Filter>model</Filter>
-    </ClCompile>
-    <ClCompile Include="base\DxInit.cpp">
-      <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="base\indexbuffer.cpp">
       <Filter>base</Filter>
@@ -132,6 +132,9 @@
     </ClCompile>
     <ClCompile Include="model\rawmesh.cpp">
       <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="base\dxinit.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
