@@ -35,7 +35,6 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnItemchangedFileList(NMHDR* pNMHDR, LRESULT* pResult);
-	CListCtrl m_FileList;
 	afx_msg void OnDropFiles(HDROP hDropInfo);
 	BOOL m_WireFrame;
 	afx_msg void OnBnClickedCheckWireframe();

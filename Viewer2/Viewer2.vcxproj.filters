@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Panel">
+      <UniqueIdentifier>{77113f2d-e2b9-4d51-aeea-2056497eef76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b9adb3a1-0015-4ec6-a7b5-58a4ff75c674}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Viewer2.rc2">
@@ -41,6 +47,18 @@
     <ClInclude Include="ModelView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Panel\MainPanel.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel\ModelPanel.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel\MainPanelTab.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Controller.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -54,6 +72,18 @@
     </ClCompile>
     <ClCompile Include="ModelView.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel\MainPanel.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel\ModelPanel.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel\MainPanelTab.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Controller.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

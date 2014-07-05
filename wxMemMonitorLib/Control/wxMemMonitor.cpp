@@ -19,6 +19,7 @@ namespace memmonitor
 	static const int CMD_TERMINATE = wxNewId();
 
 	static const bool g_IsThreadRunning = true;
+	bool g_IsRunning = false;
 }
 
 
@@ -41,6 +42,7 @@ void CApp::OnTerminate(wxThreadEvent& WXUNUSED(event))
 //------------------------------------------------------------------------
 bool memmonitor::Init(EXECUTE_TYPE type, HINSTANCE hInst, const std::string configFileName)
 {
+	g_IsRunning = true;
 	SetExecuteType(type);
 	SetConfigFileName(configFileName);
 	SethInstance(hInst);
@@ -111,31 +113,34 @@ bool memmonitor::ShowToggle()
 //------------------------------------------------------------------------
 void memmonitor::Cleanup()
 {
-	if (g_IsThreadRunning)
+	if (g_IsRunning)
 	{
-		wxCriticalSectionLocker lock(gs_wxStartupCS);
-
-		if (gs_wxMainThread)
+		if (g_IsThreadRunning)
 		{
-			// If wx main thread is running, we need to stop it. To accomplish this,
-			// send a message telling it to terminate the app.
-			if (wxApp::GetInstance())
+			wxCriticalSectionLocker lock(gs_wxStartupCS);
+
+			if (gs_wxMainThread)
 			{
-				wxThreadEvent *event =
-					new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
-				wxQueueEvent(wxApp::GetInstance(), event);
-			}
+				// If wx main thread is running, we need to stop it. To accomplish this,
+				// send a message telling it to terminate the app.
+				if (wxApp::GetInstance())
+				{
+					wxThreadEvent *event =
+						new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
+					wxQueueEvent(wxApp::GetInstance(), event);
+				}
 
-			// We must then wait for the thread to actually terminate.
-			WaitForSingleObject(gs_wxMainThread, INFINITE);
-			CloseHandle(gs_wxMainThread);
-			gs_wxMainThread = NULL;
-		}	
-	}
+				// We must then wait for the thread to actually terminate.
+				WaitForSingleObject(gs_wxMainThread, INFINITE);
+				CloseHandle(gs_wxMainThread);
+				gs_wxMainThread = NULL;
+			}	
+		}
 
-	if (INNER_PROCESS == GetExecuteType())
-	{
-		wxEntryCleanup();
+		if (INNER_PROCESS == GetExecuteType())
+		{
+			wxEntryCleanup();
+		}
 	}
 
 	memmonitor::Clear();

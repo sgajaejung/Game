@@ -19,7 +19,6 @@ public:
 
 protected:
 	string m_filePath;
-	graphic::cModel *m_model;
 	Matrix44 m_rotateTm;
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;

@@ -7,8 +7,10 @@
 #include "Viewer2Dlg.h"
 #include "afxdialogex.h"
 #include "ModelView.h"
-#include "../wxMemMonitorLib/wxMemMonitor.h"
+//#include "../wxMemMonitorLib/wxMemMonitor.h"
 #include "mmsystem.h"
+#include "panel/MainPanel.h"
+
 
 #pragma comment( lib, "winmm.lib" )
 
@@ -22,9 +24,9 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 ,	m_pView(NULL)
 ,	m_loop(true)
 ,	m_dxInit(false)
-, m_WireFrame(FALSE)
+,	m_WireFrame(FALSE)
 {
-//	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	//m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 CViewer2Dlg::~CViewer2Dlg()
@@ -34,7 +36,6 @@ CViewer2Dlg::~CViewer2Dlg()
 void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_FILE_LIST, m_FileList);
 	DDX_Check(pDX, IDC_CHECK_WIREFRAME, m_WireFrame);
 }
 
@@ -42,7 +43,6 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_FILE_LIST, OnItemchangedFileList)
 	ON_BN_CLICKED(IDOK, &CViewer2Dlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CViewer2Dlg::OnBnClickedCancel)
 	ON_WM_DROPFILES()
@@ -79,30 +79,71 @@ BOOL CViewer2Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);		// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
-
+	//-----------------------------------------------------------------------------------------
+	// Init
 	DragAcceptFiles(TRUE);
 
-	MoveWindow(CRect(0,0,1024,768));
+	const int WIDTH = 1024;
+	const int HEIGHT = 768;
+	const int REAL_WIDTH = WIDTH+18;
+	const int REAL_HEIGHT = HEIGHT+80;
 
+	MoveWindow(CRect(0,0,REAL_WIDTH,REAL_HEIGHT));
+
+
+	// Create Main Model View
 	m_pView = new CModelView();
 	m_pView->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
-		CRect(0,40, 800, 640), this, 0);
-
+		CRect(0,40, WIDTH, HEIGHT+40), this, 0);
+	
+	// Create Direct
 	graphic::cRenderer::Get()->CreateDirectX(
-		m_pView->GetSafeHwnd(), 800, 600);
+		m_pView->GetSafeHwnd(), WIDTH, HEIGHT);
 
 	m_dxInit = true;
 	m_pView->Init();
 	m_pView->ShowWindow(SW_SHOW);
 
-	m_FileList.SetExtendedStyle( m_FileList.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
+	// Create Main Panel
+	{
+		const int PANEL_WIDTH = 300;
+		const int PANEL_HEIGHT = 800;
 
-	m_FileList.InsertColumn(0, L"path");
-	m_FileList.SetColumnWidth(0, 300);
-	m_FileList.InsertItem(0, L"Test1");
-	m_FileList.InsertItem(1, L"Test2");
-	m_FileList.InsertItem(2, L"Test3");
-	m_FileList.InsertItem(3, L"Test4");
+		CMainPanel *dlg = new CMainPanel();
+		const CString StrClassName = AfxRegisterWndClass( CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
+			LoadCursor(NULL, IDC_ARROW), (HBRUSH)GetStockObject(COLOR_BTNFACE+1), 
+			LoadIcon(NULL, IDI_APPLICATION) );
+
+		dlg->CreateEx(0, StrClassName, L"Panel", 
+			WS_POPUP | WS_CAPTION | WS_SYSMENU | MFS_THICKFRAME, CRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT), this );
+
+		dlg->Init();
+
+		// Main Panel Positioning
+		{
+			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
+			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
+			const int x = screenCX/2 - REAL_WIDTH/2 + REAL_WIDTH;
+			const int y = screenCY/2 - REAL_HEIGHT/2;
+
+			CRect panelR;
+			dlg->GetWindowRect(panelR);
+			dlg->MoveWindow(x, y, panelR.Width(), panelR.Height());
+		}
+
+		dlg->ShowWindow(SW_SHOW);	
+	}
+
+
+
+
+	//m_FileList.SetExtendedStyle( m_FileList.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
+	//m_FileList.InsertColumn(0, L"path");
+	//m_FileList.SetColumnWidth(0, 300);
+	//m_FileList.InsertItem(0, L"Test1");
+	//m_FileList.InsertItem(1, L"Test2");
+	//m_FileList.InsertItem(2, L"Test3");
+	//m_FileList.InsertItem(3, L"Test4");
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -201,21 +242,6 @@ void CViewer2Dlg::MainLoop()
 }
 
 
-void CViewer2Dlg::OnItemchangedFileList(NMHDR* pNMHDR, LRESULT* pResult)
-{
-	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
-
-	if ((pNMListView->uChanged & LVIF_STATE) 
-		&& (pNMListView->uNewState & LVNI_SELECTED))
-	{
-		CString str = m_FileList.GetItemText(pNMListView->iItem, 0);
-		
-		string filePath = common::wstr2str( (LPCTSTR)str );
-		m_pView->LoadFile(filePath);
-	}
-}
-
-
 void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 {
 	HDROP hdrop = hDropInfo;
@@ -228,7 +254,7 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 
 	wstring wstr = common::str2wstr(filePath);
 	CString str = wstr.c_str();
-	m_FileList.InsertItem(m_FileList.GetItemCount(), str);
+	//m_FileList.InsertItem(m_FileList.GetItemCount(), str);
 
 	CDialogEx::OnDropFiles(hDropInfo);
 }

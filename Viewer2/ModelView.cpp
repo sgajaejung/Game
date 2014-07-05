@@ -4,13 +4,13 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "ModelView.h"
+#include "model/Controller.h"
 
 
 
 // CModelView
 
-CModelView::CModelView() : 
-	m_model(NULL)
+CModelView::CModelView()
 {
 	m_LButtonDown = false;
 	m_RButtonDown = false;
@@ -19,7 +19,7 @@ CModelView::CModelView() :
 
 CModelView::~CModelView()
 {
-	SAFE_DELETE(m_model);
+
 }
 
 BEGIN_MESSAGE_MAP(CModelView, CView)
@@ -63,9 +63,6 @@ void CModelView::Dump(CDumpContext& dc) const
 void CModelView::Init()
 {
 	m_filePath = "../media/data.dat";
-	m_model = new graphic::cModel();
-	m_model->Create( m_filePath );
-	m_model->SetAnimation( "../media/ani.ani");
 
 	m_camPos = Vector3(100,100,-500);
 	m_lookAtPos = Vector3(0,0,0);
@@ -87,7 +84,10 @@ void CModelView::Init()
 
 void CModelView::Update(const float elapseT)
 {
-	m_model->Move(elapseT);
+	if (graphic::cModel *model = cController::Get()->GetModel())
+	{
+		model->Move(elapseT);
+	}
 }
 
 
@@ -110,8 +110,11 @@ void CModelView::Render()
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
-		m_model->SetTM(m_rotateTm);
-		m_model->Render();
+		if (graphic::cModel *model = cController::Get()->GetModel())
+		{
+			model->SetTM(m_rotateTm);
+			model->Render();
+		}
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -225,16 +228,8 @@ bool CModelView::LoadFile(const string &fileName)
 	m_rotateTm.SetIdentity();
 	m_filePath = fileName;
 
-	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(fileName);
-	switch (type)
-	{
-	case graphic::RESOURCE_TYPE::MESH:
-		return m_model->Create(fileName);
+	cController::Get()->LoadFile(fileName);
 
-	case graphic::RESOURCE_TYPE::ANIMATION:
-		m_model->SetAnimation(fileName);
-		return true;
-	}
 
 	return false;
 }

@@ -99,6 +99,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelView.h" />
+    <ClInclude Include="Model\Controller.h" />
+    <ClInclude Include="Panel\MainPanel.h" />
+    <ClInclude Include="Panel\MainPanelTab.h" />
+    <ClInclude Include="Panel\ModelPanel.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -107,6 +111,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModelView.cpp" />
+    <ClCompile Include="Model\Controller.cpp" />
+    <ClCompile Include="Panel\MainPanel.cpp" />
+    <ClCompile Include="Panel\MainPanelTab.cpp" />
+    <ClCompile Include="Panel\ModelPanel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
