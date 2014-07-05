@@ -71,6 +71,7 @@
     <ClInclude Include="container\vectorhelper.h" />
     <ClInclude Include="etc\dbg.h" />
     <ClInclude Include="etc\filepath.h" />
+    <ClInclude Include="etc\observer.h" />
     <ClInclude Include="etc\singleton.h" />
     <ClInclude Include="etc\stringfunc.h" />
     <ClInclude Include="math\box.h" />
@@ -86,6 +87,7 @@
   <ItemGroup>
     <ClCompile Include="etc\dbg.cpp" />
     <ClCompile Include="etc\filepath.cpp" />
+    <ClCompile Include="etc\observer.cpp" />
     <ClCompile Include="etc\stringfunc.cpp" />
     <ClCompile Include="math\box.cpp" />
     <ClCompile Include="math\matrix44.cpp" />

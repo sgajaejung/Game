@@ -40,6 +40,9 @@
     <ClInclude Include="math\vector2.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="etc\observer.h">
+      <Filter>Etc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -65,6 +68,9 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="etc\dbg.cpp">
+      <Filter>Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="etc\observer.cpp">
       <Filter>Etc</Filter>
     </ClCompile>
   </ItemGroup>

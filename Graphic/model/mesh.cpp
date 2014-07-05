@@ -35,6 +35,7 @@ void cMesh::CreateMesh( const vector<Vector3> &vertices,
 {
 	const bool isTexture = !tex.empty();
 
+	// 버텍스 버퍼 생성.
 	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTex), sVertexNormTex::FVF))
 	{
 		sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock();
