@@ -476,7 +476,7 @@ fn WriteVertex obj =
 (
 	varSetVertice = CollectVertex obj
 
-	format "VERTEX = % %\n" varSetVertice.count ((GetMtrlId obj)-1) to:Outfile
+	format "VERTEX = %\n" varSetVertice.count to:Outfile
 	for i=1 to varSetVertice.count do
 	(
 		vtx = (ConvertToD3D_POS varSetVertice[ i]) 
@@ -531,8 +531,16 @@ fn WriteTVertTVFace obj =
 )
 
 
+fn WriteMeshInfo obj = 
+(
+	format "MESH_NAME = %\n" obj.name to:Outfile
+	format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile	
+)
+
+
 fn WriteVtxNormTex obj = 
 (
+	WriteMeshInfo obj
 	WriteVertex obj
 	WriteIndex obj
 	WriteNormal obj
@@ -830,7 +838,7 @@ fn ExporterStart =
 	(
 		Outfile = createfile g_MeshFilePath
 		
-		format "EXPORTER_V8\n" to:Outfile
+		format "EXPORTER_V9\n" to:Outfile
 		
 		format "MESH_EXPORT\n" to:Outfile
 		
@@ -910,7 +918,7 @@ fn ExporterStart =
 	(
 		Outfile = createfile g_AniFilePath
 		
-		format "EXPORTER_V8\n" to:Outfile
+		format "EXPORTER_V9\n" to:Outfile
 		
 		format "ANIMATION_EXPORT\n" to:Outfile
 		
