@@ -26,6 +26,7 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	CString m_FilePath;
 	CString m_FileName;
 	int m_StartFrame;
 	int m_EndFrame;

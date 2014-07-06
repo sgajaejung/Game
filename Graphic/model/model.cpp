@@ -12,6 +12,8 @@ using namespace graphic;
 
 cModel::cModel() :
 	m_bone(NULL)
+,	m_isRenderMesh(true)
+,	m_isRenderBone(false)
 {
 	
 }
@@ -95,10 +97,13 @@ void cModel::Render()
 	Matrix44 identity;
 	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&identity);
 
-	BOOST_FOREACH (auto node, m_meshes)
-		node->Render(m_matTM);
+	if (m_isRenderMesh)
+	{
+		BOOST_FOREACH (auto node, m_meshes)
+			node->Render(m_matTM);
+	}
 
-	if (m_bone)
+	if (m_isRenderBone && m_bone)
 		m_bone->Render(m_matTM);
 }
 

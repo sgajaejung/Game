@@ -32,6 +32,8 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 ,	m_loop(true)
 ,	m_dxInit(false)
 , m_WireFrame(FALSE)
+, m_RenderBone(FALSE)
+, m_RenderMesh(TRUE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -46,6 +48,8 @@ void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_WIREFRAME, m_WireFrame);
+	DDX_Check(pDX, IDC_CHECK_BONE, m_RenderBone);
+	DDX_Check(pDX, IDC_CHECK_MESH, m_RenderMesh);
 }
 
 BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
@@ -56,6 +60,8 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CViewer2Dlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_CHECK_WIREFRAME, &CViewer2Dlg::OnBnClickedCheckWireframe)
 	ON_WM_DROPFILES()
+	ON_BN_CLICKED(IDC_CHECK_BONE, &CViewer2Dlg::OnBnClickedCheckBone)
+	ON_BN_CLICKED(IDC_CHECK_MESH, &CViewer2Dlg::OnBnClickedCheckMesh)
 END_MESSAGE_MAP()
 
 
@@ -256,14 +262,6 @@ void CViewer2Dlg::MainLoop()
 }
 
 
-void CViewer2Dlg::OnBnClickedCheckWireframe()
-{
-	UpdateData();
-	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame);
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, !m_WireFrame? D3DFILL_SOLID : D3DFILL_WIREFRAME);
-}
-
-
 void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 {
 	HDROP hdrop = hDropInfo;
@@ -284,4 +282,32 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 	}
 
 	CDialogEx::OnDropFiles(hDropInfo);
+}
+
+
+void CViewer2Dlg::OnBnClickedCheckWireframe()
+{
+	UpdateData();
+	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame);
+	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, !m_WireFrame? D3DFILL_SOLID : D3DFILL_WIREFRAME);
+}
+
+
+void CViewer2Dlg::OnBnClickedCheckBone()
+{
+	UpdateData();
+	graphic::cModel *model = cController::Get()->GetModel();
+	RET(!model);
+
+	model->SetRenderBone(m_RenderBone? true : false);
+}
+
+
+void CViewer2Dlg::OnBnClickedCheckMesh()
+{
+	UpdateData();
+	graphic::cModel *model = cController::Get()->GetModel();
+	RET(!model);
+
+	model->SetRenderMesh(m_RenderMesh? true : false);
 }

@@ -13,6 +13,7 @@ using namespace graphic;
 
 CModelPanel::CModelPanel(CWnd* pParent /*=NULL*/)
 	: CPanelBase(CModelPanel::IDD, pParent)
+	, m_FilePath(_T(""))
 	, m_FileName(_T(""))
 {
 
@@ -29,6 +30,7 @@ void CModelPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TREE_MATERIAL, m_MaterialTree);
 	DDX_Control(pDX, IDC_TREE_RAWBONE, m_RawBoneTree);
 	DDX_Control(pDX, IDC_TREE_BONE, m_BoneTree);
+	DDX_Text(pDX, IDC_STATIC_FILEPATH, m_FilePath);
 	DDX_Text(pDX, IDC_STATIC_FILENAME, m_FileName);
 }
 
@@ -56,7 +58,9 @@ void CModelPanel::Update()
 
 void CModelPanel::UpdateModelInfo()
 {
-	m_FileName = cController::Get()->GetCurrentMeshFileName().c_str();
+	string filePath = cController::Get()->GetCurrentMeshFileName();
+	m_FilePath = filePath.c_str();
+	m_FileName = common::GetFileName(filePath).c_str();
 }
 
 

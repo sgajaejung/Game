@@ -150,7 +150,12 @@ bool cBoneNode::Move(const float elapseTime)
 void cBoneNode::Render(const Matrix44 &parentTm)
 {
 	RET(!m_mesh);
-	//m_mesh->Render(m_offset * m_accTM * parentTm);
+
+	if (m_track)
+		m_mesh->Render(m_offset * m_accTM * parentTm);
+	else
+		m_mesh->Render(parentTm);
+
 	BOOST_FOREACH (auto p, m_children)
 		p->Render( parentTm );
 }

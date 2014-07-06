@@ -12,9 +12,10 @@ using namespace graphic;
 
 CAnimationPanel::CAnimationPanel(CWnd* pParent /*=NULL*/)
 	: CPanelBase(CAnimationPanel::IDD, pParent)
-	, m_FileName(_T(""))
+	, m_FilePath(_T(""))
 	, m_StartFrame(0)
 	, m_EndFrame(0)
+	, m_FileName(_T(""))
 {
 
 }
@@ -26,10 +27,11 @@ CAnimationPanel::~CAnimationPanel()
 void CAnimationPanel::DoDataExchange(CDataExchange* pDX)
 {
 	CPanelBase::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_STATIC_FILENAME, m_FileName);
+	DDX_Text(pDX, IDC_STATIC_FILENAME, m_FilePath);
 	DDX_Text(pDX, IDC_EDIT_START_TIME, m_StartFrame);
 	DDX_Text(pDX, IDC_EDIT_END_TIME, m_EndFrame);
 	DDX_Control(pDX, IDC_TREE_ANI, m_AniTree);
+	DDX_Text(pDX, IDC_STATIC_FILENAME2, m_FileName);
 }
 
 
@@ -68,8 +70,10 @@ void CAnimationPanel::UpdateAnimationInfo()
 		cController::Get()->GetCurrentAnimationFileName() );
 	RET (!rawAnies);
 
-	m_FileName = str2wstr(cController::Get()->GetCurrentAnimationFileName()).c_str();
-	RET (rawAnies->anies.empty());
+	 string filePath = cController::Get()->GetCurrentAnimationFileName();
+	 m_FilePath = filePath.c_str();
+	 m_FileName =common::GetFileName(filePath).c_str();
+	RET (rawAnies->anies.empty());	
 
 	m_StartFrame = rawAnies->anies[ 0].start;
 	m_EndFrame = rawAnies->anies[ 0].end;

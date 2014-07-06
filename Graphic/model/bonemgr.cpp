@@ -64,7 +64,8 @@ void cBoneMgr::SetCurrentAnimationFrame(const int curFrame)
 {
 	BOOST_FOREACH (auto p, m_bones)
 	{
-		p->SetCurrentFrame(curFrame);
+		if (p)
+			p->SetCurrentFrame(curFrame);
 	}
 }
 

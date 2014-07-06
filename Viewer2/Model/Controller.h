@@ -20,9 +20,6 @@ public:
 	void SetCurrentAnimationFrame(const int curFrame);
 
 
-protected:
-
-
 private:
 	graphic::cModel *m_model;
 	string m_currentMeshFileName;

@@ -39,4 +39,8 @@ public:
 	afx_msg void OnBnClickedCheckWireframe();
 	BOOL m_WireFrame;
 	afx_msg void OnDropFiles(HDROP hDropInfo);
+	afx_msg void OnBnClickedCheckBone();
+	BOOL m_RenderBone;
+	BOOL m_RenderMesh;
+	afx_msg void OnBnClickedCheckMesh();
 };

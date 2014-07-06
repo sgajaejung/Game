@@ -192,9 +192,9 @@ BOOL CModelView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	const float len = dir.Length();
 	dir.Normalize();
 
-	float zoomLen = (len > 100)? 50 : (len/3.f);
+	float zoomLen = (len > 100)? 50 : (len/4.f);
 	if (nFlags & 0x4)
-		zoomLen = 1;
+		zoomLen = zoomLen/10.f;
 
 	m_camPos += (zDelta<0)? dir*-zoomLen : dir*zoomLen;
 
