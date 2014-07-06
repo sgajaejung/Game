@@ -12,9 +12,11 @@ namespace graphic
 		virtual ~cBoneMgr();
 
 		void SetAnimation( const sRawAniGroup &rawAnies, int nAniFrame );
+		void SetCurrentAnimationFrame(const int curFrame);
+
 		bool Move(const float elapseTime);
 		void Render(const Matrix44 &parentTm);
-		void Clear();	
+		void Clear();
 		cBoneNode* GetRoot();
 		cBoneNode* FindBone(const int id);
 		vector<Matrix44>& GetPalette();

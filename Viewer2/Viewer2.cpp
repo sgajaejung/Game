@@ -55,6 +55,7 @@ BOOL CViewer2App::InitInstance()
 		delete pShellManager;
 	}
 
+	pdlg->DestroyWindow();
 	delete pdlg;
 	cController::Release();
 	graphic::ReleaseRenderer();

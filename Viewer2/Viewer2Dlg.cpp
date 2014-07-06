@@ -9,6 +9,7 @@
 #include "ModelView.h"
 #include "mmsystem.h"
 #include "MainPanel.h"
+#include "AnimationController2.h"
 
 #pragma comment( lib, "winmm.lib" )
 
@@ -18,14 +19,27 @@
 #endif
 
 
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 768;
+const int REAL_WINDOW_WIDTH = WINDOW_WIDTH+18;
+const int REAL_WINDOW_HEIGHT = WINDOW_HEIGHT+115;
+
+
 CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CViewer2Dlg::IDD, pParent)
-,	m_pView(NULL)
+,	m_modelView(NULL)
+,	m_aniController(NULL)
 ,	m_loop(true)
 ,	m_dxInit(false)
 , m_WireFrame(FALSE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+CViewer2Dlg::~CViewer2Dlg()
+{
+	m_aniController->DestroyWindow();
+	delete m_aniController;
 }
 
 void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
@@ -82,30 +96,24 @@ BOOL CViewer2Dlg::OnInitDialog()
 	// Init
 	DragAcceptFiles(TRUE);
 
-	const int WIDTH = 1024;
-	const int HEIGHT = 768;
-	const int REAL_WIDTH = WIDTH+18;
-	const int REAL_HEIGHT = HEIGHT+80;
-
-	MoveWindow(CRect(0,0,REAL_WIDTH,REAL_HEIGHT));
-
+	MoveWindow(CRect(0,0,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT));
 
 	// Create Main Model View
-	m_pView = new CModelView();
-	m_pView->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
-		CRect(0,40, WIDTH, HEIGHT+40), this, 0);
+	m_modelView = new CModelView();
+	m_modelView->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
+		CRect(0,25, WINDOW_WIDTH, WINDOW_HEIGHT+25), this, 0);
 
 	// Create Direct
 	graphic::cRenderer::Get()->CreateDirectX(
-		m_pView->GetSafeHwnd(), WIDTH, HEIGHT);
+		m_modelView->GetSafeHwnd(), WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	m_dxInit = true;
-	m_pView->Init();
-	m_pView->ShowWindow(SW_SHOW);
+	m_modelView->Init();
+	m_modelView->ShowWindow(SW_SHOW);
 
 	// Create Main Panel
 	{
-		const int PANEL_WIDTH = 300;
+		const int PANEL_WIDTH = 400;
 		const int PANEL_HEIGHT = 800;
 
 		CMainPanel *dlg = new CMainPanel();
@@ -122,8 +130,8 @@ BOOL CViewer2Dlg::OnInitDialog()
 		{
 			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
 			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
-			const int x = screenCX/2 - REAL_WIDTH/2 + REAL_WIDTH;
-			const int y = screenCY/2 - REAL_HEIGHT/2;
+			const int x = screenCX/2 - REAL_WINDOW_WIDTH/2 + REAL_WINDOW_WIDTH - 100;
+			const int y = screenCY/2 - REAL_WINDOW_HEIGHT/2;
 
 			CRect panelR;
 			dlg->GetWindowRect(panelR);
@@ -134,6 +142,14 @@ BOOL CViewer2Dlg::OnInitDialog()
 	}
 
 
+	// Create Animation Controller
+	{
+		m_aniController = new CAnimationController2(this);
+		m_aniController->Create(CAnimationController2::IDD, this);
+		m_aniController->MoveWindow(0, WINDOW_HEIGHT+20, WINDOW_WIDTH, 300);
+		m_aniController->ShowWindow(SW_SHOW);
+		cController::Get()->AddObserver(m_aniController);
+	}
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -221,10 +237,18 @@ void CViewer2Dlg::MainLoop()
 		const float t = elapseT * 0.001f;
 		oldT = curT;
 
-		if (m_dxInit && m_pView)
+		if (m_dxInit)
 		{
-			m_pView->Update(t);
-			m_pView->Render();
+			if (m_modelView)
+			{
+				m_modelView->Update(t);
+				m_modelView->Render();
+			}
+
+			if (m_aniController)
+			{
+				m_aniController->Update(t);
+			}
 		}
 
 		Sleep(0);
@@ -248,7 +272,16 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 	if (size == 0) 
 		return;// handle error...
 
-	m_pView->LoadFile(filePath);
+	m_modelView->LoadFile(filePath);
+	
+	// 애니메이션 파일을 열었다면 윈도우 크기를 늘인다.
+	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(filePath);
+	if (graphic::RESOURCE_TYPE::ANIMATION == type)
+	{
+		CRect wr;
+		GetWindowRect(wr);
+		MoveWindow(wr.left,wr.top,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT+60);
+	}
 
 	CDialogEx::OnDropFiles(hDropInfo);
 }

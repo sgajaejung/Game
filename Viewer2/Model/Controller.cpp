@@ -6,6 +6,7 @@
 
 cController::cController() : 
 	m_model(NULL)
+,	m_isPlay(true)
 {
 	m_model = new graphic::cModel();
 }
@@ -40,4 +41,31 @@ bool cController::LoadFile( const string &fileName )
 	NotifyObserver();
 
 	return result;
+}
+
+
+void cController::Render()
+{
+	RET(!m_model);
+	m_model->Render();
+}
+
+
+void cController::Update(const float elapseT)
+{
+	RET(!m_model);
+
+	if (m_isPlay)
+		m_model->Move(elapseT);
+	else
+		m_model->Move(0);
+}
+
+
+void cController::SetCurrentAnimationFrame(const int curFrame)
+{
+	RET(!m_model);
+	graphic::cBoneMgr *boneMgr = m_model->GetBoneMgr();
+	RET(!boneMgr);
+	boneMgr->SetCurrentAnimationFrame(curFrame);
 }

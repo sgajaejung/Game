@@ -3,11 +3,13 @@
 
 
 class CModelView;
+class CAnimationController2;
 class CViewer2Dlg : public CDialogEx
 {
 // 생성입니다.
 public:
 	CViewer2Dlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
+	virtual ~CViewer2Dlg();
 	enum { IDD = IDD_VIEWER2_DIALOG };
 
 	void MainLoop();
@@ -20,7 +22,8 @@ protected:
 // 구현입니다.
 protected:
 	HICON m_hIcon;
-	CModelView *m_pView;
+	CModelView *m_modelView;
+	CAnimationController2 *m_aniController;
 	bool m_loop;
 	bool m_dxInit;
 

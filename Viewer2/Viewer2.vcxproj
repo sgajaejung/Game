@@ -99,6 +99,7 @@
     <None Include="res\Viewer2.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationController2.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="MainPanel.h" />
     <ClInclude Include="ModelPanel.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Viewer2Dlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationController2.cpp" />
     <ClCompile Include="AnimationPanel.cpp" />
     <ClCompile Include="MainPanel.cpp" />
     <ClCompile Include="MainPanelTab.cpp" />

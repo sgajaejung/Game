@@ -83,10 +83,8 @@ void CModelView::Init()
 
 void CModelView::Update(const float elapseT)
 {
-	if (graphic::cModel *model = cController::Get()->GetModel())
-	{
-		model->Move(elapseT);
-	}
+	graphic::GetRenderer()->Update(elapseT);
+	cController::Get()->Update(elapseT);
 }
 
 
@@ -112,8 +110,8 @@ void CModelView::Render()
 		if (graphic::cModel *model = cController::Get()->GetModel())
 		{
 			model->SetTM(m_rotateTm);
-			model->Render();
 		}
+		cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();

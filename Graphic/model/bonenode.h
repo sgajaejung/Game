@@ -15,6 +15,10 @@ namespace graphic
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
 
+		int GetCurrentFrame() const;
+		int GetPlayFrame() const;
+		void SetCurrentFrame(const int curFrame);
+
 
 	private:
 		cTrack *m_track;
@@ -37,4 +41,6 @@ namespace graphic
 
 	
 	inline const Matrix44& cBoneNode::GetAccTM() const { return m_accTM; }
+	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
+	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
 }

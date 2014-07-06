@@ -190,3 +190,81 @@ float cTrack::GetAlpha(float f1, float f2, float frame ) const
 		return 0;
 	return (frame-f1) / (f2-f1); 
 }
+
+
+// curFrame 에 맞는 m_keyPosIdx, m_keyRotIdx, m_keyScaleIdx 를 설정한다.
+void cTrack::SetCurrentFramePos( const int curFrame )
+{
+	m_keyPosIdx = 0;
+	m_keyRotIdx = 0;
+	m_keyScaleIdx = 0;
+
+	ZeroMemory( m_curKeyPos, sizeof(m_curKeyPos) );
+	ZeroMemory( m_curKeyRot, sizeof(m_curKeyRot) );
+	ZeroMemory( m_curKeyScale, sizeof(m_curKeyScale) );
+
+	// position index setting
+	for (u_int i=0; i < m_rawAni.pos.size(); ++i)
+	{
+		if (m_rawAni.pos[ i].t < curFrame)
+		{
+			++m_keyPosIdx;
+		}
+	}
+
+	if (m_keyPosIdx <= 0)
+	{
+		if (1 <= m_rawAni.pos.size())
+			m_curKeyPos[ 0] = (sKeyPos*)&m_rawAni.pos[ 0];
+	}
+	else
+	{
+		m_curKeyPos[ 0] = (sKeyPos*)&m_rawAni.pos[ m_keyPosIdx-1];
+		if (m_keyPosIdx < (int)m_rawAni.pos.size())
+			m_curKeyPos[ 1] = (sKeyPos*)&m_rawAni.pos[ m_keyPosIdx];
+	}
+
+
+	// rotation index setting
+	for (u_int i=0; i < m_rawAni.rot.size(); ++i)
+	{
+		if (m_rawAni.rot[ i].t < curFrame)
+		{
+			++m_keyRotIdx;
+		}
+	}
+
+	if (m_keyRotIdx <= 0)
+	{
+		if (1 <= m_rawAni.rot.size())
+			m_curKeyRot[ 0] = (sKeyRot*)&m_rawAni.rot[ 0];
+	}
+	else
+	{
+		m_curKeyRot[ 0] = (sKeyRot*)&m_rawAni.rot[ m_keyRotIdx-1];
+		if (m_keyRotIdx < (int)m_rawAni.rot.size())
+			m_curKeyRot[ 1] = (sKeyRot*)&m_rawAni.rot[ m_keyRotIdx];
+	}
+
+
+	// scale index setting
+	for (u_int i=0; i < m_rawAni.scale.size(); ++i)
+	{
+		if (m_rawAni.scale[ i].t < curFrame)
+		{
+			++m_keyScaleIdx;
+		}
+	}
+
+	if (m_keyScaleIdx <= 0)
+	{
+		if (1 <= m_rawAni.scale.size())
+			m_curKeyScale[ 0] = (sKeyScale*)&m_rawAni.scale[ 0];
+	}
+	else
+	{
+		m_curKeyScale[ 0] = (sKeyScale*)&m_rawAni.scale[ m_keyScaleIdx-1];
+		if (m_keyScaleIdx < (int)m_rawAni.scale.size())
+			m_curKeyScale[ 1] = (sKeyScale*)&m_rawAni.scale[ m_keyScaleIdx];
+	}
+}

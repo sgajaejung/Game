@@ -60,6 +60,15 @@ void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, i
 }
 
 
+void cBoneMgr::SetCurrentAnimationFrame(const int curFrame)
+{
+	BOOST_FOREACH (auto p, m_bones)
+	{
+		p->SetCurrentFrame(curFrame);
+	}
+}
+
+
 // 애니메이션
 bool cBoneMgr::Move(const float elapseTime)
 {

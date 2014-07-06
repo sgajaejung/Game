@@ -91,14 +91,14 @@ void CAnimationPanel::UpdateAnimationTree()
 	for (u_int i=0; i < rawAnies->anies.size(); ++i)
 	{
 		const sRawAni &ani = rawAnies->anies[ i];
-		const wstring str = formatw("ani%d", i+1);
+		const wstring str = formatw("track%d", i+1);
 		const HTREEITEM hItem = m_AniTree.InsertItem( str.c_str(), hRoot);
 
 		const wstring start = formatw("start = %d", (int)ani.start);
 		const wstring end = formatw("end = %d", (int)ani.end);
-		const wstring keypos = formatw("keyPos = %d", ani.pos.size());
-		const wstring keyrot = formatw("keyRot = %d", ani.rot.size());
-		const wstring keyscale = formatw("keyScale = %d", ani.scale.size());
+		const wstring keypos = formatw("keyPos Count = %d", ani.pos.size());
+		const wstring keyrot = formatw("keyRot Count = %d", ani.rot.size());
+		const wstring keyscale = formatw("keyScale Count = %d", ani.scale.size());
 
 		m_AniTree.InsertItem( start.c_str(), hItem);
 		m_AniTree.InsertItem( end.c_str(), hItem);

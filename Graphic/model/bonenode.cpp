@@ -154,3 +154,12 @@ void cBoneNode::Render(const Matrix44 &parentTm)
 	BOOST_FOREACH (auto p, m_children)
 		p->Render( parentTm );
 }
+
+
+void cBoneNode::SetCurrentFrame(const int curFrame) 
+{ 
+	m_curPlayTime = curFrame / 30.f;
+	m_curPlayFrame = curFrame; 
+	if (m_track)
+		m_track->SetCurrentFramePos(curFrame);
+}

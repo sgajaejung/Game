@@ -14,6 +14,7 @@ namespace graphic
 		void InitAnimation();
 		void Move( const int curFrame, OUT Matrix44 &out );
 		int GetCurrentFrame() const;
+		void SetCurrentFramePos( const int curFrame );
 
 
 	protected:
