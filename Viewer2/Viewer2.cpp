@@ -68,6 +68,7 @@ BOOL CViewer2App::InitInstance()
 	}
 
 	delete pdlg;
+	cController::Release();
 	graphic::ReleaseRenderer();
 	memmonitor::Cleanup();
 

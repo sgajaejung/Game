@@ -18,16 +18,26 @@ cController::~cController()
 
 bool cController::LoadFile( const string &fileName )
 {
+	bool result = false;
 	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(fileName);
 	switch (type)
 	{
 	case graphic::RESOURCE_TYPE::MESH:
-		return m_model->Create(fileName);
+		m_currentMeshFileName = fileName;
+		result = m_model->Create(fileName);
+		break;
 
 	case graphic::RESOURCE_TYPE::ANIMATION:
+		m_currentAnimationFileName = fileName;
 		m_model->SetAnimation(fileName);
-		return true;
+		result = true;
+		break;
+
+	default:
+		break;
 	}
 
-	return true;
+	NotifyObserver();
+
+	return result;
 }

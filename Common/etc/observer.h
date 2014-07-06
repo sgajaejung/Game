@@ -21,10 +21,11 @@ namespace common
 
 		void AddObserver(iObserver* observer);
 		void RemoveObserver(iObserver* observer);
+		void NotifyObserver();
 
 
 	protected:
-		vector<iObserver*> m_observers;
+		vector<iObserver*> m_observers; // reference
 	};
 
 }

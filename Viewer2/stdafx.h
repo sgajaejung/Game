@@ -59,3 +59,4 @@
 #include "../Common/common.h"
 using namespace common;
 #include "../Graphic/graphic.h"
+#include "model/Controller.h"

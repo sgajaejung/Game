@@ -27,3 +27,10 @@ void cObservable::RemoveObserver(iObserver* observer)
 {
 	common::removevector(m_observers, observer);
 }
+
+
+void cObservable::NotifyObserver()
+{
+	BOOST_FOREACH (auto &observer, m_observers)
+		observer->Update();
+}

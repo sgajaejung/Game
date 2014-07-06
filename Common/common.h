@@ -48,6 +48,8 @@ using std::string;
 using std::wstring;
 using std::vector;
 using std::map;
+using std::stringstream;
+using std::wstringstream;
 
 
 #include "container/vectorhelper.h"
@@ -56,3 +58,4 @@ using std::map;
 #include "etc/filepath.h"
 #include "etc/stringfunc.h"
 #include "etc/dbg.h"
+#include "etc/observer.h"

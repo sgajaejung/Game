@@ -67,6 +67,8 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_pModelPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_pModelPanel->ShowWindow(SW_SHOW);
 
+	cController::Get()->AddObserver(m_pModelPanel);
+
 	return TRUE;
 }
 
