@@ -107,9 +107,9 @@ void CModelView::Render()
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
-		if (graphic::cModel *model = cController::Get()->GetModel())
+		if (graphic::cCharacter *character = cController::Get()->GetCharacter())
 		{
-			model->SetTM(m_rotateTm);
+			character->SetTM(m_rotateTm);
 		}
 		cController::Get()->Render();
 
@@ -226,6 +226,8 @@ bool CModelView::LoadFile(const string &fileName)
 	m_filePath = fileName;
 
 	cController::Get()->LoadFile(fileName);
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	character->LoadWeapon( "../media/weapon.dat");
 
 
 	return false;

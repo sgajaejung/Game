@@ -296,18 +296,18 @@ void CViewer2Dlg::OnBnClickedCheckWireframe()
 void CViewer2Dlg::OnBnClickedCheckBone()
 {
 	UpdateData();
-	graphic::cModel *model = cController::Get()->GetModel();
-	RET(!model);
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	RET(!character);
 
-	model->SetRenderBone(m_RenderBone? true : false);
+	character->SetRenderBone(m_RenderBone? true : false);
 }
 
 
 void CViewer2Dlg::OnBnClickedCheckMesh()
 {
 	UpdateData();
-	graphic::cModel *model = cController::Get()->GetModel();
-	RET(!model);
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	RET(!character);
 
-	model->SetRenderMesh(m_RenderMesh? true : false);
+	character->SetRenderMesh(m_RenderMesh? true : false);
 }

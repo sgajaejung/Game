@@ -19,6 +19,7 @@ namespace graphic
 		void Clear();
 		cBoneNode* GetRoot();
 		cBoneNode* FindBone(const int id);
+		cBoneNode* FindBone(const string &name);
 		vector<Matrix44>& GetPalette();
 
 

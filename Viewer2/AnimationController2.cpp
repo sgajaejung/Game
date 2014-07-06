@@ -80,9 +80,9 @@ void CAnimationController2::Update(const float elapseT)
 {
 	RET(!cController::Get()->IsAnimationPlay());
 
-	cModel *model = cController::Get()->GetModel();
-	RET(!model);
-	graphic::cBoneMgr *boneMgr = model->GetBoneMgr();
+	cCharacter *character = cController::Get()->GetCharacter();
+	RET(!character);
+	graphic::cBoneMgr *boneMgr = character->GetBoneMgr();
 	RET(!boneMgr);
 	graphic::cBoneNode *rootNode = boneMgr->GetRoot();
 	RET(!rootNode);

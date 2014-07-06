@@ -30,6 +30,7 @@ using namespace common;
 #include "model/model.h"
 #include "model/bonemgr.h"
 #include "model/bonenode.h"
+#include "model/character.h"
 
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"

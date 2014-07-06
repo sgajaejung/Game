@@ -188,10 +188,10 @@ void CModelPanel::UpdateBoneInfo()
 		cController::Get()->GetCurrentMeshFileName() );
 	RET (!rawMeshses);
 
-	graphic::cModel *model = cController::Get()->GetModel();
-	RET(!model);
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	RET(!character);
 
-	graphic::cBoneMgr *boneMgr = model->GetBoneMgr();
+	graphic::cBoneMgr *boneMgr = character->GetBoneMgr();
 	RET(!boneMgr);	
 
 	graphic::cBoneNode *root = boneMgr->GetRoot();

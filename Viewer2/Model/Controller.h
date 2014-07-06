@@ -9,7 +9,7 @@ public:
 	virtual ~cController();
 
 	bool LoadFile( const string &fileName );
-	graphic::cModel* GetModel();
+	graphic::cCharacter* GetCharacter();
 	const string& GetCurrentMeshFileName();
 	const string& GetCurrentAnimationFileName();
 
@@ -21,7 +21,7 @@ public:
 
 
 private:
-	graphic::cModel *m_model;
+	graphic::cCharacter *m_character;
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;
 	bool m_isPlay;
@@ -29,7 +29,7 @@ private:
 };
 
 
-inline graphic::cModel* cController::GetModel() { return m_model; }
+inline graphic::cCharacter* cController::GetCharacter() { return m_character; }
 inline const string& cController::GetCurrentMeshFileName() { return m_currentMeshFileName; }
 inline const string& cController::GetCurrentAnimationFileName() { return m_currentAnimationFileName; }
 inline void cController::SetAnimationPlay(const bool isPlay) { m_isPlay = isPlay; }

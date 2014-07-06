@@ -94,6 +94,13 @@ cBoneNode* cBoneMgr::FindBone(const int id)
 }
 
 
+cBoneNode* cBoneMgr::FindBone(const string &name)
+{
+	RETV(!m_root, NULL);
+	return (cBoneNode*)m_root->FindNode(name);
+}
+
+
 // 동적으로 할당된 객체 제거.
 void cBoneMgr::Clear()
 {

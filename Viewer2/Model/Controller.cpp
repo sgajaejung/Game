@@ -5,15 +5,15 @@
 
 
 cController::cController() : 
-	m_model(NULL)
+	m_character(NULL)
 ,	m_isPlay(true)
 {
-	m_model = new graphic::cModel();
+	m_character = new graphic::cCharacter();
 }
 
 cController::~cController()
 {
-	SAFE_DELETE(m_model);
+	SAFE_DELETE(m_character);
 }
 
 
@@ -25,12 +25,12 @@ bool cController::LoadFile( const string &fileName )
 	{
 	case graphic::RESOURCE_TYPE::MESH:
 		m_currentMeshFileName = fileName;
-		result = m_model->Create(fileName);
+		result = m_character->Create(fileName);
 		break;
 
 	case graphic::RESOURCE_TYPE::ANIMATION:
 		m_currentAnimationFileName = fileName;
-		m_model->SetAnimation(fileName);
+		m_character->SetAnimation(fileName);
 		result = true;
 		break;
 
@@ -46,26 +46,26 @@ bool cController::LoadFile( const string &fileName )
 
 void cController::Render()
 {
-	RET(!m_model);
-	m_model->Render();
+	RET(!m_character);
+	m_character->Render();
 }
 
 
 void cController::Update(const float elapseT)
 {
-	RET(!m_model);
+	RET(!m_character);
 
 	if (m_isPlay)
-		m_model->Move(elapseT);
+		m_character->Move(elapseT);
 	else
-		m_model->Move(0);
+		m_character->Move(0);
 }
 
 
 void cController::SetCurrentAnimationFrame(const int curFrame)
 {
-	RET(!m_model);
-	graphic::cBoneMgr *boneMgr = m_model->GetBoneMgr();
+	RET(!m_character);
+	graphic::cBoneMgr *boneMgr = m_character->GetBoneMgr();
 	RET(!boneMgr);
 	boneMgr->SetCurrentAnimationFrame(curFrame);
 }
