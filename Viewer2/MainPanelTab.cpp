@@ -1,14 +1,14 @@
-// MainPanelDlg.cpp : 구현 파일입니다.
+// MainPanelTab.cpp : 구현 파일입니다.
 //
 
 #include "stdafx.h"
-#include "../Viewer2.h"
+#include "Viewer2.h"
 #include "MainPanelTab.h"
 #include "afxdialogex.h"
 #include "ModelPanel.h"
 
 
-// CMainPanelDlg 대화 상자입니다.
+// CMainPanelTab 대화 상자입니다.
 
 CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMainPanelTab::IDD, pParent)
@@ -24,31 +24,29 @@ CMainPanelTab::~CMainPanelTab()
 void CMainPanelTab::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TAB_PANEL, m_Tab);
+	DDX_Control(pDX, IDC_TAB1, m_Tab);
 }
 
 
 BEGIN_MESSAGE_MAP(CMainPanelTab, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CMainPanelTab::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CMainPanelTab::OnBnClickedCancel)
-	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_PANEL, &CMainPanelTab::OnSelchangeTab)
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CMainPanelTab::OnSelchangeTab)
 END_MESSAGE_MAP()
 
 
-// CMainPanelDlg 메시지 처리기입니다.
+// CMainPanelTab 메시지 처리기입니다.
 
 
 void CMainPanelTab::OnBnClickedOk()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnOK();
+	//CDialogEx::OnOK();
 }
 
 
 void CMainPanelTab::OnBnClickedCancel()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnCancel();
+	//CDialogEx::OnCancel();
 }
 
 

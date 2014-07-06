@@ -28,6 +28,9 @@ using namespace common;
 #include "model/rigidmesh.h"
 #include "model/skinnedmesh.h"
 #include "model/model.h"
+#include "model/bonemgr.h"
+#include "model/bonenode.h"
+
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"
 

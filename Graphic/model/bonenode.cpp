@@ -7,7 +7,7 @@ using namespace graphic;
 
 
 cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawBone) :
-	cNode(id)
+	cNode(id, rawBone.name)
 ,	m_track(NULL)
 ,	m_mesh(NULL)
 ,	m_palette(palette)

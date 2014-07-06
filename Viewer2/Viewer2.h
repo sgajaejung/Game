@@ -20,11 +20,8 @@ class CViewer2App : public CWinApp
 public:
 	CViewer2App();
 
-// 재정의입니다.
 public:
 	virtual BOOL InitInstance();
-
-// 구현입니다.
 
 	DECLARE_MESSAGE_MAP()
 };

@@ -5,8 +5,9 @@
 using namespace graphic;
 
 
-cNode::cNode( const int id) : 
+cNode::cNode( const int id, const string &name) : 
 	m_id(id)
+,	m_name(name)
 ,	m_parent(NULL)
 {
 
@@ -31,20 +32,35 @@ bool cNode::InsertChild(cNode *node)
 
 
 // 자식 노드 중에 id 와 같은 노드가 있다면 리턴한다.
-cNode* cNode::FindNode(const int id)
+const cNode* cNode::FindNode(const int id) const
 {
-	if (GetId() == id)
+	if (m_id == id)
 		return this;
 
 	BOOST_FOREACH (auto node, m_children)
 	{
-		if (cNode *ret = node->FindNode(id))
+		if (const cNode *ret = node->FindNode(id))
 			return ret;
 	}
 
 	return NULL;
 }
 
+
+// 자식 노드 중에 name과 같은 노드가 있다면 리턴한다.
+const cNode* cNode::FindNode(const string &name) const
+{
+	if (m_name == name)
+		return this;
+
+	BOOST_FOREACH (auto node, m_children)
+	{
+		if (const cNode *ret = node->FindNode(name))
+			return ret;
+	}
+
+	return NULL;
+}
 
 // id 노드를 제거한다. 메모리까지 제거된다.
 bool cNode::RemoveNode(const int id)

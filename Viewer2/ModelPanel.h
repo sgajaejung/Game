@@ -2,8 +2,12 @@
 #include "afxcmn.h"
 
 
-// CModelPanel 대화 상자입니다.
+namespace graphic  {
+	class cBoneNode;
+}
 
+
+// CModelPanel 대화 상자입니다.
 class CModelPanel : public CDialogEx
 								, public common::iObserver
 {
@@ -20,6 +24,10 @@ public:
 protected:
 	void UpdateMeshInfo();
 	void UpdateMaterialInfo();
+	void UpdateBoneInfo();
+	void UpdateRawBoneInfo();
+	void MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node);
+	void ExpandAll(CTreeCtrl &treeCtrl);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -28,4 +36,8 @@ protected:
 public:
 	CTreeCtrl m_MeshTree;
 	CTreeCtrl m_MaterialTree;
+	CTreeCtrl m_RawBoneTree;
+	CTreeCtrl m_BoneTree;
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
 };

@@ -5,11 +5,12 @@
 
 namespace graphic { namespace importer {
 
-	bool ReadRawMeshFileV8( const string &fileName, OUT sRawMeshGroup &rawMeshes );
-	bool ReadRawAnimationFileV8( const string &fileName, OUT sRawAniGroup &rawAnies );
+	bool ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
 
 
-	bool ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh, bool flag=false );
+	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
+	bool ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTextureCoordinate( std::ifstream &fin, const string &fileName, OUT sRawMesh &rawMesh, bool flag=false );
 	bool ReadAnimation(std::ifstream &fin, OUT sRawAni &rawAni );
@@ -35,9 +36,9 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 	string version;
 	fin >> version;
 
-	if (version == "EXPORTER_V8")
+	if (version == "EXPORTER_V9")
 	{
-		ReadRawMeshFileV8(fileName, rawMeshes);
+		ReadRawMeshFileV9(fileName, rawMeshes);
 	}
 	else
 	{
@@ -59,9 +60,9 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 	string version;
 	fin >> version;
 
-	if (version == "EXPORTER_V8")
+	if (version == "EXPORTER_V9")
 	{
-		ReadRawAnimationFileV8(fileName, rawAni);
+		ReadRawAnimationFileV9(fileName, rawAni);
 	}
 	else
 	{
@@ -72,7 +73,7 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 }
 
 
-bool importer::ReadRawMeshFileV8( const string &fileName, OUT sRawMeshGroup &rawMeshes )
+bool importer::ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes )
 {
 	using namespace std;
 	ifstream fin(fileName.c_str());
@@ -108,7 +109,8 @@ bool importer::ReadRawMeshFileV8( const string &fileName, OUT sRawMeshGroup &raw
 	for (int i=0; i < geomObjectCount; ++i)
 	{
 		rawMeshes.meshes.push_back( sRawMesh() );
-		ReadVertexIndexNormal(fin, rawMeshes.meshes.back(), true);
+		ReadMeshInfo(fin, rawMeshes.meshes.back());
+		ReadVertexIndexNormal(fin, rawMeshes.meshes.back());
 		ReadTextureCoordinate(fin, fileName, rawMeshes.meshes.back(), true);
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
@@ -119,7 +121,7 @@ bool importer::ReadRawMeshFileV8( const string &fileName, OUT sRawMeshGroup &raw
 }
 
 
-bool importer::ReadRawAnimationFileV8( const string &fileName, OUT sRawAniGroup &rawAnies )
+bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies )
 {
 	using namespace std;
 	ifstream fin(fileName.c_str());
@@ -149,19 +151,33 @@ bool importer::ReadRawAnimationFileV8( const string &fileName, OUT sRawAniGroup 
 }
 
 
+// 메쉬정보를 읽어온다.
+// Mesh Name, Material ID
+bool importer::ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh )
+{
+	string exp, eq;
+	fin >> exp >> eq;
+
+	string name;
+	std::getline(fin, name);
+	rawMesh.name = common::trim(name);
+
+	int materialId;
+	fin >> exp >> eq >> materialId;
+
+	rawMesh.mtrlId = materialId;
+
+	return true;
+}
+
+
 // Read Vertex, Index, Normal Buffer
 // Normal 은 face 갯수만큼 존재해야 한다.
-bool importer::ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh, bool flag )
+bool importer::ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh )
 {
 	string vtx, eq;
 	int vtxSize;
 	fin >> vtx >> eq >> vtxSize;
-	if (flag)
-	{
-		int materialId;
-		fin >> materialId;
-		rawMesh.mtrlId = materialId;
-	}
 
 	if (vtxSize <= 0)
 		return  false;

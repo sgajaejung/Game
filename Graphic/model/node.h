@@ -8,9 +8,10 @@ namespace graphic
 	public:
 		enum NODE_TYPE { NONE, BONE, MESH };
 
-		cNode( const int id);
+		cNode( const int id, const string &name="none");
 		virtual ~cNode();
 
+		const string& GetName() const;
 		int GetId() const;
 		cNode* GetParent();
 		int GetMaterialId() const;
@@ -21,7 +22,8 @@ namespace graphic
 		void SetLocalTM(const Matrix44 &tm);
 
 		bool InsertChild(cNode *node);
-		cNode* FindNode(const int id);
+		const cNode* FindNode(const int id) const;
+		const cNode* FindNode(const string &name) const;
 		bool RemoveNode(const int id);
 		vector<cNode*>& GetChildren();
 		void Clear();
@@ -31,6 +33,7 @@ namespace graphic
 
 
 	protected:
+		string m_name;
 		int m_id;
 		cNode *m_parent;
 		vector<cNode*> m_children;
@@ -42,6 +45,7 @@ namespace graphic
 	};
 
 
+	inline const string& cNode::GetName() const { return m_name; }
 	inline int cNode::GetId() const { return m_id; }
 	inline cNode* cNode::GetParent() { return m_parent; }
 	inline int cNode::GetMaterialId() const { return m_materialId; }

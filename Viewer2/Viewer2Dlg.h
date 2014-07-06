@@ -1,14 +1,13 @@
 
 #pragma once
-#include "afxcmn.h"
 
 
 class CModelView;
 class CViewer2Dlg : public CDialogEx
 {
+// 생성입니다.
 public:
 	CViewer2Dlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
-	virtual ~CViewer2Dlg();
 	enum { IDD = IDD_VIEWER2_DIALOG };
 
 	void MainLoop();
@@ -34,8 +33,7 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
-	afx_msg void OnItemchangedFileList(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDropFiles(HDROP hDropInfo);
-	BOOL m_WireFrame;
 	afx_msg void OnBnClickedCheckWireframe();
+	BOOL m_WireFrame;
+	afx_msg void OnDropFiles(HDROP hDropInfo);
 };

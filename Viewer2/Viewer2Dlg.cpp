@@ -7,12 +7,11 @@
 #include "Viewer2Dlg.h"
 #include "afxdialogex.h"
 #include "ModelView.h"
-//#include "../wxMemMonitorLib/wxMemMonitor.h"
 #include "mmsystem.h"
-#include "panel/MainPanel.h"
-
+#include "MainPanel.h"
 
 #pragma comment( lib, "winmm.lib" )
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -24,13 +23,9 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 ,	m_pView(NULL)
 ,	m_loop(true)
 ,	m_dxInit(false)
-,	m_WireFrame(FALSE)
+, m_WireFrame(FALSE)
 {
-	//m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-}
-
-CViewer2Dlg::~CViewer2Dlg()
-{
+//	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
@@ -45,8 +40,8 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDOK, &CViewer2Dlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CViewer2Dlg::OnBnClickedCancel)
-	ON_WM_DROPFILES()
 	ON_BN_CLICKED(IDC_CHECK_WIREFRAME, &CViewer2Dlg::OnBnClickedCheckWireframe)
+	ON_WM_DROPFILES()
 END_MESSAGE_MAP()
 
 
@@ -76,8 +71,12 @@ BOOL CViewer2Dlg::OnInitDialog()
 		}
 	}
 
-	SetIcon(m_hIcon, TRUE);		// 큰 아이콘을 설정합니다.
+	// 이 대화 상자의 아이콘을 설정합니다. 응용 프로그램의 주 창이 대화 상자가 아닐 경우에는
+	//  프레임워크가 이 작업을 자동으로 수행합니다.
+	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
+
+	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 
 	//-----------------------------------------------------------------------------------------
 	// Init
@@ -95,7 +94,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 	m_pView = new CModelView();
 	m_pView->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
 		CRect(0,40, WIDTH, HEIGHT+40), this, 0);
-	
+
 	// Create Direct
 	graphic::cRenderer::Get()->CreateDirectX(
 		m_pView->GetSafeHwnd(), WIDTH, HEIGHT);
@@ -135,15 +134,6 @@ BOOL CViewer2Dlg::OnInitDialog()
 	}
 
 
-
-
-	//m_FileList.SetExtendedStyle( m_FileList.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
-	//m_FileList.InsertColumn(0, L"path");
-	//m_FileList.SetColumnWidth(0, 300);
-	//m_FileList.InsertItem(0, L"Test1");
-	//m_FileList.InsertItem(1, L"Test2");
-	//m_FileList.InsertItem(2, L"Test3");
-	//m_FileList.InsertItem(3, L"Test4");
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -242,6 +232,14 @@ void CViewer2Dlg::MainLoop()
 }
 
 
+void CViewer2Dlg::OnBnClickedCheckWireframe()
+{
+	UpdateData();
+	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame);
+	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, !m_WireFrame? D3DFILL_SOLID : D3DFILL_WIREFRAME);
+}
+
+
 void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 {
 	HDROP hdrop = hDropInfo;
@@ -252,18 +250,5 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 
 	m_pView->LoadFile(filePath);
 
-	wstring wstr = common::str2wstr(filePath);
-	CString str = wstr.c_str();
-	//m_FileList.InsertItem(m_FileList.GetItemCount(), str);
-
 	CDialogEx::OnDropFiles(hDropInfo);
 }
-
-
-void CViewer2Dlg::OnBnClickedCheckWireframe()
-{
-	UpdateData();
-	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame);
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, !m_WireFrame? D3DFILL_SOLID : D3DFILL_WIREFRAME);
-}
-

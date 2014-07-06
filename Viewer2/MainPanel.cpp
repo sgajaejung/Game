@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "../Viewer2.h"
+#include "Viewer2.h"
 #include "MainPanel.h"
 #include "MainPanelTab.h"
 

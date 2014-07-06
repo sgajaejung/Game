@@ -10,7 +10,6 @@ public:
 	CMainPanel();           // 동적 만들기에 사용되는 protected 생성자입니다.
 	virtual ~CMainPanel();
 
-
 	void Init();
 
 
@@ -18,5 +17,3 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	CMainPanelTab *m_mainPanel;
 };
-
-
