@@ -1,5 +1,6 @@
 #pragma once
 #include "afxcmn.h"
+#include "PanelBase.h"
 
 
 namespace graphic  {
@@ -8,7 +9,7 @@ namespace graphic  {
 
 
 // CModelPanel 대화 상자입니다.
-class CModelPanel : public CDialogEx
+class CModelPanel : public CPanelBase
 								, public common::iObserver
 {
 public:
@@ -27,7 +28,6 @@ protected:
 	void UpdateBoneInfo();
 	void UpdateRawBoneInfo();
 	void MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node);
-	void ExpandAll(CTreeCtrl &treeCtrl);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -40,4 +40,5 @@ public:
 	CTreeCtrl m_BoneTree;
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

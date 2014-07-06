@@ -4,6 +4,7 @@
 
 // CMainPanelTab 대화 상자입니다.
 class CModelPanel;
+class CAnimationPanel;
 class CMainPanelTab : public CDialogEx
 {
 public:
@@ -13,7 +14,8 @@ public:
 
 
 protected:
-	CModelPanel *m_pModelPanel;
+	CModelPanel *m_modelPanel;
+	CAnimationPanel *m_aniPanel;
 
 
 protected:
@@ -24,6 +26,7 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnInitDialog();
 	CTabCtrl m_Tab;
 };

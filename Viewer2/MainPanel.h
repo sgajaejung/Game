@@ -16,4 +16,6 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 	CMainPanelTab *m_mainPanel;
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

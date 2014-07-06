@@ -26,6 +26,7 @@ CMainPanel::~CMainPanel()
 
 
 BEGIN_MESSAGE_MAP(CMainPanel, CMiniFrameWnd)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -41,4 +42,12 @@ void CMainPanel::Init()
 	m_mainPanel->Create( CMainPanelTab::IDD, this );
 	m_mainPanel->MoveWindow(cr);
 	m_mainPanel->ShowWindow(SW_SHOW);
+}
+
+
+void CMainPanel::OnSize(UINT nType, int cx, int cy)
+{
+	CMiniFrameWnd::OnSize(nType, cx, cy);
+	if (m_mainPanel)
+		m_mainPanel->MoveWindow(0, 0, cx, cy);
 }

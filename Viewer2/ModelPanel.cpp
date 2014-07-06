@@ -12,7 +12,7 @@ using namespace graphic;
 // CModelPanel 대화 상자입니다.
 
 CModelPanel::CModelPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CModelPanel::IDD, pParent)
+	: CPanelBase(CModelPanel::IDD, pParent)
 {
 
 }
@@ -23,7 +23,7 @@ CModelPanel::~CModelPanel()
 
 void CModelPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_MESH, m_MeshTree);
 	DDX_Control(pDX, IDC_TREE_MATERIAL, m_MaterialTree);
 	DDX_Control(pDX, IDC_TREE_RAWBONE, m_RawBoneTree);
@@ -31,9 +31,10 @@ void CModelPanel::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CModelPanel, CDialogEx)
+BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CModelPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -200,43 +201,22 @@ void CModelPanel::MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node)
 }
 
 
-// 모든 트리노드를 펼친다.
-void CModelPanel::ExpandAll(CTreeCtrl &treeCtrl)
-{
-	HTREEITEM hRoot = treeCtrl.GetRootItem();
-	vector<HTREEITEM> items;
-	items.reserve(treeCtrl.GetCount());
-
-	items.push_back(hRoot);
-
-	while (!items.empty())
-	{
-		HTREEITEM hItem = items.back();
-		items.pop_back();
-		treeCtrl.Expand(hItem, TVE_EXPAND);
-
-		HTREEITEM hfirstChild = treeCtrl.GetChildItem(hItem);
-		if (hfirstChild)
-		{
-			items.push_back(hfirstChild);
-
-			while (HTREEITEM hNextItem = treeCtrl.GetNextSiblingItem(hfirstChild))
-			{
-				items.push_back(hNextItem);
-				hfirstChild = hNextItem;
-			}
-		}
-	}
-
-	treeCtrl.SelectSetFirstVisible(hRoot);
-}
-
-
 void CModelPanel::OnBnClickedOk()
-{	
+{
 }
 
 
 void CModelPanel::OnBnClickedCancel()
 {
+}
+
+
+void CModelPanel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+	
+	MoveTreeWindow(m_MaterialTree, cx, cy);
+	MoveTreeWindow(m_MeshTree, cx, cy);
+	MoveTreeWindow(m_BoneTree, cx, cy);
+	MoveTreeWindow(m_RawBoneTree, cx, cy);
 }
