@@ -28,7 +28,7 @@ namespace graphic
 		void SetRenderBone(const bool isRenderBone);
 
 
-	private:
+	protected:
 		vector<cNode*> m_meshes;
 		cBoneMgr *m_bone;
 		Matrix44 m_matTM;

@@ -200,7 +200,10 @@ fn DumpObjects obj =
 -- {0: Not Bone} {1: Bone}
 fn IsBone obj = 
 (
-	if (classof obj == BoneGeometry) or (classof obj == Biped_Object) then
+	if (classof obj == BoneGeometry) or 
+		(classof obj == Biped_Object) or
+		(classof obj == dummy)
+	then
 	(
 		return 1
 	)
@@ -295,8 +298,7 @@ fn CollectObject =
 			format "collect bone %\n" objects[i].name
 			append g_varSetBones objects[i]
 		)
-		else if ( (dummy == (classof objects[i])) or 
-			(targetCamera ==  (classof objects[i])) or
+		else if ( (targetCamera ==  (classof objects[i])) or
 			(omniLight ==  (classof objects[i])) or
 			(targetObject ==  (classof objects[i]))
 				) then
@@ -311,7 +313,7 @@ fn CollectObject =
 		else if ((editable_mesh == (classof objects[i])) or 
 			(editable_poly == (classof objects[i])) or
 			(EditablePolyMesh  == (classof objects[i])) or
-			(PolyMeshObject  == (classof objects[i]))				
+			(PolyMeshObject  == (classof objects[i]))
 			) then
 		(			
 			format "collect mesh %\n" objects[i].name
@@ -402,6 +404,12 @@ fn CollectVertex obj =
 (
 	varSetVertex= #()
 	
+	if (dummy == (classof obj)) then
+	(
+		return undefined
+	)
+
+		
 	if (obj.numTVerts >= obj.numVerts) and g_TextureOptimize then
 	(
 		for i=1 to obj.numTVerts do
@@ -436,6 +444,13 @@ fn CollectVertex obj =
 fn CollectNormals obj = 
 (
 	varSetNormal = #()	
+
+	if (dummy == (classof obj)) then
+	(
+		return undefined
+	)
+	
+	
 	for i=1 to obj.numfaces do
 	(
 		local normal = normalize (getFaceNormal obj i)
@@ -448,6 +463,12 @@ fn CollectNormals obj =
 fn CollectIndex obj = 
 (
 	varSetIndex = #()
+	
+	if (dummy == (classof obj)) then
+	(
+		return undefined
+	)
+
 	
 	if (obj.numTVerts >= obj.numVerts) and g_TextureOptimize then
 	(
@@ -475,12 +496,19 @@ fn CollectIndex obj =
 fn WriteVertex obj = 
 (
 	varSetVertice = CollectVertex obj
-
-	format "VERTEX = %\n" varSetVertice.count to:Outfile
-	for i=1 to varSetVertice.count do
+	
+	if (varSetVertice == undefined) then
 	(
-		vtx = (ConvertToD3D_POS varSetVertice[ i]) 
-		format "% % %\n" vtx.x vtx.y vtx.z to:Outfile
+		format "VERTEX = 0\n" to:Outfile
+	)
+	else
+	(
+		format "VERTEX = %\n" varSetVertice.count to:Outfile
+		for i=1 to varSetVertice.count do
+		(
+			vtx = (ConvertToD3D_POS varSetVertice[ i]) 
+			format "% % %\n" vtx.x vtx.y vtx.z to:Outfile
+		)
 	)
 )
 
@@ -489,11 +517,18 @@ fn WriteNormal obj =
 (
 	varSetNormal = CollectNormals obj
 
-	format "FACE-NORMAL = %\n" varSetNormal.count to:Outfile
-	for i=1 to varSetNormal.count do
+	if (varSetNormal == undefined) then
 	(
-		norm = (ConvertToD3D_POS varSetNormal[ i])
-		format "% % %\n" norm.x norm.y norm.z to:Outfile
+		format "FACE-NORMAL = 0\n" to:Outfile
+	)
+	else
+	(
+		format "FACE-NORMAL = %\n" varSetNormal.count to:Outfile
+		for i=1 to varSetNormal.count do
+		(
+			norm = (ConvertToD3D_POS varSetNormal[ i])
+			format "% % %\n" norm.x norm.y norm.z to:Outfile
+		)
 	)
 )
 
@@ -501,12 +536,19 @@ fn WriteNormal obj =
 fn WriteIndex obj = 
 (
 	varSetIndex = CollectIndex obj
-
-	format "INDEX = %\n" varSetIndex.count to:Outfile
-	for i=1 to varSetIndex.count do
+	
+	if (varSetIndex == undefined) then
 	(
-		index = (ConvertToD3D_INDEX varSetIndex[ i])
-		format "% % %\n" (index.x as integer) (index.y as integer) (index.z as integer) to:Outfile
+		format "INDEX = 0\n" to:Outfile
+	)
+	else
+	(
+		format "INDEX = %\n" varSetIndex.count to:Outfile
+		for i=1 to varSetIndex.count do
+		(
+			index = (ConvertToD3D_INDEX varSetIndex[ i])
+			format "% % %\n" (index.x as integer) (index.y as integer) (index.z as integer) to:Outfile
+		)
 	)
 )
 

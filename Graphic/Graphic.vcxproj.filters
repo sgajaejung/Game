@@ -73,6 +73,9 @@
     <ClInclude Include="base\graphicdef.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="Model\character.h">
+      <Filter>model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -135,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="base\dxinit.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\character.cpp">
+      <Filter>model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

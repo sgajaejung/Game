@@ -247,13 +247,11 @@ bool importer::ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawB
 	int vtxSize;
 	fin >> vtx >> eq >> vtxSize;
 
-	int materialId;
-	fin >> materialId;
+	//int materialId;
+	//fin >> materialId;
 
-	if (vtxSize <= 0)
-		return  false;
-
-	rawBone.vertices.reserve(vtxSize + vtxSize/2);
+	if (vtxSize > 0)
+		rawBone.vertices.reserve(vtxSize + vtxSize/2);
 
 	float num1, num2, num3;
 	for (int i = 0; i < vtxSize; i++)
@@ -268,10 +266,10 @@ bool importer::ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawB
 	int faceSize;
 	fin >> idx >> eq >> faceSize;
 
-	rawBone.indices.reserve(faceSize);
-
 	if (faceSize > 0)
 	{
+		rawBone.indices.reserve(faceSize);
+
 		int num1, num2, num3;
 		for (int i = 0; i < faceSize*3; i+=3)
 		{
@@ -286,10 +284,11 @@ bool importer::ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawB
 	string norm;
 	int numNormal;
 	fin >> norm >> eq >> numNormal;
-	rawBone.normals.resize(vtxSize);
 
-	if (numNormal > 0)
+	if ((numNormal > 0) && (vtxSize > 0))
 	{
+		rawBone.normals.resize(vtxSize);
+
 		float num1, num2, num3;
 		for (int i = 0; i < numNormal; i++)
 		{

@@ -74,3 +74,38 @@ void CPanelBase::MoveTreeWindow(CTreeCtrl &treeCtrl, int cx, int cy)
 		treeCtrl.MoveWindow(wr.left, wr.top, cx, wr.Height());
 	}
 }
+
+
+HTREEITEM CPanelBase::FindTree( CTreeCtrl &treeCtrl, const wstring &text )
+{
+	HTREEITEM hRoot = treeCtrl.GetRootItem();
+	vector<HTREEITEM> items;
+	items.reserve(treeCtrl.GetCount());
+
+	items.push_back(hRoot);
+
+	while (!items.empty())
+	{
+		HTREEITEM hItem = items.back();
+		items.pop_back();
+		CString str = treeCtrl.GetItemText(hItem);
+
+		const int idx = str.Find(text.c_str());
+		if (idx >= 0)
+			return hItem;
+
+		HTREEITEM hfirstChild = treeCtrl.GetChildItem(hItem);
+		if (hfirstChild)
+		{
+			items.push_back(hfirstChild);
+
+			while (HTREEITEM hNextItem = treeCtrl.GetNextSiblingItem(hfirstChild))
+			{
+				items.push_back(hNextItem);
+				hfirstChild = hNextItem;
+			}
+		}
+	}
+
+	return NULL;
+}

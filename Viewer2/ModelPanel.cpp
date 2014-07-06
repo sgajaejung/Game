@@ -5,6 +5,8 @@
 #include "Viewer2.h"
 #include "ModelPanel.h"
 #include "afxdialogex.h"
+#include "inputdlg.h"
+
 
 using namespace graphic;
 
@@ -39,6 +41,8 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CModelPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
 	ON_WM_SIZE()
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_PANEL_SEARCH, &CModelPanel::OnPanelSearch)
 END_MESSAGE_MAP()
 
 
@@ -234,4 +238,41 @@ void CModelPanel::OnSize(UINT nType, int cx, int cy)
 	MoveTreeWindow(m_MeshTree, cx, cy);
 	MoveTreeWindow(m_BoneTree, cx, cy);
 	MoveTreeWindow(m_RawBoneTree, cx, cy);
+}
+
+
+void CModelPanel::OnContextMenu(CWnd *pWnd, CPoint )
+{
+	if (&m_BoneTree == pWnd)
+	{
+		CPoint p;
+		GetCursorPos(&p);
+
+		CMenu menu;
+		menu.CreatePopupMenu();
+		menu.AppendMenu(MF_STRING, ID_PANEL_SEARCH, _T("Search"));
+		menu.TrackPopupMenu(TPM_LEFTALIGN, p.x, p.y, this);
+	}
+}
+
+
+void CModelPanel::OnPanelSearch()
+{
+	CInputDlg dialog;
+	dialog.m_label = TEXT("Enter a name:");
+	if (dialog.DoModal() == IDOK) 
+	{
+		const wstring str = dialog.m_value;
+		const HTREEITEM hItem = FindTree(m_BoneTree, str);
+		if (hItem)
+		{
+			m_BoneTree.SelectSetFirstVisible(hItem);
+			m_BoneTree.SelectItem(hItem);
+			m_BoneTree.SetFocus();
+		}
+		else
+		{
+			AfxMessageBox(L"Not Found");
+		}
+	}
 }
