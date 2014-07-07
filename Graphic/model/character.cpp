@@ -20,16 +20,15 @@ cCharacter::~cCharacter()
 
 void cCharacter::LoadWeapon(const string &fileName)
 {
+	RET(!m_bone);
+	m_weaponNode = m_bone->FindBone("dummy_weapon");
+	RET(!m_weaponNode);
+
 	if (!m_weapon)
 		m_weapon = new cModel();
 
 	if (!m_weapon->Create(fileName))
 		return;
-
-	RET(!m_bone);
-
-	m_weaponNode = m_bone->FindBone("dummy_weapon");
-	RET(!m_weaponNode);
 }
 
 
