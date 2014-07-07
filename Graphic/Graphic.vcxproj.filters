@@ -76,6 +76,9 @@
     <ClInclude Include="Model\character.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="model\characteranalyzer.h">
+      <Filter>model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -140,6 +143,9 @@
       <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="Model\character.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="model\characteranalyzer.cpp">
       <Filter>model</Filter>
     </ClCompile>
   </ItemGroup>

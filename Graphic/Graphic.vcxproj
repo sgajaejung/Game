@@ -84,6 +84,7 @@
     <ClInclude Include="model\bonemgr.h" />
     <ClInclude Include="model\bonenode.h" />
     <ClInclude Include="Model\character.h" />
+    <ClInclude Include="model\characteranalyzer.h" />
     <ClInclude Include="model\mesh.h" />
     <ClInclude Include="model\model.h" />
     <ClInclude Include="model\node.h" />
@@ -110,6 +111,7 @@
     <ClCompile Include="model\bonemgr.cpp" />
     <ClCompile Include="model\bonenode.cpp" />
     <ClCompile Include="Model\character.cpp" />
+    <ClCompile Include="model\characteranalyzer.cpp" />
     <ClCompile Include="model\mesh.cpp" />
     <ClCompile Include="model\model.cpp" />
     <ClCompile Include="model\node.cpp" />

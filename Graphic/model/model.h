@@ -20,8 +20,9 @@ namespace graphic
 
 		void SetTM(const Matrix44 &tm);
 		void MultiplyTM(const Matrix44 &tm);
-		const Matrix44& GetTM();
+		const Matrix44& GetTM() const;
 		cBoneMgr* GetBoneMgr();
+		cMesh* FindMesh(const string &meshName);
 
 		// debug ¿ë ÇÔ¼ö.
 		void SetRenderMesh(const bool isRenderMesh);
@@ -41,7 +42,7 @@ namespace graphic
 
 	inline void cModel::SetTM(const Matrix44 &tm) { m_matTM = tm; }
 	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
-	inline const Matrix44& cModel::GetTM() { return m_matTM; }
+	inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
 	inline void cModel::SetRenderMesh(const bool isRenderMesh) { m_isRenderMesh = isRenderMesh; }
 	inline void cModel::SetRenderBone(const bool isRenderBone) { m_isRenderBone = isRenderBone; }

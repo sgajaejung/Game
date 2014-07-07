@@ -119,3 +119,15 @@ void cModel::Clear()
 
 	SAFE_DELETE(m_bone);
 }
+
+
+// 메쉬를 찾아서 리턴한다.
+cMesh* cModel::FindMesh(const string &meshName)
+{
+	BOOST_FOREACH (auto &mesh, m_meshes)
+	{
+		if (mesh->GetName() == meshName)
+			return (cMesh*)mesh;
+	}
+	return NULL;
+}
