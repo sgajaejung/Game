@@ -19,6 +19,16 @@ namespace graphic
 	};
 
 
+	struct sAttribute
+	{
+		int attribId;
+		int faceStart;
+		int faceCount;
+		int vertexStart;
+		int vertexCount;
+	};
+
+
 	struct sWeight
 	{
 		int bone;
@@ -57,9 +67,12 @@ namespace graphic
 		vector<Vector3> normals; // vertex 갯수만큼 저장된다.
 		vector<Vector3> tex;
 		vector<int> indices;
+		vector<sAttribute> attributes;
 		vector<sVertexWeight> weights;
 		sMaterial mtrl;
 		int mtrlId;
+		vector<sMaterial> mtrls;
+		vector<int> mtrlIds;
 	};
 
 

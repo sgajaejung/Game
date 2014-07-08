@@ -87,15 +87,24 @@ void CModelPanel::UpdateMeshInfo()
 		const HTREEITEM hItem = m_MeshTree.InsertItem( str.c_str(), hRoot);
 
 		const wstring name = formatw("Name = %s", mesh.name.c_str());
-		const wstring materialId = formatw("Material Id = %d", mesh.mtrlId);
+		const wstring materialId = formatw("MaterialIds [%d]", mesh.mtrlIds.size());
 		const wstring vertexCount = formatw("Vertex Count = %d", mesh.vertices.size());
 		const wstring faceCount = formatw("Face Count = %d", mesh.indices.size()/3);
 		const wstring normalCount = formatw("Normal Count = %d", mesh.normals.size());
 		const wstring textureCount = formatw("Texture UV Count = %d", mesh.tex.size());
 		const wstring vertexWeightCount = formatw("Vertex Weight Count = %d", mesh.weights.size());
 
+
+
 		m_MeshTree.InsertItem( name.c_str(), hItem);
-		m_MeshTree.InsertItem( materialId.c_str(), hItem);
+
+		const HTREEITEM hMtrlItem = m_MeshTree.InsertItem( materialId.c_str(), hItem);
+		for (u_int k=0; k < mesh.mtrlIds.size(); ++k)
+		{
+			const wstring id = formatw("Material Id = %d", mesh.mtrlIds[ k]);
+			m_MeshTree.InsertItem( id.c_str(), hMtrlItem);
+		}
+
 		m_MeshTree.InsertItem( vertexCount.c_str(), hItem);
 		m_MeshTree.InsertItem( faceCount.c_str(), hItem);
 		m_MeshTree.InsertItem( normalCount.c_str(), hItem);

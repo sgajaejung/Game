@@ -20,6 +20,7 @@ namespace graphic
 
 		sRawMeshGroup* FindModel( const string &fileName );
 		sRawAniGroup* FindAnimation( const string &fileName );
+		cTexture* FindTexture( const string &fileName );
 		void Clear();
 
 		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );

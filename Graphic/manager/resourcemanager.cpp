@@ -34,6 +34,7 @@ sRawMeshGroup* cResourceManager::LoadModel( const string &fileName )
 		return NULL;
 	}
 
+	// 메터리얼 설정.
 	BOOST_FOREACH (auto &mesh, meshes->meshes)
 	{
 		if (mesh.mtrlId >= 0)
@@ -82,6 +83,29 @@ sRawAniGroup* cResourceManager::FindAnimation( const string &fileName )
 {
 	auto it = m_anies.find(fileName);
 	if (m_anies.end() == it)
+		return NULL; // not exist
+	return it->second;
+}
+
+
+// 텍스쳐 로딩.
+cTexture* cResourceManager::LoadTexture( const string &fileName )
+{
+	if (cTexture *p = FindTexture(fileName))
+		return p;
+
+	cTexture *texture = new cTexture();
+	texture->Create(fileName);
+	m_textures[ fileName] = texture;
+	return texture;
+}
+
+
+// 텍스쳐 찾기.
+cTexture* cResourceManager::FindTexture( const string &fileName )
+{
+	auto it = m_textures.find(fileName);
+	if (m_textures.end() == it)
 		return NULL; // not exist
 	return it->second;
 }

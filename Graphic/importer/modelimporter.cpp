@@ -8,10 +8,12 @@ namespace graphic { namespace importer {
 	bool ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
 	bool ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+	bool ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 
 
 	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadMeshInfoV10( std::ifstream &fin, OUT sRawMesh &rawMesh );
+	bool ReadMeshInfoV11( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTextureCoordinate( std::ifstream &fin, const string &fileName, OUT sRawMesh &rawMesh, bool flag=false );
@@ -21,6 +23,8 @@ namespace graphic { namespace importer {
 	bool ReadTM(std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadVertexWeight(std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadMaterial(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl);
+	bool ReadAttributeBuffer(std::ifstream &fin, OUT sRawMesh &rawMesh );
+	bool ReadAttributes(std::ifstream &fin, OUT sAttribute &attribute);
 }}
 
 using namespace graphic;
@@ -45,7 +49,12 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 	else if (version == "EXPORTER_V10")
 	{
 		ReadRawMeshFileV10(fileName, rawMeshes);
-	}	else
+	}	
+	else if (version == "EXPORTER_V11")
+	{
+		ReadRawMeshFileV11(fileName, rawMeshes);
+	}
+	else 
 	{
 		::MessageBoxA(GetRenderer()->GetHwnd(), "지원하지 않는 포맷 입니다.", "Error", MB_OK);
 	}
@@ -65,7 +74,7 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 	string version;
 	fin >> version;
 
-	if ((version == "EXPORTER_V9") || (version == "EXPORTER_V10"))
+	if ((version == "EXPORTER_V9") || (version == "EXPORTER_V10") || (version == "EXPORTER_V11"))
 	{
 		ReadRawAnimationFileV9(fileName, rawAni);
 	}
@@ -174,6 +183,62 @@ bool importer::ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &ra
 }
 
 
+bool importer::ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string meshExporter;
+	fin >> meshExporter;
+
+	if (meshExporter != "MESH_EXPORT")
+		return false;
+
+	string material, eq;
+	int mtrlCount;
+	fin >> material >> eq >> mtrlCount;
+
+	rawMeshes.mtrls.resize(mtrlCount);
+
+	for (int i=0; i < mtrlCount; ++i)
+	{
+		ReadMaterial(fin, fileName, rawMeshes.mtrls[ i]);
+	}
+
+	string geomObject;
+	int geomObjectCount;
+	fin >> geomObject >> eq >> geomObjectCount;
+
+	rawMeshes.meshes.reserve(geomObjectCount);
+
+	for (int i=0; i < geomObjectCount; ++i)
+	{
+		rawMeshes.meshes.push_back( sRawMesh() );
+		ReadMeshInfoV11(fin, rawMeshes.meshes.back());
+
+		// material id 로 material 구조체 초기화.
+		BOOST_FOREACH (auto &mtrlId, rawMeshes.meshes.back().mtrlIds)
+		{
+			rawMeshes.meshes.back().mtrls.push_back( rawMeshes.mtrls[ mtrlId] );
+		}
+
+		ReadVertexIndexNormal(fin, rawMeshes.meshes.back());
+		ReadTextureCoordinate(fin, fileName, rawMeshes.meshes.back(), true);
+		ReadAttributeBuffer(fin, rawMeshes.meshes.back());
+		ReadVertexWeight(fin, rawMeshes.meshes.back());
+	}
+
+	ReadBone(fin, rawMeshes);
+
+	return true;
+}
+
+
 bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies )
 {
 	using namespace std;
@@ -245,6 +310,35 @@ bool importer::ReadMeshInfoV10( std::ifstream &fin, OUT sRawMesh &rawMesh )
 		int materialId;
 		fin >> exp >> eq >> materialId;
 		rawMesh.mtrlId = materialId;
+	}
+
+	return true;
+}
+
+
+// 메쉬정보를 읽어온다.
+// Mesh Name, Material ID
+bool importer::ReadMeshInfoV11( std::ifstream &fin, OUT sRawMesh &rawMesh )
+{
+	string exp, eq;
+	fin >> exp >> eq;
+
+	string name;
+	std::getline(fin, name);
+	rawMesh.name = common::trim(name);
+
+	// 멀티 텍스쳐 처리.
+	int materialCount;
+	fin >> exp >> eq >> materialCount;
+
+	// 일단 텍스쳐는 하나만 등록할수 있게 한다.
+	rawMesh.mtrlId = 0;
+	rawMesh.mtrlIds.reserve(materialCount);
+	for (int i=0; i < materialCount; ++i)
+	{
+		int materialId;
+		fin >> exp >> eq >> materialId;
+		rawMesh.mtrlIds.push_back( materialId );
 	}
 
 	return true;
@@ -749,4 +843,36 @@ RESOURCE_TYPE::TYPE importer::GetFileKind( const string &fileName )
 	
 	// exception
 	return RESOURCE_TYPE::NONE;
+}
+
+
+bool importer::ReadAttributeBuffer(std::ifstream &fin, OUT sRawMesh &rawMesh )
+{
+	string id, eq;
+	int attributeCount;
+
+	fin >> id >> eq >> attributeCount;
+
+	for (int i=0; i < attributeCount; ++i)
+	{
+		rawMesh.attributes.push_back( sAttribute() );
+		ReadAttributes(fin, rawMesh.attributes.back());
+	}
+
+	return true;
+}
+
+
+// 속성 정보 읽음.
+bool importer::ReadAttributes(std::ifstream &fin, OUT sAttribute &attribute)
+{
+	string id, eq;
+
+	fin >> id >> eq >> attribute.attribId;
+	fin >> id >> eq >> attribute.faceStart;
+	fin >> id >> eq >> attribute.faceCount;
+	fin >> id >> eq >> attribute.vertexStart;
+	fin >> id >> eq >> attribute.vertexCount;
+
+	return true;
 }

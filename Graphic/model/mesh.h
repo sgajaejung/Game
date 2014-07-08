@@ -22,12 +22,15 @@ namespace graphic
 			const vector<Vector3> &normals, 
 			const vector<Vector3> &tex,
 			const vector<int> &indices );
+		void CreateMaterials(const sRawMesh &rawMesh);
+		void CreateAttributes(const sRawMesh &rawMesh);
 
 
 	protected:
 		bool m_isSkinned;
-		cMaterial m_mtrl;
-		cTexture m_texture;
+		vector<cMaterial> m_mtrls;
+		vector<cTexture*>m_textures;  // reference
+		vector<sAttribute> m_attributes;
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;
 	};
