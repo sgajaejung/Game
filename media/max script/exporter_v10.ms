@@ -344,14 +344,29 @@ fn GetMtrlId obj =
 			)
 		)
 	)
-	else if classof obj.material == multimaterial then
-	(
-		
-		
-	)	
 	
 	return 0
 )
+
+
+fn GetMtrlIdFromMaterial mtrl =
+(
+	if classOf mtrl == UndefinedClass then
+	(
+		return 0
+	)
+	
+	for i=1 to g_varSetMaterials.count do
+	(
+		if mtrl == g_varSetMaterials[i] then
+		(
+			return (i as integer)
+		)
+	)
+	
+	return 0
+)
+
 
 fn GetMtrlCount obj = 
 (
@@ -603,7 +618,25 @@ fn WriteMeshInfo obj =
 (
 	format "MESH_NAME = %\n" obj.name to:Outfile
 	format "MATERIAL_COUNT = %\n" (GetMtrlCount obj) to:Outfile
-	format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile	
+
+	if (1 == obj.material.count) then
+	(
+		
+		format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile
+		
+	)
+	else
+	(
+		
+		for i=1 to obj.material.count do
+		(
+
+			format "MATERIAL_ID = %\n" ((GetMtrlIdFromMaterial obj.material[ i])-1) to:Outfile
+
+		)
+		
+	)
+
 )
 
 
