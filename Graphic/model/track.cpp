@@ -188,7 +188,7 @@ float cTrack::GetAlpha(float f1, float f2, float frame ) const
 {
 	if (FLOAT_EQ(f1, f2))
 		return 0;
-	return (frame-f1) / (f2-f1); 
+	return min(1, (frame-f1) / (f2-f1)); 
 }
 
 

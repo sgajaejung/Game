@@ -7,9 +7,11 @@ namespace graphic { namespace importer {
 
 	bool ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
+	bool ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 
 
 	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
+	bool ReadMeshInfoV10( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTextureCoordinate( std::ifstream &fin, const string &fileName, OUT sRawMesh &rawMesh, bool flag=false );
@@ -40,7 +42,10 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 	{
 		ReadRawMeshFileV9(fileName, rawMeshes);
 	}
-	else
+	else if (version == "EXPORTER_V10")
+	{
+		ReadRawMeshFileV10(fileName, rawMeshes);
+	}	else
 	{
 		::MessageBoxA(GetRenderer()->GetHwnd(), "지원하지 않는 포맷 입니다.", "Error", MB_OK);
 	}
@@ -60,7 +65,7 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 	string version;
 	fin >> version;
 
-	if (version == "EXPORTER_V9")
+	if ((version == "EXPORTER_V9") || (version == "EXPORTER_V10"))
 	{
 		ReadRawAnimationFileV9(fileName, rawAni);
 	}
@@ -121,6 +126,54 @@ bool importer::ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &raw
 }
 
 
+bool importer::ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string meshExporter;
+	fin >> meshExporter;
+
+	if (meshExporter != "MESH_EXPORT")
+		return false;
+
+	string material, eq;
+	int mtrlCount;
+	fin >> material >> eq >> mtrlCount;
+
+	rawMeshes.mtrls.resize(mtrlCount);
+
+	for (int i=0; i < mtrlCount; ++i)
+	{
+		ReadMaterial(fin, fileName, rawMeshes.mtrls[ i]);
+	}
+
+	string geomObject;
+	int geomObjectCount;
+	fin >> geomObject >> eq >> geomObjectCount;
+
+	rawMeshes.meshes.reserve(geomObjectCount);
+
+	for (int i=0; i < geomObjectCount; ++i)
+	{
+		rawMeshes.meshes.push_back( sRawMesh() );
+		ReadMeshInfoV10(fin, rawMeshes.meshes.back());
+		ReadVertexIndexNormal(fin, rawMeshes.meshes.back());
+		ReadTextureCoordinate(fin, fileName, rawMeshes.meshes.back(), true);
+		ReadVertexWeight(fin, rawMeshes.meshes.back());
+	}
+
+	ReadBone(fin, rawMeshes);
+
+	return true;
+}
+
+
 bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies )
 {
 	using namespace std;
@@ -166,6 +219,33 @@ bool importer::ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh )
 	fin >> exp >> eq >> materialId;
 
 	rawMesh.mtrlId = materialId;
+
+	return true;
+}
+
+
+// 메쉬정보를 읽어온다.
+// Mesh Name, Material ID
+bool importer::ReadMeshInfoV10( std::ifstream &fin, OUT sRawMesh &rawMesh )
+{
+	string exp, eq;
+	fin >> exp >> eq;
+
+	string name;
+	std::getline(fin, name);
+	rawMesh.name = common::trim(name);
+
+	// 멀티 텍스쳐 처리.
+	int materialCount;
+	fin >> exp >> eq >> materialCount;
+
+	// 일단 텍스쳐는 하나만 등록할수 있게 한다.
+	for (int i=0; i < materialCount; ++i)
+	{
+		int materialId;
+		fin >> exp >> eq >> materialId;
+		rawMesh.mtrlId = materialId;
+	}
 
 	return true;
 }
