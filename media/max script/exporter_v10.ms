@@ -1,4 +1,7 @@
 
+-- version 10
+-- multimaterial write
+
 global Outfile -- ¿˙¿Âµ… file
 global g_MeshFilePath -- mesh file path
 global g_AniFilePath -- animation file path
@@ -350,6 +353,24 @@ fn GetMtrlId obj =
 	return 0
 )
 
+fn GetMtrlCount obj = 
+(
+	if classOf obj.material == UndefinedClass then
+	(
+		return 0
+	)
+	
+	if classOf obj.material == Standardmaterial then
+	(
+		return 1	
+	)
+	else if classof objects[i].material == multimaterial then
+	(
+		return (objects[i].material.count as integer)
+	)
+	return 0	
+)
+
 
 fn CollectMaterial = 
 (
@@ -581,6 +602,7 @@ fn WriteTVertTVFace obj =
 fn WriteMeshInfo obj = 
 (
 	format "MESH_NAME = %\n" obj.name to:Outfile
+	format "MATERIAL_COUNT = %\n" (GetMtrlCount obj) to:Outfile
 	format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile	
 )
 
@@ -885,7 +907,7 @@ fn ExporterStart =
 	(
 		Outfile = createfile g_MeshFilePath
 		
-		format "EXPORTER_V9\n" to:Outfile
+		format "EXPORTER_V10\n" to:Outfile
 		
 		format "MESH_EXPORT\n" to:Outfile
 		
@@ -965,7 +987,7 @@ fn ExporterStart =
 	(
 		Outfile = createfile g_AniFilePath
 		
-		format "EXPORTER_V9\n" to:Outfile
+		format "EXPORTER_V10\n" to:Outfile
 		
 		format "ANIMATION_EXPORT\n" to:Outfile
 		
