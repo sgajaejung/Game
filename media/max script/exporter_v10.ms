@@ -344,7 +344,7 @@ fn GetMtrlId obj =
 			)
 		)
 	)
-	else if classof objects[i].material == multimaterial then
+	else if classof obj.material == multimaterial then
 	(
 		
 		
@@ -364,9 +364,9 @@ fn GetMtrlCount obj =
 	(
 		return 1	
 	)
-	else if classof objects[i].material == multimaterial then
+	else if classof obj.material == multimaterial then
 	(
-		return (objects[i].material.count as integer)
+		return (obj.material.count as integer)
 	)
 	return 0	
 )
