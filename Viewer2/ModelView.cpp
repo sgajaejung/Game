@@ -13,6 +13,7 @@ CModelView::CModelView()
 {
 	m_LButtonDown = false;
 	m_RButtonDown = false;
+	m_MButtonDown = false;
 	
 }
 
@@ -28,6 +29,8 @@ BEGIN_MESSAGE_MAP(CModelView, CView)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
+	ON_WM_MBUTTONDOWN()
+	ON_WM_MBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -133,6 +136,7 @@ void CModelView::UpdateCamera()
 
 void CModelView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	SetCapture();
 	SetFocus();
 	m_LButtonDown = true;
 	m_curPos = point;
@@ -142,6 +146,7 @@ void CModelView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CModelView::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	ReleaseCapture();
 	m_LButtonDown = false;
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -180,6 +185,26 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 
 		UpdateCamera();
 	}
+	else if (m_MButtonDown)
+	{
+		CPoint pos = point  - m_curPos;
+		m_curPos = point;
+
+		Vector3 v = m_lookAtPos - m_camPos;
+		v.Normalize();
+
+		Vector3 up = Vector3(0,1,0);
+		Vector3 right = up.CrossProduct(v);
+		right.Normalize();
+
+		m_lookAtPos += right * pos.x * -0.05f;
+		m_camPos += right * pos.x * -0.05f;
+		m_lookAtPos += up * pos.y * 0.05f;
+		m_camPos += up * pos.y * 0.05f;
+		
+		UpdateCamera();
+	}
+
 	CView::OnMouseMove(nFlags, point);
 }
 
@@ -207,6 +232,7 @@ BOOL CModelView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CModelView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	SetFocus();
+	SetCapture();
 	m_RButtonDown = true;
 	m_curPos = point;
 	CView::OnRButtonDown(nFlags, point);
@@ -215,8 +241,27 @@ void CModelView::OnRButtonDown(UINT nFlags, CPoint point)
 
 void CModelView::OnRButtonUp(UINT nFlags, CPoint point)
 {
+	ReleaseCapture();
 	m_RButtonDown = false;
 	CView::OnRButtonUp(nFlags, point);
+}
+
+
+void CModelView::OnMButtonDown(UINT nFlags, CPoint point)
+{
+	SetFocus();
+	SetCapture();
+	m_MButtonDown = true;
+	m_curPos = point;
+	CView::OnMButtonDown(nFlags, point);
+}
+
+
+void CModelView::OnMButtonUp(UINT nFlags, CPoint point)
+{
+	ReleaseCapture();
+	m_MButtonDown = false;
+	CView::OnMButtonUp(nFlags, point);
 }
 
 
@@ -229,7 +274,7 @@ bool CModelView::LoadFile(const string &fileName)
 	graphic::cCharacter *character = cController::Get()->GetCharacter();
 	character->LoadWeapon( "../media/weapon.dat");
 
-
 	return false;
 }
+
 

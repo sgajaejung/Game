@@ -25,6 +25,7 @@ protected:
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;
+	bool m_MButtonDown;
 	CPoint m_curPos;
 
 
@@ -45,4 +46,6 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 };
