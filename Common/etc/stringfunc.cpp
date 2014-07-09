@@ -13,7 +13,9 @@ void common::replaceAll(std::string& str, const std::string& from, const std::st
 	}
 }
 
-
+// "  skdfjskdjf  "
+// "$$$skdfjskdjf$$$"
+// "skdfjskdjf"
 string& common::trim(string &str)
 {
 	for (int i=0; i < (int)str.length(); ++i)
