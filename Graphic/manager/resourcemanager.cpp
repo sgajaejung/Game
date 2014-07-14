@@ -89,13 +89,13 @@ sRawAniGroup* cResourceManager::FindAnimation( const string &fileName )
 
 
 // 텍스쳐 로딩.
-cTexture* cResourceManager::LoadTexture( const string &fileName )
+cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSizePow2 )//isSizePow2=true
 {
 	if (cTexture *p = FindTexture(fileName))
 		return p;
 
 	cTexture *texture = new cTexture();
-	texture->Create(fileName);
+	texture->Create(fileName, isSizePow2);
 	m_textures[ fileName] = texture;
 	return texture;
 }

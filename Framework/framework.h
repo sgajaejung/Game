@@ -22,3 +22,12 @@
 	{\
 		framework::FrameWorkWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);\
 	}
+
+
+
+// Include
+#include "ui/uidef.h"
+#include "ui/event.h"
+#include "ui/eventhandler.h"
+#include "ui/window.h"
+#include "ui/button.h"

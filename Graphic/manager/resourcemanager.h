@@ -16,7 +16,7 @@ namespace graphic
 		
 		sRawMeshGroup* LoadModel( const string &fileName );
 		sRawAniGroup* LoadAnimation( const string &fileName );
-		cTexture* LoadTexture( const string &fileName );
+		cTexture* LoadTexture( const string &fileName, const bool isSizePow2=true );
 
 		sRawMeshGroup* FindModel( const string &fileName );
 		sRawAniGroup* FindAnimation( const string &fileName );

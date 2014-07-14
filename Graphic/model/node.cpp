@@ -85,6 +85,16 @@ bool cNode::RemoveNode(const int id)
 }
 
 
+// 자식노드의 Render 를 호출한다.
+void cNode::Render(const Matrix44 &parentTm)
+{
+	BOOST_FOREACH (auto node, m_children)
+	{
+		node->Render(parentTm);
+	}
+}
+
+
 // 모든 노드를 제거한다.
 void cNode::Clear()
 {

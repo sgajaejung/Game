@@ -59,3 +59,4 @@ using std::wstringstream;
 #include "etc/stringfunc.h"
 #include "etc/dbg.h"
 #include "etc/observer.h"
+#include "etc/rect.h"

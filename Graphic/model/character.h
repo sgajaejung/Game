@@ -10,6 +10,7 @@ namespace graphic
 		cCharacter();
 		virtual ~cCharacter();
 
+		virtual bool Create(const string &modelName) override;
 		void LoadWeapon(const string &fileName);
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render() override;

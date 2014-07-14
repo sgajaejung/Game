@@ -79,6 +79,9 @@
     <ClInclude Include="model\characteranalyzer.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="sprite\sprite.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -148,6 +151,9 @@
     <ClCompile Include="model\characteranalyzer.cpp">
       <Filter>model</Filter>
     </ClCompile>
+    <ClCompile Include="sprite\sprite.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="model">
@@ -161,6 +167,9 @@
     </Filter>
     <Filter Include="importer">
       <UniqueIdentifier>{bb4cb441-0f33-418f-a38f-2d1a634991c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sprite">
+      <UniqueIdentifier>{129f7791-e3a8-4c0e-b8fa-a42d872d79da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

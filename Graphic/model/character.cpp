@@ -18,8 +18,17 @@ cCharacter::~cCharacter()
 }
 
 
+bool cCharacter::Create(const string &modelName)
+{
+	m_weaponNode = NULL;
+	return cModel::Create(modelName);
+}
+
+
 void cCharacter::LoadWeapon(const string &fileName)
 {
+	SAFE_DELETE(m_weapon);
+
 	RET(!m_bone);
 	m_weaponNode = m_bone->FindBone("dummy_weapon");
 	RET(!m_weaponNode);

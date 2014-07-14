@@ -14,7 +14,6 @@ namespace graphic
 		const string& GetName() const;
 		int GetId() const;
 		cNode* GetParent();
-		int GetMaterialId() const;
 
 		const Matrix44& GetTM() const;
 		const Matrix44& GetLocalTM() const;
@@ -29,16 +28,15 @@ namespace graphic
 		void Clear();
 
 		virtual bool Move(const float elapseTime) {return true;}
-		virtual void Render(const Matrix44 &parentTm) {}
+		virtual void Render(const Matrix44 &parentTm);
 
 
 	protected:
-		string m_name;
 		int m_id;
+		string m_name;
 		cNode *m_parent;
 		vector<cNode*> m_children;
 		NODE_TYPE m_nodeType;
-		int m_materialId;
 		Matrix44 m_localTM;
 		Matrix44 m_aniTM;
 		Matrix44 m_TM;
@@ -48,7 +46,6 @@ namespace graphic
 	inline const string& cNode::GetName() const { return m_name; }
 	inline int cNode::GetId() const { return m_id; }
 	inline cNode* cNode::GetParent() { return m_parent; }
-	inline int cNode::GetMaterialId() const { return m_materialId; }
 	inline const Matrix44& cNode::GetTM() const { return m_TM; }
 	inline void cNode::SetTM(const Matrix44 &tm) { m_TM = tm; }
 	inline const Matrix44& cNode::GetLocalTM() const { return m_localTM; }

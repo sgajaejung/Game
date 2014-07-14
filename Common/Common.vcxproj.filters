@@ -43,6 +43,9 @@
     <ClInclude Include="etc\observer.h">
       <Filter>Etc</Filter>
     </ClInclude>
+    <ClInclude Include="etc\rect.h">
+      <Filter>Etc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -71,6 +74,9 @@
       <Filter>Etc</Filter>
     </ClCompile>
     <ClCompile Include="etc\observer.cpp">
+      <Filter>Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="etc\rect.cpp">
       <Filter>Etc</Filter>
     </ClCompile>
   </ItemGroup>

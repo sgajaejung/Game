@@ -32,9 +32,10 @@ using namespace common;
 #include "model/bonenode.h"
 #include "model/character.h"
 
+#include "sprite/sprite.h"
+
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"
-
 
 #pragma comment( lib, "d3d9.lib" )
 #pragma comment( lib, "d3dx9.lib" )
