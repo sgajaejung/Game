@@ -16,6 +16,5 @@ namespace framework
 
 	protected:
 		bool DispatchEvent( cEvent &event );
-		const Vector3& GetAccPos();
 	};
 }
