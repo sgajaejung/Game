@@ -81,20 +81,7 @@ bool cViewer::OnInit()
 
 	m_scene = new cTestScene(m_sprite);
 	m_scene->SetPos(Vector3(100,100,0));
-	framework::cButton *btn1 = new framework::cButton(m_sprite, 1);
-	btn1->Create("button1.png");
-	m_scene->InsertChild(btn1);
 
-	framework::cButton *btn2 = new framework::cButton(m_sprite, 2);
-	btn2->Create("button2.png");
-	btn2->SetScale(Vector3(2,2,0));
-	btn2->SetPos(Vector3(200,0,0));
-	m_scene->InsertChild(btn2);
-
-	framework::cButton *btn3 = new framework::cButton(m_sprite, 3);
-	btn3->Create("button1.png");
-	btn3->SetPos(Vector3(200,0,0));
-	m_scene->InsertChild(btn3);
 
 
 

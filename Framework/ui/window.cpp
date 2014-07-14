@@ -18,7 +18,6 @@ cWindow::~cWindow()
 // 메세지 이벤트 처리.
 bool cWindow::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 {
-
 	// child window message process
 	BOOST_REVERSE_FOREACH (auto &node, m_children)
 	{
@@ -28,7 +27,7 @@ bool cWindow::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -40,7 +39,7 @@ bool cWindow::DispatchEvent( cEvent &event )
 	if (!event.IsSkip() && m_parent) // 이벤트가 스킵되지 않았다면 부모로 올라가서 실행한다.
 	{
 		if (cWindow *parent = dynamic_cast<cWindow*>(m_parent))
-			parent->SearchEventTable(event);
+			parent->DispatchEvent(event);
 	}
 	return true;
 }
