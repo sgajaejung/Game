@@ -9,6 +9,7 @@ cTestScene::cTestScene(LPD3DXSPRITE sprite) :
 {
 	Create("The-Waters-Edge.jpg");
 
+	EventConnect(this, framework::EVENT::BUTTON_CLICK, 1, (framework::EventFunction)&cTestScene::Button1Click);
 }
 
 cTestScene::~cTestScene()
@@ -16,3 +17,8 @@ cTestScene::~cTestScene()
 
 }
 
+
+void cTestScene::Button1Click(framework::cEvent &event)
+{
+
+}
