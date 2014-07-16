@@ -338,7 +338,8 @@ bool importer::ReadMeshInfoV11( std::ifstream &fin, OUT sRawMesh &rawMesh )
 	{
 		int materialId;
 		fin >> exp >> eq >> materialId;
-		rawMesh.mtrlIds.push_back( materialId );
+		if (materialId >= 0)
+			rawMesh.mtrlIds.push_back( materialId );
 	}
 
 	return true;
