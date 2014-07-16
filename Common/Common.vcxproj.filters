@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="math\box.h">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="math\Math.h">
       <Filter>math</Filter>
     </ClInclude>
@@ -49,9 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="math\box.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="math\matrix44.cpp">
       <Filter>math</Filter>
     </ClCompile>

@@ -1,10 +1,8 @@
 // box
 #pragma once
 
-namespace common
+namespace graphic
 {
-	struct Vector3;
-	struct Matrix44;
 	struct Box
 	{
 		Box();

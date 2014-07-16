@@ -7,6 +7,7 @@ using namespace framework;
 
 cWindow::cWindow(LPD3DXSPRITE sprite, const int id, const string &name) : // name="window"
 	graphic::cSprite(sprite, id, name)
+,	m_isVisible(true)
 {
 }
 

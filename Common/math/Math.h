@@ -19,6 +19,5 @@ using std::vector;
 #include "vector3.h"
 #include "vector4.h"
 #include "matrix44.h"
-#include "box.h"
 #include "quaternion.h"
 

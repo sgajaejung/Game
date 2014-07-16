@@ -11,6 +11,8 @@ namespace graphic
 		virtual ~cSkinnedMesh();
 
 		virtual void Render(const Matrix44 &parentTm) override;
+		
+		void CreateBoundingBox(const sRawMeshGroup &rawMeshes);
 
 
 	protected:

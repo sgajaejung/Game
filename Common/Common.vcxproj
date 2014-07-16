@@ -75,7 +75,6 @@
     <ClInclude Include="etc\rect.h" />
     <ClInclude Include="etc\singleton.h" />
     <ClInclude Include="etc\stringfunc.h" />
-    <ClInclude Include="math\box.h" />
     <ClInclude Include="math\Math.h" />
     <ClInclude Include="math\matrix44.h" />
     <ClInclude Include="math\quaternion.h" />
@@ -91,7 +90,6 @@
     <ClCompile Include="etc\observer.cpp" />
     <ClCompile Include="etc\rect.cpp" />
     <ClCompile Include="etc\stringfunc.cpp" />
-    <ClCompile Include="math\box.cpp" />
     <ClCompile Include="math\matrix44.cpp" />
     <ClCompile Include="math\quaternion.cpp" />
     <ClCompile Include="math\vector3.cpp" />

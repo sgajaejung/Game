@@ -16,5 +16,7 @@ namespace framework
 
 	protected:
 		bool DispatchEvent( cEvent &event );
+
+		bool m_isVisible;
 	};
 }

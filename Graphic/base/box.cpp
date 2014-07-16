@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "math.h"
 
-using namespace common;
+using namespace graphic;
 
 
 Box::Box() : m_box(8)
@@ -131,11 +131,11 @@ float Box::GetSize() const
 //-----------------------------------------------------------------------------//
 void Box::Render() const
 {
-	//g_pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-	//g_pDevice->SetFVF( D3DFVF_XYZ );
-	//g_pDevice->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_matWorld );
-	//g_pDevice->DrawPrimitiveUP( D3DPT_LINESTRIP, 7, m_Box, sizeof(Vector3) );	
-	//g_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	GetDevice()->SetFVF( D3DFVF_XYZ );
+	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_matWorld );
+	GetDevice()->DrawPrimitiveUP( D3DPT_LINESTRIP, 7, &m_box[0], sizeof(Vector3) );	
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
 }
 //-----------------------------------------------------------------------------//
 // 계층구조출력시 사용된다.

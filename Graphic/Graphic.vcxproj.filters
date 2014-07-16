@@ -82,6 +82,15 @@
     <ClInclude Include="sprite\sprite.h">
       <Filter>sprite</Filter>
     </ClInclude>
+    <ClInclude Include="base\line.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\box.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\cube.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -153,6 +162,15 @@
     </ClCompile>
     <ClCompile Include="sprite\sprite.cpp">
       <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="base\line.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\box.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\cube.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
