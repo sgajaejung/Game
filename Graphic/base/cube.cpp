@@ -11,7 +11,8 @@ cCube::cCube()
 
 cCube::cCube(const Vector3 &vMin, const Vector3 &vMax )
 {
-	SetCube(Vector3(-1,-1,-1), Vector3(1,1,1));
+	InitCube();
+	SetCube(vMin, vMax);
 }
 
 

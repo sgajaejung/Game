@@ -12,10 +12,17 @@ namespace graphic
 
 		void LoadAnimation( const sRawAni &rawAni );
 		virtual bool Move(const float elapseTime) override;
+		virtual void Render(const Matrix44 &parentTm) override;
+
+		void CreateBoundingBox(OUT cCube &out);
+		void RenderBoundingBox(const Matrix44 &tm);
 
 
 	private:
-		// animation
+		// 경계박스
+		cCube m_boundingBox;
+
+		// 애니메이션
 		cTrack *m_track;
 		int m_aniStart;
 		int m_aniEnd;

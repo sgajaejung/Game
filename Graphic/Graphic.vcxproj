@@ -80,6 +80,9 @@
     <ClInclude Include="base\texture.h" />
     <ClInclude Include="base\vertexbuffer.h" />
     <ClInclude Include="base\vertexformat.h" />
+    <ClInclude Include="collision\boundingbox.h" />
+    <ClInclude Include="collision\collision.h" />
+    <ClInclude Include="collision\collisionmanager.h" />
     <ClInclude Include="graphic.h" />
     <ClInclude Include="importer\modelimporter.h" />
     <ClInclude Include="manager\Renderer.h" />
@@ -112,6 +115,8 @@
     <ClCompile Include="base\material.cpp" />
     <ClCompile Include="base\texture.cpp" />
     <ClCompile Include="base\vertexbuffer.cpp" />
+    <ClCompile Include="collision\boundingbox.cpp" />
+    <ClCompile Include="collision\collisionmanager.cpp" />
     <ClCompile Include="importer\modelimporter.cpp" />
     <ClCompile Include="manager\Renderer.cpp" />
     <ClCompile Include="manager\resourcemanager.cpp" />

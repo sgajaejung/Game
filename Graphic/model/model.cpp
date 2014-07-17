@@ -15,6 +15,7 @@ cModel::cModel() :
 	m_bone(NULL)
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
+,	m_isRenderBoundingBox(true)
 {
 	
 }
@@ -57,6 +58,9 @@ bool cModel::Create(const string &modelName)
 		if (p)
 			m_meshes.push_back(p);
 	}
+
+	//if (!isSkinnedMesh && !m_meshes.empty())
+	//	m_meshes[ 0]->CreateBoundingBox(m_boundingBox);		
 
 	return true;
 }
@@ -107,7 +111,7 @@ void cModel::Render()
 	if (m_isRenderBone && m_bone)
 		m_bone->Render(m_matTM);
 
-	if (m_bone)
+	if (m_bone && m_isRenderBoundingBox)
 		m_bone->RenderBoundingBox(m_matTM);
 }
 
@@ -134,4 +138,20 @@ cMesh* cModel::FindMesh(const string &meshName)
 			return (cMesh*)mesh;
 	}
 	return NULL;
+}
+
+
+void cModel::SetRenderMesh(const bool isRenderMesh) 
+{ 
+	m_isRenderMesh = isRenderMesh; 
+}
+
+void cModel::SetRenderBone(const bool isRenderBone) 
+{ 
+	m_isRenderBone = isRenderBone; 
+}
+
+void cModel::SetRenderBoundingBox(const bool isRenderBoundingBox)
+{
+	m_isRenderBoundingBox = isRenderBoundingBox;
 }

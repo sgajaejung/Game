@@ -48,6 +48,7 @@ using std::string;
 using std::wstring;
 using std::vector;
 using std::map;
+using std::list;
 using std::stringstream;
 using std::wstringstream;
 

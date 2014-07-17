@@ -37,6 +37,10 @@ using namespace common;
 
 #include "sprite/sprite.h"
 
+#include "collision/boundingbox.h"
+#include "collision/collision.h"
+#include "collision/collisionmanager.h"
+
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"
 

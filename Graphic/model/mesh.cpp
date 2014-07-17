@@ -135,9 +135,3 @@ void cMesh::Render(const Matrix44 &parentTm)
 	}
 }
 
-
-// Render Bounding Box
-void cMesh::RenderBBox()
-{
-
-}

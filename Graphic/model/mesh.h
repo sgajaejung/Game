@@ -14,8 +14,7 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
-		void RenderBBox();
-
+		
 
 	protected:
 		void CreateMesh( const vector<Vector3> &vertices, 

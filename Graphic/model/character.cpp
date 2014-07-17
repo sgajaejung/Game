@@ -47,7 +47,7 @@ bool cCharacter::Move(const float elapseTime)
 	
 	if (m_weapon && m_weaponNode)
 	{
-		Matrix44 mat = m_weaponNode->GetAccTM();
+		const Matrix44 mat = m_weaponNode->GetAccTM();
 		m_weapon->SetTM(mat * m_matTM);
 		m_weapon->Move(elapseTime);
 	}

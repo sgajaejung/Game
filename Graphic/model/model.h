@@ -27,16 +27,19 @@ namespace graphic
 		// debug 용 함수.
 		void SetRenderMesh(const bool isRenderMesh);
 		void SetRenderBone(const bool isRenderBone);
+		void SetRenderBoundingBox(const bool isRenderBoundingBox);
 
 
 	protected:
-		vector<cNode*> m_meshes;
+		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;
 		Matrix44 m_matTM;
+		cCube m_boundingBox; // only rigid mesh model
 
 		// debug 용.
 		bool m_isRenderMesh; // default = true
 		bool m_isRenderBone; // default = false
+		bool m_isRenderBoundingBox; // default = true
 	};
 
 
@@ -44,6 +47,6 @@ namespace graphic
 	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
 	inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
-	inline void cModel::SetRenderMesh(const bool isRenderMesh) { m_isRenderMesh = isRenderMesh; }
-	inline void cModel::SetRenderBone(const bool isRenderBone) { m_isRenderBone = isRenderBone; }
+	//inline void cModel::SetRenderMesh(const bool isRenderMesh) { m_isRenderMesh = isRenderMesh; }
+	//inline void cModel::SetRenderBone(const bool isRenderBone) { m_isRenderBone = isRenderBone; }
 }

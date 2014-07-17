@@ -91,6 +91,15 @@
     <ClInclude Include="base\cube.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="collision\collision.h">
+      <Filter>collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collision\collisionmanager.h">
+      <Filter>collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collision\boundingbox.h">
+      <Filter>collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -172,6 +181,12 @@
     <ClCompile Include="base\cube.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="collision\collisionmanager.cpp">
+      <Filter>collision</Filter>
+    </ClCompile>
+    <ClCompile Include="collision\boundingbox.cpp">
+      <Filter>collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="model">
@@ -188,6 +203,9 @@
     </Filter>
     <Filter Include="sprite">
       <UniqueIdentifier>{129f7791-e3a8-4c0e-b8fa-a42d872d79da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="collision">
+      <UniqueIdentifier>{da54e64d-e3e6-4ae6-b8d9-8e2a500dd94e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
