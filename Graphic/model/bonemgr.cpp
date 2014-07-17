@@ -31,6 +31,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 			m_bones[ parentId]->InsertChild( bone );
 	}
 
+	CreateBoundingBox(rawMeshes);
 }
 
 cBoneMgr::~cBoneMgr()
@@ -86,6 +87,14 @@ void cBoneMgr::Render(const Matrix44 &parentTm)
 }
 
 
+// 경계박스 출력.
+void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
+{
+	for (int i=0; i < (int)m_boundingBox.size(); ++i)
+		m_boundingBox[ i].Render( m_palette[ i] * parentTm);
+}
+
+
 // BoneNode 찾아서 리턴.
 cBoneNode* cBoneMgr::FindBone(const int id)
 {
@@ -106,4 +115,107 @@ void cBoneMgr::Clear()
 {
 	SAFE_DELETE(m_root);
 	m_bones.clear();
+}
+
+
+// 경계박스 생성.
+void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
+{
+	RET(!m_root);
+
+	const int boneCount = rawMeshes.bones.size();
+	vector<sMinMax> boundingBox(boneCount);
+	vector<Matrix44> boneInvers(boneCount);
+	for (int i=0; i < boneCount; ++i)
+	{
+		boneInvers[ i] = rawMeshes.bones[ i].worldTm.Inverse();
+		boundingBox[ i] = sMinMax();
+	}
+
+
+	// 특정 뼈대들은 경계박스를 하나로 합친다.
+	map<int, int> boneIndices;
+	SetBoundingBoxIndex(m_root, boneIndices);
+
+
+	BOOST_FOREACH (const sRawMesh &mesh, rawMeshes.meshes)
+	{
+		BOOST_FOREACH (const sVertexWeight &weight, mesh.weights)
+		{
+			const int vtxIdx = weight.vtxIdx;
+
+			for( int k=0; k < weight.size; ++k )
+			{
+				const sWeight *w = &weight.w[ k];
+				const Vector3 pos = mesh.vertices[ vtxIdx] * boneInvers[ w->bone];
+
+				const int boneIdx = boneIndices[ w->bone];
+
+				if (boundingBox[ boneIdx].Min.x > pos.x)
+					boundingBox[ boneIdx].Min.x = pos.x;
+				if (boundingBox[ boneIdx].Min.y > pos.y)
+					boundingBox[ boneIdx].Min.y = pos.y;
+				if (boundingBox[ boneIdx].Min.z > pos.z)
+					boundingBox[ boneIdx].Min.z = pos.z;
+
+				if (boundingBox[ boneIdx].Max.x < pos.x)
+					boundingBox[ boneIdx].Max.x = pos.x;
+				if (boundingBox[ boneIdx].Max.y < pos.y)
+					boundingBox[ boneIdx].Max.y = pos.y;
+				if (boundingBox[ boneIdx].Max.z < pos.z)
+					boundingBox[ boneIdx].Max.z = pos.z;
+			}
+		}
+	}
+
+
+	m_boundingBox.resize(boneCount);
+	for (int i=0; i < boneCount; ++i)
+	{
+		const Vector3 wMin = boundingBox[ i].Min;
+		const Vector3 wMax = boundingBox[ i].Max;
+
+		if (boundingBox[ i].Min.IsEmpty() && 
+			boundingBox[ i].Max.IsEmpty())
+			continue;
+
+		// 월드 좌표공간으로 이동시킨다. palette 를 적용하기 위해서는 월드공간에 있어야 함.
+		m_boundingBox[ i].SetCube( wMin, wMax );
+		m_boundingBox[ i].SetTransform(rawMeshes.bones[ i].worldTm);
+	}
+}
+
+
+// 뼈대 인덱스를 설정한다.
+void cBoneMgr::SetBoundingBoxIndex(cBoneNode *node, OUT map<int, int> &boneIndices, const int boneIdx) //boneIdx=-1
+{
+	RET(!node);
+
+	int nextBoneIdx = -1;
+	if (boneIdx == -1)
+	{
+		// 본 자신의 아이디를 저장한다.
+		boneIndices[ node->GetId()] = node->GetId();
+
+		// 특정 뼈대는 하나로 합친다.
+		// 손목 아래 뼈대 통합.
+		// 발목 아래 뼈대 통합.
+		if ((node->GetName() ==  "Bip01 L Hand") 
+			||  (node->GetName() ==  "Bip01 R Hand")
+			|| (node->GetName() ==  "Bip01 L Foot")
+			|| (node->GetName() ==  "Bip01 R Foot")
+			)
+		{
+			nextBoneIdx = node->GetId();
+		}
+	}
+	else
+	{
+		// 부모의 인덱스로 저장한다.
+		boneIndices[ node->GetId()] = boneIdx;
+		nextBoneIdx = boneIdx;
+	}
+
+	BOOST_FOREACH (auto &child, node->GetChildren())
+		SetBoundingBoxIndex((cBoneNode*)child, boneIndices, nextBoneIdx);
 }

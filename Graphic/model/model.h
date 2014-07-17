@@ -30,14 +30,9 @@ namespace graphic
 
 
 	protected:
-		void CreateBoneBoundingBox(const string &modelName);
-
-
-	protected:
 		vector<cNode*> m_meshes;
 		cBoneMgr *m_bone;
 		Matrix44 m_matTM;
-		vector<cCube> m_boundingBox;
 
 		// debug ¿ë.
 		bool m_isRenderMesh; // default = true

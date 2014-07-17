@@ -97,7 +97,10 @@ void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
 	for (int i=0; i < 8; ++i)
+	{
 		vbuff[ i].p = vertices[ i];
+		vbuff[ i].c = 0;
+	}
 	m_vtxBuff.Unlock();
 }
 
@@ -106,10 +109,12 @@ void cCube::Render(const Matrix44 &tm)
 {
 	DWORD cullMode;
 	DWORD fillMode;
-	graphic::GetDevice()->GetRenderState(D3DRS_CULLMODE, &cullMode);
-	graphic::GetDevice()->GetRenderState(D3DRS_FILLMODE, &fillMode);
-	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	GetDevice()->GetRenderState(D3DRS_CULLMODE, &cullMode);
+	GetDevice()->GetRenderState(D3DRS_FILLMODE, &fillMode);
+
+	GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
+	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
 	
 	Matrix44 mat = m_tm * tm;
 	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );
@@ -118,6 +123,7 @@ void cCube::Render(const Matrix44 &tm)
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 		m_vtxBuff.GetVertexCount(), 0, 12);
 
-	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, cullMode);
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, fillMode );
+	GetDevice()->SetRenderState(D3DRS_CULLMODE, cullMode);
+	GetDevice()->SetRenderState(D3DRS_FILLMODE, fillMode );
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
 }

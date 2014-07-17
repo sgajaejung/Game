@@ -23,6 +23,7 @@ namespace graphic
 		D3DMATERIAL9& GetMtrl();
 
 		void InitWhite();
+		void InitBlack();
 		void InitRed();
 		void InitBlue();
 		void Bind();
