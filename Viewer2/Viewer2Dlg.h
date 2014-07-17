@@ -43,4 +43,6 @@ public:
 	BOOL m_RenderBone;
 	BOOL m_RenderMesh;
 	afx_msg void OnBnClickedCheckMesh();
+	afx_msg void OnBnClickedCheckBoundingbox();
+	BOOL m_RenderBoundingBox;
 };

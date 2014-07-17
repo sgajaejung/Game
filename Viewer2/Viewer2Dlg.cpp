@@ -34,6 +34,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 , m_WireFrame(FALSE)
 , m_RenderBone(FALSE)
 , m_RenderMesh(TRUE)
+, m_RenderBoundingBox(FALSE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -50,6 +51,7 @@ void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WIREFRAME, m_WireFrame);
 	DDX_Check(pDX, IDC_CHECK_BONE, m_RenderBone);
 	DDX_Check(pDX, IDC_CHECK_MESH, m_RenderMesh);
+	DDX_Check(pDX, IDC_CHECK_BOUNDINGBOX, m_RenderBoundingBox);
 }
 
 BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
@@ -62,6 +64,7 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_WM_DROPFILES()
 	ON_BN_CLICKED(IDC_CHECK_BONE, &CViewer2Dlg::OnBnClickedCheckBone)
 	ON_BN_CLICKED(IDC_CHECK_MESH, &CViewer2Dlg::OnBnClickedCheckMesh)
+	ON_BN_CLICKED(IDC_CHECK_BOUNDINGBOX, &CViewer2Dlg::OnBnClickedCheckBoundingbox)
 END_MESSAGE_MAP()
 
 
@@ -310,4 +313,10 @@ void CViewer2Dlg::OnBnClickedCheckMesh()
 	RET(!character);
 
 	character->SetRenderMesh(m_RenderMesh? true : false);
+}
+
+
+void CViewer2Dlg::OnBnClickedCheckBoundingbox()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
