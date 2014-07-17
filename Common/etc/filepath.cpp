@@ -7,7 +7,7 @@
 
 namespace common {
 
-	BOOL CompareExtendName(const char *srcFileName, int srcStringMaxLength, const char *compareExtendName);
+	bool CompareExtendName(const char *srcFileName, int srcStringMaxLength, const char *compareExtendName);
 
 }
 
@@ -90,7 +90,7 @@ bool common::CollectFiles( const list<string> &findExt, const string &searchPath
 // srcFileName의 확장자와 compareExtendName 이름이 같다면 true를 리턴한다.
 // 확장자는 srcFileName 끝에서 '.'이 나올 때까지 이다.
 //------------------------------------------------------------------------
-BOOL common::CompareExtendName(const char *srcFileName, const int srcStringMaxLength, const char *compareExtendName)
+bool common::CompareExtendName(const char *srcFileName, const int srcStringMaxLength, const char *compareExtendName)
 {
 	const int len = strnlen_s(srcFileName, srcStringMaxLength);
 	if (len <= 0)
@@ -119,9 +119,46 @@ BOOL common::CompareExtendName(const char *srcFileName, const int srcStringMaxLe
 
 	if (!strcmp(extendName, compareExtendName))
 	{
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
+
+// searchPath 디렉토리 안에서 findName 의 파일이름을 가진 파일이 있다면 해당 경로를
+// out 에 저장하고 true 를 리턴한다.
+bool common::FindFile( const string &findName, const string &searchPath, string &out  )
+{
+	WIN32_FIND_DATAA fd;
+	const string searchDir = searchPath + "*.*";
+	HANDLE hFind = FindFirstFileA(searchDir.c_str(), &fd);
+
+	while (1)
+	{
+		if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+		{
+			if ((string(".") != fd.cFileName) && (string("..") != fd.cFileName))
+			{
+				if (FindFile( findName, searchPath + string(fd.cFileName) + "/", out ))
+					break;
+			}
+		}
+		else if (fd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)
+		{
+			const string fileName = fd.cFileName;
+			if (fileName == GetFileName(findName))
+			{
+				out = searchPath + GetFileName(findName);
+				break;
+			}
+		}
+
+		if (!FindNextFileA(hFind, &fd))
+			break;
+	}
+
+	FindClose(hFind);
+
+	return !out.empty();
+}

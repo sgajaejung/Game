@@ -95,7 +95,18 @@ cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSi
 		return p;
 
 	cTexture *texture = new cTexture();
-	texture->Create(fileName, isSizePow2);
+	if (!texture->Create(fileName, isSizePow2))
+	{
+		string newPath;
+		if (common::FindFile(fileName, "../media/", newPath))
+		{
+			if (!texture->Create(newPath, isSizePow2))
+			{
+				delete texture;
+				return false;
+			}
+		}
+	}
 	m_textures[ fileName] = texture;
 	return texture;
 }
