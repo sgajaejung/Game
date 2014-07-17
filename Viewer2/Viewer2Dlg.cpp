@@ -147,7 +147,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 			dlg->MoveWindow(x, y, panelR.Width(), panelR.Height());
 		}
 
-		dlg->ShowWindow(SW_SHOW);	
+		dlg->ShowWindow(SW_SHOW);
 	}
 
 
