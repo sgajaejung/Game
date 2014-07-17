@@ -34,7 +34,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 , m_WireFrame(FALSE)
 , m_RenderBone(FALSE)
 , m_RenderMesh(TRUE)
-, m_RenderBoundingBox(FALSE)
+, m_RenderBoundingBox(TRUE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -318,5 +318,9 @@ void CViewer2Dlg::OnBnClickedCheckMesh()
 
 void CViewer2Dlg::OnBnClickedCheckBoundingbox()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData();
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	RET(!character);
+
+	character->SetRenderBoundingBox(m_RenderBoundingBox? true : false);
 }

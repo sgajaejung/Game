@@ -4,8 +4,10 @@
 namespace common
 {
 
-	std::string GetFilePathExceptFileName(const std::string &fileName);
+	string GetFilePathExceptFileName(const std::string &fileName);
 
-	std::string GetFileName(const std::string &fileName);
+	string GetFileName(const std::string &fileName);
+
+	bool CollectFiles( const list<string> &findExt, const string &searchPath, OUT list<string> &out );
 
 }
