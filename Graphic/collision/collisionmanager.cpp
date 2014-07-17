@@ -177,10 +177,9 @@ bool cCollisionManager::CheckNodeCollision(sCollisionNode *node1, sCollisionNode
 		if (node1->box->Collision(*node2->box))
 		{
 			//// 자식이 있다면 자식까지 충돌테스트 성공해야 최종적으로 충돌된 상태가 된다.
-			sCollisionNode *p1 = (sCollisionNode*)((node1->GetChildren().empty())? node1->m_pChild : node1);
-			sCollisionNode *p2 = (sCollisionNode*)((node2->m_pChild)? node2->m_pChild : node2);
-
-			CollisionTestRec(node1, node2, testNum);
+//			sCollisionNode *p1 = (sCollisionNode*)((node1->GetChildren().empty())? node1->m_pChild : node1);
+//			sCollisionNode *p2 = (sCollisionNode*)((node2->m_pChild)? node2->m_pChild : node2);
+//			CollisionTestRec(node1, node2, testNum);
 		}
 	}
 
@@ -188,7 +187,8 @@ bool cCollisionManager::CheckNodeCollision(sCollisionNode *node1, sCollisionNode
 }
 
 
-int cCollisionManager::CollisionTestRec( sCollisionNode *srcNode, sCollisionNode *targetNode, int testNum )
+int cCollisionManager::CollisionTestRec( sCollisionNode *srcNode, sCollisionNode *targetNode, 
+	int testNum )
 {
 	RETV(!srcNode || !targetNode, 0);
 
@@ -199,17 +199,17 @@ int cCollisionManager::CollisionTestRec( sCollisionNode *srcNode, sCollisionNode
 	BOOST_FOREACH (cNode *p1, srcNode->GetChildren())
 	{
 		sCollisionNode *node1 = (sCollisionNode*)p1;
-		if (!node1->pobj->IsTest(nTestNum))
+		if (!node1->pobj->IsTest(testNum))
 			continue;
 
 		BOOST_FOREACH (cNode *p2, targetNode->GetChildren())
 		{
 			sCollisionNode *node2 = (sCollisionNode*)p2;
-			if (!node2->pobj->IsTest(nTestNum))
+			if (!node2->pobj->IsTest(testNum))
 				continue;
 
 			// 충돌 테스트
-			if (CheckNodeCollision(node1, node2, nTestNum))
+			if (CheckNodeCollision(node1, node2, testNum))
 			{
 				// 자식이 없다면 충돌테스트 끝
 				// nTestNum이 3이라면 루트만 충돌테스트 한다.
