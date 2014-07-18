@@ -30,9 +30,11 @@ private:
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cModel *m_model;
+	graphic::cModel *m_model2;
 	graphic::cSprite *m_image;
 
 	cTestScene *m_scene;
+	graphic::cCollisionManager collisionMgr;
 
 
 	string m_filePath;
@@ -44,6 +46,9 @@ private:
 
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;
+
+	Vector3 m_boxPos;
+
 };
 
 INIT_FRAMEWORK(cViewer);
@@ -51,6 +56,7 @@ INIT_FRAMEWORK(cViewer);
 
 cViewer::cViewer() :
 	m_model(NULL)
+,	m_model2(NULL)
 ,	m_sprite(NULL)
 ,	m_image(NULL)
 ,	m_scene(NULL)
@@ -65,6 +71,7 @@ cViewer::cViewer() :
 cViewer::~cViewer()
 {
 	SAFE_DELETE(m_model);
+	SAFE_DELETE(m_model2);
 	SAFE_DELETE(m_image);
 	SAFE_DELETE(m_scene);
 	SAFE_RELEASE(m_sprite);
@@ -79,14 +86,21 @@ bool cViewer::OnInit()
 	D3DXCreateSprite(graphic::GetDevice(), &m_sprite);
 
 
-	m_scene = new cTestScene(m_sprite);
-	m_scene->SetPos(Vector3(100,100,0));
+	//m_scene = new cTestScene(m_sprite);
+	//m_scene->SetPos(Vector3(100,100,0));
+
+	//m_filePath = "../media/mesh.dat";
+	m_model = new graphic::cModel(1);
+	m_model->Create( "../media/girl_mesh.dat" );
+
+	m_model2 = new graphic::cModel(2);
+	m_model2->Create( "../media/box.dat" );
 
 
+	collisionMgr.InsertObject(0, m_model, 1);
+	collisionMgr.InsertObject(1, m_model2, 1);
 
 
-	m_filePath = "../media/mesh.dat";
-	m_model = new graphic::cModel();
 	//m_model->Create( m_filePath );
 	//m_texture.Create("../media/001 copy.jpg");
 	//m_model->SetAnimation("../media/ani.ani");
@@ -127,7 +141,10 @@ bool cViewer::OnInit()
 
 void cViewer::OnUpdate(const float elapseT)
 {
-	m_model->Move(elapseT);
+	if (m_model)
+		m_model->Move(elapseT);
+
+	collisionMgr.CollisionTest(1);
 }
 
 
@@ -151,11 +168,18 @@ void cViewer::OnRender(const float elapseT)
 		graphic::GetRenderer()->RenderAxis();
 
 		Matrix44 tm;
-		m_scene->Render(tm);
-	//m_image->Render(tm);
+		if (m_scene)
+			m_scene->Render(tm);
 
+	//m_image->Render(tm);
 		m_model->SetTM(m_rotateTm);
 		m_model->Render();
+
+
+		Matrix44 mat;
+		mat.SetTranslate(m_boxPos);
+		m_model2->SetTM(mat);
+		m_model2->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -234,6 +258,18 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				flag = !flag;
 			}
 			break;
+
+		case VK_LEFT:
+			{
+				m_boxPos.x -= 10.f;
+			}
+			break;
+
+		case VK_RIGHT:
+			{
+				m_boxPos.x += 10.f;
+			}
+			break;
 		}
 		break;
 
@@ -265,7 +301,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 		if (wParam & 0x10) // middle button down
 		{
 			POINT pos = {LOWORD(lParam), HIWORD(lParam)};
-			m_scene->SetPos(Vector3(pos.x, pos.y,0));
+			if (m_scene)
+				m_scene->SetPos(Vector3(pos.x, pos.y,0));
 		}
 
 		if (m_LButtonDown)

@@ -8,7 +8,7 @@ namespace graphic
 	struct ICollisionable
 	{
 		// Collision Test할지 여부
-		virtual BOOL IsTest( int testNum )=0;
+		virtual bool IsTest( int testNum )=0;
 		virtual int GetId()=0;
 
 		// 충돌테스트 하기전에 충돌박스, 충돌구의 좌표를 업데이트 한다.
@@ -21,7 +21,7 @@ namespace graphic
 		// 충돌된후 충돌을 일으킨 객체에게 호출됨
 		// TestNum: 테스트 번호
 		// model : 충돌된 객체
-		virtual void Collision( int TestNum, ICollisionable *obj )=0;
+		virtual void Collision( int testNum, ICollisionable *obj )=0;
 	};
 
 }

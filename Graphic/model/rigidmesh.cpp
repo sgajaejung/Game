@@ -13,7 +13,6 @@ cRigidMesh::cRigidMesh(const int id, const sRawMesh &raw) :
 ,	m_aniEnd(0)
 ,	m_aniFrame(0)
 {
-	CreateBoundingBox(m_boundingBox);
 
 }
 
@@ -61,42 +60,5 @@ bool cRigidMesh::Move(const float elapseTime)
 void cRigidMesh::Render(const Matrix44 &parentTm)
 {
 	cMesh::Render(parentTm);
-	RenderBoundingBox(parentTm);
 }
 
-
-// Render Bounding Box
-void cRigidMesh::RenderBoundingBox(const Matrix44 &tm)
-{
-	m_boundingBox.Render(m_localTM * m_aniTM * m_TM * tm);
-}
-
-
-// 경계박스 생성.
-void cRigidMesh::CreateBoundingBox(OUT cCube &out)
-{
-	sMinMax mm;
-
-	sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock();
-	for (int i = 0; i < m_vtxBuff.GetVertexCount(); i++)
-	{
-		const Vector3 pos = pv[ i].p;
-
-		if (mm.Min.x > pos.x)
-			mm.Min.x = pos.x;
-		if (mm.Min.y > pos.y)
-			mm.Min.y = pos.y;
-		if (mm.Min.z > pos.z)
-			mm.Min.z = pos.z;
-
-		if (mm.Max.x < pos.x)
-			mm.Max.x = pos.x;
-		if (mm.Max.y < pos.y)
-			mm.Max.y = pos.y;
-		if (mm.Max.z < pos.z)
-			mm.Max.z = pos.z;
-	}
-	m_vtxBuff.Unlock();
-
-	out.SetCube(mm.Min, mm.Max);
-}

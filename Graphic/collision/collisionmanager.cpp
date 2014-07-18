@@ -139,8 +139,9 @@ void cCollisionManager::CollisionTestRec(
 		// 루트 그룹은 충돌에 포함하지 않는다.
 		if ((node1->testnum != 0) && (node2->testnum != 0))
 		{
-			m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
-			m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+			m_checkTable[ m_collisionCount][ 0] = node1->pobj;
+			m_checkTable[ m_collisionCount][ 1] = node2->pobj;
+			m_collisionCount++;
 		}
 
 		return;
@@ -189,8 +190,9 @@ void cCollisionManager::CollisionTestNode1Loop(
 
 	if (node1->GetChildren().empty() && node2->GetChildren().empty())
 	{
-		m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
-		m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+		m_checkTable[ m_collisionCount][ 0] = node1->pobj;
+		m_checkTable[ m_collisionCount][ 1] = node2->pobj;
+		m_collisionCount++;
 		return;
 	}
 
@@ -217,8 +219,9 @@ void cCollisionManager::CollisionTestNode2Loop(
 
 	if (node1->GetChildren().empty() && node2->GetChildren().empty())
 	{
-		m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
-		m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+		m_checkTable[ m_collisionCount][ 0] = node1->pobj;
+		m_checkTable[ m_collisionCount][ 1] = node2->pobj;
+		m_collisionCount++;
 		return;
 	}
 

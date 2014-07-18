@@ -16,12 +16,10 @@ namespace graphic
 
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);
+		const cCube& GetBoundingBox() const;
 
 
 	private:
-		// 경계박스
-		cCube m_boundingBox;
-
 		// 애니메이션
 		cTrack *m_track;
 		int m_aniStart;

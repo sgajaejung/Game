@@ -57,6 +57,8 @@ void cMesh::CreateMesh( const vector<Vector3> &vertices,
 			pi[ i] = indices[ i];
 		m_idxBuff.Unlock();
 	}
+
+	CreateBoundingBox(m_boundingBox);
 }
 
 
@@ -133,5 +135,30 @@ void cMesh::Render(const Matrix44 &parentTm)
 				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
 		}
 	}
+
+	RenderBoundingBox(parentTm);
 }
 
+
+// Render Bounding Box
+void cMesh::RenderBoundingBox(const Matrix44 &tm)
+{
+	m_boundingBox.Render(m_localTM * m_aniTM * m_TM * tm);
+}
+
+
+// 경계박스 생성.
+void cMesh::CreateBoundingBox(OUT cCube &out)
+{
+	sMinMax mm;
+
+	sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock();
+	for (int i = 0; i < m_vtxBuff.GetVertexCount(); i++)
+	{
+		const Vector3 pos = pv[ i].p;
+		mm.Update(pos);
+	}
+	m_vtxBuff.Unlock();
+
+	out.SetCube(mm.Min, mm.Max);
+}

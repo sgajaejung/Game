@@ -14,6 +14,10 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
+
+		void CreateBoundingBox(OUT cCube &out);
+		void RenderBoundingBox(const Matrix44 &tm);
+		const cCube& GetBoundingBox() const;
 		
 
 	protected:
@@ -32,6 +36,11 @@ namespace graphic
 		vector<sAttribute> m_attributes;
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;
+
+		// 경계박스
+		cCube m_boundingBox;
 	};
 
+
+	inline const cCube& cMesh::GetBoundingBox() const { return m_boundingBox; }
 }

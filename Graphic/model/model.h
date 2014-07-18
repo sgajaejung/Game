@@ -4,12 +4,14 @@
 namespace graphic
 {
 	class cBoneMgr;
+	class cBoundingBox;
 
 	DECLARE_TYPE_NAME_SCOPE(graphic, cModel)
-	class cModel : public memmonitor::Monitor<cModel, TYPE_NAME(cModel)>
+	class cModel : public ICollisionable
+						, public memmonitor::Monitor<cModel, TYPE_NAME(cModel)>
 	{
 	public:
-		cModel();
+		cModel(const int id);
 		virtual ~cModel();
 
 		virtual bool Create(const string &modelName);
@@ -18,11 +20,18 @@ namespace graphic
 		virtual void Render();
 		void Clear();
 
+		int GetId() const;
 		void SetTM(const Matrix44 &tm);
 		void MultiplyTM(const Matrix44 &tm);
 		const Matrix44& GetTM() const;
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
+
+		// ICollisionable Interface
+		virtual bool IsTest( int testNum ) override;
+		virtual void UpdateCollisionBox() override;
+		virtual cBoundingBox* GetCollisionBox() override;
+		virtual void Collision( int testNum, ICollisionable *obj ) override;
 
 		// debug 용 함수.
 		void SetRenderMesh(const bool isRenderMesh);
@@ -31,10 +40,12 @@ namespace graphic
 
 
 	protected:
+		int m_id;
+		MODEL_TYPE::TYPE m_type;
 		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;
 		Matrix44 m_matTM;
-		cCube m_boundingBox; // only rigid mesh model
+		cBoundingBox m_boundingBox; // only rigid mesh model
 
 		// debug 용.
 		bool m_isRenderMesh; // default = true
@@ -43,6 +54,7 @@ namespace graphic
 	};
 
 
+	inline int cModel::GetId() const { return m_id; }
 	inline void cModel::SetTM(const Matrix44 &tm) { m_matTM = tm; }
 	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
 	inline const Matrix44& cModel::GetTM() const { return m_matTM; }

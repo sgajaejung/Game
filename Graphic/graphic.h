@@ -24,6 +24,13 @@ using namespace common;
 #include "base/line.h"
 #include "base/cube.h"
 
+
+#include "model/node.h"
+
+#include "collision/boundingbox.h"
+#include "collision/collision.h"
+#include "collision/collisionmanager.h"
+
 #include "model/rawmesh.h"
 #include "model/rawani.h"
 #include "model/track.h"
@@ -36,10 +43,6 @@ using namespace common;
 #include "model/character.h"
 
 #include "sprite/sprite.h"
-
-#include "collision/boundingbox.h"
-#include "collision/collision.h"
-#include "collision/collisionmanager.h"
 
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"

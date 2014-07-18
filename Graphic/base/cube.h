@@ -12,6 +12,10 @@ namespace graphic
 
 		void SetCube(const Vector3 &vMin, const Vector3 &vMax );
 		void SetTransform( const Matrix44 &tm );
+		const Matrix44& GetTransform() const;
+		const Vector3& GetMin() const;
+		const Vector3& GetMax() const;
+
 		void Render(const Matrix44 &tm);
 
 
@@ -29,4 +33,7 @@ namespace graphic
 
 
 	inline void cCube::SetTransform( const Matrix44 &tm ) { m_tm = tm; }
+	inline const Matrix44& cCube::GetTransform() const { return m_tm; }
+	inline const Vector3& cCube::GetMin() const { return m_min; }
+	inline const Vector3& cCube::GetMax() const { return m_max; }
 }
