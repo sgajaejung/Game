@@ -7,7 +7,7 @@ namespace graphic
 	class cCharacterAnalyzer : public cCharacter
 	{
 	public:
-		cCharacterAnalyzer();
+		cCharacterAnalyzer(const int id);
 		virtual ~cCharacterAnalyzer();
 
 		virtual bool Move(const float elapseTime) override;

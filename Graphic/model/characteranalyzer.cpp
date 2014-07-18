@@ -4,7 +4,8 @@
 
 using namespace graphic;
 
-cCharacterAnalyzer::cCharacterAnalyzer()
+cCharacterAnalyzer::cCharacterAnalyzer(const int id) :
+	cCharacter(id)
 {
 
 }

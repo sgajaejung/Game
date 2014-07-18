@@ -9,7 +9,7 @@ namespace graphic
 	{
 		// Collision Test할지 여부
 		virtual bool IsTest( int testNum )=0;
-		virtual int GetId()=0;
+		virtual int GetCollisionId()=0;
 
 		// 충돌테스트 하기전에 충돌박스, 충돌구의 좌표를 업데이트 한다.
 		// UpdateCollisionBox() 함수는 충돌테스트하기 전에만 호출하면 된다.

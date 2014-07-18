@@ -4,6 +4,7 @@
 namespace graphic
 {
 
+	// OBB 충돌박스.
 	class cBoundingBox
 	{
 	public:

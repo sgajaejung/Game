@@ -12,6 +12,7 @@ namespace graphic
 
 		void SetCube(const Vector3 &vMin, const Vector3 &vMax );
 		void SetTransform( const Matrix44 &tm );
+		void SetColor( DWORD color);
 		const Matrix44& GetTransform() const;
 		const Vector3& GetMin() const;
 		const Vector3& GetMax() const;

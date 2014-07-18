@@ -8,7 +8,7 @@ cController::cController() :
 	m_character(NULL)
 ,	m_isPlay(true)
 {
-	m_character = new graphic::cCharacter();
+	m_character = new graphic::cCharacter(0);
 }
 
 cController::~cController()

@@ -19,6 +19,7 @@ namespace graphic
 		void RenderBoundingBox(const Matrix44 &parentTm);
 		void Clear();
 		cBoneNode* GetRoot();
+		vector<cBoneNode*>& GetAllBoneNode();
 		cBoneNode* FindBone(const int id);
 		cBoneNode* FindBone(const string &name);
 		vector<Matrix44>& GetPalette();
@@ -41,4 +42,5 @@ namespace graphic
 
 	inline cBoneNode* cBoneMgr::GetRoot() { return m_root; }
 	inline vector<Matrix44>& cBoneMgr::GetPalette() { return m_palette; }
+	inline vector<cBoneNode*>& cBoneMgr::GetAllBoneNode() { return m_bones; }
 }

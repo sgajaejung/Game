@@ -7,7 +7,7 @@ namespace graphic
 	class cCharacter : public cModel
 	{
 	public:
-		cCharacter();
+		cCharacter(const int id);
 		virtual ~cCharacter();
 
 		virtual bool Create(const string &modelName) override;

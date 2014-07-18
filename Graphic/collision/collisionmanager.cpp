@@ -10,8 +10,8 @@ using namespace graphic;
 
 cCollisionManager::cCollisionManager()
 {
-	m_group1 = new sCollisionNode( 0 );
-	m_group2 = new sCollisionNode( 0 );
+	m_group1 = new sCollisionNode(-1);
+	m_group2 = new sCollisionNode(-1);
 }
 
 cCollisionManager::~cCollisionManager()
@@ -52,9 +52,9 @@ void cCollisionManager::InsertObject( ICollisionable *parent, ICollisionable *ob
 
 	// 두그룹에서 부모 노드를 찾는다.
 	sCollisionNode *node;
-	node = (sCollisionNode*)m_group1->FindNode( parent->GetId() );
+	node = (sCollisionNode*)m_group1->FindNode( parent->GetCollisionId() );
 	if (!node) 
-		node = (sCollisionNode*)m_group2->FindNode( parent->GetId() );
+		node = (sCollisionNode*)m_group2->FindNode( parent->GetCollisionId() );
 
 	InsertObject( node, obj, testNum );
 }
@@ -66,7 +66,7 @@ void cCollisionManager::InsertObject( ICollisionable *parent, ICollisionable *ob
 //-----------------------------------------------------------------------------//
 void cCollisionManager::InsertObject( sCollisionNode *parent, ICollisionable *obj, int testNum )
 {
-	sCollisionNode *pnew = new sCollisionNode( obj->GetId() );
+	sCollisionNode *pnew = new sCollisionNode( obj->GetCollisionId() );
 	pnew->testnum = testNum;
 	pnew->pobj = obj;
 	pnew->box = obj->GetCollisionBox();
@@ -81,8 +81,8 @@ void cCollisionManager::InsertObject( sCollisionNode *parent, ICollisionable *ob
 //-----------------------------------------------------------------------------//
 void cCollisionManager::RemoveObject( ICollisionable *obj )
 {
-	m_group1->RemoveNode( obj->GetId() );
-	m_group2->RemoveNode( obj->GetId() );
+	m_group1->RemoveNode( obj->GetCollisionId() );
+	m_group2->RemoveNode( obj->GetCollisionId() );
 }
 
 
@@ -100,7 +100,8 @@ void cCollisionManager::UpdateCollisionBoxRec( sCollisionNode *obj )
 {
 	RET(!obj);
 
-	obj->pobj->UpdateCollisionBox();
+	if (obj->pobj)
+		obj->pobj->UpdateCollisionBox();
 	BOOST_FOREACH (auto &node, obj->GetChildren())
 		UpdateCollisionBoxRec((sCollisionNode*)node);
 }
@@ -259,7 +260,6 @@ bool cCollisionManager::CheckNodeCollision(sCollisionNode *node1, sCollisionNode
 	{
 		if (node1->box->Collision(*node2->box))
 		{
-
 			return true;
 		}
 	}

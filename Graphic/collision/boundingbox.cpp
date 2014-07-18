@@ -49,7 +49,7 @@ bool overlaps( float min1, float max1, float min2, float max2 )
 }
 
 
-
+// OBB vs OBB 충돌처리.
 bool cBoundingBox::Collision( cBoundingBox &box )
 {
 	vector<Vector3> normals(3);

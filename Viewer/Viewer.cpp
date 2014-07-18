@@ -90,15 +90,25 @@ bool cViewer::OnInit()
 	//m_scene->SetPos(Vector3(100,100,0));
 
 	//m_filePath = "../media/mesh.dat";
-	m_model = new graphic::cModel(1);
+	m_model = new graphic::cModel(1000);
 	m_model->Create( "../media/girl_mesh.dat" );
+	m_model->SetAnimation("../media/girl_mesh_ani.ani");
 
-	m_model2 = new graphic::cModel(2);
+	m_model2 = new graphic::cModel(2000);
 	m_model2->Create( "../media/box.dat" );
 
 
 	collisionMgr.InsertObject(0, m_model, 1);
 	collisionMgr.InsertObject(1, m_model2, 1);
+
+	graphic::cBoneMgr *bone = m_model->GetBoneMgr();
+	if (bone)
+	{
+		BOOST_FOREACH (auto &node, bone->GetAllBoneNode())
+		{
+			collisionMgr.InsertObject(m_model, node, node->GetId());
+		}
+	}
 
 
 	//m_model->Create( m_filePath );
@@ -144,6 +154,7 @@ void cViewer::OnUpdate(const float elapseT)
 	if (m_model)
 		m_model->Move(elapseT);
 
+	collisionMgr.UpdateCollisionBox();
 	collisionMgr.CollisionTest(1);
 }
 
@@ -259,17 +270,10 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-		case VK_LEFT:
-			{
-				m_boxPos.x -= 10.f;
-			}
-			break;
-
-		case VK_RIGHT:
-			{
-				m_boxPos.x += 10.f;
-			}
-			break;
+		case VK_LEFT: m_boxPos.x -= 10.f; break;
+		case VK_RIGHT: m_boxPos.x += 10.f; break;
+		case VK_UP: m_boxPos.z += 10.f; break;
+		case VK_DOWN: m_boxPos.z -= 10.f; break;
 		}
 		break;
 

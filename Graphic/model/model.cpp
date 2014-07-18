@@ -12,7 +12,7 @@ using namespace graphic;
 
 
 cModel::cModel(const int id) :
-,	m_id(id)
+	m_id(id)
 ,	m_bone(NULL)
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
@@ -62,9 +62,6 @@ bool cModel::Create(const string &modelName)
 	}
 
 	m_type = isSkinnedMesh? MODEL_TYPE::SKIN : MODEL_TYPE::RIGID;
-
-	//if (!isSkinnedMesh && !m_meshes.empty())
-	//	m_meshes[ 0]->CreateBoundingBox(m_boundingBox);		
 
 	return true;
 }
@@ -160,6 +157,11 @@ void cModel::SetRenderBoundingBox(const bool isRenderBoundingBox)
 	m_isRenderBoundingBox = isRenderBoundingBox;
 }
 
+
+int cModel::GetCollisionId() 
+{
+	return GetId();
+}
 
 bool cModel::IsTest( int testNum )
 {

@@ -5,8 +5,9 @@
 using namespace graphic;
 
 
-cCharacter::cCharacter() :
-	m_weapon(NULL)
+cCharacter::cCharacter(const int id) :
+	cModel(id)
+,	m_weapon(NULL)
 ,	m_weaponNode(NULL)
 {
 
@@ -34,7 +35,7 @@ void cCharacter::LoadWeapon(const string &fileName)
 	RET(!m_weaponNode);
 
 	if (!m_weapon)
-		m_weapon = new cModel();
+		m_weapon = new cModel(100);
 
 	if (!m_weapon->Create(fileName))
 		return;

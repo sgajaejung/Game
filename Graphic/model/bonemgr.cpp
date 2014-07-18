@@ -90,8 +90,15 @@ void cBoneMgr::Render(const Matrix44 &parentTm)
 // 경계박스 출력.
 void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
 {
+	const Matrix44 identity;
 	for (int i=0; i < (int)m_boundingBox.size(); ++i)
-		m_boundingBox[ i].Render( m_palette[ i] * parentTm);
+	{
+		m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
+		//m_boundingBox[ i].Render(identity);
+
+		m_bones[ i]->m_boundingCube.SetTransform( m_bones[ i]->GetAccTM() * parentTm );
+		m_bones[ i]->m_boundingCube.Render(identity);
+	}
 }
 
 
@@ -178,9 +185,9 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 		if (Min.IsEmpty() && Max.IsEmpty())
 			continue;
 
-		// 월드 좌표공간으로 이동시킨다. palette 를 적용하기 위해서는 월드공간에 있어야 함.
 		m_boundingBox[ i].SetCube( Min, Max );
-		m_boundingBox[ i].SetTransform(rawMeshes.bones[ i].worldTm);
+		m_bones[ i]->m_boundingCube.SetCube( Min, Max );
+		m_bones[ i]->m_boundingBox = m_boundingBox[ i];
 	}
 }
 

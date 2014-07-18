@@ -60,7 +60,10 @@ void cCube::InitCube()
 	WORD *ibuff = (WORD*)m_idxBuff.Lock();
 
 	for (int i=0; i < 8; ++i)
+	{
 		vbuff[ i].p = vertices[ i];
+		vbuff[ i].c = 0;
+	}
 
 	for (int i=0; i < 36; ++i)
 		ibuff[ i] = indices[ i];
@@ -98,9 +101,20 @@ void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
 	for (int i=0; i < 8; ++i)
-	{
 		vbuff[ i].p = vertices[ i];
-		vbuff[ i].c = 0;
+	m_vtxBuff.Unlock();
+
+	m_min = vMin;
+	m_max = vMax;
+}
+
+
+void cCube::SetColor( DWORD color)
+{
+	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
+	for (int i=0; i < 8; ++i)
+	{
+		vbuff[ i].c = color;
 	}
 	m_vtxBuff.Unlock();
 }

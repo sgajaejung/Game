@@ -29,6 +29,7 @@ namespace graphic
 
 		// ICollisionable Interface
 		virtual bool IsTest( int testNum ) override;
+		virtual int GetCollisionId() override;
 		virtual void UpdateCollisionBox() override;
 		virtual cBoundingBox* GetCollisionBox() override;
 		virtual void Collision( int testNum, ICollisionable *obj ) override;
@@ -59,6 +60,4 @@ namespace graphic
 	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
 	inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
-	//inline void cModel::SetRenderMesh(const bool isRenderMesh) { m_isRenderMesh = isRenderMesh; }
-	//inline void cModel::SetRenderBone(const bool isRenderBone) { m_isRenderBone = isRenderBone; }
 }

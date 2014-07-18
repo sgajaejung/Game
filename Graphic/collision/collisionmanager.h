@@ -27,7 +27,7 @@ namespace graphic
 			ICollisionable *pobj;
 			//Sphere *psphere;
 			cBoundingBox *box;
-			sCollisionNode( int id ) : cNode(id), testnum(0) 
+			sCollisionNode( int id ) : cNode(id), testnum(0) , pobj(NULL)
 			{}
 		};
 
