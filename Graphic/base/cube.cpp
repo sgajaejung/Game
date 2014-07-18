@@ -112,7 +112,7 @@ void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 void cCube::SetColor( DWORD color)
 {
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
-	for (int i=0; i < 8; ++i)
+	for (int i=0; i < m_vtxBuff.GetVertexCount(); ++i)
 	{
 		vbuff[ i].c = color;
 	}

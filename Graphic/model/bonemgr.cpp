@@ -96,8 +96,11 @@ void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
 		m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
 		//m_boundingBox[ i].Render(identity);
 
+		m_bones[ i]->m_boundingBox.SetTransform( m_bones[ i]->GetAccTM() * parentTm );
 		m_bones[ i]->m_boundingCube.SetTransform( m_bones[ i]->GetAccTM() * parentTm );
 		m_bones[ i]->m_boundingCube.Render(identity);
+
+		m_bones[ i]->m_boundingCube.SetColor(0);
 	}
 }
 

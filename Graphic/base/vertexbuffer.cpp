@@ -68,5 +68,7 @@ void cVertexBuffer::Bind() const
 
 void cVertexBuffer::Clear()
 {
+	m_vertexCount = 0;
+	m_sizeOfVertex = 0;
 	SAFE_RELEASE(m_pVtxBuff);	
 }

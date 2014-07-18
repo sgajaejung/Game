@@ -106,7 +106,7 @@ bool cViewer::OnInit()
 	{
 		BOOST_FOREACH (auto &node, bone->GetAllBoneNode())
 		{
-			collisionMgr.InsertObject(m_model, node, node->GetId());
+			collisionMgr.InsertObject(m_model, node, 1);
 		}
 	}
 

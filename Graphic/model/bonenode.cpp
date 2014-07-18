@@ -200,6 +200,7 @@ cBoundingBox* cBoneNode::GetCollisionBox()
 
 void cBoneNode::Collision( int testNum, ICollisionable *obj )
 {
-
+	m_boundingCube.SetColor(0xFFFF0000);
+	dbg::Print("collsition id = %d", GetId());
 }
 

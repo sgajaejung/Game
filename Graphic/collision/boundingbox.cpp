@@ -52,10 +52,13 @@ bool overlaps( float min1, float max1, float min2, float max2 )
 // OBB vs OBB 충돌처리.
 bool cBoundingBox::Collision( cBoundingBox &box )
 {
-	vector<Vector3> normals(3);
+	vector<Vector3> normals(6);
 	normals[ 0] = Vector3(0,1,0).MultiplyNormal(m_tm);
 	normals[ 1] = Vector3(0,0,1).MultiplyNormal(m_tm);
 	normals[ 2] = Vector3(1,0,0).MultiplyNormal(m_tm);
+	normals[ 3] = Vector3(0,1,0).MultiplyNormal(box.m_tm);
+	normals[ 4] = Vector3(0,0,1).MultiplyNormal(box.m_tm);
+	normals[ 5] = Vector3(1,0,0).MultiplyNormal(box.m_tm);
 
 	Vector3 vertices1[8] = {
 		Vector3(m_min.x, m_max.y, m_min.z), 
