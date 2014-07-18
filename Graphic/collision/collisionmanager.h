@@ -37,18 +37,24 @@ namespace graphic
 		void RemoveObject( ICollisionable *obj ); // 리스트에서 오브젝트 추가
 		void UpdateCollisionBox(); // 충돌박스의 좌표를 갱신한다.
 		int CollisionTest( int testNum ); // 충돌테스트
+		int GetCollisionCount() const;
 
 
 	protected:
 		void InsertObject( sCollisionNode *parent, ICollisionable *obj, int testNum );
 		void UpdateCollisionBoxRec( sCollisionNode *obj );
 		bool CheckNodeCollision(sCollisionNode *node1, sCollisionNode *node2, int testNum );
-		int CollisionTestRec( sCollisionNode *node1, sCollisionNode *node2, int testNum ); // 충돌테스트
+		void CollisionTestRec( sCollisionNode *node1, sCollisionNode *node2, int testNum ); // 충돌 테스트
+		void CollisionTestNode1Loop( sCollisionNode *node1, sCollisionNode *node2, int testNum ); // 충돌 테스트
+		void CollisionTestNode2Loop( sCollisionNode *node1, sCollisionNode *node2, int testNum ); // 충돌 테스트
 
 
 	private:
 		sCollisionNode *m_group1;
 		sCollisionNode *m_group2;
+		int m_collisionCount;
 	};
 
+
+	int cCollisionManager::GetCollisionCount() const { return m_collisionCount; }
 }

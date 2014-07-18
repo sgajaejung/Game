@@ -111,54 +111,134 @@ void cCollisionManager::UpdateCollisionBoxRec( sCollisionNode *obj )
 // 같은그룹끼리는 충돌테스트 하지 않는다.
 // 충돌된 오브젝트 갯수를 리턴한다.
 //-----------------------------------------------------------------------------//
-int cCollisionManager::CollisionTest( int nTestNum )
+int cCollisionManager::CollisionTest( int testNum )
 {
-	int cnt = 0;
-	BOOST_FOREACH (cNode *p1, m_group1->GetChildren())
+	m_collisionCount = 0;
+	CollisionTestRec(m_group1, m_group2, testNum);
+
+	// 충돌한 객체의 Collision() 함수를 호출한다.
+	for( int i=0; i < m_collisionCount; ++i )
 	{
-		sCollisionNode *node1 = (sCollisionNode*)p1;
-		if (!node1->pobj->IsTest(nTestNum))
-			continue;
-
-		BOOST_FOREACH (cNode *p2, m_group2->GetChildren())
-		{
-			sCollisionNode *node2 = (sCollisionNode*)p2;
-			if (!node2->pobj->IsTest(nTestNum))
-				continue;
-
-			// 충돌 테스트
-			if (CheckNodeCollision(node1, node2, nTestNum))
-			{
-				// 자식이 없다면 충돌테스트 끝
-				// nTestNum이 3이라면 루트만 충돌테스트 한다.
-//				if( 3 == nTestNum || (!node1->m_pChild && !node2->m_pChild) )
-				//{
-				//	m_ChkTable[ cnt][ 0] = node1->pobj;
-				//	m_ChkTable[ cnt][ 1] = node2->pobj;
-				//	++cnt;
-				//}
-				//else
-				{
-					//// 자식이 있다면 자식까지 충돌테스트 성공해야 최종적으로 충돌된 상태가 된다.
-					//SObjTree *p1 = (SObjTree*)((node1->m_pChild)? node1->m_pChild : node1);
-					//SObjTree *p2 = (SObjTree*)((node2->m_pChild)? node2->m_pChild : node2);
-					//if (CollisionTest_SrcRec(p1, p2, nTestNum))
-					//{
-					//	m_ChkTable[ cnt][ 0] = node1->pobj;
-					//	m_ChkTable[ cnt][ 1] = node2->pobj;
-					//	++cnt;
-					//}
-				}
-			}
-
-		}
-
+		m_checkTable[ i][ 0]->Collision( testNum, m_checkTable[ i][ 1] );
+		m_checkTable[ i][ 1]->Collision( testNum, m_checkTable[ i][ 0] );
 	}
 
-	return 0;
+	return m_collisionCount;
 }
 
 
+// 충돌검사 재귀 함수 시작.
+void cCollisionManager::CollisionTestRec( 
+	sCollisionNode *node1, sCollisionNode *node2, int testNum )
+{
+	RET(!node1 || !node2);
+
+	if (node1->GetChildren().empty() && node2->GetChildren().empty())
+	{
+		// 루트 그룹은 testnum 값이 0이다. 
+		// 루트 그룹은 충돌에 포함하지 않는다.
+		if ((node1->testnum != 0) && (node2->testnum != 0))
+		{
+			m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
+			m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+		}
+
+		return;
+	}
+	
+
+	BOOST_FOREACH (cNode *p1, node1->GetChildren())
+	{
+		sCollisionNode *collisionNode1 = (sCollisionNode*)p1;
+		if (!collisionNode1->pobj->IsTest(testNum))
+			continue;
+
+		BOOST_FOREACH (cNode *p2, node2->GetChildren())
+		{
+			sCollisionNode *collisionNode2 = (sCollisionNode*)p2;
+			if (!collisionNode2->pobj->IsTest(testNum))
+				continue;
+
+			// 충돌 테스트
+			if (CheckNodeCollision(collisionNode1, collisionNode2, testNum))
+			{
+				if (collisionNode1->GetChildren().empty())
+				{
+					CollisionTestNode1Loop(collisionNode1, collisionNode2, testNum);
+				}
+				else if (collisionNode2->GetChildren().empty())
+				{
+					CollisionTestNode2Loop(collisionNode1, collisionNode2, testNum);
+				}
+				else
+				{
+					CollisionTestRec(collisionNode1, collisionNode2, testNum);
+				}
+			}
+		}
+	}
+
+}
+
+
+// node1 고정, node2 children loop
+void cCollisionManager::CollisionTestNode1Loop( 
+	sCollisionNode *node1, sCollisionNode *node2, int testNum )
+{
+	RET(!node1 || !node2);
+
+	if (node1->GetChildren().empty() && node2->GetChildren().empty())
+	{
+		m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
+		m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+		return;
+	}
+
+	BOOST_FOREACH (cNode *p2, node2->GetChildren())
+	{
+		sCollisionNode *collisionNode = (sCollisionNode*)p2;
+		if (!collisionNode->pobj->IsTest(testNum))
+			continue;
+
+		// 충돌 테스트
+		if (CheckNodeCollision(node1, collisionNode, testNum))
+		{
+			CollisionTestNode1Loop(node1, collisionNode, testNum);
+		}
+	}
+}
+
+
+// node2 고정, node1 children loop
+void cCollisionManager::CollisionTestNode2Loop( 
+	sCollisionNode *node1, sCollisionNode *node2, int testNum )
+{
+	RET(!node1 || !node2);
+
+	if (node1->GetChildren().empty() && node2->GetChildren().empty())
+	{
+		m_checkTable[ m_collisionCount++][ 0] = node1->pobj;
+		m_checkTable[ m_collisionCount++][ 1] = node2->pobj;
+		return;
+	}
+
+	BOOST_FOREACH (cNode *p1, node1->GetChildren())
+	{
+		sCollisionNode *collisionNode = (sCollisionNode*)p1;
+		if (!collisionNode->pobj->IsTest(testNum))
+			continue;
+
+		// 충돌 테스트
+		if (CheckNodeCollision(collisionNode, node2, testNum))
+		{
+			CollisionTestNode2Loop(collisionNode, node2, testNum);
+		}
+	}
+
+}
+
+
+// 충돌 체크.
 bool cCollisionManager::CheckNodeCollision(sCollisionNode *node1, sCollisionNode *node2, int testNum )
 {
 	RETV(!node1 || !node2, false);
@@ -176,64 +256,10 @@ bool cCollisionManager::CheckNodeCollision(sCollisionNode *node1, sCollisionNode
 	{
 		if (node1->box->Collision(*node2->box))
 		{
-			//// 자식이 있다면 자식까지 충돌테스트 성공해야 최종적으로 충돌된 상태가 된다.
-//			sCollisionNode *p1 = (sCollisionNode*)((node1->GetChildren().empty())? node1->m_pChild : node1);
-//			sCollisionNode *p2 = (sCollisionNode*)((node2->m_pChild)? node2->m_pChild : node2);
-//			CollisionTestRec(node1, node2, testNum);
+
+			return true;
 		}
 	}
 
 	return false;
-}
-
-
-int cCollisionManager::CollisionTestRec( sCollisionNode *srcNode, sCollisionNode *targetNode, 
-	int testNum )
-{
-	RETV(!srcNode || !targetNode, 0);
-
-	if (srcNode->GetChildren().empty() && targetNode->GetChildren().empty())
-		return 1;
-
-	int cnt = 0;
-	BOOST_FOREACH (cNode *p1, srcNode->GetChildren())
-	{
-		sCollisionNode *node1 = (sCollisionNode*)p1;
-		if (!node1->pobj->IsTest(testNum))
-			continue;
-
-		BOOST_FOREACH (cNode *p2, targetNode->GetChildren())
-		{
-			sCollisionNode *node2 = (sCollisionNode*)p2;
-			if (!node2->pobj->IsTest(testNum))
-				continue;
-
-			// 충돌 테스트
-			if (CheckNodeCollision(node1, node2, testNum))
-			{
-				// 자식이 없다면 충돌테스트 끝
-				// nTestNum이 3이라면 루트만 충돌테스트 한다.
-				//				if( 3 == nTestNum || (!node1->m_pChild && !node2->m_pChild) )
-				//{
-				//	m_ChkTable[ cnt][ 0] = node1->pobj;
-				//	m_ChkTable[ cnt][ 1] = node2->pobj;
-				//	++cnt;
-				//}
-				//else
-				{
-					//// 자식이 있다면 자식까지 충돌테스트 성공해야 최종적으로 충돌된 상태가 된다.
-					//SObjTree *p1 = (SObjTree*)((node1->m_pChild)? node1->m_pChild : node1);
-					//SObjTree *p2 = (SObjTree*)((node2->m_pChild)? node2->m_pChild : node2);
-					//if (CollisionTest_SrcRec(p1, p2, nTestNum))
-					//{
-					//	m_ChkTable[ cnt][ 0] = node1->pobj;
-					//	m_ChkTable[ cnt][ 1] = node2->pobj;
-					//	++cnt;
-					//}
-				}
-			}
-		}
-	}
-
-	return cnt;
 }

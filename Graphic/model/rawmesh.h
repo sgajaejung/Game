@@ -12,6 +12,8 @@ namespace graphic
 		Vector4 emissive;
 		float power;
 		string texture;
+		string bumpMap;
+		string specularMap;
 
 		sMaterial() {}
 		sMaterial(const sMaterial &rhs);

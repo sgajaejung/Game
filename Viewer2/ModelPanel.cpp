@@ -143,7 +143,9 @@ void CModelPanel::UpdateMaterialInfo()
 		const wstring emissive = formatw("Emissive %.3f, %.3f, %.3f, %.3f", 
 			mtrl.emissive.x, mtrl.emissive.y, mtrl.emissive.z, mtrl.emissive.w );
 		const wstring power = formatw("Power = %.3f", mtrl.power);
-		const wstring texture = formatw("texture = %s", mtrl.texture.c_str());
+		const wstring texture = formatw("diffuse texture = %s", mtrl.texture.c_str());
+		const wstring specularTexture = formatw("specular texture = %s", mtrl.specularMap.c_str());
+		const wstring bumpTexture = formatw("bump texture = %s", mtrl.bumpMap.c_str());
 
 		m_MaterialTree.InsertItem( ambient.c_str(), hItem);
 		m_MaterialTree.InsertItem( diffuse.c_str(), hItem);
@@ -151,6 +153,8 @@ void CModelPanel::UpdateMaterialInfo()
 		m_MaterialTree.InsertItem( emissive.c_str(), hItem);
 		m_MaterialTree.InsertItem( power.c_str(), hItem);
 		m_MaterialTree.InsertItem( texture.c_str(), hItem);
+		m_MaterialTree.InsertItem( specularTexture.c_str(), hItem);
+		m_MaterialTree.InsertItem( bumpTexture.c_str(), hItem);
 	}
 
 	m_MaterialTree.Expand(hRoot, TVE_EXPAND);

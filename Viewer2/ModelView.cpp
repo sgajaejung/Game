@@ -191,16 +191,17 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 		m_curPos = point;
 
 		Vector3 v = m_lookAtPos - m_camPos;
+		const float len = v.Length();
 		v.Normalize();
 
 		Vector3 up = Vector3(0,1,0);
 		Vector3 right = up.CrossProduct(v);
 		right.Normalize();
 
-		m_lookAtPos += right * pos.x * -0.05f;
-		m_camPos += right * pos.x * -0.05f;
-		m_lookAtPos += up * pos.y * 0.05f;
-		m_camPos += up * pos.y * 0.05f;
+		m_lookAtPos += right * pos.x * (len * -0.001f);
+		m_camPos += right * pos.x * (len * -0.001f);
+		m_lookAtPos += up * pos.y * (len * 0.001f);
+		m_camPos += up * pos.y * (len * 0.001f);
 		
 		UpdateCamera();
 	}

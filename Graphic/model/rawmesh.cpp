@@ -20,6 +20,8 @@ sMaterial& sMaterial::operator=(const sMaterial &rhs)
 		emissive = rhs.emissive;
 		power = rhs.power;
 		texture = rhs.texture;
+		bumpMap = rhs.bumpMap;
+		specularMap = rhs.specularMap;
 	}
 	return *this;
 }
