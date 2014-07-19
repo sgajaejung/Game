@@ -158,10 +158,6 @@ void cBoneNode::Render(const Matrix44 &parentTm)
 
 	BOOST_FOREACH (auto p, m_children)
 		p->Render( parentTm );
-
-
-	m_boundingCube.SetTransform( m_accTM * parentTm );
-	m_boundingBox.SetTransform( m_accTM * parentTm );	
 }
 
 
@@ -172,35 +168,3 @@ void cBoneNode::SetCurrentFrame(const int curFrame)
 	if (m_track)
 		m_track->SetCurrentFramePos(curFrame);
 }
-
-
-// ICollisionable Interface
-bool cBoneNode::IsTest( int testNum )
-{
-	return true;
-}
-
-int cBoneNode::GetCollisionId()
-{
-	return GetId();
-}
-
-
-void cBoneNode::UpdateCollisionBox()
-{
-	
-}
-
-
-cBoundingBox* cBoneNode::GetCollisionBox()
-{
-	return &m_boundingBox;
-}
-
-
-void cBoneNode::Collision( int testNum, ICollisionable *obj )
-{
-	m_boundingCube.SetColor(0xFFFF0000);
-	dbg::Print("collsition id = %d", GetId());
-}
-

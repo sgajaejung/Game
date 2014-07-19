@@ -5,7 +5,6 @@ namespace graphic
 {
 
 	class cBoneNode : public cNode
-								, public ICollisionable
 	{
 	public:
 		cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawMesh);
@@ -20,16 +19,6 @@ namespace graphic
 		int GetPlayFrame() const;
 		void SetCurrentFrame(const int curFrame);
 
-		// ICollisionable Interface
-		virtual bool IsTest( int testNum ) override;
-		virtual int GetCollisionId() override;
-		virtual void UpdateCollisionBox() override;
-		virtual cBoundingBox* GetCollisionBox() override;
-		virtual void Collision( int testNum, ICollisionable *obj ) override;
-
-
-		cCube m_boundingCube;
-		cBoundingBox m_boundingBox;
 
 	private:
 		cTrack *m_track;

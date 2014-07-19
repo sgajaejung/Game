@@ -97,18 +97,8 @@ bool cViewer::OnInit()
 	m_model2 = new graphic::cModel(2000);
 	m_model2->Create( "../media/box.dat" );
 
-
 	collisionMgr.InsertObject(0, m_model, 1);
 	collisionMgr.InsertObject(1, m_model2, 1);
-
-	graphic::cBoneMgr *bone = m_model->GetBoneMgr();
-	if (bone)
-	{
-		BOOST_FOREACH (auto &node, bone->GetAllBoneNode())
-		{
-			collisionMgr.InsertObject(m_model, node, 1);
-		}
-	}
 
 
 	//m_model->Create( m_filePath );

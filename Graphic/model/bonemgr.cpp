@@ -94,13 +94,7 @@ void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
 	for (int i=0; i < (int)m_boundingBox.size(); ++i)
 	{
 		m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
-		//m_boundingBox[ i].Render(identity);
-
-		m_bones[ i]->m_boundingBox.SetTransform( m_bones[ i]->GetAccTM() * parentTm );
-		m_bones[ i]->m_boundingCube.SetTransform( m_bones[ i]->GetAccTM() * parentTm );
-		m_bones[ i]->m_boundingCube.Render(identity);
-
-		m_bones[ i]->m_boundingCube.SetColor(0);
+		m_boundingBox[ i].Render(identity);
 	}
 }
 
@@ -189,8 +183,6 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 			continue;
 
 		m_boundingBox[ i].SetCube( Min, Max );
-		m_bones[ i]->m_boundingCube.SetCube( Min, Max );
-		m_bones[ i]->m_boundingBox = m_boundingBox[ i];
 	}
 }
 
