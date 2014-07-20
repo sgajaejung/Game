@@ -32,6 +32,7 @@ private:
 	graphic::cModel *m_model;
 	graphic::cModel *m_model2;
 	graphic::cSprite *m_image;
+	graphic::cShader m_shader;
 
 	cTestScene *m_scene;
 	graphic::cCollisionManager collisionMgr;
@@ -46,6 +47,8 @@ private:
 
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;
+	Matrix44 m_view; // Camera View Matrix
+	Matrix44 m_proj; // projection matrix
 
 	Vector3 m_boxPos;
 
@@ -100,18 +103,7 @@ bool cViewer::OnInit()
 	collisionMgr.InsertObject(0, m_model, 1);
 	collisionMgr.InsertObject(1, m_model2, 1);
 
-
-	//m_model->Create( m_filePath );
-	//m_texture.Create("../media/001 copy.jpg");
-	//m_model->SetAnimation("../media/ani.ani");
-	//m_model->SetAnimation("../media/ani4.ani");
-	//m_texture.Create("../media/강소라.jpg");
-
-	//m_image = new graphic::cSprite(m_sprite, 0, "image1");
-	//m_image->Create( "../media/강소라.jpg");
-	//m_image->SetScale(Vector3(0.5f,0.5f,0.5f));
-	//m_image->SetPos( Vector3(200, 200, 0) );
-
+	m_shader.Create( "../media/shader/hlsl.fx", "TShader" );
 
 	m_mtrl.InitWhite();
 
@@ -126,9 +118,8 @@ bool cViewer::OnInit()
 
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	Matrix44 proj;
-	proj.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f) ;
-	graphic::GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&proj) ;
+	m_proj.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f) ;
+	graphic::GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&m_proj) ;
 
 
 	graphic::GetDevice()->LightEnable (
@@ -172,15 +163,25 @@ void cViewer::OnRender(const float elapseT)
 		if (m_scene)
 			m_scene->Render(tm);
 
-	//m_image->Render(tm);
 		m_model->SetTM(m_rotateTm);
 		m_model->Render();
 
 
 		Matrix44 mat;
 		mat.SetTranslate(m_boxPos);
+
+		m_shader.Begin();
+		m_shader.BeginPass(0);
+
+		Matrix44 wvp = mat * m_view * m_proj;
+		m_shader.SetMatrix( "mWVP", wvp);
+
 		m_model2->SetTM(mat);
 		m_model2->Render();
+
+		m_shader.End();
+		m_shader.EndPass();
+
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -353,9 +354,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 
 void cViewer::UpdateCamera()
 {
-	Matrix44 V;
 	Vector3 dir = m_lookAtPos - m_camPos;
 	dir.Normalize();
-	V.SetView(m_camPos, dir, Vector3(0,1,0));
-	graphic::GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&V);
+	m_view.SetView(m_camPos, dir, Vector3(0,1,0));
+	graphic::GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&m_view);
 }

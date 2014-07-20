@@ -100,6 +100,9 @@
     <ClInclude Include="collision\boundingbox.h">
       <Filter>collision</Filter>
     </ClInclude>
+    <ClInclude Include="base\shader.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -186,6 +189,9 @@
     </ClCompile>
     <ClCompile Include="collision\boundingbox.cpp">
       <Filter>collision</Filter>
+    </ClCompile>
+    <ClCompile Include="base\shader.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,7 @@ void SATtest( const Vector3& axis, const Vector3 ptSet[8], float& minAlong, floa
 	}
 }
 
+
 inline bool isBetweenOrdered( float val, float lowerBound, float upperBound ) {
 	return lowerBound <= val && val <= upperBound ;
 }
