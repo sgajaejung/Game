@@ -15,12 +15,6 @@ cShader::cShader() :
 
 cShader::~cShader()
 {
-	Clear();
-}
-
-
-void cShader::Clear()
-{
 	SAFE_RELEASE(m_effect);
 }
 
