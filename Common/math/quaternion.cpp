@@ -197,7 +197,7 @@ void Quaternion::SetRotationArc( const Vector3& v0, const Vector3& v1 )
 	const float len = vCross.Length();
 	if (len <= 0.01f)
 	{
-		x = 0; y = 1; z = 0; w = 0;
+		x = 0; y = 0; z = 0; w = 1;
 		return;
 	}
 
