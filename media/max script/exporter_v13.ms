@@ -1010,6 +1010,13 @@ fn CollectVertexWeightFromSkin obj =
 			phys.varSetVtxWeight = varSW
 			append setVarPhysique phys
 		)
+		else
+		(
+			phys.vtxidx = i
+			phys.varSetVtxWeight = undefined
+			append setVarPhysique phys
+		)
+		
 	)
 
 
@@ -1079,10 +1086,18 @@ fn WriteVertexWeightFromSkin obj =
 
 	for i=1 to ret.count do
 	(
-		format "VTXWEIGHT_VERTEX_COUNT = % %\n" ((ret[i].vtxidx-1) as integer) (ret[i].varSetVtxWeight.count) to:Outfile
-		for j=1 to ret[i].varSetVtxWeight.count do
+		if ret[i].varSetVtxWeight == undefined then
 		(
-			format "% %\n" ((GetBoneId ret[i].varSetVtxWeight[j].BoneName)-1) (ret[i].varSetVtxWeight[j].Weight) to:Outfile
+			--format "VTXWEIGHT_VERTEX_COUNT = % 0\n" ((ret[i].vtxidx-1) as integer) to:Outfile
+			format "VTXWEIGHT_VERTEX_COUNT = 0 0\n" to:Outfile
+		)
+		else
+		(
+			format "VTXWEIGHT_VERTEX_COUNT = % %\n" ((ret[i].vtxidx-1) as integer) (ret[i].varSetVtxWeight.count) to:Outfile
+			for j=1 to ret[i].varSetVtxWeight.count do
+			(
+				format "% %\n" ((GetBoneId ret[i].varSetVtxWeight[j].BoneName)-1) (ret[i].varSetVtxWeight[j].Weight) to:Outfile
+			)
 		)
 	)	
 )

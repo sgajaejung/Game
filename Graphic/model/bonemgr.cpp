@@ -18,17 +18,26 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	{
 		const int id = rawMeshes.bones[ i].id;
 		const int parentId = rawMeshes.bones[ i].parentId;
+		bool twoRoot = false;
 		if (m_root && (parentId < 0))
-			continue;
+			twoRoot = true;
 
 		cBoneNode *bone = new cBoneNode(id, m_palette, rawMeshes.bones[ i]);
 		SAFE_DELETE(m_bones[ id]);
 		m_bones[ id] = bone;
 
-		if (-1 >=  parentId) // root
+		if (!twoRoot && (-1 >=  parentId)) // root
+		{
 			m_root = bone;
+		}
+		else if (twoRoot)
+		{
+			// nothing~
+		}
 		else
+		{
 			m_bones[ parentId]->InsertChild( bone );
+		}
 	}
 
 	CreateBoundingBox(rawMeshes);
