@@ -103,6 +103,9 @@
     <ClInclude Include="base\shader.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="base\sphere.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -191,6 +194,9 @@
       <Filter>collision</Filter>
     </ClCompile>
     <ClCompile Include="base\shader.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\sphere.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
