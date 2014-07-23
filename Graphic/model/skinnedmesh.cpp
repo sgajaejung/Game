@@ -37,7 +37,7 @@ void cSkinnedMesh::ApplyPalette()
 		vertices[ vtxIdx].p = Vector3(0,0,0);
 		vertices[ vtxIdx].n = Vector3(0,0,0);
 
-		for( int k=0; k < weight.size; ++k )
+		for( int k=0; (k < weight.size); ++k )
 		{
 			const sWeight *w = &weight.w[ k];
 			Vector3 v = m_rawMesh.vertices[ vtxIdx] * m_palette[ w->bone];

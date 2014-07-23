@@ -141,7 +141,6 @@ void cGameMain::Run()
 	{
 		if (PeekMessage( &msg, m_hWnd, 0, 0, PM_NOREMOVE ))
 		{
-			GetMessage(&msg, NULL, 0, 0);
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
