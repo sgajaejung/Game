@@ -136,7 +136,7 @@ void cMesh::Render(const Matrix44 &parentTm)
 		}
 	}
 
-	RenderBoundingBox(parentTm);
+	//RenderBoundingBox(parentTm);
 }
 
 

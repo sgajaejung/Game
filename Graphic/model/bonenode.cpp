@@ -50,7 +50,7 @@ void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
 		aniend = (int)rawAni.end;
 	}
 
-	m_aniStart = 0;
+	m_aniStart = rawAni.start;
 	m_aniEnd	 = aniend;
 	m_incPlayFrame = 0;
 
@@ -84,8 +84,8 @@ bool cBoneNode::Move(const float elapseTime)
 		// 보간없이 에니메이션을 처음으로 돌린다.
 		if (m_isLoop)
 		{
-			m_curPlayFrame = (int)(m_aniStart * 30.f);
-			m_curPlayTime = 0;
+			m_curPlayFrame = m_aniStart;
+			m_curPlayTime = m_aniStart * 0.03333f;
 			m_track->InitAnimation();
 		}
 		else
@@ -95,8 +95,8 @@ bool cBoneNode::Move(const float elapseTime)
 			// 그렇지 않다면 에니메이션을 처음으로 돌린다.				
 			if (ani_loop_end)
 			{
-				m_curPlayFrame = (int)(m_aniStart * 30.f);
-				m_curPlayTime = 0;
+				m_curPlayFrame = m_aniStart;
+				m_curPlayTime = m_aniStart * 0.03333f;
 
 				// 총 에니메이션이 끝나지 않았다면 에니메이션 정보를 처음으로 되돌린다.
 				// 총 에니메이션이 끝났다면 정보를 되돌리지 않고 마지막 프레임을 향하게 내버려둔다.
@@ -137,9 +137,6 @@ bool cBoneNode::Move(const float elapseTime)
 
 	m_palette[ m_id] = m_offset * m_accTM;
 
-	//if (m_pBox)
-	//	m_pBox->SetWorldTM(&m_pPalette[ m_nId]);
-
 	BOOST_FOREACH (auto p, m_children)
 		p->Move( elapseTime );
 
@@ -167,4 +164,14 @@ void cBoneNode::SetCurrentFrame(const int curFrame)
 	m_curPlayFrame = curFrame; 
 	if (m_track)
 		m_track->SetCurrentFramePos(curFrame);
+}
+
+
+// m_accTM 을 업데이트 한다.
+void cBoneNode::UpdateAccTM()
+{
+	m_accTM = m_localTM * m_aniTM * m_TM;
+	if (m_parent)
+		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
+	m_palette[ m_id] = m_offset * m_accTM;
 }

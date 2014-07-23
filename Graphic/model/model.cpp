@@ -16,7 +16,7 @@ cModel::cModel(const int id) :
 ,	m_bone(NULL)
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
-,	m_isRenderBoundingBox(true)
+,	m_isRenderBoundingBox(false)
 ,	m_type(MODEL_TYPE::RIGID)
 {
 	

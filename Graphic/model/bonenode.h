@@ -18,6 +18,7 @@ namespace graphic
 		int GetCurrentFrame() const;
 		int GetPlayFrame() const;
 		void SetCurrentFrame(const int curFrame);
+		void UpdateAccTM();
 
 
 	private:

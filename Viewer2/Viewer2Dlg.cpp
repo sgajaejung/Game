@@ -34,7 +34,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 , m_WireFrame(FALSE)
 , m_RenderBone(FALSE)
 , m_RenderMesh(TRUE)
-, m_RenderBoundingBox(TRUE)
+, m_RenderBoundingBox(FALSE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
