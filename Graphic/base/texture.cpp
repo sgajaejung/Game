@@ -75,6 +75,12 @@ void cTexture::Bind(int stage)
 }
 
 
+void cTexture::Bind(cShader &shader, const string &key)
+{
+	shader.SetTexture(key, *this);
+}
+
+
 void cTexture::Lock(D3DLOCKED_RECT &out)
 {
 	m_texture->LockRect( 0, &out, NULL, 0 );

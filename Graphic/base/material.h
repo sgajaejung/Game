@@ -4,6 +4,7 @@
 namespace graphic
 {
 	struct sMaterial;
+	class cShader;
 
 	class cMaterial
 	{
@@ -27,6 +28,7 @@ namespace graphic
 		void InitRed();
 		void InitBlue();
 		void Bind();
+		void Bind(cShader &shader);
 
 
 	private:

@@ -140,6 +140,75 @@ void cMesh::Render(const Matrix44 &parentTm)
 }
 
 
+// 셰이더를 통해 화면을 그린다.
+void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
+{
+	if (m_attributes.empty())
+	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		shader.SetMatrix("mWorld", tm);
+		
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		shader.SetMatrix("mWIT", wit);
+
+		if (!m_mtrls.empty())
+			m_mtrls[ 0].Bind(shader);
+		if (!m_textures.empty())
+			m_textures[ 0]->Bind(shader, "Tex");
+
+		m_vtxBuff.Bind();
+		m_idxBuff.Bind();
+
+		//shader.CommitChanges();
+
+		shader.Begin();
+		shader.BeginPass(0);
+
+		GetDevice()->DrawIndexedPrimitive( 
+			D3DPT_TRIANGLELIST, 0, 0, 
+			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+
+		shader.End();
+		shader.EndPass();
+	}
+	else
+	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		shader.SetMatrix("mWorld", tm);
+
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		shader.SetMatrix("mWIT", wit);
+
+		m_vtxBuff.Bind();
+		m_idxBuff.Bind();
+
+		for (u_int i=0; i < m_attributes.size(); ++i)
+		{
+			const int mtrlId = m_attributes[ i].attribId;
+			if ((int)m_mtrls.size() <= mtrlId)
+				continue;
+
+			m_mtrls[ mtrlId].Bind(shader);
+			if (m_textures[ mtrlId])
+				m_textures[ mtrlId]->Bind(shader, "Tex");
+
+			shader.Begin();
+			shader.BeginPass(0);
+			shader.CommitChanges();
+
+			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+				m_vtxBuff.GetVertexCount(), 
+				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+
+			shader.EndPass();
+			shader.End();
+		}
+	}
+}
+
+
 // Render Bounding Box
 void cMesh::RenderBoundingBox(const Matrix44 &tm)
 {

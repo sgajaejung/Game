@@ -18,6 +18,7 @@ namespace graphic
 		void SetAnimation( const string &aniFileName);
 		virtual bool Move(const float elapseTime);
 		virtual void Render();
+		virtual void RenderShader(cShader &shader);
 		void Clear();
 
 		int GetId() const;

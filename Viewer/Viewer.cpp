@@ -30,12 +30,11 @@ private:
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cModel *m_model;
-	graphic::cModel *m_model2;
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
 
 	cTestScene *m_scene;
-	graphic::cCollisionManager collisionMgr;
+	//graphic::cCollisionManager collisionMgr;
 
 
 	string m_filePath;
@@ -59,7 +58,6 @@ INIT_FRAMEWORK(cViewer);
 
 cViewer::cViewer() :
 	m_model(NULL)
-,	m_model2(NULL)
 ,	m_sprite(NULL)
 ,	m_image(NULL)
 ,	m_scene(NULL)
@@ -74,7 +72,6 @@ cViewer::cViewer() :
 cViewer::~cViewer()
 {
 	SAFE_DELETE(m_model);
-	SAFE_DELETE(m_model2);
 	SAFE_DELETE(m_image);
 	SAFE_DELETE(m_scene);
 	SAFE_RELEASE(m_sprite);
@@ -88,22 +85,14 @@ bool cViewer::OnInit()
 
 	D3DXCreateSprite(graphic::GetDevice(), &m_sprite);
 
-
 	//m_scene = new cTestScene(m_sprite);
 	//m_scene->SetPos(Vector3(100,100,0));
 
-	//m_filePath = "../media/mesh.dat";
+
 	m_model = new graphic::cModel(1000);
-	m_model->Create( "../media/girl_mesh.dat" );
-	m_model->SetAnimation("../media/girl_mesh_ani.ani");
+	m_model->Create( "../media/weapon.dat" );
+	m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
 
-	m_model2 = new graphic::cModel(2000);
-	m_model2->Create( "../media/box.dat" );
-
-	collisionMgr.InsertObject(0, m_model, 1);
-	collisionMgr.InsertObject(1, m_model2, 1);
-
-	m_shader.Create( "../media/shader/hlsl.fx", "TShader" );
 
 	m_mtrl.InitWhite();
 
@@ -135,8 +124,8 @@ void cViewer::OnUpdate(const float elapseT)
 	if (m_model)
 		m_model->Move(elapseT);
 
-	collisionMgr.UpdateCollisionBox();
-	collisionMgr.CollisionTest(1);
+	//collisionMgr.UpdateCollisionBox();
+	//collisionMgr.CollisionTest(1);
 }
 
 
@@ -163,24 +152,25 @@ void cViewer::OnRender(const float elapseT)
 		if (m_scene)
 			m_scene->Render(tm);
 
+
+		//m_model->SetTM(m_rotateTm);
+		//m_model->Render();
+
+
+
+		m_shader.SetMatrix( "mVP", m_view * m_proj);
+		m_shader.SetVector( "vLightDir", Vector3(0, -1, 0) );
+
+		//m_shader.Begin();
+		//m_shader.BeginPass(0);
+
 		m_model->SetTM(m_rotateTm);
-		m_model->Render();
+		m_model->RenderShader(m_shader);
+
+		//m_shader.End();
+		//m_shader.EndPass();
 
 
-		Matrix44 mat;
-		mat.SetTranslate(m_boxPos);
-
-		m_shader.Begin();
-		m_shader.BeginPass(0);
-
-		Matrix44 wvp = mat * m_view * m_proj;
-		m_shader.SetMatrix( "mWVP", wvp);
-
-		m_model2->SetTM(mat);
-		m_model2->Render();
-
-		m_shader.End();
-		m_shader.EndPass();
 
 
 		//랜더링 끝
@@ -214,7 +204,6 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 
 			m_filePath = filePath;
 			m_model->Create(filePath);
-			m_model->SetAnimation("../media/ani4.ani");
 		}
 		break;
 

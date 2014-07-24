@@ -74,3 +74,8 @@ void cMaterial::Bind()
 {
 	graphic::GetDevice()->SetMaterial(&m_mtrl);
 }
+
+void cMaterial::Bind(cShader &shader)
+{
+
+}

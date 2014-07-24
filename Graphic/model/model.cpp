@@ -117,6 +117,26 @@ void cModel::Render()
 }
 
 
+void cModel::RenderShader(cShader &shader)
+{
+	Matrix44 identity;
+	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&identity);
+
+	if (m_isRenderMesh)
+	{
+		BOOST_FOREACH (auto node, m_meshes)
+			node->RenderShader(shader, m_matTM);
+	}
+
+	//if (m_isRenderBone && m_bone)
+	//	m_bone->Render(m_matTM);
+
+	//if (m_bone && m_isRenderBoundingBox)
+	//	m_bone->RenderBoundingBox(m_matTM);
+
+}
+
+
 // remove all data
 void cModel::Clear()
 {

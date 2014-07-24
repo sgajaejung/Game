@@ -29,6 +29,7 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) {return true;}
 		virtual void Render(const Matrix44 &parentTm);
+		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
 
 
 	protected:
