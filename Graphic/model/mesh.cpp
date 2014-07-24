@@ -192,7 +192,10 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 			m_mtrls[ mtrlId].Bind(shader);
 			if (m_textures[ mtrlId])
+			{
+				m_textures[ mtrlId]->Bind(0);
 				m_textures[ mtrlId]->Bind(shader, "Tex");
+			}
 
 			shader.Begin();
 			shader.BeginPass(0);
