@@ -56,5 +56,5 @@ namespace graphic
 	};
 
 
-	int cCollisionManager::GetCollisionCount() const { return m_collisionCount; }
+	inline int cCollisionManager::GetCollisionCount() const { return m_collisionCount; }
 }
