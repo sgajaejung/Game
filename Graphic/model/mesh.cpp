@@ -160,8 +160,6 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 		m_vtxBuff.Bind();
 		m_idxBuff.Bind();
 
-		//shader.CommitChanges();
-
 		shader.Begin();
 		shader.BeginPass(0);
 
@@ -181,6 +179,8 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 		wit.Transpose();
 		shader.SetMatrix("mWIT", wit);
 
+		shader.Begin();
+
 		m_vtxBuff.Bind();
 		m_idxBuff.Bind();
 
@@ -192,22 +192,18 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 			m_mtrls[ mtrlId].Bind(shader);
 			if (m_textures[ mtrlId])
-			{
-				m_textures[ mtrlId]->Bind(0);
 				m_textures[ mtrlId]->Bind(shader, "Tex");
-			}
 
-			shader.Begin();
 			shader.BeginPass(0);
-			shader.CommitChanges();
 
 			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 				m_vtxBuff.GetVertexCount(), 
 				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
 
 			shader.EndPass();
-			shader.End();
 		}
+
+		shader.End();
 	}
 }
 
