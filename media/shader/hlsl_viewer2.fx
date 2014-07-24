@@ -29,7 +29,7 @@ sampler Samp = sampler_state
     MagFilter = LINEAR;
     MipFilter = NONE;
 
-//    AddressU = Wrap;
+ //   AddressU = Wrap;
 //    AddressV = Wrap;
 };
 

@@ -159,17 +159,11 @@ void cViewer::OnRender(const float elapseT)
 
 
 		m_shader.SetMatrix( "mVP", m_view * m_proj);
-		m_shader.SetVector( "vLightDir", Vector3(0, -1, 0) );
+		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 
-		//m_shader.Begin();
-		//m_shader.BeginPass(0);
 
 		m_model->SetTM(m_rotateTm);
 		m_model->RenderShader(m_shader);
-
-		//m_shader.End();
-		//m_shader.EndPass();
-
 
 
 

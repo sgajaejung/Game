@@ -79,10 +79,7 @@ VS_OUTPUT VS_pass0(
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
     float4 Out;
-	//Out = In.Diffuse * tex2D(Samp, In.Tex);
-	Out = tex2D(Samp, In.Tex);
-	//Out = In.Diffuse;
-
+	Out = In.Diffuse * tex2D(Samp, In.Tex);
     return Out;
 }
 
