@@ -14,6 +14,7 @@ namespace graphic
 		void LoadWeapon(const string &fileName);
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render() override;
+		virtual void RenderShader(cShader &shader);
 
 
 	private:

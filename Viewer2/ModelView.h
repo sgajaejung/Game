@@ -22,11 +22,15 @@ protected:
 	Matrix44 m_rotateTm;
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;
+	Matrix44 m_matView;
+	Matrix44 m_matProj;
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;
 	bool m_MButtonDown;
 	CPoint m_curPos;
+
+	graphic::cShader m_shader;
 
 
 public:

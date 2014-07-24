@@ -14,6 +14,7 @@ public:
 	const string& GetCurrentAnimationFileName();
 
 	void Render();
+	void RenderShader(graphic::cShader &shader);
 	void Update(const float elapseT);
 	void SetAnimationPlay(const bool isPlay);
 	bool IsAnimationPlay() const;
@@ -22,6 +23,7 @@ public:
 
 private:
 	graphic::cCharacter *m_character;
+
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;
 	bool m_isPlay;

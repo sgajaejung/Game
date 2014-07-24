@@ -63,3 +63,13 @@ void cCharacter::Render()
 	if (m_weapon)
 		m_weapon->Render();
 }
+
+
+void cCharacter::RenderShader(cShader &shader)
+{
+	cModel::RenderShader(shader);
+
+	//if (m_weapon)
+	//	m_weapon->RenderShader(shader);
+
+}
