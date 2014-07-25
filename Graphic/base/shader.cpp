@@ -58,6 +58,7 @@ bool cShader::Create(const string &fileName, const string &technique)
 void cShader::Begin()
 {
 	RET(!m_effect);
+	//GetDevice()->SetVertexShader(m_effect);
 	m_effect->Begin(NULL, 0);
 	m_effect->SetTechnique( m_hTechnique );
 }
@@ -124,11 +125,11 @@ void cShader::SetVector(const string &key, const Vector3 &vec )
 }
 
 
-void cShader::SetMatrixArray(const string &key, const Matrix44 mat[], const int count )
+void cShader::SetMatrixArray(const string &key, const Matrix44 *mat, const int count )
 {
 	RET(!m_effect);
 	D3DXHANDLE	handle = m_effect->GetParameterByName(NULL, key.c_str());
-	if (FAILED(m_effect->SetMatrixArray(handle, (D3DXMATRIX*)mat, min(64, count))))
+	if (FAILED(m_effect->SetMatrixArray(handle, (D3DXMATRIX*)mat, count)))
 	{
 		MessageBoxA( NULL, "cShader::SetMatrixArray Error", "ERROR", MB_OK);
 	}

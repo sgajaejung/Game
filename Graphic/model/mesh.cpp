@@ -75,7 +75,9 @@ void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
 			const int vtxIdx = weight.vtxIdx;
 
 			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
-			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
+
+			//ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
+			pv[ vtxIdx].matrixIndices = 0;
 
 			for (int k=0; (k < weight.size) && (k < 4); ++k)
 			{
@@ -90,7 +92,9 @@ void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
 						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
 				}
 
-				pv[ vtxIdx].matrixIndices[ k] = w->bone;
+				//pv[ vtxIdx].matrixIndices[ k] = w->bone;
+				const int boneIdx = (w->bone << (8*(3-k)));
+				pv[ vtxIdx].matrixIndices |= boneIdx;
 			}
 		}
 

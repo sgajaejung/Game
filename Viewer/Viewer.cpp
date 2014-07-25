@@ -30,6 +30,7 @@ private:
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cModel *m_model;
+	graphic::cModel m_model2;
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
 
@@ -61,6 +62,7 @@ cViewer::cViewer() :
 ,	m_sprite(NULL)
 ,	m_image(NULL)
 ,	m_scene(NULL)
+,	m_model2(1)
 {
 	m_windowName = L"Viewer";
 	const RECT r = {0, 0, 1024, 768};

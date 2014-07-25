@@ -53,23 +53,28 @@ struct VS_OUTPUT
 VS_OUTPUT VS_pass0(
 	float4 Pos : POSITION,          // 모델정점
 	float3 Normal : NORMAL,		// 법선벡터
+	float4 BonIndices : COLOR0, // 본 인덱스 (4개 저장)
 	float2 Tex : TEXCOORD0,
-	float4 Weights : TEXCOORD1,	// 버텍스 가중치
-	float4 BonIndices : TEXCOORD2	// 본 인덱스 (4개 저장)
+	float4 Weights : BLENDWEIGHT	// 버텍스 가중치
 )
 {
 	VS_OUTPUT Out = (VS_OUTPUT)0; // 출력데이터
     
 	// 좌표변환
 	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
+	//Out.Pos = mul( Pos, mWVP );
+	
+	//float4 indices = D3DCOLORtoUBYTE4(BonIndices);
+	float4 indices = BonIndices;
 
-//	float4 pos = {0,0,0,0};
-//	pos += mul(Pos, mPalette[ BonIndices.x]) * Weights.x;
-//	pos += mul(Pos, mPalette[ BonIndices.y]) * Weights.y;
-//	pos += mul(Pos, mPalette[ BonIndices.z]) * Weights.z;
-//	pos += mul(Pos, mPalette[ BonIndices.w]) * Weights.w;
-//	Out.Pos = mul( pos, mWVP );
+
+	float4 p2;
+	float4 p1;
+	p1 = mul(Pos, mPalette[ indices.x]);
+	p1 *= Weights.x;
+	p2 = p1;
+
+	Out.Pos = mul( p2, mWVP );
 
 	
 	// 정점 색
@@ -108,7 +113,7 @@ technique TShader
     {
         // 셰이더
         VertexShader = compile vs_3_0 VS_pass0();
-	PixelShader  = compile ps_3_0 PS_pass0();
+		PixelShader  = compile ps_3_0 PS_pass0();
     }
 
 }
