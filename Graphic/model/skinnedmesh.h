@@ -16,10 +16,12 @@ namespace graphic
 
 	protected:
 		void ApplyPalette();
+		void ApplyPaletteShader(cShader &shader);
 
 
 	private:
 		const sRawMesh &m_rawMesh;
 		const vector<Matrix44> &m_palette;
 	};
+
 }

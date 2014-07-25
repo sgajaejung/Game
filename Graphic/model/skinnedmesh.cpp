@@ -27,7 +27,7 @@ void cSkinnedMesh::Render(const Matrix44 &parentTm)
 
 void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 {
-	ApplyPalette();
+	ApplyPaletteShader(shader);
 	cMesh::RenderShader(shader, parentTm);
 }
 
@@ -35,23 +35,32 @@ void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 // ÆÈ·¹Æ® Àû¿ë.
 void cSkinnedMesh::ApplyPalette()
 {
-	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
-
-	BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
+	if (sVertexNormTexSkin *vertices = (sVertexNormTexSkin*)m_vtxBuff.Lock())
 	{
-		const int vtxIdx = weight.vtxIdx;
-		vertices[ vtxIdx].p = Vector3(0,0,0);
-		vertices[ vtxIdx].n = Vector3(0,0,0);
-
-		for( int k=0; k < weight.size; ++k )
+		BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
 		{
-			const sWeight *w = &weight.w[ k];
-			Vector3 v = m_rawMesh.vertices[ vtxIdx] * m_palette[ w->bone];
-			Vector3 n = m_rawMesh.normals[ vtxIdx].MultiplyNormal( m_palette[ w->bone] );
-			vertices[ vtxIdx].p += v * w->weight;
-			vertices[ vtxIdx].n += n * w->weight;
+			const int vtxIdx = weight.vtxIdx;
+			vertices[ vtxIdx].p = Vector3(0,0,0);
+			vertices[ vtxIdx].n = Vector3(0,0,0);
+
+			for( int k=0; k < weight.size; ++k )
+			{
+				const sWeight *w = &weight.w[ k];
+				Vector3 v = m_rawMesh.vertices[ vtxIdx] * m_palette[ w->bone];
+				Vector3 n = m_rawMesh.normals[ vtxIdx].MultiplyNormal( m_palette[ w->bone] );
+				vertices[ vtxIdx].p += v * w->weight;
+				vertices[ vtxIdx].n += n * w->weight;
+			}
 		}
 	}
 
 	m_vtxBuff.Unlock();
+}
+
+
+// ÆÈ·¹Æ® Àû¿ë.
+void cSkinnedMesh::ApplyPaletteShader(cShader &shader)
+{
+	shader.SetMatrixArray("mPalette", &m_palette[0], m_palette.size());
+	shader.CommitChanges();
 }

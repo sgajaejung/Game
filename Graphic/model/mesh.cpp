@@ -9,6 +9,7 @@ cMesh::cMesh(const int id, const sRawMesh &rawMesh) :
 	cNode(id)
 {
 	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
+	CreateBoneWeight(rawMesh.weights);
 	CreateMaterials(rawMesh);
 	CreateAttributes(rawMesh);
 }
@@ -33,9 +34,9 @@ void cMesh::CreateMesh( const vector<Vector3> &vertices,
 	const bool isTexture = !tex.empty();
 
 	// 버텍스 버퍼 생성.
-	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTex), sVertexNormTex::FVF))
+	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
 	{
-		sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock();
+		sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
 		for (u_int i = 0; i < vertices.size(); i++)
 		{
 			pv[ i].p = vertices[ i];
@@ -59,6 +60,43 @@ void cMesh::CreateMesh( const vector<Vector3> &vertices,
 	}
 
 	//CreateBoundingBox(m_boundingBox);
+}
+
+
+// 본 인덱스, 가중치를 설정한다.s
+void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
+{
+
+	if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
+	{
+		for (u_int i=0; i <weights.size(); ++i)
+		{
+			const sVertexWeight &weight = weights[ i];
+			const int vtxIdx = weight.vtxIdx;
+
+			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
+			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
+
+			for (int k=0; (k < weight.size) && (k < 4); ++k)
+			{
+				const sWeight *w = &weight.w[ k];
+				if (k < 3)
+				{
+					pv[ vtxIdx].weights[ k] = w->weight;
+				}
+				else // k == 3 (마지막 가중치)
+				{
+					pv[ vtxIdx].weights[ k] = 
+						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
+				}
+
+				pv[ vtxIdx].matrixIndices[ k] = w->bone;
+			}
+		}
+
+		m_vtxBuff.Unlock();
+	}
+
 }
 
 
@@ -220,7 +258,7 @@ void cMesh::CreateBoundingBox(OUT cCube &out)
 {
 	sMinMax mm;
 
-	sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock();
+	sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
 	for (int i = 0; i < m_vtxBuff.GetVertexCount(); i++)
 	{
 		const Vector3 pos = pv[ i].p;

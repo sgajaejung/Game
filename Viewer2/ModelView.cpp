@@ -81,8 +81,10 @@ void CModelView::Init()
 		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
 		true); // true = 활성화 ， false = 비활성화
 
+	
 
-	m_shader.Create( "../media/shader/hlsl_viewer2.fx", "TShader" );
+	//m_shader.Create( "../media/shader/hlsl_viewer2.fx", "TShader" );
+	m_shader.Create( "../media/shader/hlsl_skinning.fx", "TShader" );
 }
 
 
@@ -121,13 +123,8 @@ void CModelView::Render()
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetMatrix( "mWorld", m_rotateTm );
 
-		//m_shader.Begin();
-		//m_shader.BeginPass(0);
-
 		cController::Get()->RenderShader(m_shader);
-
-		//m_shader.EndPass();
-		//m_shader.End();
+		//cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();

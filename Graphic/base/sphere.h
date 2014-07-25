@@ -18,9 +18,6 @@ namespace graphic
 		void Render(const Matrix44 &tm);
 
 
-	protected:
-
-
 	private:
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;

@@ -20,6 +20,7 @@ namespace graphic
 		void SetTexture(const string &key, cTexture &texture);
 		void SetFloat(const string &key, float val);
 		void SetVector(const string &key, const Vector3 &vec );
+		void SetMatrixArray(const string &key, const Matrix44 mat[], const int count );
 		void CommitChanges();
 		LPD3DXEFFECT GetEffect() { return m_effect; }
 

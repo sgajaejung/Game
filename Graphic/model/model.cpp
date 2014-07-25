@@ -133,7 +133,6 @@ void cModel::RenderShader(cShader &shader)
 
 	//if (m_bone && m_isRenderBoundingBox)
 	//	m_bone->RenderBoundingBox(m_matTM);
-
 }
 
 

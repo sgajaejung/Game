@@ -92,6 +92,8 @@ void cShader::SetMatrix(const string &key, const Matrix44 &mat)
 		MessageBoxA( NULL, "cShader::SetMatrix Error", "ERROR", MB_OK);
 	}
 }
+
+
 void cShader::SetTexture(const string &key, cTexture &texture)
 {
 	RET(!m_effect);
@@ -100,6 +102,8 @@ void cShader::SetTexture(const string &key, cTexture &texture)
 		MessageBoxA( NULL, "cShader::SetTexture Error", "ERROR", MB_OK);
 	}
 }
+
+
 void cShader::SetFloat(const string &key, float val)
 {
 	RET(!m_effect);
@@ -108,6 +112,8 @@ void cShader::SetFloat(const string &key, float val)
 		MessageBoxA( NULL, "cShader::SetFloat Error", "ERROR", MB_OK);
 	}	
 }
+
+
 void cShader::SetVector(const string &key, const Vector3 &vec )
 {
 	RET(!m_effect);
@@ -116,6 +122,18 @@ void cShader::SetVector(const string &key, const Vector3 &vec )
 		MessageBoxA( NULL, "cShader::SetVector Error", "ERROR", MB_OK);
 	}	
 }
+
+
+void cShader::SetMatrixArray(const string &key, const Matrix44 mat[], const int count )
+{
+	RET(!m_effect);
+	D3DXHANDLE	handle = m_effect->GetParameterByName(NULL, key.c_str());
+	if (FAILED(m_effect->SetMatrixArray(handle, (D3DXMATRIX*)mat, min(64, count))))
+	{
+		MessageBoxA( NULL, "cShader::SetMatrixArray Error", "ERROR", MB_OK);
+	}
+}
+
 
 void cShader::CommitChanges()
 {

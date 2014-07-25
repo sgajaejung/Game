@@ -26,6 +26,7 @@ namespace graphic
 			const vector<Vector3> &normals, 
 			const vector<Vector3> &tex,
 			const vector<int> &indices );
+		void CreateBoneWeight( const vector<sVertexWeight> &weights );
 		void CreateMaterials(const sRawMesh &rawMesh);
 		void CreateAttributes(const sRawMesh &rawMesh);
 
