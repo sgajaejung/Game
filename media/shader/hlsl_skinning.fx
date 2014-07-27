@@ -42,6 +42,8 @@ struct VS_OUTPUT
 	float4 Pos : POSITION;
 	float4 Diffuse : COLOR0;
 	float2 Tex : TEXCOORD0;
+	float3 Eye : TEXCOORD1;
+	float3 N : TEXCOORD2;
 };
 
 
@@ -77,13 +79,11 @@ VS_OUTPUT VS_pass0(
 	Out.Pos = mul( float4(p,1), mWVP );
 	n = normalize(n);
 
-	// 정점 색
-	float3 L = -vLightDir;
-	float3 N = normalize( mul(n, mWIT) ); // 월드 좌표계에서의 법선.
+	// 법선 벡터 계산.
+	float3 N = normalize( mul(n, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
 	
-	Out.Diffuse = I_a * K_a +
-						I_d * K_d * max(0, dot(N,L));
-
+	Out.N = N;
+	Out.Eye = vEyePos - Pos.xyz;
 	Out.Tex = Tex;
     
     return Out;
@@ -96,9 +96,18 @@ VS_OUTPUT VS_pass0(
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
 	float4 Out;
-	Out = In.Diffuse * tex2D(Samp, In.Tex);
-	//Out = tex2D(Samp, In.Tex);
 
+	float3 L = -vLightDir.xyz;
+	float3 H = normalize(L + normalize(In.Eye));
+	float3 N = normalize(In.N);
+
+	Out = 	I_a * K_a
+				+ I_d * K_d * max(0, dot(N,L));
+				+ I_s * pow( max(0, dot(N,H)), 16);
+
+	Out = Out * tex2D(Samp, In.Tex);
+
+	//Out = tex2D(Samp, In.Tex);
     return Out;
 }
 

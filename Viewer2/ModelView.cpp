@@ -121,7 +121,7 @@ void CModelView::Render()
 
 		m_shader.SetMatrix( "mVP", m_matView * m_matProj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_shader.SetMatrix( "mWorld", m_rotateTm );
+		m_shader.SetVector( "vEyePos", m_camPos);
 
 		cController::Get()->RenderShader(m_shader);
 		//cController::Get()->Render();

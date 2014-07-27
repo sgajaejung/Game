@@ -58,7 +58,6 @@ bool cShader::Create(const string &fileName, const string &technique)
 void cShader::Begin()
 {
 	RET(!m_effect);
-	//GetDevice()->SetVertexShader(m_effect);
 	m_effect->Begin(NULL, 0);
 	m_effect->SetTechnique( m_hTechnique );
 }
