@@ -83,8 +83,8 @@ void CModelView::Init()
 
 	
 
-	//m_shader.Create( "../media/shader/hlsl_viewer2.fx", "TShader" );
-	m_shader.Create( "../media/shader/hlsl_skinning.fx", "TShader" );
+	//m_shader.Create( "../media/shader/hlsl_skinning_using_color.fx", "TShader" );
+	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
 }
 
 
