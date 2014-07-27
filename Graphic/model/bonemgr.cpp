@@ -10,8 +10,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	m_root(NULL)
 ,	m_id(id)
 {
-	m_palette.resize(rawMeshes.bones.size());
-
+	m_palette.resize(rawMeshes.bones.size(), Matrix44());
 	m_bones.resize(rawMeshes.bones.size(), NULL);
 
 	for (u_int i=0; i < rawMeshes.bones.size(); ++i)

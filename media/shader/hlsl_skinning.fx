@@ -18,9 +18,7 @@ float4 K_a = {1.0f, 1.0f, 1.0f, 1.0f}; // ambient
 float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
 
 // 팔레트
-float4x4 mPalette[ 64];
-
-
+float4x3 mPalette[ 64];
 
 
 // ------------------------------------------------------------
@@ -53,36 +51,38 @@ struct VS_OUTPUT
 VS_OUTPUT VS_pass0(
 	float4 Pos : POSITION,          // 모델정점
 	float3 Normal : NORMAL,		// 법선벡터
-	float4 BonIndices : COLOR0, // 본 인덱스 (4개 저장)
-	float2 Tex : TEXCOORD0,
-	float4 Weights : BLENDWEIGHT	// 버텍스 가중치
+	float2 Tex : TEXCOORD0,		// 텍스쳐 좌표
+	float4 Weights : TEXCOORD1,	// 버텍스 가중치
+	float4 BoneIndices : TEXCOORD2 // 본 인덱스 (4개 저장)
 )
 {
 	VS_OUTPUT Out = (VS_OUTPUT)0; // 출력데이터
     
 	// 좌표변환
 	float4x4 mWVP = mul(mWorld, mVP);
-	//Out.Pos = mul( Pos, mWVP );
-	
-	//float4 indices = D3DCOLORtoUBYTE4(BonIndices);
-	float4 indices = BonIndices;
 
+	float3 p = {0,0,0};
+	float3 n = {0,0,0};
 
-	float4 p2;
-	float4 p1;
-	p1 = mul(Pos, mPalette[ indices.x]);
-	p1 *= Weights.x;
-	p2 = p1;
+	p += mul(Pos, mPalette[ BoneIndices.x]) * Weights.x;
+	p += mul(Pos, mPalette[ BoneIndices.y]) * Weights.y;
+	p += mul(Pos, mPalette[ BoneIndices.z]) * Weights.z;
+	p += mul(Pos, mPalette[ BoneIndices.w]) * Weights.w;
 
-	Out.Pos = mul( p2, mWVP );
+	n += mul(Normal, mPalette[ BoneIndices.x]) * Weights.x;
+	n += mul(Normal, mPalette[ BoneIndices.y]) * Weights.y;
+	n += mul(Normal, mPalette[ BoneIndices.z]) * Weights.z;
+	n += mul(Normal, mPalette[ BoneIndices.w]) * Weights.w;
 
-	
+	Out.Pos = mul( float4(p,1), mWVP );
+	n = normalize(n);
+
 	// 정점 색
 	float3 L = -vLightDir;
-	float3 N = normalize( mul(Normal, mWIT) ); // 월드 좌표계에서의 법선.
+	float3 N = normalize( mul(n, mWIT) ); // 월드 좌표계에서의 법선.
 	
-	Out.Diffuse = I_a * K_a
-		 + I_d * K_d * max(0, dot(N,L));
+	Out.Diffuse = I_a * K_a +
+						I_d * K_d * max(0, dot(N,L));
 
 	Out.Tex = Tex;
     
@@ -96,9 +96,8 @@ VS_OUTPUT VS_pass0(
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
 	float4 Out;
-	//Out = In.Diffuse * tex2D(Samp, In.Tex);
-	Out = tex2D(Samp, In.Tex);
-	//Out = In.Diffuse;
+	Out = In.Diffuse * tex2D(Samp, In.Tex);
+	//Out = tex2D(Samp, In.Tex);
 
     return Out;
 }

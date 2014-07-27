@@ -22,8 +22,6 @@ namespace graphic
 	private:
 		const sRawMesh &m_rawMesh;
 		const vector<Matrix44> &m_palette;
-		LPDIRECT3DVERTEXDECLARATION9 m_decl;
-
 	};
 
 }

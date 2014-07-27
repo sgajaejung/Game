@@ -10,10 +10,6 @@ cSkinnedMesh::cSkinnedMesh(const int id, const vector<Matrix44> &palette, const 
 ,	m_rawMesh(raw)
 ,	m_palette(palette)
 {
-	D3DVERTEXELEMENT9 decl[MAX_FVF_DECL_SIZE];
-	D3DXDeclaratorFromFVF( sVertexNormTexSkin::FVF, decl );
-	GetDevice()->CreateVertexDeclaration( decl, &m_decl );
-
 }
 
 cSkinnedMesh::~cSkinnedMesh()
@@ -30,7 +26,6 @@ void cSkinnedMesh::Render(const Matrix44 &parentTm)
 
 void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 {
-	//GetDevice()->SetVertexDeclaration(m_decl);
 	ApplyPaletteShader(shader);
 	cMesh::RenderShader(shader, parentTm);
 }
@@ -65,6 +60,6 @@ void cSkinnedMesh::ApplyPalette()
 // ÆÈ·¹Æ® Àû¿ë.
 void cSkinnedMesh::ApplyPaletteShader(cShader &shader)
 {
-	shader.SetMatrixArray("mPalette", (Matrix44*)&m_palette[0], m_palette.size());
-	shader.CommitChanges();
+	const int paletteSize = min(64, m_palette.size());
+	shader.SetMatrixArray("mPalette", (Matrix44*)&m_palette[0], paletteSize);
 }

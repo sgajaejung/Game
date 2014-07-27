@@ -85,6 +85,15 @@ void cShader::End()
 }
 
 
+void cShader::SetInt(const string &key, const int val )
+{
+	RET(!m_effect);
+	if (FAILED(m_effect->SetInt( key.c_str(), val)))
+	{
+		MessageBoxA( NULL, "cShader::SetInt Error", "ERROR", MB_OK);
+	}	
+}
+
 void cShader::SetMatrix(const string &key, const Matrix44 &mat)
 {
 	RET(!m_effect);
@@ -128,8 +137,7 @@ void cShader::SetVector(const string &key, const Vector3 &vec )
 void cShader::SetMatrixArray(const string &key, const Matrix44 *mat, const int count )
 {
 	RET(!m_effect);
-	D3DXHANDLE	handle = m_effect->GetParameterByName(NULL, key.c_str());
-	if (FAILED(m_effect->SetMatrixArray(handle, (D3DXMATRIX*)mat, count)))
+	if (FAILED(m_effect->SetMatrixArray(key.c_str(), (D3DXMATRIX*)mat, count)))
 	{
 		MessageBoxA( NULL, "cShader::SetMatrixArray Error", "ERROR", MB_OK);
 	}
