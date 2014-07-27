@@ -1,10 +1,6 @@
 
--- version 13
--- multimaterial write
--- write attribute index (face material id)
--- add export object
--- write normal bump map
--- write specular map
+-- version 14
+-- start frame, end frame 정확히 저장되게 수정함.
 
 
 
@@ -1302,7 +1298,6 @@ rollout ui "Exporter" width:387 height:266
 	edittext editAniFilePath "" pos:[100,60] width:250 height:17 enabled:true
 	
 	-- 애니메이션 start/end range 입력창.
-	checkbox chkTimeRange " " pos:[10,85] width:17 height:17 checked:false
 	label lbl4 "Start Frame:" pos:[30,85] width:70 height:17
 	spinner startFrame "" pos:[100,85] width:70 height:17 enabled:true range:[0,1000000,0] type:#integer scale:1 value:0
 	label lbl5 "End Frame:" pos:[200,85] width:70 height:17
