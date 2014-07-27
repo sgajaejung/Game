@@ -111,6 +111,31 @@ cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSi
 	return texture;
 }
 
+// 텍스쳐 로딩.
+// fileName 에 해당하는 파일이 없다면, "../media/" + dirPath  경로에서 파일을 찾는다.
+cTexture* cResourceManager::LoadTexture( const string &dirPath, const string &fileName, const bool isSizePow2)
+	//isSizePow2=true
+{
+	if (cTexture *p = FindTexture(fileName))
+		return p;
+
+	cTexture *texture = new cTexture();
+	if (!texture->Create(fileName, isSizePow2))
+	{
+		string newPath;
+		if (common::FindFile(fileName, "../media/"+dirPath+"/", newPath))
+		{
+			if (!texture->Create(newPath, isSizePow2))
+			{
+				delete texture;
+				return false;
+			}
+		}
+	}
+	m_textures[ fileName] = texture;
+	return texture;
+}
+
 
 // 텍스쳐 찾기.
 cTexture* cResourceManager::FindTexture( const string &fileName )

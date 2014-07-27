@@ -114,7 +114,7 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 		m_mtrls.push_back(cMaterial());
 		m_mtrls.back().Init(mtrl);
 
-		m_textures.push_back( cResourceManager::Get()->LoadTexture(mtrl.texture) );
+		m_textures.push_back( cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.texture) );
 	}
 }
 

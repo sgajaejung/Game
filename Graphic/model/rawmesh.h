@@ -11,6 +11,7 @@ namespace graphic
 		Vector4 specular;
 		Vector4 emissive;
 		float power;
+		string directoryPath; // 텍스쳐가 저장된 디렉토리 경로를 저장한다.
 		string texture;
 		string bumpMap;
 		string specularMap;

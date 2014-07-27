@@ -19,6 +19,7 @@ sMaterial& sMaterial::operator=(const sMaterial &rhs)
 		specular = rhs.specular;
 		emissive = rhs.emissive;
 		power = rhs.power;
+		directoryPath = rhs.directoryPath;
 		texture = rhs.texture;
 		bumpMap = rhs.bumpMap;
 		specularMap = rhs.specularMap;

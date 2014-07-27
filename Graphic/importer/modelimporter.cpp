@@ -10,6 +10,8 @@ namespace graphic { namespace importer {
 	bool ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+	// V14 는 V13 포맷과 같음.
+	bool ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 
 
 	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
@@ -25,6 +27,7 @@ namespace graphic { namespace importer {
 	bool ReadVertexWeight(std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadMaterial(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl);
 	bool ReadMaterialV13(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl);
+	bool ReadMaterialV15(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl);
 	bool ReadAttributeBuffer(std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadAttributes(std::ifstream &fin, OUT sAttribute &attribute);
 }}
@@ -60,6 +63,10 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 	{
 		ReadRawMeshFileV13(fileName, rawMeshes);
 	}
+	else if (version == "EXPORTER_V15")
+	{
+		ReadRawMeshFileV15(fileName, rawMeshes);
+	}
 	else 
 	{
 		::MessageBoxA(GetRenderer()->GetHwnd(), "지원하지 않는 포맷 입니다.", "Error", MB_OK);
@@ -84,6 +91,8 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 		|| (version == "EXPORTER_V10") 
 		|| (version == "EXPORTER_V11")
 		|| (version == "EXPORTER_V13")
+		|| (version == "EXPORTER_V14")
+		|| (version == "EXPORTER_V15")
 		)
 	{
 		ReadRawAnimationFileV9(fileName, rawAni);
@@ -305,6 +314,61 @@ bool importer::ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &ra
 	return true;
 }
 
+
+bool importer::ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &rawMeshes )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string meshExporter;
+	fin >> meshExporter;
+
+	if (meshExporter != "MESH_EXPORT")
+		return false;
+
+	string material, eq;
+	int mtrlCount;
+	fin >> material >> eq >> mtrlCount;
+
+	rawMeshes.mtrls.resize(mtrlCount);
+
+	for (int i=0; i < mtrlCount; ++i)
+	{
+		ReadMaterialV15(fin, fileName, rawMeshes.mtrls[ i]);
+	}
+
+	string geomObject;
+	int geomObjectCount;
+	fin >> geomObject >> eq >> geomObjectCount;
+
+	rawMeshes.meshes.reserve(geomObjectCount);
+
+	for (int i=0; i < geomObjectCount; ++i)
+	{
+		rawMeshes.meshes.push_back( sRawMesh() );
+		ReadMeshInfoV11(fin, rawMeshes.meshes.back());
+
+		// material id 로 material 구조체 초기화.
+		BOOST_FOREACH (auto &mtrlId, rawMeshes.meshes.back().mtrlIds)
+		{
+			rawMeshes.meshes.back().mtrls.push_back( rawMeshes.mtrls[ mtrlId] );
+		}
+
+		ReadVertexIndexNormal(fin, rawMeshes.meshes.back());
+		ReadTextureCoordinate(fin, fileName, rawMeshes.meshes.back(), true);
+		ReadAttributeBuffer(fin, rawMeshes.meshes.back());
+		ReadVertexWeight(fin, rawMeshes.meshes.back());
+	}
+
+	ReadBone(fin, rawMeshes);
+
+	return true;
+}
 
 
 bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies )
@@ -911,6 +975,82 @@ bool importer::ReadMaterialV13(std::ifstream &fin, const string &fileName, OUT s
 
 	// DiffuseMap
 	string textureTok, texFilePath;
+	fin >> textureTok; // TEXTURE
+
+	std::getline(fin, texFilePath);
+	common::trim(texFilePath);
+	if (!texFilePath.empty())
+	{
+		string  textureFileName = common::GetFilePathExceptFileName(fileName) + "\\" + texFilePath;
+		mtrl.texture = textureFileName;
+	}
+
+
+	// SpecularMap
+	string specularFilePath;
+	fin >> textureTok; // SPECULAR_TEXTURE
+
+	std::getline(fin, specularFilePath);
+	common::trim(specularFilePath);
+	if (!specularFilePath.empty())
+	{
+		string specularFileName = common::GetFilePathExceptFileName(fileName) + "\\" + specularFilePath;
+		mtrl.specularMap = specularFileName;
+	}
+
+
+	// BumpMap
+	string bumpFilePath;
+	fin >> textureTok; // BUMP_TEXTURE
+
+	std::getline(fin, bumpFilePath);
+	common::trim(bumpFilePath);
+	if (!bumpFilePath.empty())
+	{
+		string  bumpFileName = common::GetFilePathExceptFileName(fileName) + "\\" + bumpFilePath;
+		mtrl.bumpMap = bumpFileName;
+		replaceAll(mtrl.bumpMap, ":Normal Bump", "");
+	}
+
+	return true;
+}
+
+
+bool importer::ReadMaterialV15(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl)
+{
+	string id, eq;
+
+	int idx;
+	fin >> id >> idx;
+
+	Vector4 v;
+	fin >> id >> v.x >> v.y >> v.z >> v.w;
+	mtrl.diffuse = v;
+	fin >> id >> v.x >> v.y >> v.z >> v.w;
+	mtrl.ambient = v;
+	fin >> id >> v.x >> v.y >> v.z >> v.w;
+	mtrl.specular = v;
+	fin >> id >> v.x >> v.y >> v.z >> v.w;
+	mtrl.emissive = v;
+
+	float f;
+	fin >> id >> f;
+	mtrl.power = f;
+
+	// Texture Path
+	string textureTok, texDirectoryPath;
+	fin >> textureTok; // TEXTURE_DIR_PATH
+
+	std::getline(fin, texDirectoryPath);
+	common::trim(texDirectoryPath);
+	if (!texDirectoryPath.empty())
+	{
+		mtrl.directoryPath = texDirectoryPath;
+	}
+
+
+	// DiffuseMap
+	string texFilePath;
 	fin >> textureTok; // TEXTURE
 
 	std::getline(fin, texFilePath);
