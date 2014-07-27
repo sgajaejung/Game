@@ -41,6 +41,10 @@ void cSphere::Create(const float radius, const int stacks, const int slices)
 	if (m_vtxBuff.GetVertexCount() > 0)
 		return;
 
+	m_radius = radius;
+	m_numSlices = slices;
+	m_numStacks = stacks;
+
 	const int dwVertices = (slices) * (((stacks-2) * 4) + 6);
 	const int dwIndices = ((slices-1)*6) * stacks ;
 

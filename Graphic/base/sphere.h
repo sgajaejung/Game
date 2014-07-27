@@ -22,8 +22,9 @@ namespace graphic
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;
 		Matrix44 m_tm;
-		float m_radian;
-		int m_numSlice;
+		float m_radius;
+		int m_numSlices;
+		int m_numStacks;
 	};	
 
 
