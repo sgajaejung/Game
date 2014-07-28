@@ -58,7 +58,7 @@ void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
 	m_isAni = true;
 
 	m_curPlayFrame = rawAni.start;
-	m_curPlayTime = rawAni.start * 0.03333f;
+	m_curPlayTime = rawAni.start * 0.03334f;
 
 	SAFE_DELETE(m_track)
 	m_track = new cTrack(rawAni);
