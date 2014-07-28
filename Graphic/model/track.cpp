@@ -151,8 +151,15 @@ bool cTrack::GetScaleKey( const int curFrame, OUT Vector3 &out )
 
 
 // 애니메이션 초기화, 처음으로 돌아간다.
-void cTrack::InitAnimation()
+// curFrame : 시작 프레임.
+void cTrack::InitAnimation(const int curFrame ) // curFrame=0
 {
+	if (curFrame > 0)
+	{
+		SetCurrentFramePos(curFrame);
+		return;
+	}
+
 	ZeroMemory( m_curKeyPos, sizeof(m_curKeyPos) );
 	ZeroMemory( m_curKeyRot, sizeof(m_curKeyRot) );
 	ZeroMemory( m_curKeyScale, sizeof(m_curKeyScale) );
@@ -188,7 +195,9 @@ float cTrack::GetAlpha(float f1, float f2, float frame ) const
 {
 	if (FLOAT_EQ(f1, f2))
 		return 0;
-	return min(1, (frame-f1) / (f2-f1)); 
+
+	const float f = (frame-f1) / (f2-f1);
+	return max(0, min(1, f)); 
 }
 
 

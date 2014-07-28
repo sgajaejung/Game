@@ -11,7 +11,7 @@ namespace graphic
 		cTrack(const sRawAni &rawAni);
 		virtual ~cTrack();
 
-		void InitAnimation();
+		void InitAnimation( const int curFrame = 0 );
 		void Move( const int curFrame, OUT Matrix44 &out );
 		int GetCurrentFrame() const;
 		void SetCurrentFramePos( const int curFrame );

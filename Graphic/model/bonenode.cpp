@@ -57,7 +57,8 @@ void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
 	m_isLoop = bLoop;
 	m_isAni = true;
 
-	m_curPlayFrame = 0;
+	m_curPlayFrame = rawAni.start;
+	m_curPlayTime = rawAni.start * 0.03333f;
 
 	SAFE_DELETE(m_track)
 	m_track = new cTrack(rawAni);
@@ -85,8 +86,8 @@ bool cBoneNode::Move(const float elapseTime)
 		if (m_isLoop)
 		{
 			m_curPlayFrame = m_aniStart;
-			m_curPlayTime = m_aniStart * 0.03333f;
-			m_track->InitAnimation();
+			m_curPlayTime = m_aniStart * 0.03334f;
+			m_track->InitAnimation(m_aniStart);
 		}
 		else
 		{
@@ -96,13 +97,13 @@ bool cBoneNode::Move(const float elapseTime)
 			if (ani_loop_end)
 			{
 				m_curPlayFrame = m_aniStart;
-				m_curPlayTime = m_aniStart * 0.03333f;
+				m_curPlayTime = m_aniStart * 0.03334f;
 
 				// 총 에니메이션이 끝나지 않았다면 에니메이션 정보를 처음으로 되돌린다.
 				// 총 에니메이션이 끝났다면 정보를 되돌리지 않고 마지막 프레임을 향하게 내버려둔다.
 				// 다음 에니메이션에서 보간되기 위해서 마지막 프레임으로 두어야 한다.
 				if (!ani_end)
-					m_track->InitAnimation();
+					m_track->InitAnimation(m_aniStart);
 			}
 			if (ani_end)
 			{
@@ -113,7 +114,6 @@ bool cBoneNode::Move(const float elapseTime)
 	}
 
 	m_aniTM.SetIdentity();
-
 	m_track->Move( m_curPlayFrame, m_aniTM );
 
 	m_accTM = m_localTM * m_aniTM * m_TM;
