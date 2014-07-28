@@ -43,6 +43,7 @@ private:
 	POINT m_curPos;
 	bool m_LButtonDown;
 	bool m_RButtonDown;
+	bool m_MButtonDown;
 	Matrix44 m_rotateTm;
 
 	Vector3 m_camPos;
@@ -69,6 +70,7 @@ cViewer::cViewer() :
 	m_windowRect = r;
 	m_LButtonDown = false;
 	m_RButtonDown = false;
+	m_MButtonDown = false;
 }
 
 cViewer::~cViewer()
@@ -93,7 +95,8 @@ bool cViewer::OnInit()
 
 	m_model = new graphic::cModel(1000);
 	m_model->Create( "../media/weapon.dat" );
-	m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
+	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
+	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
 
 
 	m_mtrl.InitWhite();
@@ -162,6 +165,7 @@ void cViewer::OnRender(const float elapseT)
 
 		m_shader.SetMatrix( "mVP", m_view * m_proj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		m_shader.SetVector( "vEyePos", m_camPos);
 
 
 		m_model->SetTM(m_rotateTm);
@@ -199,7 +203,18 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				return;// handle error...
 
 			m_filePath = filePath;
-			m_model->Create(filePath);
+
+			const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(filePath);
+			switch (type)
+			{
+			case graphic::RESOURCE_TYPE::MESH:
+				m_model->Create(filePath);
+				break;
+
+			case graphic::RESOURCE_TYPE::ANIMATION:
+				m_model->SetAnimation(filePath);
+				break;
+			}
 		}
 		break;
 
@@ -277,6 +292,16 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 		m_RButtonDown = false;
 		break;
 
+	case WM_MBUTTONDOWN:
+		m_MButtonDown = true;
+		m_curPos.x = LOWORD(lParam);
+		m_curPos.y = HIWORD(lParam);
+		break;
+
+	case WM_MBUTTONUP:
+		m_MButtonDown = false;
+		break;
+
 	case WM_MOUSEMOVE:
 		if (wParam & 0x10) // middle button down
 		{
@@ -317,6 +342,27 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				Matrix44 m = q.GetMatrix();
 				m_camPos *= m;
 			}
+
+			UpdateCamera();
+		}
+		else if (m_MButtonDown)
+		{
+			const POINT point = {LOWORD(lParam), HIWORD(lParam)};
+			const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
+			m_curPos = point;
+
+			Vector3 v = m_lookAtPos - m_camPos;
+			const float len = v.Length();
+			v.Normalize();
+
+			const Vector3 up = Vector3(0,1,0);
+			Vector3 right = up.CrossProduct(v);
+			right.Normalize();
+
+			m_lookAtPos += right * pos.x * (len * -0.001f);
+			m_camPos += right * pos.x * (len * -0.001f);
+			m_lookAtPos += up * pos.y * (len * 0.001f);
+			m_camPos += up * pos.y * (len * 0.001f);
 
 			UpdateCamera();
 		}
