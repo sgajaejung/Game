@@ -71,7 +71,7 @@ void cModel::SetAnimation( const string &aniFileName)
 {
 	if (sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName))
 	{
-		if (m_bone)
+		if (m_bone) // skinning model
 		{
 			m_bone->SetAnimation(*rawAnies, 0);
 		}

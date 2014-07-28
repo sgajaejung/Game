@@ -6,20 +6,17 @@
 #include "ModelView.h"
 
 
-
 // CModelView
 
 CModelView::CModelView()
 {
 	m_LButtonDown = false;
 	m_RButtonDown = false;
-	m_MButtonDown = false;
-	
+	m_MButtonDown = false;	
 }
 
 CModelView::~CModelView()
 {
-
 }
 
 BEGIN_MESSAGE_MAP(CModelView, CView)
@@ -286,5 +283,3 @@ bool CModelView::LoadFile(const string &fileName)
 
 	return false;
 }
-
-
