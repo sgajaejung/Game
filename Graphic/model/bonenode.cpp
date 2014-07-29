@@ -51,8 +51,9 @@ void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
 	}
 
 	m_aniStart = rawAni.start;
-	m_aniEnd	 = aniend;
+	m_aniEnd = aniend;
 	m_incPlayFrame = 0;
+	m_incPlayTime = 0;
 
 	m_isLoop = bLoop;
 	m_isAni = true;
