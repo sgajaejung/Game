@@ -120,3 +120,46 @@ void cGrid2::CalculateNormals()
 	m_vtxBuff.Unlock();
 	m_idxBuff.Unlock();
 }
+
+
+// 광선 orig, dir 에 충돌된 면이 있다면 true 를 리턴하고, 충돌 위치를 out에 
+// 저장해서 리턴한다.
+bool cGrid2::Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out )
+{
+	bool isFirst = true;
+	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
+	WORD *indices = (WORD*)m_idxBuff.Lock();
+	for (int i=0; i < m_idxBuff.GetFaceCount()*3; i+=3)
+	{
+		const Vector3 &p1 = vertices[ indices[ i]].p;
+		const Vector3 &p2 = vertices[ indices[ i+1]].p;
+		const Vector3 &p3 = vertices[ indices[ i+2]].p;
+
+		const Triangle tri(p1, p2, p3);
+		const Plane p(p1, p2, p3);
+
+		const float dot = dir.DotProduct( p.N );
+		if (dot >= 0)
+			continue;
+
+		float t;
+		if (tri.Intersect(orig, dir, &t))
+		{
+			if (isFirst)
+			{
+				isFirst = false;
+				out = orig + dir * t;
+			}
+			else
+			{
+				const Vector3 v = orig + dir * t;
+				if (orig.LengthRoughly(v) < orig.LengthRoughly(out))
+					out = v;
+			}
+		}
+	}
+	m_vtxBuff.Unlock();
+	m_idxBuff.Unlock();
+
+	return !isFirst;
+}

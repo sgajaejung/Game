@@ -43,6 +43,15 @@
     <ClInclude Include="etc\rect.h">
       <Filter>Etc</Filter>
     </ClInclude>
+    <ClInclude Include="math\triangle.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\plane.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\ray.h">
+      <Filter>math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -72,6 +81,15 @@
     </ClCompile>
     <ClCompile Include="etc\rect.cpp">
       <Filter>Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="math\triangle.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\plane.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\ray.cpp">
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

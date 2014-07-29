@@ -34,6 +34,7 @@ private:
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
 	graphic::cTerrain m_terrain;
+	graphic::cCube m_cube;
 
 	cTestScene *m_scene;
 	//graphic::cCollisionManager collisionMgr;
@@ -100,6 +101,8 @@ bool cViewer::OnInit()
 	//m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
 	m_terrain.CreateFromHeightMap( "../media/terrain/heightmap.jpg", "../media/terrain/texture.jpg", 7.f);
 
+	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
+
 	m_mtrl.InitWhite();
 
 	Vector4 color(1,1,1,1);
@@ -110,7 +113,7 @@ bool cViewer::OnInit()
 		Vector3(0,-1,0));
 	m_light.Bind(0);
 
-	m_camPos = Vector3(100,100,-500);
+	m_camPos = Vector3(100,5500,-5500);
 	m_lookAtPos = Vector3(0,0,0);
 	UpdateCamera();
 
@@ -176,6 +179,8 @@ void cViewer::OnRender(const float elapseT)
 		m_terrain.Render();
 		m_shader.EndPass();
 		m_shader.End();
+
+		m_cube.Render(matIdentity);
 
 		//m_model->SetTM(m_rotateTm);
 		//m_model->RenderShader(m_shader);
@@ -310,81 +315,94 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEMOVE:
-		if (wParam & 0x10) // middle button down
 		{
-			POINT pos = {LOWORD(lParam), HIWORD(lParam)};
-			if (m_scene)
-				m_scene->SetPos(Vector3(pos.x, pos.y,0));
-		}
-
-		if (m_LButtonDown)
-		{
-			POINT pos = {LOWORD(lParam), HIWORD(lParam)};
-			const int x = pos.x - m_curPos.x;
-			const int y = pos.y - m_curPos.y;
-			m_curPos = pos;
-
-			Matrix44 mat1;
-			mat1.SetRotationY( -x * 0.01f );
-			Matrix44 mat2;
-			mat2.SetRotationX( -y * 0.01f );
-
-			m_rotateTm *= (mat1 * mat2);
-		}
-		else if (m_RButtonDown)
-		{
-			POINT pos = {LOWORD(lParam), HIWORD(lParam)};
-			const int x = pos.x - m_curPos.x;
-			const int y = pos.y - m_curPos.y;
-			m_curPos = pos;
-
-			{ // rotate Y-Axis
-				Quaternion q(Vector3(0,1,0), x * 0.005f); 
-				Matrix44 m = q.GetMatrix();
-				m_camPos *= m;
+			if (wParam & 0x10) // middle button down
+			{
+				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
+				if (m_scene)
+					m_scene->SetPos(Vector3(pos.x, pos.y,0));
 			}
 
-			{ // rotate X-Axis
-				Quaternion q(Vector3(1,0,0), y * 0.005f); 
-				Matrix44 m = q.GetMatrix();
-				m_camPos *= m;
+			if (m_LButtonDown)
+			{
+				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
+				const int x = pos.x - m_curPos.x;
+				const int y = pos.y - m_curPos.y;
+				m_curPos = pos;
+
+				Matrix44 mat1;
+				mat1.SetRotationY( -x * 0.01f );
+				Matrix44 mat2;
+				mat2.SetRotationX( -y * 0.01f );
+
+				m_rotateTm *= (mat1 * mat2);
+			}
+			else if (m_RButtonDown)
+			{
+				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
+				const int x = pos.x - m_curPos.x;
+				const int y = pos.y - m_curPos.y;
+				m_curPos = pos;
+
+				{ // rotate Y-Axis
+					Quaternion q(Vector3(0,1,0), x * 0.005f); 
+					Matrix44 m = q.GetMatrix();
+					m_camPos *= m;
+				}
+
+				{ // rotate X-Axis
+					Quaternion q(Vector3(1,0,0), y * 0.005f); 
+					Matrix44 m = q.GetMatrix();
+					m_camPos *= m;
+				}
+
+				UpdateCamera();
+			}
+			else if (m_MButtonDown)
+			{
+				const POINT point = {LOWORD(lParam), HIWORD(lParam)};
+				const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
+				m_curPos = point;
+
+				Vector3 v = m_lookAtPos - m_camPos;
+				const float len = v.Length();
+				v.Normalize();
+
+				const Vector3 up = Vector3(0,1,0);
+				Vector3 right = up.CrossProduct(v);
+				right.Normalize();
+
+				m_lookAtPos += right * pos.x * (len * -0.001f);
+				m_camPos += right * pos.x * (len * -0.001f);
+				m_lookAtPos += up * pos.y * (len * 0.001f);
+				m_camPos += up * pos.y * (len * 0.001f);
+
+				UpdateCamera();
+			}
+			else
+			{
+				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
+
+				Vector3 pickPos;
+				Ray ray(pos.x, pos.y, 1024, 768, m_proj, m_view);
+				const float y = m_terrain.GetHeightFromRay(ray.orig, ray.dir, pickPos);
+
+				pickPos.y = y;
+
+				Matrix44 matT;
+				matT.SetTranslate(pickPos);
+				m_cube.SetTransform(matT);
+				
+				//m_scene->SetPos(Vector3(pos.x, pos.y,0));
+				//if (m_image->IsContain(Vector2(pos.x, pos.y)))
+				//{
+				//	static int count = 0;
+				//	++count;
+				//	dbg::Print( "IsContain %d", count);
+				//}
 			}
 
-			UpdateCamera();
 		}
-		else if (m_MButtonDown)
-		{
-			const POINT point = {LOWORD(lParam), HIWORD(lParam)};
-			const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
-			m_curPos = point;
-
-			Vector3 v = m_lookAtPos - m_camPos;
-			const float len = v.Length();
-			v.Normalize();
-
-			const Vector3 up = Vector3(0,1,0);
-			Vector3 right = up.CrossProduct(v);
-			right.Normalize();
-
-			m_lookAtPos += right * pos.x * (len * -0.001f);
-			m_camPos += right * pos.x * (len * -0.001f);
-			m_lookAtPos += up * pos.y * (len * 0.001f);
-			m_camPos += up * pos.y * (len * 0.001f);
-
-			UpdateCamera();
-		}
-		else
-		{
-			POINT pos = {LOWORD(lParam), HIWORD(lParam)};
-			//m_scene->SetPos(Vector3(pos.x, pos.y,0));
-			//if (m_image->IsContain(Vector2(pos.x, pos.y)))
-			//{
-			//	static int count = 0;
-			//	++count;
-			//	dbg::Print( "IsContain %d", count);
-			//}
-		}
-
 		break;
 	}
 }

@@ -17,10 +17,12 @@ namespace graphic
 		void Render(const int stage=0);
 
 		void CalculateNormals();
+		bool Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out );
+
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();
 		cTexture& GetTexture();
-		cMaterial& GetMaterial();
+		cMaterial& GetMaterial();		
 
 
 	private:

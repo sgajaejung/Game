@@ -77,7 +77,10 @@
     <ClInclude Include="etc\stringfunc.h" />
     <ClInclude Include="math\Math.h" />
     <ClInclude Include="math\matrix44.h" />
+    <ClInclude Include="math\plane.h" />
     <ClInclude Include="math\quaternion.h" />
+    <ClInclude Include="math\ray.h" />
+    <ClInclude Include="math\triangle.h" />
     <ClInclude Include="math\vector2.h" />
     <ClInclude Include="math\vector3.h" />
     <ClInclude Include="math\vector4.h" />
@@ -91,7 +94,10 @@
     <ClCompile Include="etc\rect.cpp" />
     <ClCompile Include="etc\stringfunc.cpp" />
     <ClCompile Include="math\matrix44.cpp" />
+    <ClCompile Include="math\plane.cpp" />
     <ClCompile Include="math\quaternion.cpp" />
+    <ClCompile Include="math\ray.cpp" />
+    <ClCompile Include="math\triangle.cpp" />
     <ClCompile Include="math\vector3.cpp" />
     <ClCompile Include="math\vector4.cpp" />
     <ClCompile Include="stdafx.cpp">

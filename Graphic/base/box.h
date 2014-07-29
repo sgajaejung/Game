@@ -3,6 +3,7 @@
 
 namespace graphic
 {
+	// AABB Box
 	struct Box
 	{
 		Box();

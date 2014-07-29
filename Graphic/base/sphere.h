@@ -11,7 +11,7 @@ namespace graphic
 		cSphere(const float radius, const int stacks, const int slices);
 		virtual ~cSphere();
 
-		void Create(const float radius, const int numSegments, const int numSlice);
+		void Create(const float radius, const int stacks, const int slices);
 		void SetTransform( const Matrix44 &tm );
 		const Matrix44& GetTransform() const;
 

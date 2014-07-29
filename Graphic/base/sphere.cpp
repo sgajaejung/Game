@@ -10,9 +10,9 @@ cSphere::cSphere()
 
 }
 
-cSphere::cSphere(const float radius, const int numSegments, const int numSlices)
+cSphere::cSphere(const float radius, const int stacks, const int slices)
 {
-	Create(radius, numSegments, numSlices);
+	Create(radius, stacks, slices);
 }
 
 cSphere::~cSphere()
