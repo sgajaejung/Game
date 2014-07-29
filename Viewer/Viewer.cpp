@@ -93,14 +93,12 @@ bool cViewer::OnInit()
 	//m_scene = new cTestScene(m_sprite);
 	//m_scene->SetPos(Vector3(100,100,0));
 
-
 	m_model = new graphic::cModel(1000);
 	m_model->Create( "../media/weapon.dat" );
+	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
-	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
-	m_terrain.CreateFromHeightMap( "../media/terrain/heightmap.jpg",
-		"../media/terrain/texture.jpg");
-
+	//m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
+	m_terrain.CreateFromHeightMap( "../media/terrain/heightmap.jpg", "../media/terrain/texture.jpg", 7.f);
 
 	m_mtrl.InitWhite();
 
@@ -111,7 +109,6 @@ bool cViewer::OnInit()
 		color, 
 		Vector3(0,-1,0));
 	m_light.Bind(0);
-
 
 	m_camPos = Vector3(100,100,-500);
 	m_lookAtPos = Vector3(0,0,0);
@@ -160,26 +157,28 @@ void cViewer::OnRender(const float elapseT)
 		//graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
-		Matrix44 tm;
+		Matrix44 matIdentity;
 		if (m_scene)
-			m_scene->Render(tm);
+			m_scene->Render(matIdentity);
 
 
 		//m_model->SetTM(m_rotateTm);
 		//m_model->Render()
-		m_light.Bind(0);
-		m_terrain.Render();
 
-/*
 		m_shader.SetMatrix( "mVP", m_view * m_proj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camPos);
+		m_shader.SetMatrix( "mWIT", matIdentity);
+		m_shader.SetMatrix( "mWorld", matIdentity);
 
+		m_shader.Begin();
+		m_shader.BeginPass(0);
+		m_terrain.Render();
+		m_shader.EndPass();
+		m_shader.End();
 
-		m_model->SetTM(m_rotateTm);
-		m_model->RenderShader(m_shader);
-/**/
-
+		//m_model->SetTM(m_rotateTm);
+		//m_model->RenderShader(m_shader);
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();

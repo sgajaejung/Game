@@ -36,25 +36,27 @@ cTerrain::~cTerrain()
 bool cTerrain::CreateFromHeightMap( const string &heightMapFileName, 
 	const string &textureFileName, const float heightFactor ) // heightFactor=3.f
 {
-	wstring wfileName = common::str2wstr(heightMapFileName);
+	const int CELL_COL_COUNT = 128;
+	const int CELL_ROW_COUNT = 128;
+	const int VERTEX_COL_COUNT = CELL_COL_COUNT+1;
+	const int VERTEX_ROW_COUNT = CELL_ROW_COUNT+1;
+	const float CELL_SIZE = 50.f;
+
+	const wstring wfileName = common::str2wstr(heightMapFileName);
 	Bitmap bmp(wfileName.c_str());
 	
-	m_grid.Create(64, 64, 50, 1.f);
-	// 3200 x 3200
+	m_grid.Create(CELL_ROW_COUNT, CELL_COL_COUNT, CELL_SIZE, 1.f);
 
-	const int width = bmp.GetWidth();
-	const int height = bmp.GetHeight();
-
-	const int incX = width / 64;
-	const int incY = height / 64;
+	const float incX = (float)(bmp.GetWidth()-1) / (float)CELL_COL_COUNT;
+	const float incY = (float)(bmp.GetHeight()-1) /(float) CELL_ROW_COUNT;
 
 	sVertexNormTex *pv = (sVertexNormTex*)m_grid.GetVertexBuffer().Lock();
 
-	for (int i=0; i < 65; ++i)
+	for (int i=0; i < VERTEX_COL_COUNT; ++i)
 	{
-		for (int k=0; k < 65; ++k)
+		for (int k=0; k < VERTEX_ROW_COUNT; ++k)
 		{
-			sVertexNormTex *vtx = pv + (k*65) + i;
+			sVertexNormTex *vtx = pv + (k*VERTEX_COL_COUNT) + i;
 
 			Color color;
 			bmp.GetPixel(i*incX, k*incY, &color);
