@@ -43,6 +43,8 @@ using namespace common;
 
 #include "sprite/sprite.h"
 
+#include "terrain/terrain.h"
+
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"
 

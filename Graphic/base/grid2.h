@@ -16,6 +16,7 @@ namespace graphic
 			const float textureUVFactor=8.f);
 		void Render(const int stage=0);
 
+		void CalculateNormals();
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();
 		cTexture& GetTexture();

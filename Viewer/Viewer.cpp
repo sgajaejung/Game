@@ -33,6 +33,7 @@ private:
 	graphic::cModel m_model2;
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
+	graphic::cTerrain m_terrain;
 
 	cTestScene *m_scene;
 	//graphic::cCollisionManager collisionMgr;
@@ -97,12 +98,18 @@ bool cViewer::OnInit()
 	m_model->Create( "../media/weapon.dat" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
 	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
+	m_terrain.CreateFromHeightMap( "../media/terrain/heightmap.jpg",
+		"../media/terrain/texture.jpg");
 
 
 	m_mtrl.InitWhite();
 
 	Vector4 color(1,1,1,1);
-	m_light.Init( graphic::cLight::LIGHT_DIRECTIONAL, color * 0.4f, color, color * 0.6f, Vector3(0,-1,0));
+	m_light.Init( graphic::cLight::LIGHT_DIRECTIONAL, 
+		color * 0.3f, 
+		color * 0.7f, 
+		color, 
+		Vector3(0,-1,0));
 	m_light.Bind(0);
 
 
@@ -150,7 +157,7 @@ void cViewer::OnRender(const float elapseT)
 		graphic::GetDevice()->BeginScene();
 
 		graphic::GetRenderer()->RenderFPS();
-		graphic::GetRenderer()->RenderGrid();
+		//graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
 		Matrix44 tm;
@@ -159,10 +166,11 @@ void cViewer::OnRender(const float elapseT)
 
 
 		//m_model->SetTM(m_rotateTm);
-		//m_model->Render();
+		//m_model->Render()
+		m_light.Bind(0);
+		m_terrain.Render();
 
-
-
+/*
 		m_shader.SetMatrix( "mVP", m_view * m_proj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camPos);
@@ -170,7 +178,7 @@ void cViewer::OnRender(const float elapseT)
 
 		m_model->SetTM(m_rotateTm);
 		m_model->RenderShader(m_shader);
-
+/**/
 
 
 		//랜더링 끝
