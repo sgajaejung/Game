@@ -11,7 +11,7 @@ namespace graphic
 		virtual ~cTerrain();
 
 		bool CreateFromHeightMap( const string &heightMapFileName, 
-			const string &textureFileName );
+			const string &textureFileName, const float heightFactor=3.f );
 		void Render();
 
 

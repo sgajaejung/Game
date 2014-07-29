@@ -34,7 +34,7 @@ cTerrain::~cTerrain()
 
 
 bool cTerrain::CreateFromHeightMap( const string &heightMapFileName, 
-	const string &textureFileName )
+	const string &textureFileName, const float heightFactor ) // heightFactor=3.f
 {
 	wstring wfileName = common::str2wstr(heightMapFileName);
 	Bitmap bmp(wfileName.c_str());
@@ -58,7 +58,8 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 
 			Color color;
 			bmp.GetPixel(i*incX, k*incY, &color);
-			const float h = (color.GetR() + color.GetG() + color.GetB()) / 3.f;
+			const float h = ((color.GetR() + color.GetG() + color.GetB()) / 3.f) 
+				* heightFactor;
 			vtx->p.y = h;
 		}
 	}
