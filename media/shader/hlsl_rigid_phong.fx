@@ -7,6 +7,8 @@ float4x4 mVP;		// 로컬에서 투영공간으로의 좌표변환
 float4x4 mWIT;
 float3 vLightDir = {0, -1, 0};
 float3 vEyePos;
+float4 vFog;
+float4 fogColor = {0.58823f, 0.58823f, 0.58823f, 1}; // RGB(150,150,150)
 
 // 광원 밝기.
 float4 I_a = {0.3f, 0.3f, 0.3f, 0.0f}; // ambient
@@ -63,7 +65,7 @@ VS_OUTPUT VS_pass0(
 	Out.Pos = mul( Pos, mWVP );
 
 	// 법선 벡터 계산.
-	float3 N = normalize( mul(Normal, mWIT) ); // 월드 좌표계에서의 법선.
+	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
 
 	Out.N = N;
 	Out.Eye = vEyePos - Pos.xyz;
@@ -93,17 +95,76 @@ float4 PS_pass0(VS_OUTPUT In) : COLOR
     return Out;
 }
 
+
+// -------------------------------------------------------------
+// 1패스:정점셰이더
+// -------------------------------------------------------------
+VS_OUTPUT VS_pass1(
+      float4 Pos : POSITION,          // 모델정점
+	  float3 Normal : NORMAL,		// 법선벡터
+	  float2 Tex : TEXCOORD0
+)
+{
+    VS_OUTPUT Out = (VS_OUTPUT)0;        // 출력데이터
+    
+    // 좌표변환
+	float4x4 mWVP = mul(mWorld, mVP);
+	Out.Pos = mul( Pos, mWVP );
+
+	// 법선 벡터 계산.
+	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
+
+	Out.N = N;
+	Out.Eye = vEyePos - Pos.xyz;
+	Out.Tex = Tex;
+    
+    return Out;
+}
+
+// -------------------------------------------------------------
+// 1패스:픽셀셰이더
+// -------------------------------------------------------------
+float4 PS_pass1(VS_OUTPUT In) : COLOR
+{
+	float4 Out;
+
+	float3 L = -vLightDir.xyz;
+	float3 H = normalize(L + normalize(In.Eye));
+	float3 N = normalize(In.N);
+
+	Out = 	I_a * K_a
+				+ I_d * K_d * max(0, dot(N,L));
+				+ I_s * pow( max(0, dot(N,H)), 16);
+
+	Out = Out * tex2D(Samp, In.Tex);
+
+	float distance = length(In.Eye);
+	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
+	Out = lerp(Out, fogColor, l);
+
+    return Out;
+}
+
 	
 // -------------------------------------------------------------
 // 테크닉
 // -------------------------------------------------------------
 technique TShader
 {
+
+	// 퐁 셰이딩
     pass P0
     {
-        // 셰이더
         VertexShader = compile vs_3_0 VS_pass0();
 		PixelShader  = compile ps_3_0 PS_pass0();
+    }
+
+
+	// 포그 셰이딩.
+    pass P1
+    {
+        VertexShader = compile vs_3_0 VS_pass1();
+		PixelShader  = compile ps_3_0 PS_pass1();
     }
 
 }

@@ -36,6 +36,8 @@ bool cIndexBuffer::Create(int faceCount)
 
 void* cIndexBuffer::Lock()
 {
+	RETV(!m_pIdxBuff, NULL);
+
 	WORD *indices = NULL;
 	m_pIdxBuff->Lock(0, 0, (void**)&indices, 0);
 	return indices;

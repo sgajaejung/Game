@@ -165,17 +165,18 @@ void cViewer::OnRender(const float elapseT)
 			m_scene->Render(matIdentity);
 
 
-		//m_model->SetTM(m_rotateTm);
-		//m_model->Render()
-
 		m_shader.SetMatrix( "mVP", m_view * m_proj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camPos);
 		m_shader.SetMatrix( "mWIT", matIdentity);
 		m_shader.SetMatrix( "mWorld", matIdentity);
+		
+		Vector3 fog(1.f, 10000.f, 0);  // near, far
+		m_shader.SetVector( "vFog", fog);
+
 
 		m_shader.Begin();
-		m_shader.BeginPass(0);
+		m_shader.BeginPass(1);
 		m_terrain.Render();
 		m_shader.EndPass();
 		m_shader.End();

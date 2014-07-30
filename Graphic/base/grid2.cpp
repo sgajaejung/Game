@@ -129,6 +129,8 @@ bool cGrid2::Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out )
 	bool isFirst = true;
 	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
 	WORD *indices = (WORD*)m_idxBuff.Lock();
+	RETV(!vertices || !indices, false);
+
 	for (int i=0; i < m_idxBuff.GetFaceCount()*3; i+=3)
 	{
 		const Vector3 &p1 = vertices[ indices[ i]].p;

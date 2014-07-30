@@ -124,8 +124,10 @@ void cCube::Render(const Matrix44 &tm)
 {
 	DWORD cullMode;
 	DWORD fillMode;
+	DWORD lightMode;
 	GetDevice()->GetRenderState(D3DRS_CULLMODE, &cullMode);
 	GetDevice()->GetRenderState(D3DRS_FILLMODE, &fillMode);
+	GetDevice()->GetRenderState(D3DRS_LIGHTING, &lightMode);
 
 	GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
 	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
@@ -140,5 +142,5 @@ void cCube::Render(const Matrix44 &tm)
 
 	GetDevice()->SetRenderState(D3DRS_CULLMODE, cullMode);
 	GetDevice()->SetRenderState(D3DRS_FILLMODE, fillMode );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, lightMode );
 }

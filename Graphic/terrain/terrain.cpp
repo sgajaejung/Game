@@ -8,7 +8,7 @@ using namespace std;
 using namespace Gdiplus;
 using namespace graphic;
 
-// global value
+// global constants
 enum {
 	CELL_COL_COUNT = 128,
 	CELL_ROW_COUNT = 128,
