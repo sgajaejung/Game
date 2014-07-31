@@ -10,8 +10,8 @@ using namespace graphic;
 
 // global constants
 enum {
-	CELL_COL_COUNT = 128,
-	CELL_ROW_COUNT = 128,
+	CELL_COL_COUNT = 64,
+	CELL_ROW_COUNT = 64,
 	VERTEX_COL_COUNT = CELL_COL_COUNT+1,
 	VERTEX_ROW_COUNT = CELL_ROW_COUNT+1,
 	CELL_SIZE = 50,
@@ -82,6 +82,15 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 void cTerrain::Render()
 {
 	m_grid.Render();
+}
+
+
+void cTerrain::RenderShader(cShader &shader)
+{
+	Vector3 fog(1.f, 10000.f, 0);  // near, far
+	shader.SetVector( "vFog", fog);
+
+	m_grid.RenderShader(shader);
 }
 
 

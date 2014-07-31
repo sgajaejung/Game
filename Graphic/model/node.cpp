@@ -104,6 +104,15 @@ void cNode::RenderShader( cShader &shader, const Matrix44 &parentTm )
 	}
 }
 
+// 셰이더를 이용해서 출력한다.
+void cNode::RenderShadow( cShader &shader, const Matrix44 &parentTm )
+{
+	BOOST_FOREACH (auto node, m_children)
+	{
+		node->RenderShadow(shader, parentTm);
+	}
+}
+
 
 // 모든 노드를 제거한다.
 void cNode::Clear()

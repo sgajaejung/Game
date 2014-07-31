@@ -9,6 +9,7 @@ using namespace graphic;
 cShader::cShader() :
 	m_effect(NULL) 
 ,	m_hTechnique(NULL)
+,	m_renderPass(0)
 {
 }
 
@@ -63,10 +64,10 @@ void cShader::Begin()
 }
 
 
-void cShader::BeginPass(int pass)
+void cShader::BeginPass(int pass) // pass=-1
 {
 	RET(!m_effect);
-	m_effect->BeginPass(pass);
+	m_effect->BeginPass( (pass == -1)? m_renderPass : pass );
 }
 
 
@@ -111,7 +112,14 @@ void cShader::SetTexture(const string &key, cTexture &texture)
 		MessageBoxA( NULL, "cShader::SetTexture Error", "ERROR", MB_OK);
 	}
 }
-
+void cShader::SetTexture(const string &key, IDirect3DTexture9 *texture)
+{
+	RET(!m_effect);
+	if (FAILED(m_effect->SetTexture( key.c_str(), texture)))
+	{
+		MessageBoxA( NULL, "cShader::SetTexture Error", "ERROR", MB_OK);
+	}
+}
 
 void cShader::SetFloat(const string &key, float val)
 {

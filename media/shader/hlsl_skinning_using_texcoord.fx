@@ -111,6 +111,47 @@ float4 PS_pass0(VS_OUTPUT In) : COLOR
     return Out;
 }
 
+
+
+// -------------------------------------------------------------
+// 정점셰이더에서 픽셀셰이더로 넘기는 데이터
+// -------------------------------------------------------------
+struct VS_SHADOW_OUTPUT
+{
+	float4 Pos : POSITION;
+	float4 Diffuse : COLOR0;
+};
+
+
+// -------------------------------------------------------------
+// 2패스:정점셰이더, 그림자 맵 출력.
+// -------------------------------------------------------------
+VS_SHADOW_OUTPUT VS_pass1(
+	float4 Pos : POSITION,          // 모델정점
+	float3 Normal : NORMAL,		// 법선벡터
+	float2 Tex : TEXCOORD0,		// 텍스쳐 좌표
+	float4 Weights : TEXCOORD1,	// 버텍스 가중치
+	float4 BoneIndices : TEXCOORD2 // 본 인덱스 (4개 저장)
+)
+{
+	VS_SHADOW_OUTPUT Out = (VS_SHADOW_OUTPUT)0; // 출력데이터
+    
+	// 좌표변환
+	float4x4 mWVP = mul(mWorld, mVP);
+
+	float3 p = {0,0,0};
+
+	p += mul(Pos, mPalette[ BoneIndices.x]) * Weights.x;
+	p += mul(Pos, mPalette[ BoneIndices.y]) * Weights.y;
+	p += mul(Pos, mPalette[ BoneIndices.z]) * Weights.z;
+	p += mul(Pos, mPalette[ BoneIndices.w]) * Weights.w;
+
+	Out.Pos = mul( float4(p,1), mWVP );
+	Out.Diffuse = float4(1,1,1,1);
+    
+    return Out;
+}
+
 	
 // -------------------------------------------------------------
 // 테크닉
@@ -123,6 +164,13 @@ technique TShader
         VertexShader = compile vs_3_0 VS_pass0();
 		PixelShader  = compile ps_3_0 PS_pass0();
     }
+
+    pass P1
+    {
+        // 그림자 맵 셰이더
+        VertexShader = compile vs_3_0 VS_pass1();
+    }
+
 
 }
 

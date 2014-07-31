@@ -19,6 +19,7 @@ namespace graphic
 		virtual bool Move(const float elapseTime);
 		virtual void Render();
 		virtual void RenderShader(cShader &shader);
+		virtual void RenderShadow(cShader &shader);
 		void Clear();
 
 		int GetId() const;

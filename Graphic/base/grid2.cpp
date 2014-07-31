@@ -95,6 +95,24 @@ void cGrid2::Render(const int stage)
 }
 
 
+void cGrid2::RenderShader(cShader &shader)
+{
+	shader.Begin();
+	shader.BeginPass();
+
+	m_mtrl.Bind(shader);
+	m_tex.Bind(shader, "Tex");
+
+	m_vtxBuff.Bind();
+	m_idxBuff.Bind();
+	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+		0, m_idxBuff.GetFaceCount());
+
+	shader.EndPass();
+	shader.End();
+}
+
+
 // 법선 벡터를 다시 계산한다.
 void cGrid2::CalculateNormals()
 {
