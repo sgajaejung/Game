@@ -222,6 +222,7 @@ void cViewer::OnRender(const float elapseT)
 
 		Matrix44 matView;// 뷰 행렬
 		matView.SetView2( m_light2, m_pos, Vector3(0,1,0));
+
 		Matrix44 matProj;// 투영 행렬
 		matProj.SetProjection( D3DX_PI/2.5f, 1, 0.1f, 10000);
 
