@@ -14,7 +14,7 @@ namespace graphic
 		cModel(const int id);
 		virtual ~cModel();
 
-		virtual bool Create(const string &modelName);
+		virtual bool Create(const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO);
 		void SetAnimation( const string &aniFileName);
 		virtual bool Move(const float elapseTime);
 		virtual void Render();

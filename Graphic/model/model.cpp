@@ -28,7 +28,8 @@ cModel::~cModel()
 }
 
 
-bool cModel::Create(const string &modelName)
+bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
+	// type = MODEL_TYPE::AUTO
 {
 	sRawMeshGroup *rawMeshes = cResourceManager::Get()->LoadModel(modelName);
 	RETV(!rawMeshes, false);
@@ -38,9 +39,24 @@ bool cModel::Create(const string &modelName)
 	const bool isSkinnedMesh = !rawMeshes->bones.empty();
 
 	// 스키닝 애니메이션이면 Bone을 생성한다.
-	if (isSkinnedMesh)
+	switch (type)
 	{
-		m_bone = new cBoneMgr(0, *rawMeshes);
+	case MODEL_TYPE::RIGID:
+		m_type = MODEL_TYPE::RIGID;
+		break;
+
+	case MODEL_TYPE::AUTO:
+	case MODEL_TYPE::SKIN:
+		if (isSkinnedMesh)
+		{
+			m_bone = new cBoneMgr(0, *rawMeshes);
+			m_type = MODEL_TYPE::SKIN;
+		}
+		else
+		{
+			m_type = MODEL_TYPE::RIGID;
+		}
+		break;
 	}
 
 	// 메쉬 생성.
@@ -48,7 +64,7 @@ bool cModel::Create(const string &modelName)
 	BOOST_FOREACH (auto &mesh, rawMeshes->meshes)
 	{
 		cMesh *p = NULL;
-		if (isSkinnedMesh)
+		if (MODEL_TYPE::SKIN == m_type)
 		{
 			p = new cSkinnedMesh(id++, m_bone->GetPalette(), mesh);
 		}
@@ -60,9 +76,7 @@ bool cModel::Create(const string &modelName)
 		if (p)
 			m_meshes.push_back(p);
 	}
-
-	m_type = isSkinnedMesh? MODEL_TYPE::SKIN : MODEL_TYPE::RIGID;
-
+	
 	return true;
 }
 

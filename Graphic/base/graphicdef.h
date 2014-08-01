@@ -17,6 +17,7 @@ namespace graphic
 		enum TYPE {
 			SKIN,
 			RIGID,
+			AUTO,
 		};
 	};
 

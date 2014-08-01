@@ -110,7 +110,11 @@ bool cViewer::OnInit()
 	//m_scene->SetPos(Vector3(100,100,0));
 
 	m_model = new graphic::cModel(1000);
-	m_model->Create( "../media/weapon.dat" );
+	//m_model->Create( "../media/weapon.dat" );
+	m_model->Create( "../media/max script/valle1.dat" );
+	m_model->SetAnimation( "../media/max script/valle_forward.ani" );
+
+
 	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
 	m_shaderSkin.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
@@ -145,7 +149,7 @@ bool cViewer::OnInit()
 	m_light.Bind(0);
 
 	
-	m_camPos = Vector3(100,5500,-5500);
+	m_camPos = Vector3(100,500,-500);
 	m_lookAtPos = Vector3(0,0,0);
 	UpdateCamera();
 

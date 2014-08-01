@@ -120,8 +120,8 @@ void CModelView::Render()
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camPos);
 
-		cController::Get()->RenderShader(m_shader);
-		//cController::Get()->Render();
+		//cController::Get()->RenderShader(m_shader);
+		cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -279,7 +279,7 @@ bool CModelView::LoadFile(const string &fileName)
 
 	cController::Get()->LoadFile(fileName);
 	graphic::cCharacter *character = cController::Get()->GetCharacter();
-	character->LoadWeapon( "../media/weapon.dat");
+	character->LoadWeapon( "../media/max script/valle_weapon4.dat");
 
 	return false;
 }

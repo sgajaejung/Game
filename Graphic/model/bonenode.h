@@ -12,6 +12,7 @@ namespace graphic
 
 		void SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop=false );
 		const Matrix44& GetAccTM() const;
+		const Matrix44& GetOffset() const;
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
 
@@ -42,6 +43,7 @@ namespace graphic
 
 	
 	inline const Matrix44& cBoneNode::GetAccTM() const { return m_accTM; }
+	inline const Matrix44& cBoneNode::GetOffset() const { return m_offset; }
 	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
 	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
 }
