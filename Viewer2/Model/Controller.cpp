@@ -19,6 +19,8 @@ cController::~cController()
 
 bool cController::LoadFile( const string &fileName )
 {
+	ShowLoadingDialog();
+
 	bool result = false;
 	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(fileName);
 	switch (type)
@@ -40,6 +42,7 @@ bool cController::LoadFile( const string &fileName )
 
 	NotifyObserver();
 
+	HideLoadingDialog();
 	return result;
 }
 

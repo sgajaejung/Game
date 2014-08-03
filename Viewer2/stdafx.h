@@ -61,4 +61,5 @@
 using namespace common;
 #include "../Graphic/graphic.h"
 #include "model/Controller.h"
+#include "LoadingDialog.h"
 

@@ -53,7 +53,7 @@ BOOL CFilePanel::OnInitDialog()
 
 void CFilePanel::Update()
 {
-
+	// 아직 하는 일 없음.
 }
 
 
@@ -85,7 +85,7 @@ void CFilePanel::UpdateModelFiles()
 
 	BOOST_FOREACH(auto &fileName, modelFiles)
 	{
-		wstring wstr = str2wstr(fileName);
+		const wstring wstr = str2wstr(fileName);
 		m_ModelFileList.InsertString(m_ModelFileList.GetCount(), wstr.c_str());
 	}
 
@@ -109,7 +109,7 @@ void CFilePanel::UpdateAnimationFiles()
 
 	BOOST_FOREACH(auto &fileName, aniFiles)
 	{
-		wstring wstr = str2wstr(fileName);
+		const wstring wstr = str2wstr(fileName);
 		m_AnimationFileList.InsertString(m_AnimationFileList.GetCount(), wstr.c_str());
 	}
 
@@ -152,5 +152,7 @@ void CFilePanel::OnDblclkListModel()
 	CString text;
 	m_ModelFileList.GetText(selIdx, text);
 	const string fileName = wstr2str((wstring)text);
+
+	ShowLoadingDialog();
 	cController::Get()->LoadFile(fileName);
 }

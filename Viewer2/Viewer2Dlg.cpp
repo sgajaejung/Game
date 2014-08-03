@@ -11,6 +11,7 @@
 #include "MainPanel.h"
 #include "AnimationController2.h"
 
+
 #pragma comment( lib, "winmm.lib" )
 
 
@@ -160,6 +161,9 @@ BOOL CViewer2Dlg::OnInitDialog()
 		m_aniController->ShowWindow(SW_SHOW);
 		cController::Get()->AddObserver(m_aniController);
 	}
+
+	// Loading Dialog ÃÊ±âÈ­.
+	InitLoadingDialog(this);
 
 
 	cController::Get()->AddObserver(this);
