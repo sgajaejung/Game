@@ -19,18 +19,16 @@ public:
 	virtual void MessageProc( UINT message, WPARAM wParam, LPARAM lParam) override;
 
 
-protected:
-	void UpdateCamera();
-
-
 private:
 	LPD3DXSPRITE m_sprite;
 
 	graphic::cLight m_light;
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
-	graphic::cModel *m_model;
+	graphic::cModel m_model;
 	graphic::cModel m_model2;
+	graphic::cCharacter m_character;
+
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
 	graphic::cShader m_shaderSkin;
@@ -55,10 +53,11 @@ private:
 	bool m_MButtonDown;
 	Matrix44 m_rotateTm;
 
+	graphic::cCamera m_camera;
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;
-	Matrix44 m_view; // Camera View Matrix
-	Matrix44 m_proj; // projection matrix
+	//Matrix44 m_view; // Camera View Matrix
+	//Matrix44 m_proj; // projection matrix
 
 	Vector3 m_boxPos;
 
@@ -76,11 +75,12 @@ static const UINT MAP_SIZE = 256;
 
 
 cViewer::cViewer() :
-	m_model(NULL)
-,	m_sprite(NULL)
+	m_sprite(NULL)
 ,	m_image(NULL)
 ,	m_scene(NULL)
+,	m_model(100)
 ,	m_model2(1)
+,	m_character(1000)
 {
 	m_windowName = L"Viewer";
 	const RECT r = {0, 0, 1024, 768};
@@ -92,7 +92,6 @@ cViewer::cViewer() :
 
 cViewer::~cViewer()
 {
-	SAFE_DELETE(m_model);
 	SAFE_DELETE(m_image);
 	SAFE_DELETE(m_scene);
 	SAFE_RELEASE(m_sprite);
@@ -109,10 +108,9 @@ bool cViewer::OnInit()
 	//m_scene = new cTestScene(m_sprite);
 	//m_scene->SetPos(Vector3(100,100,0));
 
-	m_model = new graphic::cModel(1000);
 	//m_model->Create( "../media/weapon.dat" );
-	m_model->Create( "../media/max script/valle1.dat" );
-	m_model->SetAnimation( "../media/max script/valle_forward.ani" );
+	m_model.Create( "../media/max script/valle1.dat" );
+	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
 
 
 	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
@@ -149,14 +147,10 @@ bool cViewer::OnInit()
 	m_light.Bind(0);
 
 	
-	m_camPos = Vector3(100,500,-500);
-	m_lookAtPos = Vector3(0,0,0);
-	UpdateCamera();
-
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	m_proj.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f) ;
-	graphic::GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&m_proj) ;
+	m_camera.SetCamera(Vector3(100,500,-500), Vector3(0,0,0), Vector3(0,1,0));
+	m_camera.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
 
 	graphic::GetDevice()->LightEnable (
 		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
@@ -168,8 +162,7 @@ bool cViewer::OnInit()
 
 void cViewer::OnUpdate(const float elapseT)
 {
-	if (m_model)
-		m_model->Move(elapseT);
+	m_model.Move(elapseT);
 
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
@@ -232,14 +225,14 @@ void cViewer::OnRender(const float elapseT)
 
 		m_shaderSkin.SetMatrix( "mVP", matView * matProj);
 		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shaderSkin.SetVector( "vEyePos", m_camPos);
+		m_shaderSkin.SetVector( "vEyePos", m_camera.GetEyePos());
 		m_shaderSkin.SetMatrix( "mWIT", matIdentity);
 		Matrix44 matPos;
 		matPos.SetTranslate(m_pos);
 		m_shaderSkin.SetMatrix( "mWorld", cubeTm);
 
 		m_shaderSkin.SetRenderPass(1);
-		m_model->RenderShadow(m_shaderSkin);
+		m_model.RenderShadow(m_shaderSkin);
 
 
 		//-----------------------------------------------------
@@ -250,13 +243,13 @@ void cViewer::OnRender(const float elapseT)
 		graphic::GetDevice()->SetViewport(&oldViewport);
 		pOldBackBuffer->Release();
 		pOldZBuffer->Release();
-		graphic::GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&m_view );
-		graphic::GetDevice()->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX*)&m_proj );
+		graphic::GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&m_camera.GetViewMatrix() );
+		graphic::GetDevice()->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX*)&m_camera.GetProjectionMatrix() );
 
-		m_shaderSkin.SetMatrix( "mVP", m_view * m_proj);
+		m_shaderSkin.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
 		m_shaderSkin.SetRenderPass(0);
-		m_model->SetTM(m_cube.GetTransform());
-		m_model->RenderShader(m_shaderSkin);
+		m_model.SetTM(m_cube.GetTransform());
+		m_model.RenderShader(m_shaderSkin);
 
 
 
@@ -270,9 +263,9 @@ void cViewer::OnRender(const float elapseT)
 			, 0.5f, 0.5f, 0.0f, 1.0f);
 		Matrix44 mT = *(Matrix44*)&mTT;
 
-		m_shader.SetMatrix( "mVP", m_view * m_proj);
+		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shader.SetVector( "vEyePos", m_camPos);
+		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
 		m_shader.SetMatrix( "mWIT", matIdentity);
 		m_shader.SetMatrix( "mWorld", matIdentity);
 		m_shader.SetTexture("ShadowMap", m_pShadowTex);
@@ -346,11 +339,11 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			switch (type)
 			{
 			case graphic::RESOURCE_TYPE::MESH:
-				m_model->Create(filePath);
+				m_model.Create(filePath);
 				break;
 
 			case graphic::RESOURCE_TYPE::ANIMATION:
-				m_model->SetAnimation(filePath);
+				m_model.SetAnimation(filePath);
 				break;
 			}
 		}
@@ -362,16 +355,12 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 			dbg::Print( "%d %d", fwKeys, zDelta);
 
-			Vector3 dir = m_lookAtPos - m_camPos;
-			const float len = dir.Length();
-			dir.Normalize();
-
-			float zoomLen = (len > 100)? 50 : (len/3.f);
+			const float len = m_camera.GetDistance();
+			float zoomLen = (len > 100)? 50 : (len/4.f);
 			if (fwKeys & 0x4)
-				zoomLen = 1;
+				zoomLen = zoomLen/10.f;
 
-			m_camPos += (zDelta<0)? dir*-zoomLen : dir*zoomLen;
-			UpdateCamera();
+			m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );
 		}
 		break;
 
@@ -382,13 +371,13 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (m_filePath.empty())
 					return;
-				m_model->Create(m_filePath);
+				m_model.Create(m_filePath);
 			}
 			break;
 		case VK_BACK:
 			// 회전 행렬 초기화.
 			m_rotateTm.SetIdentity();
-			m_model->SetTM(m_rotateTm);
+			m_model.SetTM(m_rotateTm);
 			break;
 		case VK_TAB:
 			{
@@ -456,12 +445,10 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				Matrix44 mat1;
-				mat1.SetRotationY( -x * 0.01f );
-				Matrix44 mat2;
-				mat2.SetRotationX( -y * 0.01f );
+				Quaternion q1(m_camera.GetRight(), -y * 0.01f);
+				Quaternion q2(m_camera.GetUpVector(), -x * 0.01f);
 
-				m_rotateTm *= (mat1 * mat2);
+				m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
 			}
 			else if (m_RButtonDown)
 			{
@@ -470,19 +457,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				{ // rotate Y-Axis
-					Quaternion q(Vector3(0,1,0), x * 0.005f); 
-					Matrix44 m = q.GetMatrix();
-					m_camPos *= m;
-				}
-
-				{ // rotate X-Axis
-					Quaternion q(Vector3(1,0,0), y * 0.005f); 
-					Matrix44 m = q.GetMatrix();
-					m_camPos *= m;
-				}
-
-				UpdateCamera();
+				m_camera.Yaw2( x * 0.005f );
+				m_camera.Pitch2( y * 0.005f );
 			}
 			else if (m_MButtonDown)
 			{
@@ -490,27 +466,16 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
 				m_curPos = point;
 
-				Vector3 v = m_lookAtPos - m_camPos;
-				const float len = v.Length();
-				v.Normalize();
-
-				const Vector3 up = Vector3(0,1,0);
-				Vector3 right = up.CrossProduct(v);
-				right.Normalize();
-
-				m_lookAtPos += right * pos.x * (len * -0.001f);
-				m_camPos += right * pos.x * (len * -0.001f);
-				m_lookAtPos += up * pos.y * (len * 0.001f);
-				m_camPos += up * pos.y * (len * 0.001f);
-
-				UpdateCamera();
+				const float len = m_camera.GetDistance();
+				m_camera.MoveRight( -pos.x * len * 0.001f );
+				m_camera.MoveUp( pos.y * len * 0.001f );
 			}
 			else
 			{
 				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
 
 				Vector3 pickPos;
-				Ray ray(pos.x, pos.y, 1024, 768, m_proj, m_view);
+				Ray ray(pos.x, pos.y, 1024, 768, m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix());
 				const float y = m_terrain.GetHeightFromRay(ray.orig, ray.dir, pickPos);
 
 				pickPos.y = y;
@@ -533,11 +498,3 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-
-void cViewer::UpdateCamera()
-{
-	Vector3 dir = m_lookAtPos - m_camPos;
-	dir.Normalize();
-	m_view.SetView(m_camPos, dir, Vector3(0,1,0));
-	graphic::GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&m_view);
-}
