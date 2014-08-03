@@ -61,9 +61,7 @@ void CModelView::Dump(CDumpContext& dc) const
 
 void CModelView::Init()
 {
-	m_camPos = Vector3(100,300,-500);
-	m_lookAtPos = Vector3(0,0,0);
-	UpdateCamera();
+	m_camera.SetCamera(Vector3(100,300,-500), Vector3(0,0,0), Vector3(0,1,0));
 
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
@@ -115,9 +113,9 @@ void CModelView::Render()
 			character->SetTM(m_rotateTm);
 		}
 
-		m_shader.SetMatrix( "mVP", m_matView * m_matProj);
+		m_shader.SetMatrix( "mVP", m_camera.GetViewMatrix() * m_matProj);
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shader.SetVector( "vEyePos", m_camPos);
+		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
 
 		cController::Get()->RenderShader(m_shader);
 		//cController::Get()->Render();
@@ -127,15 +125,6 @@ void CModelView::Render()
 		//랜더링이 끝났으면 랜더링된 내용 화면으로 전송
 		graphic::GetDevice()->Present( NULL, NULL, NULL, NULL );
 	}
-}
-
-
-void CModelView::UpdateCamera()
-{
-	Vector3 dir = m_lookAtPos - m_camPos;
-	dir.Normalize();
-	m_matView.SetView(m_camPos, dir, Vector3(0,1,0));
-	graphic::GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&m_matView);
 }
 
 
@@ -176,39 +165,17 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 		CPoint pos = point  - m_curPos;
 		m_curPos = point;
 
-		{ // rotate Y-Axis
-			Quaternion q(Vector3(0,1,0), pos.x * 0.005f); 
-			Matrix44 m = q.GetMatrix();
-			m_camPos *= m;
-		}
-
-		{ // rotate X-Axis
-			Quaternion q(Vector3(1,0,0), pos.y * 0.005f); 
-			Matrix44 m = q.GetMatrix();
-			m_camPos *= m;
-		}
-
-		UpdateCamera();
+		m_camera.Yaw2( pos.x * 0.005f );
+		m_camera.Pitch2( pos.y * 0.005f );
 	}
 	else if (m_MButtonDown)
 	{
 		CPoint pos = point  - m_curPos;
 		m_curPos = point;
 
-		Vector3 v = m_lookAtPos - m_camPos;
-		const float len = v.Length();
-		v.Normalize();
-
-		Vector3 up = Vector3(0,1,0);
-		Vector3 right = up.CrossProduct(v);
-		right.Normalize();
-
-		m_lookAtPos += right * pos.x * (len * -0.001f);
-		m_camPos += right * pos.x * (len * -0.001f);
-		m_lookAtPos += up * pos.y * (len * 0.001f);
-		m_camPos += up * pos.y * (len * 0.001f);
-		
-		UpdateCamera();
+		const float len = m_camera.GetDistance();
+		m_camera.MoveRight( -pos.x * len * 0.001f );
+		m_camera.MoveUp( pos.y * len * 0.001f );
 	}
 
 	CView::OnMouseMove(nFlags, point);
@@ -219,17 +186,12 @@ BOOL CModelView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	dbg::Print( "%d %d", nFlags, zDelta);
 
-	Vector3 dir = m_lookAtPos - m_camPos;
-	const float len = dir.Length();
-	dir.Normalize();
-
+	const float len = m_camera.GetDistance();
 	float zoomLen = (len > 100)? 50 : (len/4.f);
 	if (nFlags & 0x4)
 		zoomLen = zoomLen/10.f;
 
-	m_camPos += (zDelta<0)? dir*-zoomLen : dir*zoomLen;
-
-	UpdateCamera();
+	m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );
 
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }

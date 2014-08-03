@@ -109,6 +109,9 @@
     <ClInclude Include="terrain\terrain.h">
       <Filter>terrain</Filter>
     </ClInclude>
+    <ClInclude Include="base\camera.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -204,6 +207,9 @@
     </ClCompile>
     <ClCompile Include="terrain\terrain.cpp">
       <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="base\camera.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,9 @@ CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 
 CMainPanelTab::~CMainPanelTab()
 {
+	SAFE_DELETE(m_modelPanel);
+	SAFE_DELETE(m_aniPanel);
+	SAFE_DELETE(m_filePanel);
 }
 
 void CMainPanelTab::DoDataExchange(CDataExchange* pDX)

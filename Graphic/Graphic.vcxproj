@@ -68,6 +68,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="base\box.h" />
+    <ClInclude Include="base\camera.h" />
     <ClInclude Include="base\cube.h" />
     <ClInclude Include="base\dxInit.h" />
     <ClInclude Include="base\graphicdef.h" />
@@ -108,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base\box.cpp" />
+    <ClCompile Include="base\camera.cpp" />
     <ClCompile Include="base\cube.cpp" />
     <ClCompile Include="base\dxinit.cpp" />
     <ClCompile Include="base\grid.cpp" />

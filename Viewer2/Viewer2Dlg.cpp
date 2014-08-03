@@ -42,6 +42,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 
 CViewer2Dlg::~CViewer2Dlg()
 {
+	DestroyLoadingDialog();
 	m_aniController->DestroyWindow();
 	delete m_aniController;
 }

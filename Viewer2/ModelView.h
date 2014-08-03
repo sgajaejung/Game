@@ -16,15 +16,13 @@ public:
 	void Update(const float elapseT);
 	void Render();
 	virtual void OnDraw(CDC* pDC);
-	void UpdateCamera();
 
 	virtual void Update() override;
 
 
 protected:
 	Matrix44 m_rotateTm;
-	Vector3 m_camPos;
-	Vector3 m_lookAtPos;
+	graphic::cCamera m_camera;
 	Matrix44 m_matView;
 	Matrix44 m_matProj;
 
