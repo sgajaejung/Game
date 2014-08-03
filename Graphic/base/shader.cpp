@@ -20,7 +20,7 @@ cShader::~cShader()
 }
 
 
-bool cShader::Create(const string &fileName, const string &technique)
+bool cShader::Create(const string &fileName, const string &technique, const bool showMsgBox)//showMsgBox=true
 {
 	// 쉐이더 파일 읽기
 	HRESULT hr;
@@ -43,7 +43,8 @@ bool cShader::Create(const string &fileName, const string &technique)
 		else
 		{
 			string msg = fileName + " 파일이 존재하지 않습니다.";
-			MessageBoxA( NULL, msg.c_str(), "ERROR", MB_OK);
+			if (showMsgBox)
+				MessageBoxA( NULL, msg.c_str(), "ERROR", MB_OK);
 		}
 
 		//DXTRACE_ERR( "CreateEffectFromFile", hr );

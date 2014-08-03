@@ -62,3 +62,12 @@ void cRigidMesh::Render(const Matrix44 &parentTm)
 	cMesh::Render(parentTm);
 }
 
+
+// ¼ÎÀÌ´õ Ãâ·Â.
+void cRigidMesh::RenderShader( const Matrix44 &parentTm )
+{
+	if (cShader *shader = cResourceManager::Get()->LoadShader("rigid.fx"))
+	{
+		cMesh::RenderShader(*shader, parentTm);
+	}
+}

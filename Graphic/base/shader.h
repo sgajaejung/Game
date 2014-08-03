@@ -10,7 +10,7 @@ namespace graphic
 		cShader();
 		virtual ~cShader();
 
-		bool Create(const string &fileName, const string &technique);
+		bool Create(const string &fileName, const string &technique, const bool showMsgBox=true);
 		void Begin();
 		void BeginPass(int pass=-1);
 		void EndPass();

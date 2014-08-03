@@ -90,6 +90,12 @@ void cBoneMgr::Render(const Matrix44 &parentTm)
 	m_root->Render(parentTm);
 }
 
+void cBoneMgr::RenderShader(cShader &shader, const Matrix44 &parentTm)
+{
+	RET(!m_root);
+	m_root->RenderShader(shader, parentTm);
+}
+
 
 // 경계박스 출력.
 void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)

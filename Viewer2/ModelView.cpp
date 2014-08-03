@@ -68,7 +68,6 @@ void CModelView::Init()
 	
 	//m_shader.Create( "../media/shader/hlsl_skinning_using_color.fx", "TShader" );
 	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
-
 	m_skybox.Create( "../media/skybox" );
 
 	cController::Get()->AddObserver(this);
@@ -107,6 +106,7 @@ void CModelView::Render()
 		{
 			character->SetTM(m_rotateTm);
 		}
+
 
 		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix() );
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );

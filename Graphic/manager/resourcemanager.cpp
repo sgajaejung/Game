@@ -137,11 +137,51 @@ cTexture* cResourceManager::LoadTexture( const string &dirPath, const string &fi
 }
 
 
+// 셰이더 로딩.
+cShader* cResourceManager::LoadShader( const string &fileName )
+{
+	if (cShader *p = FindShader(fileName))
+		return p;
+
+	cShader *shader = new cShader();
+	if (!shader->Create(fileName, "TShader", false))
+	{
+		string newPath;
+		if (common::FindFile(fileName, "../media/", newPath))
+		{
+			if (!shader->Create(newPath, "TShader"))
+			{
+				delete shader;
+				return NULL; // 실패 종료.
+			}
+		}
+		else
+		{
+			string msg = fileName + " 파일이 존재하지 않습니다.";
+			MessageBoxA( NULL, msg.c_str(), "ERROR", MB_OK);
+		}
+	}
+
+	m_shaders[ fileName] = shader;
+	return shader;
+}
+
+
 // 텍스쳐 찾기.
 cTexture* cResourceManager::FindTexture( const string &fileName )
 {
 	auto it = m_textures.find(fileName);
 	if (m_textures.end() == it)
+		return NULL; // not exist
+	return it->second;
+}
+
+
+// 셰이더 찾기.
+cShader* cResourceManager::FindShader( const string &fileName )
+{
+	auto it = m_shaders.find(fileName);
+	if (m_shaders.end() == it)
 		return NULL; // not exist
 	return it->second;
 }

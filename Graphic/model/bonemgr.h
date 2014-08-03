@@ -16,6 +16,8 @@ namespace graphic
 
 		bool Move(const float elapseTime);
 		void Render(const Matrix44 &parentTm);
+		void RenderShader(cShader &shader, const Matrix44 &parentTm);
+
 		void RenderBoundingBox(const Matrix44 &parentTm);
 		void Clear();
 		cBoneNode* GetRoot();

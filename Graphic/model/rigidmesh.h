@@ -13,6 +13,7 @@ namespace graphic
 		void LoadAnimation( const sRawAni &rawAni );
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
+		virtual void RenderShader( const Matrix44 &parentTm ) override;
 
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);

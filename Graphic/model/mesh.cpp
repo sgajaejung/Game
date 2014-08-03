@@ -181,6 +181,13 @@ void cMesh::Render(const Matrix44 &parentTm)
 }
 
 
+// 기본 셰이더를 통해 출력한다.
+void cMesh::RenderShader( const Matrix44 &parentTm )
+{
+	// 아무일도 없음.
+}
+
+
 // 셰이더를 통해 화면을 그린다.
 void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 {
