@@ -7,6 +7,8 @@
 #include "afxdialogex.h"
 #include "ModelPanel.h"
 #include "AnimationPanel.h"
+#include "FilePanel.h"
+
 
 
 // CMainPanelTab 대화 상자입니다.
@@ -15,6 +17,7 @@ CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMainPanelTab::IDD, pParent)
 ,	m_modelPanel(NULL)
 ,	m_aniPanel(NULL)
+,	m_filePanel(NULL)
 {
 
 }
@@ -57,8 +60,9 @@ BOOL CMainPanelTab::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	m_Tab.InsertItem(0, L"Model");
-	m_Tab.InsertItem(1, L"Animation");
+	m_Tab.InsertItem(0, L"File");
+	m_Tab.InsertItem(1, L"Model");
+	m_Tab.InsertItem(2, L"Animation");
 
 	CRect cr;
 	GetClientRect(cr);
@@ -66,16 +70,21 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_modelPanel = new CModelPanel(this);
 	m_modelPanel->Create(CModelPanel::IDD, this);
 	m_modelPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_modelPanel->ShowWindow(SW_SHOW);
+	m_modelPanel->ShowWindow(SW_HIDE);
 
 	m_aniPanel = new CAnimationPanel(this);
 	m_aniPanel->Create(CAnimationPanel::IDD, this);
 	m_aniPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_aniPanel->ShowWindow(SW_HIDE);
 
+	m_filePanel = new CFilePanel(this);
+	m_filePanel->Create(CFilePanel::IDD, this);
+	m_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_filePanel->ShowWindow(SW_SHOW);
 
 	cController::Get()->AddObserver(m_modelPanel);
 	cController::Get()->AddObserver(m_aniPanel);
+	cController::Get()->AddObserver(m_filePanel);
 
 	return TRUE;
 }
@@ -86,13 +95,21 @@ void CMainPanelTab::OnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 	switch (m_Tab.GetCurSel())
 	{
 	case 0:
-		m_modelPanel->ShowWindow(SW_SHOW);
 		m_aniPanel->ShowWindow(SW_HIDE);
+		m_modelPanel->ShowWindow(SW_HIDE);
+		m_filePanel->ShowWindow(SW_SHOW);
 		break;
 
 	case 1:
+		m_modelPanel->ShowWindow(SW_SHOW);
+		m_aniPanel->ShowWindow(SW_HIDE);
+		m_filePanel->ShowWindow(SW_HIDE);
+		break;
+
+	case 2:
 		m_aniPanel->ShowWindow(SW_SHOW);
 		m_modelPanel->ShowWindow(SW_HIDE);
+		m_filePanel->ShowWindow(SW_HIDE);
 		break;
 	}
 
@@ -109,5 +126,6 @@ void CMainPanelTab::OnSize(UINT nType, int cx, int cy)
 		m_Tab.MoveWindow(0, 0, cx, cy);
 		m_modelPanel->MoveWindow(CRect(0, 25, cx, cy));
 		m_aniPanel->MoveWindow(CRect(0, 25, cx, cy));
+		m_filePanel->MoveWindow(CRect(0, 25, cx, cy));
 	}
 }

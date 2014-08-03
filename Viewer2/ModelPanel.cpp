@@ -249,10 +249,10 @@ void CModelPanel::OnSize(UINT nType, int cx, int cy)
 {
 	__super::OnSize(nType, cx, cy);
 	
-	MoveTreeWindow(m_MaterialTree, cx, cy);
-	MoveTreeWindow(m_MeshTree, cx, cy);
-	MoveTreeWindow(m_BoneTree, cx, cy);
-	MoveTreeWindow(m_RawBoneTree, cx, cy);
+	MoveChildCtrlWindow(m_MaterialTree, cx, cy);
+	MoveChildCtrlWindow(m_MeshTree, cx, cy);
+	MoveChildCtrlWindow(m_BoneTree, cx, cy);
+	MoveChildCtrlWindow(m_RawBoneTree, cx, cy);
 }
 
 

@@ -3,10 +3,12 @@
 
 // CModelView ∫‰¿‘¥œ¥Ÿ.
 class CModelView : public CView
+							, public common::iObserver
 {
 public:
 	CModelView();
 	virtual ~CModelView();
+
 
 public:
 	void Init();
@@ -16,9 +18,10 @@ public:
 	virtual void OnDraw(CDC* pDC);
 	void UpdateCamera();
 
+	virtual void Update() override;
+
 
 protected:
-	string m_filePath;
 	Matrix44 m_rotateTm;
 	Vector3 m_camPos;
 	Vector3 m_lookAtPos;

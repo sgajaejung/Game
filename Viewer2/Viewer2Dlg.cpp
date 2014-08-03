@@ -120,6 +120,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 	m_modelView->Init();
 	m_modelView->ShowWindow(SW_SHOW);
 
+
 	// Create Main Panel
 	{
 		const int PANEL_WIDTH = 400;
@@ -159,6 +160,9 @@ BOOL CViewer2Dlg::OnInitDialog()
 		m_aniController->ShowWindow(SW_SHOW);
 		cController::Get()->AddObserver(m_aniController);
 	}
+
+
+	cController::Get()->AddObserver(this);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -323,4 +327,20 @@ void CViewer2Dlg::OnBnClickedCheckBoundingbox()
 	RET(!character);
 
 	character->SetRenderBoundingBox(m_RenderBoundingBox? true : false);
+}
+
+
+// Observer Update
+void CViewer2Dlg::Update()
+{
+	// 업데이트 된 모델이 애니메이션 상태라면 AnimationController 를 출력시킨다.
+	if (graphic::cCharacter *character = cController::Get()->GetCharacter())
+	{
+		if (character->GetCurrentAnimation())
+		{
+			CRect wr;
+			GetWindowRect(wr);
+			MoveWindow(wr.left,wr.top,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT+60);
+		}
+	}
 }

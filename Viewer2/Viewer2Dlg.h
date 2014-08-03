@@ -5,6 +5,7 @@
 class CModelView;
 class CAnimationController2;
 class CViewer2Dlg : public CDialogEx
+							, public common::iObserver
 {
 // 생성입니다.
 public:
@@ -13,6 +14,7 @@ public:
 	enum { IDD = IDD_VIEWER2_DIALOG };
 
 	void MainLoop();
+	virtual void Update() override; // Observer Update
 
 
 protected:

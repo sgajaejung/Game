@@ -5,6 +5,7 @@
 // CMainPanelTab 대화 상자입니다.
 class CModelPanel;
 class CAnimationPanel;
+class CFilePanel;
 class CMainPanelTab : public CDialogEx
 {
 public:
@@ -16,6 +17,7 @@ public:
 protected:
 	CModelPanel *m_modelPanel;
 	CAnimationPanel *m_aniPanel;
+	CFilePanel *m_filePanel;
 
 
 protected:

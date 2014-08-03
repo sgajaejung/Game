@@ -28,6 +28,7 @@ namespace graphic
 		const Matrix44& GetTM() const;
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
+		sRawAniGroup* GetCurrentAnimation();
 
 		// ICollisionable Interface
 		virtual bool IsTest( int testNum ) override;
@@ -49,6 +50,7 @@ namespace graphic
 		cBoneMgr *m_bone;
 		Matrix44 m_matTM;
 		cBoundingBox m_boundingBox; // only rigid mesh model
+		sRawAniGroup *m_curAni; // reference, 애니메이션 정보.
 
 		// debug 용.
 		bool m_isRenderMesh; // default = true
@@ -62,4 +64,5 @@ namespace graphic
 	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
 	inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
+	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 }

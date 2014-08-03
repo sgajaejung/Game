@@ -64,14 +64,14 @@ void CPanelBase::ExpandAll(CTreeCtrl &treeCtrl)
 }
 
 
-void CPanelBase::MoveTreeWindow(CTreeCtrl &treeCtrl, int cx, int cy)
+void CPanelBase::MoveChildCtrlWindow(CWnd &wndCtrl, int cx, int cy)
 {
-	if (treeCtrl.GetSafeHwnd())
+	if (wndCtrl.GetSafeHwnd())
 	{
 		CRect wr;
-		treeCtrl.GetWindowRect(wr);
+		wndCtrl.GetWindowRect(wr);
 		ScreenToClient(wr);
-		treeCtrl.MoveWindow(wr.left, wr.top, cx, wr.Height());
+		wndCtrl.MoveWindow(wr.left, wr.top, cx, wr.Height());
 	}
 }
 

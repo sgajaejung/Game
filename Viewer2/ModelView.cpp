@@ -61,9 +61,7 @@ void CModelView::Dump(CDumpContext& dc) const
 
 void CModelView::Init()
 {
-	m_filePath = "../media/data.dat";
-
-	m_camPos = Vector3(100,100,-500);
+	m_camPos = Vector3(100,300,-500);
 	m_lookAtPos = Vector3(0,0,0);
 	UpdateCamera();
 
@@ -79,9 +77,10 @@ void CModelView::Init()
 		true); // true = 활성화 ， false = 비활성화
 
 	
-
 	//m_shader.Create( "../media/shader/hlsl_skinning_using_color.fx", "TShader" );
 	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
+
+	cController::Get()->AddObserver(this);
 }
 
 
@@ -120,8 +119,8 @@ void CModelView::Render()
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camPos);
 
-		//cController::Get()->RenderShader(m_shader);
-		cController::Get()->Render();
+		cController::Get()->RenderShader(m_shader);
+		//cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -275,11 +274,21 @@ void CModelView::OnMButtonUp(UINT nFlags, CPoint point)
 bool CModelView::LoadFile(const string &fileName)
 {
 	m_rotateTm.SetIdentity();
-	m_filePath = fileName;
 
 	cController::Get()->LoadFile(fileName);
 	graphic::cCharacter *character = cController::Get()->GetCharacter();
 	character->LoadWeapon( "../media/max script/valle_weapon4.dat");
 
 	return false;
+}
+
+
+void CModelView::Update()
+{
+	m_rotateTm.SetIdentity();
+
+	// 무기 재 로딩.
+	graphic::cCharacter *character = cController::Get()->GetCharacter();
+	if (character)
+		character->LoadWeapon( "../media/max script/valle_weapon4.dat");
 }

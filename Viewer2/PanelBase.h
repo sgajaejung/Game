@@ -13,7 +13,7 @@ public:
 protected:
 	void ExpandAll(CTreeCtrl &treeCtrl);
 	HTREEITEM FindTree( CTreeCtrl &treeCtrl, const wstring &text );
-	void MoveTreeWindow(CTreeCtrl &treeCtrl, int cx, int cy);
+	void MoveChildCtrlWindow(CWnd &wndCtrl, int cx, int cy);
 
 
 protected:

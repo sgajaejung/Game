@@ -18,6 +18,7 @@ cModel::cModel(const int id) :
 ,	m_isRenderBone(false)
 ,	m_isRenderBoundingBox(false)
 ,	m_type(MODEL_TYPE::RIGID)
+,	m_curAni(NULL)
 {
 	
 }
@@ -81,11 +82,14 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 }
 
 
+// 애니메이션 시작.
 void cModel::SetAnimation( const string &aniFileName)
 {
 	if (sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName))
 	{
-		if (m_bone) // skinning model
+		m_curAni = rawAnies;
+
+		if (MODEL_TYPE::SKIN == m_type)
 		{
 			m_bone->SetAnimation(*rawAnies, 0);
 		}
@@ -168,6 +172,7 @@ void cModel::Clear()
 		SAFE_DELETE(mesh);
 	}
 	m_meshes.clear();
+	m_curAni = NULL;
 
 	SAFE_DELETE(m_bone);
 }
