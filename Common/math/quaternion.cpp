@@ -47,9 +47,9 @@ Quaternion::Quaternion( const Vector3& vDir1, const Vector3& vDir2 )
 //--------------------------------
 //
 //--------------------------------
-const Quaternion& Quaternion::Interpolate( const Quaternion& qNext, const float fTime ) const
+Quaternion Quaternion::Interpolate( const Quaternion& qNext, const float fTime ) const
 {
-	static Quaternion	qC;
+	Quaternion qC;
 	const Quaternion&	qA = *this;
 	Quaternion			qB = qNext;
 
@@ -91,9 +91,9 @@ const Quaternion& Quaternion::Interpolate( const Quaternion& qNext, const float 
 //--------------------------------
 //
 //--------------------------------
-const Matrix44& Quaternion::GetMatrix() const
+Matrix44 Quaternion::GetMatrix() const
 {
-	static Matrix44 m;
+	Matrix44 m;
 /*
 	float	xx = x * x;
 	float	yy = y * y;

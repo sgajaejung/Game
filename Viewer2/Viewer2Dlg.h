@@ -47,4 +47,6 @@ public:
 	afx_msg void OnBnClickedCheckMesh();
 	afx_msg void OnBnClickedCheckBoundingbox();
 	BOOL m_RenderBoundingBox;
+	afx_msg void OnBnClickedCheckSkybox();
+	BOOL m_ShowSkyBox;
 };

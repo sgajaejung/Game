@@ -25,6 +25,7 @@ using namespace common;
 #include "base/cube.h"
 #include "base/shader.h"
 #include "base/camera.h"
+#include "base/skybox.h"
 #include "model/node.h"
 
 #include "collision/boundingbox.h"

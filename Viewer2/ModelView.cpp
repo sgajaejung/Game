@@ -13,6 +13,7 @@ CModelView::CModelView()
 	m_LButtonDown = false;
 	m_RButtonDown = false;
 	m_MButtonDown = false;	
+	m_showSkybox = false;
 }
 
 CModelView::~CModelView()
@@ -29,15 +30,6 @@ BEGIN_MESSAGE_MAP(CModelView, CView)
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
 END_MESSAGE_MAP()
-
-
-// CModelView 그리기입니다.
-
-void CModelView::OnDraw(CDC* pDC)
-{
-	CDocument* pDoc = GetDocument();
-	// TODO: 여기에 그리기 코드를 추가합니다.
-}
 
 
 // CModelView 진단입니다.
@@ -61,12 +53,11 @@ void CModelView::Dump(CDumpContext& dc) const
 
 void CModelView::Init()
 {
-	m_camera.SetCamera(Vector3(100,300,-500), Vector3(0,0,0), Vector3(0,1,0));
-
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	m_matProj.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f) ;
-	graphic::GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&m_matProj) ;
+	m_camera.SetCamera(Vector3(100,300,-500), Vector3(0,0,0), Vector3(0,1,0));
+	m_camera.SetProjection( D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f) ;
+
 
 	graphic::GetDevice()->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
@@ -77,6 +68,8 @@ void CModelView::Init()
 	
 	//m_shader.Create( "../media/shader/hlsl_skinning_using_color.fx", "TShader" );
 	m_shader.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
+
+	m_skybox.Create( "../media/skybox" );
 
 	cController::Get()->AddObserver(this);
 }
@@ -104,6 +97,8 @@ void CModelView::Render()
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
 
+		if (m_showSkybox)
+			m_skybox.Render();
 		graphic::GetRenderer()->RenderFPS();
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
@@ -113,7 +108,7 @@ void CModelView::Render()
 			character->SetTM(m_rotateTm);
 		}
 
-		m_shader.SetMatrix( "mVP", m_camera.GetViewMatrix() * m_matProj);
+		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix() );
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
 
@@ -150,19 +145,17 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (m_LButtonDown)
 	{
-		CPoint pos = point  - m_curPos;
+		const CPoint pos = point  - m_curPos;
 		m_curPos = point;
 
-		Matrix44 mat1;
-		mat1.SetRotationY( -pos.x * 0.01f );
-		Matrix44 mat2;
-		mat2.SetRotationX( -pos.y * 0.01f );
+		Quaternion q1(m_camera.GetRight(), -pos.y * 0.01f);
+		Quaternion q2(m_camera.GetUpVector(), -pos.x * 0.01f);
 
-		m_rotateTm *= (mat1 * mat2);
+		m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
 	}	
 	else if (m_RButtonDown)
 	{
-		CPoint pos = point  - m_curPos;
+		const CPoint pos = point  - m_curPos;
 		m_curPos = point;
 
 		m_camera.Yaw2( pos.x * 0.005f );
@@ -170,7 +163,7 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 	else if (m_MButtonDown)
 	{
-		CPoint pos = point  - m_curPos;
+		const CPoint pos = point  - m_curPos;
 		m_curPos = point;
 
 		const float len = m_camera.GetDistance();

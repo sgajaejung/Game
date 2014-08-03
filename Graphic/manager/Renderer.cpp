@@ -72,13 +72,16 @@ void cRenderer::RenderAxis()
 	// 가장 위에 출력되기 위해서 zbuffer 를 끈다.
 	m_pDevice->SetRenderState(D3DRS_ZENABLE, 0);
 
+	DWORD lighting;
+	m_pDevice->GetRenderState( D3DRS_LIGHTING, &lighting );
 	m_pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+
 	m_pDevice->SetTexture(0, NULL);
 	Matrix44 identity;
 	m_pDevice->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&identity );
 	m_pDevice->SetFVF( sVertexDiffuse::FVF );
 	m_pDevice->DrawPrimitiveUP( D3DPT_LINELIST, 3, &m_axis[0], sizeof(sVertexDiffuse) );
-	m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
+	m_pDevice->SetRenderState( D3DRS_LIGHTING, lighting );
 
 	m_pDevice->SetRenderState(D3DRS_ZENABLE, 1);
 }
@@ -91,7 +94,7 @@ void cRenderer::RenderFPS()
 
 	RECT rc = {10,10,200,200};
 	m_font->DrawTextA( NULL, m_fpsText.c_str(), -1, &rc,
-		DT_NOCLIP, D3DXCOLOR( 0.0f, 0.0f, 1.0f, 1.0f ) );
+		DT_NOCLIP, D3DXCOLOR( 1.0f, 1.0f, 1.0f, 1.0f ) );
 }
 
 
@@ -107,13 +110,15 @@ void cRenderer::RenderGrid()
 
 	if (gridSize > 0)
 	{
+		DWORD lighting;
+		m_pDevice->GetRenderState( D3DRS_LIGHTING, &lighting );
 		m_pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 		m_pDevice->SetTexture(0, NULL);
 		Matrix44 identity;
 		m_pDevice->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&identity );
 		m_pDevice->SetFVF( sVertexDiffuse::FVF );
 		m_pDevice->DrawPrimitiveUP( D3DPT_LINELIST, gridSize, &m_grid[0], sizeof(sVertexDiffuse) );
-		m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE);
+		m_pDevice->SetRenderState( D3DRS_LIGHTING, lighting);
 	}
 }
 

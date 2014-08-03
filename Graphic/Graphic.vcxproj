@@ -79,6 +79,7 @@
     <ClInclude Include="base\line.h" />
     <ClInclude Include="base\material.h" />
     <ClInclude Include="base\shader.h" />
+    <ClInclude Include="base\skybox.h" />
     <ClInclude Include="base\sphere.h" />
     <ClInclude Include="base\texture.h" />
     <ClInclude Include="base\vertexbuffer.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="base\line.cpp" />
     <ClCompile Include="base\material.cpp" />
     <ClCompile Include="base\shader.cpp" />
+    <ClCompile Include="base\skybox.cpp" />
     <ClCompile Include="base\sphere.cpp" />
     <ClCompile Include="base\texture.cpp" />
     <ClCompile Include="base\vertexbuffer.cpp" />

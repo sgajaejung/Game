@@ -36,6 +36,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 , m_RenderBone(FALSE)
 , m_RenderMesh(TRUE)
 , m_RenderBoundingBox(FALSE)
+, m_ShowSkyBox(FALSE)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -54,6 +55,7 @@ void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_BONE, m_RenderBone);
 	DDX_Check(pDX, IDC_CHECK_MESH, m_RenderMesh);
 	DDX_Check(pDX, IDC_CHECK_BOUNDINGBOX, m_RenderBoundingBox);
+	DDX_Check(pDX, IDC_CHECK_SKYBOX, m_ShowSkyBox);
 }
 
 BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
@@ -67,6 +69,7 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_BONE, &CViewer2Dlg::OnBnClickedCheckBone)
 	ON_BN_CLICKED(IDC_CHECK_MESH, &CViewer2Dlg::OnBnClickedCheckMesh)
 	ON_BN_CLICKED(IDC_CHECK_BOUNDINGBOX, &CViewer2Dlg::OnBnClickedCheckBoundingbox)
+	ON_BN_CLICKED(IDC_CHECK_SKYBOX, &CViewer2Dlg::OnBnClickedCheckSkybox)
 END_MESSAGE_MAP()
 
 
@@ -332,6 +335,14 @@ void CViewer2Dlg::OnBnClickedCheckBoundingbox()
 	RET(!character);
 
 	character->SetRenderBoundingBox(m_RenderBoundingBox? true : false);
+}
+
+
+void CViewer2Dlg::OnBnClickedCheckSkybox()
+{
+	UpdateData();
+	if (m_modelView)
+		m_modelView->ShowSkybox(m_ShowSkyBox? true : false);
 }
 
 

@@ -112,6 +112,9 @@
     <ClInclude Include="base\camera.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="base\skybox.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -209,6 +212,9 @@
       <Filter>terrain</Filter>
     </ClCompile>
     <ClCompile Include="base\camera.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\skybox.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>

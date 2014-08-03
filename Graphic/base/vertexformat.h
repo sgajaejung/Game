@@ -12,6 +12,17 @@ namespace graphic
 	};
 
 
+	struct sVertexTex
+	{
+		Vector3 p;
+		float u,v;
+
+		sVertexTex() {}
+		sVertexTex(float x0, float y0, float z0, float u0, float v0) : p(x0,y0,z0), u(u0), v(v0) {}
+		enum {FVF = D3DFVF_XYZ | D3DFVF_TEX1 };
+	};
+
+
 	struct sVertexNormDiffuse
 	{
 		Vector3 p;

@@ -33,9 +33,9 @@ namespace common
 			return *this * m.GetQuaternion();
 		} //operator *
 	
-		const Quaternion&	Interpolate( const Quaternion& qNext, const float fTime ) const;
-		const Matrix44&		GetMatrix() const;
-		Vector3				GetDirection() const;
+		Quaternion Interpolate( const Quaternion& qNext, const float fTime ) const;
+		Matrix44 GetMatrix() const;
+		Vector3 GetDirection() const;
 
 		void	SetRotationX( const float fRadian );
 		void	SetRotationY( const float fRadian );

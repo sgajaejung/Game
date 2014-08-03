@@ -14,24 +14,24 @@ public:
 	void Init();
 	bool LoadFile(const string &fileName);
 	void Update(const float elapseT);
+	void ShowSkybox(bool show);
 	void Render();
-	virtual void OnDraw(CDC* pDC);
-
 	virtual void Update() override;
+	virtual void OnDraw(CDC* pDC) { }
 
 
 protected:
 	Matrix44 m_rotateTm;
 	graphic::cCamera m_camera;
-	Matrix44 m_matView;
-	Matrix44 m_matProj;
+	graphic::cSkyBox m_skybox;
+	graphic::cShader m_shader;
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;
 	bool m_MButtonDown;
 	CPoint m_curPos;
 
-	graphic::cShader m_shader;
+	bool m_showSkybox;
 
 
 public:
@@ -54,3 +54,6 @@ public:
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 };
+
+
+inline void CModelView::ShowSkybox(bool show) { m_showSkybox = show; }

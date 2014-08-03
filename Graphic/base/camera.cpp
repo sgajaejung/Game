@@ -39,8 +39,15 @@ void cCamera::SetCamera(const Vector3 &eyePos, const Vector3 &lookAt, const Vect
 }
 
 
+void cCamera::SetProjection(const float fov, const float aspect, const float nearPlane, const float farPlane)
+{
+	m_proj.SetProjection(fov, aspect, nearPlane, farPlane);
+	UpdateProjectionMatrix();
+}
+
+
 // Direction 단위 벡터를 리턴한다.
-Vector3 cCamera::GetDirection()
+Vector3 cCamera::GetDirection() const 
 {
 	Vector3 v = m_lookAt - m_eyePos;
 	return v.Normal();
@@ -48,7 +55,7 @@ Vector3 cCamera::GetDirection()
 
 
 // Right 단위 벡터를 리턴한다.
-Vector3 cCamera::GetRight()
+Vector3 cCamera::GetRight() const
 {
 	Vector3 v = m_up.CrossProduct( GetDirection() );
 	return v.Normal();
@@ -66,6 +73,12 @@ void cCamera::UpdateViewMatrix()
 	m_view.SetView2(m_eyePos, m_lookAt, m_up);
 	if (GetDevice())
 		GetDevice()->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&m_view);
+}
+
+void cCamera::UpdateProjectionMatrix()
+{
+	if (GetDevice())
+		GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&m_proj);
 }
 
 
@@ -212,7 +225,7 @@ void cCamera::Zoom( const float len )
 
 
 // lookAt - eyePos 사이 거리
-float cCamera::GetDistance()
+float cCamera::GetDistance() const 
 {
 	return (m_lookAt - m_eyePos).Length();
 }
