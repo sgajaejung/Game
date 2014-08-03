@@ -285,17 +285,8 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 	if (size == 0) 
 		return;// handle error...
 
-	m_modelView->LoadFile(filePath);
+	cController::Get()->LoadFile(filePath);
 	
-	// 애니메이션 파일을 열었다면 윈도우 크기를 늘인다.
-	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(filePath);
-	if (graphic::RESOURCE_TYPE::ANIMATION == type)
-	{
-		CRect wr;
-		GetWindowRect(wr);
-		MoveWindow(wr.left,wr.top,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT+60);
-	}
-
 	CDialogEx::OnDropFiles(hDropInfo);
 }
 

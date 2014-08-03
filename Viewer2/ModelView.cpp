@@ -226,24 +226,12 @@ void CModelView::OnMButtonUp(UINT nFlags, CPoint point)
 }
 
 
-bool CModelView::LoadFile(const string &fileName)
-{
-	m_rotateTm.SetIdentity();
-
-	cController::Get()->LoadFile(fileName);
-	graphic::cCharacter *character = cController::Get()->GetCharacter();
-	character->LoadWeapon( "../media/max script/valle_weapon4.dat");
-
-	return false;
-}
-
-
 void CModelView::Update()
 {
 	m_rotateTm.SetIdentity();
 
-	// 무기 재 로딩.
-	graphic::cCharacter *character = cController::Get()->GetCharacter();
-	if (character)
-		character->LoadWeapon( "../media/max script/valle_weapon4.dat");
+	//// 무기 재 로딩.
+	//graphic::cCharacter *character = cController::Get()->GetCharacter();
+	//if (character)
+	//	character->LoadWeapon( "../media/max script/valle_weapon4.dat");
 }

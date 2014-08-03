@@ -12,7 +12,6 @@ public:
 
 public:
 	void Init();
-	bool LoadFile(const string &fileName);
 	void Update(const float elapseT);
 	void ShowSkybox(bool show);
 	void Render();
