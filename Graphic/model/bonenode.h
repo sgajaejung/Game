@@ -11,6 +11,7 @@ namespace graphic
 		virtual ~cBoneNode();
 
 		void SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop=false );
+		void SetAccTM(const Matrix44 &mat);
 		const Matrix44& GetAccTM() const;
 		const Matrix44& GetOffset() const;
 		virtual bool Move(const float elapseTime) override;
@@ -43,7 +44,8 @@ namespace graphic
 		bool m_isLoop; // 에니메이션 반복 여부
 	};
 
-	
+
+	inline void cBoneNode::SetAccTM(const Matrix44& mat) { m_accTM = mat; }
 	inline const Matrix44& cBoneNode::GetAccTM() const { return m_accTM; }
 	inline const Matrix44& cBoneNode::GetOffset() const { return m_offset; }
 	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }

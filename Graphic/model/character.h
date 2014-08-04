@@ -16,10 +16,16 @@ namespace graphic
 		virtual void Render() override;
 		virtual void RenderShader(cShader &shader);
 
+		// debug ¿ë ÇÔ¼ö.
+		void SetRenderWeaponBoundingBox(const bool isRenderBoundingBox);
+
 
 	private:
 		cModel *m_weapon;
-		cBoneNode *m_weaponNode; // reference
+		cBoneNode *m_weaponNode1; // reference
+		cBoneNode *m_weaponNode2; // reference
+		cBoneNode *m_weaponBoneNode1; // reference
+		cBoneNode *m_weaponBoneNode2; // reference
 	};
 
 }

@@ -63,7 +63,7 @@ BOOL CMainPanelTab::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	m_Tab.InsertItem(0, L"File");
+	m_Tab.InsertItem(0, L"Model File");
 	m_Tab.InsertItem(1, L"Model");
 	m_Tab.InsertItem(2, L"Animation");
 

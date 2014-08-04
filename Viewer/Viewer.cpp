@@ -54,10 +54,6 @@ private:
 	Matrix44 m_rotateTm;
 
 	graphic::cCamera m_camera;
-	Vector3 m_camPos;
-	Vector3 m_lookAtPos;
-	//Matrix44 m_view; // Camera View Matrix
-	//Matrix44 m_proj; // projection matrix
 
 	Vector3 m_boxPos;
 
@@ -112,6 +108,13 @@ bool cViewer::OnInit()
 	m_model.Create( "../media/max script/valle1.dat" );
 	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
 
+	m_character.Create( "../media/max script/tiac.dat" );
+	//m_character.SetAnimation( "../media/max script/tiac_normal.ani" );
+	m_character.SetAnimation( "../media/max script/tiac_la.ani" );
+	m_character.LoadWeapon( "../media/max script/tiac_weapon.dat" );
+	m_character.SetRenderBoundingBox(true);
+	m_character.SetRenderWeaponBoundingBox(true);
+
 
 	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
@@ -163,6 +166,7 @@ bool cViewer::OnInit()
 void cViewer::OnUpdate(const float elapseT)
 {
 	m_model.Move(elapseT);
+	m_character.Move(elapseT);
 
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
@@ -250,7 +254,7 @@ void cViewer::OnRender(const float elapseT)
 		m_shaderSkin.SetRenderPass(0);
 		m_model.SetTM(m_cube.GetTransform());
 		m_model.RenderShader(m_shaderSkin);
-
+		m_character.RenderShader(m_shaderSkin);
 
 
 		//------------------------------------------------------------------------

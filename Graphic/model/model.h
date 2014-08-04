@@ -55,7 +55,7 @@ namespace graphic
 		// debug ¿ë.
 		bool m_isRenderMesh; // default = true
 		bool m_isRenderBone; // default = false
-		bool m_isRenderBoundingBox; // default = true
+		bool m_isRenderBoundingBox; // default = false
 	};
 
 
