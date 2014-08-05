@@ -16,6 +16,7 @@ cMapController::~cMapController(void)
 bool cMapController::LoadHeightMap(const string &fileName)
 {
 
+	m_terrain.CreateFromHeightMap(fileName, "empty" );
 
 	return true;
 }

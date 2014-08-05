@@ -1,6 +1,7 @@
 #pragma once
 
-class cMapController
+
+class cMapController : public common::cSingleton<cMapController>
 {
 public:
 	cMapController(void);
@@ -9,5 +10,12 @@ public:
 	bool LoadHeightMap(const string &fileName);
 	bool LoadHeightMapTexture(const string &fileName);
 
+	graphic::cTerrain& GetTerrain();
+
+
+private:
+	graphic::cTerrain m_terrain;
 };
 
+
+inline graphic::cTerrain& cMapController::GetTerrain() { return m_terrain; }

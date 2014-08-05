@@ -107,7 +107,14 @@ void CHeightMapPanel::UpdateHeightMapList()
 
 void CHeightMapPanel::OnDblclkListHeightmap()
 {
-	
+	CString fileName;
+	m_HeightMapList.GetText(m_HeightMapList.GetCurSel(), fileName);
+	SAFE_DELETE(m_heightMap);
+	m_heightMap = Image::FromFile(fileName);
+	InvalidateRect(NULL, FALSE);
+
+	string asciiFileName = wstr2str((wstring)fileName);
+	cMapController::Get()->LoadHeightMap(asciiFileName);
 }
 
 
