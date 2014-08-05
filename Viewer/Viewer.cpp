@@ -107,6 +107,7 @@ bool cViewer::OnInit()
 	//m_model->Create( "../media/weapon.dat" );
 	m_model.Create( "../media/max script/valle1.dat" );
 	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
+	m_model.SetRenderBoundingBox(true);
 
 	m_character.Create( "../media/max script/tiac.dat" );
 	//m_character.SetAnimation( "../media/max script/tiac_normal.ani" );
