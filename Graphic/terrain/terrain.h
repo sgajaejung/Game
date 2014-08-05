@@ -12,6 +12,7 @@ namespace graphic
 
 		bool CreateFromHeightMap( const string &heightMapFileName, 
 			const string &textureFileName, const float heightFactor=3.f );
+		bool CreateTerrainTexture( const string &textureFileName );
 		float GetHeight(const float x, const float z);
 		float GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out );
 		bool Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);

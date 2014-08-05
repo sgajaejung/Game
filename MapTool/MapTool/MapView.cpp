@@ -81,6 +81,9 @@ bool CMapView::Init()
 	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 	m_cube.SetColor( 0xFF0000FF );
 	m_dxInit = true;
+
+	m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
+
 	return true;
 }
 
@@ -107,8 +110,18 @@ void CMapView::Render()
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
+		const Matrix44 matIdentity;
 
-		cMapController::Get()->GetTerrain().Render();
+		m_terrainShader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		m_terrainShader.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_terrainShader.SetMatrix( "mWIT", matIdentity);
+		m_terrainShader.SetMatrix( "mWorld", matIdentity);
+		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
+
+		//cMapController::Get()->GetTerrain().Render();
+		m_terrainShader.SetRenderPass(1);
+		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
 
 
 		//랜더링 끝

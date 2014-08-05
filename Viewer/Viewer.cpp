@@ -3,6 +3,11 @@
 #include "../wxMemMonitorLib/wxMemMonitor.h"
 #include "TestScene.h"
 
+#include <objidl.h>
+#include <gdiplus.h> 
+#pragma comment( lib, "gdiplus.lib" ) 
+using namespace Gdiplus;
+
 
 DECLARE_TYPE_NAME(cViewer)
 class cViewer : public framework::cGameMain
@@ -57,6 +62,9 @@ private:
 
 	Vector3 m_boxPos;
 
+	// GDI plus
+	ULONG_PTR m_gdiplusToken;
+	GdiplusStartupInput m_gdiplusStartupInput; 
 };
 
 INIT_FRAMEWORK(cViewer);
@@ -91,6 +99,7 @@ cViewer::~cViewer()
 	SAFE_DELETE(m_image);
 	SAFE_DELETE(m_scene);
 	SAFE_RELEASE(m_sprite);
+	Gdiplus::GdiplusShutdown(m_gdiplusToken);
 	graphic::ReleaseRenderer();
 }
 
@@ -98,6 +107,8 @@ cViewer::~cViewer()
 bool cViewer::OnInit()
 {
 	DragAcceptFiles(m_hWnd, TRUE);
+
+	Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, NULL); 
 
 	D3DXCreateSprite(graphic::GetDevice(), &m_sprite);
 

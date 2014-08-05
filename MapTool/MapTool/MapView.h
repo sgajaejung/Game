@@ -26,6 +26,7 @@ protected:
 	CPoint m_curPos;
 	graphic::cGrid m_grid;
 	graphic::cCube m_cube;
+	graphic::cShader m_terrainShader;
 
 
 public:

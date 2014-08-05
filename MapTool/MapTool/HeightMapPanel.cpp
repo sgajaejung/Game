@@ -14,6 +14,7 @@ IMPLEMENT_DYNAMIC(CHeightMapPanel, CDialogEx)
 CHeightMapPanel::CHeightMapPanel(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CHeightMapPanel::IDD, pParent)
 ,	m_heightMap(NULL)
+,	m_texture(NULL)
 {
 
 }
@@ -26,6 +27,7 @@ void CHeightMapPanel::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_HEIGHTMAP, m_HeightMapList);
+	DDX_Control(pDX, IDC_LIST_HEIGHTMAP_TEX, m_TextureList);
 }
 
 
@@ -35,6 +37,8 @@ BEGIN_MESSAGE_MAP(CHeightMapPanel, CDialogEx)
 	ON_LBN_DBLCLK(IDC_LIST_HEIGHTMAP, &CHeightMapPanel::OnDblclkListHeightmap)
 	ON_LBN_SELCHANGE(IDC_LIST_HEIGHTMAP, &CHeightMapPanel::OnSelchangeListHeightmap)
 	ON_WM_PAINT()
+	ON_LBN_SELCHANGE(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnSelchangeListHeightmapTex)
+	ON_LBN_DBLCLK(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnDblclkListHeightmapTex)
 END_MESSAGE_MAP()
 
 
@@ -44,6 +48,7 @@ BOOL CHeightMapPanel::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	UpdateHeightMapList();
+	UpdateTextureList();
 
 	return TRUE;
 }
@@ -52,11 +57,10 @@ BOOL CHeightMapPanel::OnInitDialog()
 void CHeightMapPanel::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
+	Graphics *graph = Graphics::FromHDC(dc.GetSafeHdc());
 
 	if (m_heightMap)
 	{
-		Graphics *graph = Graphics::FromHDC(dc.GetSafeHdc());
-
 		// 텍스쳐 출력.
 		if (CWnd *pictureCtlr = GetDlgItem(IDC_STATIC_TEXTURE))
 		{
@@ -66,6 +70,20 @@ void CHeightMapPanel::OnPaint()
 
 			const Rect dest(cr.left, cr.top, cr.Width(), cr.Height());
 			graph->DrawImage(m_heightMap, dest );
+		}
+	}
+
+	if (m_texture)
+	{
+		// 텍스쳐 출력.
+		if (CWnd *pictureCtlr = GetDlgItem(IDC_STATIC_TEXTURE2))
+		{
+			CRect cr;
+			pictureCtlr->GetWindowRect(cr);
+			ScreenToClient(cr);
+
+			const Rect dest(cr.left, cr.top, cr.Width(), cr.Height());
+			graph->DrawImage(m_texture, dest );
 		}
 	}
 }
@@ -95,7 +113,7 @@ void CHeightMapPanel::UpdateHeightMapList()
 	extList.push_back("png");
 	extList.push_back("bmp");
 	list<string> heightMapFiles;
-	common::CollectFiles(extList, "../../media/", heightMapFiles);
+	common::CollectFiles(extList, "../../media/terrain/", heightMapFiles);
 
 	BOOST_FOREACH(auto &fileName, heightMapFiles)
 	{
@@ -105,6 +123,30 @@ void CHeightMapPanel::UpdateHeightMapList()
 }
 
 
+// 지형 텍스쳐 리스트 출력.
+void CHeightMapPanel::UpdateTextureList()
+{
+	// 리스트 박스 초기화.
+	while (0 < m_TextureList.GetCount())
+		m_TextureList.DeleteString(0);
+
+	// 파일 찾기.
+	list<string> extList;
+	extList.push_back("jpg");
+	extList.push_back("png");
+	extList.push_back("bmp");
+	list<string> textureFiles;
+	common::CollectFiles(extList, "../../media/terrain/", textureFiles);
+
+	BOOST_FOREACH(auto &fileName, textureFiles)
+	{
+		const wstring wstr = str2wstr(fileName);
+		m_TextureList.InsertString(m_TextureList.GetCount(), wstr.c_str());
+	}
+}
+
+
+// 지형 높이맵 설정.
 void CHeightMapPanel::OnDblclkListHeightmap()
 {
 	CString fileName;
@@ -118,6 +160,7 @@ void CHeightMapPanel::OnDblclkListHeightmap()
 }
 
 
+// 지형 높이맵 이미지 업데이트
 void CHeightMapPanel::OnSelchangeListHeightmap()
 {
 	CString fileName;
@@ -125,4 +168,29 @@ void CHeightMapPanel::OnSelchangeListHeightmap()
 	SAFE_DELETE(m_heightMap);
 	m_heightMap = Image::FromFile(fileName);
 	InvalidateRect(NULL, FALSE);
+}
+
+
+// 지형 텍스쳐 이미지 업데이트
+void CHeightMapPanel::OnSelchangeListHeightmapTex()
+{
+	CString fileName;
+	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(fileName);
+	InvalidateRect(NULL, FALSE);	
+}
+
+
+// 지형 텍스쳐 설정.
+void CHeightMapPanel::OnDblclkListHeightmapTex()
+{
+	CString fileName;
+	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(fileName);
+	InvalidateRect(NULL, FALSE);
+
+	string asciiFileName = wstr2str((wstring)fileName);
+	cMapController::Get()->LoadHeightMapTexture(asciiFileName);
 }

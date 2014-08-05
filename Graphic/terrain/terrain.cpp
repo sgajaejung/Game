@@ -20,27 +20,12 @@ enum {
 };
 
 
-ULONG_PTR g_gdiplusToken;
-GdiplusStartupInput g_gdiplusStartupInput; 
-
 cTerrain::cTerrain()
 {
-	static bool onlyOne = false;
-	if (!onlyOne)
-	{	
-		Gdiplus::GdiplusStartup(&g_gdiplusToken, &g_gdiplusStartupInput, NULL); 
-		onlyOne = true;
-	}
 }
 
 cTerrain::~cTerrain()
 {
-	static bool onlyOne = false;
-	if (!onlyOne)
-	{
-		Gdiplus::GdiplusShutdown(g_gdiplusToken);
-		onlyOne = true;
-	}
 }
 
 
@@ -76,6 +61,13 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 	m_grid.CalculateNormals();
 	m_grid.GetTexture().Create( textureFileName );
 	return true;
+}
+
+
+bool cTerrain::CreateTerrainTexture( const string &textureFileName )
+{
+	m_grid.GetTexture().Clear();
+	return m_grid.GetTexture().Create( textureFileName );
 }
 
 
