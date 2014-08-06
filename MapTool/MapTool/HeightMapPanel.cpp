@@ -149,6 +149,8 @@ void CHeightMapPanel::UpdateTextureList()
 // 지형 높이맵 설정.
 void CHeightMapPanel::OnDblclkListHeightmap()
 {
+	RET(m_HeightMapList.GetCurSel() < 0);
+
 	CString fileName;
 	m_HeightMapList.GetText(m_HeightMapList.GetCurSel(), fileName);
 	SAFE_DELETE(m_heightMap);
@@ -163,6 +165,8 @@ void CHeightMapPanel::OnDblclkListHeightmap()
 // 지형 높이맵 이미지 업데이트
 void CHeightMapPanel::OnSelchangeListHeightmap()
 {
+	RET(m_HeightMapList.GetCurSel() < 0);
+
 	CString fileName;
 	m_HeightMapList.GetText(m_HeightMapList.GetCurSel(), fileName);
 	SAFE_DELETE(m_heightMap);
@@ -174,6 +178,8 @@ void CHeightMapPanel::OnSelchangeListHeightmap()
 // 지형 텍스쳐 이미지 업데이트
 void CHeightMapPanel::OnSelchangeListHeightmapTex()
 {
+	RET(m_TextureList.GetCurSel() < 0);
+
 	CString fileName;
 	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
 	SAFE_DELETE(m_texture);
@@ -185,6 +191,8 @@ void CHeightMapPanel::OnSelchangeListHeightmapTex()
 // 지형 텍스쳐 설정.
 void CHeightMapPanel::OnDblclkListHeightmapTex()
 {
+	RET(m_TextureList.GetCurSel() < 0);
+
 	CString fileName;
 	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
 	SAFE_DELETE(m_texture);

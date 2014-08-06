@@ -164,7 +164,7 @@ void cCamera::Yaw2( const float radian )
 	v *= mat;
 	m_eyePos = m_lookAt + v;
 
-	UpdateViewMatrix();	
+	UpdateViewMatrix();
 }
 
 
