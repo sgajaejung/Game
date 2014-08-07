@@ -22,13 +22,13 @@ Ray::Ray(const int x, const int y, const int screenWidth, const int screenHeight
 void Ray::Create( const int nX, const int nY, const int width, const int height,  
 	const Matrix44 &matProj, const Matrix44 &matView )
 {
-	float x =  ( (nX * 2.0F / width  ) - 1.0F );
-	float y = -( (nY * 2.0F / height) - 1.0F );
+	float x =  ( (nX * 2.0f / width  ) - 1.0f );
+	float y = -( (nY * 2.0f / height) - 1.0f );
 
 	Vector3 v;
 	v.x = ( x - matProj._31 ) / matProj._11;
 	v.y = ( y - matProj._32 ) / matProj._22;
-	v.z =  1.0F;
+	v.z =  1.0f;
 
 	Matrix44 &m = matView.Inverse();
 

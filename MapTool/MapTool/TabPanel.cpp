@@ -6,6 +6,7 @@
 #include "TabPanel.h"
 #include "afxdialogex.h"
 #include "HeightMapPanel.h"
+#include "TerrainPanel.h"
 
 
 // CTabPanel 대화 상자입니다.
@@ -20,7 +21,7 @@ CTabPanel::CTabPanel(CWnd* pParent /*=NULL*/)
 
 CTabPanel::~CTabPanel()
 {
-	SAFE_DELETE(m_HeightMapPanel);
+	SAFE_DELETE(m_heightMapPanel);
 }
 
 void CTabPanel::DoDataExchange(CDataExchange* pDX)
@@ -62,10 +63,15 @@ BOOL CTabPanel::OnInitDialog()
 	CRect cr;
 	GetClientRect(cr);
 
-	m_HeightMapPanel = new CHeightMapPanel(this);
-	m_HeightMapPanel->Create(CHeightMapPanel::IDD, this);
-	m_HeightMapPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_HeightMapPanel->ShowWindow(SW_SHOW);
+	m_heightMapPanel = new CHeightMapPanel(this);
+	m_heightMapPanel->Create(CHeightMapPanel::IDD, this);
+	m_heightMapPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_heightMapPanel->ShowWindow(SW_SHOW);
+
+	m_terrainPanel = new CTerrainPanel(this);
+	m_terrainPanel->Create(CTerrainPanel::IDD, this);
+	m_terrainPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_terrainPanel->ShowWindow(SW_HIDE);
 
 	return TRUE;
 }
@@ -76,11 +82,13 @@ void CTabPanel::OnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 	switch (m_Tab.GetCurSel())
 	{
 	case 0:
-		m_HeightMapPanel->ShowWindow(SW_SHOW);
+		m_heightMapPanel->ShowWindow(SW_SHOW);
+		m_terrainPanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 1:
-		m_HeightMapPanel->ShowWindow(SW_HIDE);
+		m_terrainPanel->ShowWindow(SW_SHOW);
+		m_heightMapPanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 2:
