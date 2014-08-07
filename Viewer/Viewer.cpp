@@ -112,9 +112,10 @@ bool cViewer::OnInit()
 
 	D3DXCreateSprite(graphic::GetDevice(), &m_sprite);
 
-	//m_scene = new cTestScene(m_sprite);
-	//m_scene->SetPos(Vector3(100,100,0));
+	m_scene = new cTestScene(m_sprite);
+	m_scene->SetPos(Vector3(100,100,0));
 
+/*
 	//m_model->Create( "../media/weapon.dat" );
 	m_model.Create( "../media/max script/valle1.dat" );
 	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
@@ -134,8 +135,7 @@ bool cViewer::OnInit()
 	m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f);
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
-
-
+/**/
 
 	// 그림자 텍스처 생성
 	if (FAILED(graphic::GetDevice()->CreateTexture(MAP_SIZE, MAP_SIZE, 1, 
@@ -209,6 +209,7 @@ void cViewer::OnRender(const float elapseT)
 			m_scene->Render(matIdentity);
 
 
+/*
 		//---------------------------------------------------------------
 		// 모델 출력 + 그림자.
 		LPDIRECT3DSURFACE9 pOldBackBuffer, pOldZBuffer;
@@ -318,7 +319,7 @@ void cViewer::OnRender(const float elapseT)
 			graphic::GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof( TVERTEX ) );
 		}
 #endif
-
+/**/
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
