@@ -21,7 +21,7 @@ namespace graphic
 
 
 	protected:
-		float cTerrain::GetHeightMapEntry( int row, int col );
+		float GetHeightMapEntry( int row, int col );
 
 
 	private:
