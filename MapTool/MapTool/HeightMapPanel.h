@@ -6,8 +6,6 @@
 
 class CHeightMapPanel : public CDialogEx
 {
-	DECLARE_DYNAMIC(CHeightMapPanel)
-
 public:
 	CHeightMapPanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
 	virtual ~CHeightMapPanel();

@@ -8,9 +8,6 @@
 
 
 // CHeightMapPanel 대화 상자입니다.
-
-IMPLEMENT_DYNAMIC(CHeightMapPanel, CDialogEx)
-
 CHeightMapPanel::CHeightMapPanel(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CHeightMapPanel::IDD, pParent)
 ,	m_heightMap(NULL)

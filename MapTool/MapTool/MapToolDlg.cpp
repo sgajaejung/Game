@@ -34,6 +34,8 @@ CMapToolDlg::CMapToolDlg(CWnd* pParent /*=NULL*/)
 CMapToolDlg::~CMapToolDlg()
 {
 	Gdiplus::GdiplusShutdown(m_gdiplusToken);
+	graphic::ReleaseRenderer();
+	cMapController::Release();
 }
 
 void CMapToolDlg::DoDataExchange(CDataExchange* pDX)

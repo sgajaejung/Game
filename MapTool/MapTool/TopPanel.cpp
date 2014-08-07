@@ -15,6 +15,7 @@ CTopPanel::CTopPanel()
 
 CTopPanel::~CTopPanel()
 {
+	SAFE_DELETE(m_tabPanel);
 }
 
 
