@@ -235,6 +235,40 @@ float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 }
 
 
+
+
+
+// -------------------------------------------------------------
+// Á¤Á¡¼ÎÀÌ´õ¿¡¼­ ÇÈ¼¿¼ÎÀÌ´õ·Î ³Ñ±â´Â µ¥ÀÌÅÍ
+// ±×¸²ÀÚ ¸Ê »ý¼º.
+// -------------------------------------------------------------
+struct VS_SHADOW_OUTPUT
+{
+	float4 Pos : POSITION;
+	float4 Diffuse : COLOR0;
+};
+
+
+// -------------------------------------------------------------
+// 4ÆÐ½º:Á¤Á¡¼ÎÀÌ´õ, ±×¸²ÀÚ ¸Ê »ý¼º.
+// -------------------------------------------------------------
+VS_SHADOW_OUTPUT VS_pass3(
+      float4 Pos : POSITION,          // ¸ðµ¨Á¤Á¡
+	  float3 Normal : NORMAL,		// ¹ý¼±º¤ÅÍ
+	  float2 Tex : TEXCOORD0
+)
+{
+    VS_SHADOW_OUTPUT Out = (VS_SHADOW_OUTPUT)0;  // Ãâ·Âµ¥ÀÌÅÍ
+    
+    // ÁÂÇ¥º¯È¯
+	float4x4 mWVP = mul(mWorld, mVP);
+	Out.Pos = mul( Pos, mWVP );
+	Out.Diffuse = float4(1,1,1,1);
+
+    return Out;
+}
+
+
 	
 // -------------------------------------------------------------
 // Å×Å©´Ð
@@ -265,5 +299,11 @@ technique TShader
 		PixelShader  = compile ps_3_0 PS_pass2();
     }
 
+
+	// ±×¸²ÀÚ ¸Ê Ãâ·Â ¼ÎÀÌ´õ
+	Pass P3
+	{
+		VertexShader = compile vs_3_0 VS_pass3();
+	}
 
 }

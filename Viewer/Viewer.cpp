@@ -39,6 +39,7 @@ private:
 	graphic::cShader m_shaderSkin;
 	graphic::cTerrain m_terrain;
 	graphic::cCube m_cube;
+	graphic::cSphere m_sphere;
 
 	LPDIRECT3DTEXTURE9 m_pShadowTex;
 	LPDIRECT3DSURFACE9 m_pShadowSurf;
@@ -112,10 +113,10 @@ bool cViewer::OnInit()
 
 	D3DXCreateSprite(graphic::GetDevice(), &m_sprite);
 
-	m_scene = new cTestScene(m_sprite);
-	m_scene->SetPos(Vector3(100,100,0));
+	//m_scene = new cTestScene(m_sprite);
+	//m_scene->SetPos(Vector3(100,100,0));
 
-/*
+
 	//m_model->Create( "../media/weapon.dat" );
 	m_model.Create( "../media/max script/valle1.dat" );
 	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
@@ -135,6 +136,7 @@ bool cViewer::OnInit()
 	m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f);
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
+	m_sphere.Create(100, 20, 20);
 /**/
 
 	// 그림자 텍스처 생성
@@ -209,7 +211,7 @@ void cViewer::OnRender(const float elapseT)
 			m_scene->Render(matIdentity);
 
 
-/*
+
 		//---------------------------------------------------------------
 		// 모델 출력 + 그림자.
 		LPDIRECT3DSURFACE9 pOldBackBuffer, pOldZBuffer;
@@ -232,7 +234,7 @@ void cViewer::OnRender(const float elapseT)
 
 		const Matrix44 cubeTm = m_cube.GetTransform();
 		m_pos = Vector3(cubeTm._41, cubeTm._42, cubeTm._43);
-		m_light2 = Vector3(0,1000,0);
+		m_light2 = Vector3(500,1000,0);
 
 		Matrix44 matView;// 뷰 행렬
 		matView.SetView2( m_light2, m_pos, Vector3(0,1,0));
@@ -244,11 +246,18 @@ void cViewer::OnRender(const float elapseT)
 		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shaderSkin.SetVector( "vEyePos", m_camera.GetEyePos());
 		m_shaderSkin.SetMatrix( "mWIT", matIdentity);
-		Matrix44 matPos;
-		matPos.SetTranslate(m_pos);
 		m_shaderSkin.SetMatrix( "mWorld", cubeTm);
 
 		m_shaderSkin.SetRenderPass(1);
+
+
+		m_shader.SetMatrix( "mVP", matView * matProj);
+		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_shader.SetMatrix( "mWIT", matIdentity);
+		m_shader.SetMatrix( "mWorld", cubeTm);
+
+		m_shader.SetRenderPass(3);
 		m_model.RenderShadow(m_shaderSkin);
 
 
@@ -267,7 +276,8 @@ void cViewer::OnRender(const float elapseT)
 		m_shaderSkin.SetRenderPass(0);
 		m_model.SetTM(m_cube.GetTransform());
 		m_model.RenderShader(m_shaderSkin);
-		m_character.RenderShader(m_shaderSkin);
+
+		//m_character.RenderShader(m_shaderSkin);
 
 
 		//------------------------------------------------------------------------
@@ -500,6 +510,10 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				Matrix44 matT;
 				matT.SetTranslate(pickPos);
 				m_cube.SetTransform(matT);
+
+				Matrix44 matT2;
+				matT2.SetTranslate(Vector3(pickPos.x, 150, pickPos.z));
+				m_sphere.SetTransform(matT2);
 				
 				//m_scene->SetPos(Vector3(pos.x, pos.y,0));
 				//if (m_image->IsContain(Vector2(pos.x, pos.y)))

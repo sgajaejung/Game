@@ -97,11 +97,14 @@ void cGrid2::Render(const int stage)
 
 void cGrid2::RenderShader(cShader &shader)
 {
-	shader.Begin();
-	shader.BeginPass();
+	Matrix44 matIdentity;
+	shader.SetMatrix( "mWorld", matIdentity);
 
 	m_mtrl.Bind(shader);
 	m_tex.Bind(shader, "Tex");
+
+	shader.Begin();
+	shader.BeginPass();
 
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
