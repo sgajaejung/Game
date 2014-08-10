@@ -136,7 +136,7 @@ bool cViewer::OnInit()
 	m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f, 4.f);
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
-	m_sphere.Create(100, 20, 20);
+	//m_sphere.Create(100, 20, 20);
 /**/
 
 	// 그림자 텍스처 생성
@@ -245,8 +245,6 @@ void cViewer::OnRender(const float elapseT)
 		m_shaderSkin.SetMatrix( "mVP", matView * matProj);
 		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shaderSkin.SetVector( "vEyePos", m_camera.GetEyePos());
-		//m_shaderSkin.SetMatrix( "mWIT", matIdentity);
-		//m_shaderSkin.SetMatrix( "mWorld", cubeTm);
 
 		m_shaderSkin.SetRenderPass(1);
 		m_character.SetTM(m_cube.GetTransform());
@@ -285,8 +283,6 @@ void cViewer::OnRender(const float elapseT)
 		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
 		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
-		//m_shader.SetMatrix( "mWIT", matIdentity);
-		//m_shader.SetMatrix( "mWorld", matIdentity);
 		m_shader.SetTexture("ShadowMap", m_pShadowTex);
 
 		Matrix44 m = matView * matProj * mT;
