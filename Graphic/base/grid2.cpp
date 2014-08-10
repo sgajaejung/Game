@@ -187,3 +187,12 @@ bool cGrid2::Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out )
 
 	return !isFirst;
 }
+
+
+// √ ±‚»≠.
+void cGrid2::Clear()
+{
+	m_vtxBuff.Clear();
+	m_idxBuff.Clear();
+	m_tex.Clear();
+}

@@ -199,3 +199,10 @@ void CHeightMapPanel::OnDblclkListHeightmapTex()
 	string asciiFileName = wstr2str((wstring)fileName);
 	cMapController::Get()->LoadHeightMapTexture(asciiFileName);
 }
+
+
+// MapController 가 업데이트 될 때 호출된다.
+void CHeightMapPanel::Update()
+{
+
+}

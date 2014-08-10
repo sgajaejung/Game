@@ -5,6 +5,7 @@
 // CTabPanel 대화 상자입니다.
 class CHeightMapPanel;
 class CTerrainPanel;
+class CBrushPanel;
 class CTabPanel : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTabPanel)
@@ -19,6 +20,7 @@ public:
 protected:
 	CHeightMapPanel *m_heightMapPanel;
 	CTerrainPanel *m_terrainPanel;
+	CBrushPanel *m_brushPanel;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

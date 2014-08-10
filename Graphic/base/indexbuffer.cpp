@@ -58,5 +58,6 @@ void cIndexBuffer::Bind() const
 
 void cIndexBuffer::Clear()
 {
+	m_faceCount = 0;
 	SAFE_RELEASE(m_pIdxBuff);
 }

@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CMapView, CView)
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
 	ON_WM_MOUSEWHEEL()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -105,10 +106,8 @@ void CMapView::Render()
 	{
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
-
 		graphic::GetRenderer()->RenderFPS();
-		graphic::GetRenderer()->RenderGrid();
-		graphic::GetRenderer()->RenderAxis();
+		//graphic::GetRenderer()->RenderGrid();
 
 		const Matrix44 matIdentity;
 
@@ -123,6 +122,8 @@ void CMapView::Render()
 		m_terrainShader.SetRenderPass(1);
 		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
 
+
+		graphic::GetRenderer()->RenderAxis();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -215,4 +216,22 @@ BOOL CMapView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );	
 
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+
+void CMapView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	switch (nChar)
+	{
+	case VK_TAB:
+		{
+			static bool flag = false;
+			graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, flag? D3DCULL_CCW : D3DCULL_NONE);
+			graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, flag? D3DFILL_SOLID : D3DFILL_WIREFRAME);
+			flag = !flag;
+		}
+		break;
+	}
+
+	CView::OnKeyDown(nChar, nRepCnt, nFlags);
 }

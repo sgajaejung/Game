@@ -19,6 +19,8 @@ cTexture::~cTexture()
 
 bool cTexture::Create(const string &fileName, bool isSizePow2)//isSizePow2=true
 {
+	m_fileName = fileName;
+
 	if (isSizePow2)
 	{
 		if (FAILED(D3DXCreateTextureFromFileA(GetDevice(), fileName.c_str(), &m_texture)))
@@ -35,6 +37,8 @@ bool cTexture::Create(const string &fileName, bool isSizePow2)//isSizePow2=true
 
 bool cTexture::Create(const int width, const int height, const D3DFORMAT format)
 {
+	m_fileName = "";
+
 	if (FAILED(GetDevice()->CreateTexture( width, height, 1, 0, format, 
 		D3DPOOL_MANAGED, &m_texture, NULL )))
 		return false;

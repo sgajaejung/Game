@@ -20,6 +20,8 @@ namespace graphic
 		void CalculateNormals();
 		bool Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out );
 
+		void Clear();
+
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();
 		cTexture& GetTexture();

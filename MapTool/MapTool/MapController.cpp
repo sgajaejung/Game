@@ -16,7 +16,10 @@ cMapController::~cMapController(void)
 bool cMapController::LoadHeightMap(const string &fileName)
 {
 	m_heightMapFileName = fileName;
-	return m_terrain.CreateFromHeightMap(fileName, "empty" );
+	const bool result = m_terrain.CreateFromHeightMap(fileName, "empty" );
+
+	NotifyObserver();
+	return result;
 }
 
 
@@ -24,5 +27,19 @@ bool cMapController::LoadHeightMap(const string &fileName)
 bool cMapController::LoadHeightMapTexture(const string &fileName)
 {
 	m_textFileName = fileName;
-	return m_terrain.CreateTerrainTexture(fileName);
+	const bool result = m_terrain.CreateTerrainTexture(fileName);
+
+	NotifyObserver();
+	return result;
+}
+
+
+// 지형 생성.
+bool cMapController::CreateDefaultTerrain()
+{
+	m_terrain.CreateTerrain(64, 64, 50.f, 8.f);
+	m_terrain.CreateTerrainTexture( "../../media/terrain/grass014.jpg");
+
+	NotifyObserver();
+	return true;
 }

@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "HeightMapPanel.h"
 #include "TerrainPanel.h"
+#include "BrushPanel.h"
 
 
 // CTabPanel 대화 상자입니다.
@@ -59,6 +60,7 @@ BOOL CTabPanel::OnInitDialog()
 
 	m_Tab.InsertItem(0, L"HeightMap");
 	m_Tab.InsertItem(1,  L"Terrain");
+	m_Tab.InsertItem(2,  L"Brush");
 
 	CRect cr;
 	GetClientRect(cr);
@@ -67,11 +69,22 @@ BOOL CTabPanel::OnInitDialog()
 	m_heightMapPanel->Create(CHeightMapPanel::IDD, this);
 	m_heightMapPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_heightMapPanel->ShowWindow(SW_SHOW);
+	cMapController::Get()->AddObserver(m_heightMapPanel);
+
 
 	m_terrainPanel = new CTerrainPanel(this);
 	m_terrainPanel->Create(CTerrainPanel::IDD, this);
 	m_terrainPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_terrainPanel->ShowWindow(SW_HIDE);
+	cMapController::Get()->AddObserver(m_terrainPanel);
+
+
+	m_brushPanel = new CBrushPanel(this);
+	m_brushPanel->Create(CBrushPanel::IDD, this);
+	m_brushPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_brushPanel->ShowWindow(SW_HIDE);
+	cMapController::Get()->AddObserver(m_brushPanel);
+
 
 	return TRUE;
 }
@@ -84,14 +97,19 @@ void CTabPanel::OnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 	case 0:
 		m_heightMapPanel->ShowWindow(SW_SHOW);
 		m_terrainPanel->ShowWindow(SW_HIDE);
+		m_brushPanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 1:
 		m_terrainPanel->ShowWindow(SW_SHOW);
 		m_heightMapPanel->ShowWindow(SW_HIDE);
+		m_brushPanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 2:
+		m_brushPanel->ShowWindow(SW_SHOW);
+		m_terrainPanel->ShowWindow(SW_HIDE);
+		m_heightMapPanel->ShowWindow(SW_HIDE);
 		break;
 	}
 

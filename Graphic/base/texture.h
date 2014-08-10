@@ -15,7 +15,8 @@ namespace graphic
 		void Lock(D3DLOCKED_RECT &out);
 		void Unlock();
 		IDirect3DTexture9* GetTexture();
-		const D3DXIMAGE_INFO& GetImageInfo();
+		const D3DXIMAGE_INFO& GetImageInfo() const;
+		const string& GetTextureName() const;
 		void Clear();
 		
 
@@ -26,9 +27,11 @@ namespace graphic
 	private:
 		IDirect3DTexture9 *m_texture;
 		D3DXIMAGE_INFO m_imageInfo;
+		string m_fileName;
 	};
 
 
 	inline IDirect3DTexture9* cTexture::GetTexture() { return m_texture; }
-	inline const D3DXIMAGE_INFO& cTexture::GetImageInfo() { return m_imageInfo; }
+	inline const D3DXIMAGE_INFO& cTexture::GetImageInfo() const { return m_imageInfo; }
+	inline const string& cTexture::GetTextureName() const { return m_fileName; }
 }

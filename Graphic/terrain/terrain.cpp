@@ -9,18 +9,21 @@ using namespace Gdiplus;
 using namespace graphic;
 
 // global constants
-enum {
-	CELL_COL_COUNT = 64,
-	CELL_ROW_COUNT = 64,
-	VERTEX_COL_COUNT = CELL_COL_COUNT+1,
-	VERTEX_ROW_COUNT = CELL_ROW_COUNT+1,
-	CELL_SIZE = 50,
-	WIDTH = CELL_COL_COUNT * CELL_SIZE,
-	HEIGHT = CELL_ROW_COUNT * CELL_SIZE,
-};
+//enum {
+//	CELL_COL_COUNT = 64,
+//	CELL_ROW_COUNT = 64,
+//	VERTEX_COL_COUNT = CELL_COL_COUNT+1,
+//	VERTEX_ROW_COUNT = CELL_ROW_COUNT+1,
+//	CELL_SIZE = 50,
+//	WIDTH = CELL_COL_COUNT * CELL_SIZE,
+//	HEIGHT = CELL_ROW_COUNT * CELL_SIZE,
+//};
 
 
-cTerrain::cTerrain()
+cTerrain::cTerrain() :
+	m_rowCellCount(0)
+,	m_colCellCount(0)
+,	m_cellSize(0)
 {
 }
 
@@ -33,13 +36,51 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 	const string &textureFileName, const float heightFactor, const float textureUVFactor )
 	// heightFactor=3.f, textureUVFactor=1.f
 {
+	CreateTerrain(64, 64, 50.f, textureUVFactor);
+	UpdateHeightMap(heightMapFileName, textureFileName, heightFactor );
+	return true;
+}
+
+
+// 지형 텍스쳐 생성.
+bool cTerrain::CreateTerrainTexture( const string &textureFileName )
+{
+	m_grid.GetTexture().Clear();
+	return m_grid.GetTexture().Create( textureFileName );
+}
+
+
+// 지형 생성.
+bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, const float cellSize
+	,const float textureUVFactor)
+	// rowCellCount=64, colCellCount=64, cellSize=50.f, textureUVFactor=1.f
+{
+	Clear();
+
+	m_rowCellCount = rowCellCount;
+	m_colCellCount = colCellCount;
+	m_cellSize = cellSize;
+	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
+
+	return true;
+}
+
+
+// 텍스쳐 파일 정보로 높이 정보를 채운다.
+// m_grid 가 생성된 상태여야 한다.
+bool cTerrain::UpdateHeightMap( const string &heightMapFileName, 
+	const string &textureFileName, const float heightFactor )
+{
 	const wstring wfileName = common::str2wstr(heightMapFileName);
 	Bitmap bmp(wfileName.c_str());
-	
-	m_grid.Create(CELL_ROW_COUNT, CELL_COL_COUNT, CELL_SIZE, textureUVFactor);
 
-	const float incX = (float)(bmp.GetWidth()-1) / (float)CELL_COL_COUNT;
-	const float incY = (float)(bmp.GetHeight()-1) /(float) CELL_ROW_COUNT;
+	const int VERTEX_COL_COUNT = m_colCellCount + 1;
+	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
+	const float WIDTH = m_colCellCount * m_cellSize;
+	const float HEIGHT = m_rowCellCount * m_cellSize;
+
+	const float incX = (float)(bmp.GetWidth()-1) / (float)m_colCellCount;
+	const float incY = (float)(bmp.GetHeight()-1) /(float) m_rowCellCount;
 
 	sVertexNormTex *pv = (sVertexNormTex*)m_grid.GetVertexBuffer().Lock();
 
@@ -61,15 +102,10 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 
 	m_grid.CalculateNormals();
 	m_grid.GetTexture().Create( textureFileName );
+
 	return true;
 }
 
-
-bool cTerrain::CreateTerrainTexture( const string &textureFileName )
-{
-	m_grid.GetTexture().Clear();
-	return m_grid.GetTexture().Create( textureFileName );
-}
 
 
 void cTerrain::Render()
@@ -96,11 +132,14 @@ float Lerp(float p1, float p2, float alpha)
 // x/z평면에서 월드 좌표 x,z 위치에 해당하는 높이 값 y를 리턴한다.
 float cTerrain::GetHeight(const float x, const float z)
 {
+	const float WIDTH = m_colCellCount * m_cellSize;
+	const float HEIGHT = m_rowCellCount * m_cellSize;
+
 	float newX = x + (WIDTH / 2.0f);
 	float newZ = HEIGHT - (z + (HEIGHT / 2.0f));
 
-	newX /= CELL_SIZE;
-	newZ /= CELL_SIZE;
+	newX /= m_cellSize;
+	newZ /= m_cellSize;
 
 	const float col = ::floorf( newX );
 	const float row = ::floorf( newZ );
@@ -139,6 +178,9 @@ float cTerrain::GetHeight(const float x, const float z)
 // 맵을 2차원 배열로 봤을 때, row, col 인덱스의 높이 값을 리턴한다.
 float cTerrain::GetHeightMapEntry( int row, int col )
 {
+	const int VERTEX_COL_COUNT = m_colCellCount + 1;
+	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
+
 	const int vtxSize = (VERTEX_COL_COUNT) * (VERTEX_ROW_COUNT);
 
 	if( 0 > row || 0 > col )
@@ -169,4 +211,17 @@ float cTerrain::GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT V
 bool cTerrain::Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out)
 {
 	return m_grid.Pick(orig, dir, out);
+}
+
+
+// 초기화.
+void cTerrain::Clear()
+{
+	m_grid.Clear();
+}
+
+
+const string& cTerrain::GetTextureName()
+{
+	return m_grid.GetTexture().GetTextureName();
 }

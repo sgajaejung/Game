@@ -99,6 +99,7 @@
     <None Include="res\MapTool.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BrushPanel.h" />
     <ClInclude Include="HeightMapPanel.h" />
     <ClInclude Include="MapController.h" />
     <ClInclude Include="MapTool.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="TopPanel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BrushPanel.cpp" />
     <ClCompile Include="HeightMapPanel.cpp" />
     <ClCompile Include="MapController.cpp" />
     <ClCompile Include="MapTool.cpp" />
