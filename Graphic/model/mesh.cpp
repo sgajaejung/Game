@@ -260,6 +260,13 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 {
 	if (m_attributes.empty())
 	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		shader.SetMatrix("mWorld", tm);
+
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		shader.SetMatrix("mWIT", wit);
+
 		//const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		//shader.SetMatrix("mWorld", tm);
 		//Matrix44 wit = tm.Inverse();
@@ -285,6 +292,13 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 	}
 	else
 	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		shader.SetMatrix("mWorld", tm);
+
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		shader.SetMatrix("mWIT", wit);
+
 		//const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		//shader.SetMatrix("mWorld", tm);
 		//Matrix44 wit = tm.Inverse();

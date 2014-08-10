@@ -23,8 +23,8 @@ namespace graphic
 		void Clear();
 
 		int GetId() const;
-		void SetTM(const Matrix44 &tm);
-		void MultiplyTM(const Matrix44 &tm);
+		virtual void SetTM(const Matrix44 &tm);
+		virtual void MultiplyTM(const Matrix44 &tm);
 		const Matrix44& GetTM() const;
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);

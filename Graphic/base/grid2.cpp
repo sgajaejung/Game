@@ -99,6 +99,7 @@ void cGrid2::RenderShader(cShader &shader)
 {
 	Matrix44 matIdentity;
 	shader.SetMatrix( "mWorld", matIdentity);
+	shader.SetMatrix( "mWIT", matIdentity);
 
 	m_mtrl.Bind(shader);
 	m_tex.Bind(shader, "Tex");

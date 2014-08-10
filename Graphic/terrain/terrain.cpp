@@ -30,12 +30,13 @@ cTerrain::~cTerrain()
 
 
 bool cTerrain::CreateFromHeightMap( const string &heightMapFileName, 
-	const string &textureFileName, const float heightFactor ) // heightFactor=3.f
+	const string &textureFileName, const float heightFactor, const float textureUVFactor )
+	// heightFactor=3.f, textureUVFactor=1.f
 {
 	const wstring wfileName = common::str2wstr(heightMapFileName);
 	Bitmap bmp(wfileName.c_str());
 	
-	m_grid.Create(CELL_ROW_COUNT, CELL_COL_COUNT, CELL_SIZE, 1.f);
+	m_grid.Create(CELL_ROW_COUNT, CELL_COL_COUNT, CELL_SIZE, textureUVFactor);
 
 	const float incX = (float)(bmp.GetWidth()-1) / (float)CELL_COL_COUNT;
 	const float incY = (float)(bmp.GetHeight()-1) /(float) CELL_ROW_COUNT;

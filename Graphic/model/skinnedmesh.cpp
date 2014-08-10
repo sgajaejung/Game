@@ -31,6 +31,13 @@ void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 }
 
 
+void cSkinnedMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
+{
+	ApplyPaletteShader(shader);
+	cMesh::RenderShadow(shader, parentTm);
+}
+
+
 // ÆÈ·¹Æ® Àû¿ë.
 void cSkinnedMesh::ApplyPalette()
 {

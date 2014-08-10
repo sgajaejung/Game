@@ -14,7 +14,11 @@ namespace graphic
 		void LoadWeapon(const string &fileName);
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render() override;
-		virtual void RenderShader(cShader &shader);
+		virtual void RenderShader(cShader &shader) override;
+		virtual void RenderShadow(cShader &shader) override;
+
+		virtual void SetTM(const Matrix44 &tm) override;
+		virtual void MultiplyTM(const Matrix44 &tm) override;
 
 		// debug ¿ë ÇÔ¼ö.
 		void SetRenderWeaponBoundingBox(const bool isRenderBoundingBox);

@@ -89,8 +89,34 @@ void cCharacter::RenderShader(cShader &shader)
 }
 
 
+void cCharacter::RenderShadow(cShader &shader)
+{
+	cModel::RenderShadow(shader);
+
+	if (m_weapon)
+		m_weapon->RenderShadow(shader);
+}
+
+
 void cCharacter::SetRenderWeaponBoundingBox(const bool isRenderBoundingBox)
 {
 	if (m_weapon)
 		m_weapon->SetRenderBoundingBox(isRenderBoundingBox);
 }
+
+
+void cCharacter::SetTM(const Matrix44 &tm)
+{
+	cModel::SetTM(tm);
+	if (m_weapon)
+		m_weapon->SetTM(tm);
+}
+
+
+void cCharacter::MultiplyTM(const Matrix44 &tm)
+{
+	cModel::MultiplyTM(tm);
+	if (m_weapon)
+		m_weapon->MultiplyTM(tm);
+}
+
