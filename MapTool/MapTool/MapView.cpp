@@ -4,25 +4,24 @@
 #include "stdafx.h"
 #include "MapTool.h"
 #include "MapView.h"
+#include "TerrainCursor.h"
 
 
 using namespace graphic;
-
-const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
-const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-
 
 
 // CMapView
 CMapView::CMapView() :
 	m_dxInit(false)
 ,	m_RButtonDown(false)
+,	m_cursor(NULL)
 {
 
 }
 
 CMapView::~CMapView()
 {
+	SAFE_DELETE(m_cursor);
 }
 
 BEGIN_MESSAGE_MAP(CMapView, CView)
@@ -69,7 +68,7 @@ void CMapView::Dump(CDumpContext& dc) const
 bool CMapView::Init()
 {
 	m_camera.SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
-	m_camera.SetProjection( D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
+	m_camera.SetProjection( D3DX_PI / 4.f, (float)WINDOW_WIDTH / (float) WINDOW_HEIGHT, 1.f, 10000.0f);
 
 	graphic::GetDevice()->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
@@ -84,6 +83,8 @@ bool CMapView::Init()
 	m_dxInit = true;
 
 	m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
+
+	m_cursor = new cTerrainCursor();
 
 	return true;
 }
@@ -118,9 +119,23 @@ void CMapView::Render()
 		m_terrainShader.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
 
-		//cMapController::Get()->GetTerrain().Render();
 		m_terrainShader.SetRenderPass(1);
+		//cMapController::Get()->GetTerrain().Render();
 		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
+
+
+		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+		{
+			// Render Brush Line
+			//const Ray ray(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
+			//	m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix());
+			const Vector3 p0 = m_ray.orig + Vector3(10,10,0);
+			const Vector3 p1 = m_ray.orig + m_ray.dir * 200.f;
+			m_line.SetLine( p0, p1, 0.5f );
+			m_line.Render();
+
+			m_cursor->Render();
+		}
 
 
 		graphic::GetRenderer()->RenderAxis();
@@ -138,7 +153,17 @@ void CMapView::Update(float elapseT)
 {
 	graphic::GetRenderer()->Update(elapseT);
 
+	if (m_cursor)
+	{
+		m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
+			m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+
+		Vector3 pickPos;
+		cMapController::Get()->GetTerrain().Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
+		m_cursor->UpdateCursor( cMapController::Get()->GetTerrain(), pickPos );
+	}
 }
+
 
 void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -169,7 +194,8 @@ void CMapView::OnRButtonDown(UINT nFlags, CPoint point)
 void CMapView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	ReleaseCapture();
-	m_RButtonDown = false;	CView::OnRButtonUp(nFlags, point);
+	m_RButtonDown = false;	
+	CView::OnRButtonUp(nFlags, point);
 }
 
 
@@ -177,13 +203,14 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (m_RButtonDown)
 	{
-		CPoint pos = point  - m_curPos;
+		CPoint pos = point - m_curPos;
 		m_curPos = point;
 		m_camera.Pitch2(pos.y * 0.005f); 
 		m_camera.Yaw2(pos.x * 0.005f); 
 	}
 	else
 	{
+		m_curPos = point;
 	}
 
 	CView::OnMouseMove(nFlags, point);

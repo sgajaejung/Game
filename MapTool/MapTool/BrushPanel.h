@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "afxeditbrowsectrl.h"
 
 
 // CBrushPanel 대화 상자입니다.
@@ -20,7 +21,7 @@ public:
 
 
 protected:
-	void UpdateTextureFiles();
+	void UpdateTextureFiles( const string &directoryPath );
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	Image *m_texture;
@@ -33,4 +34,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelchangeListTextureFiles();
 	afx_msg void OnPaint();
+	CMFCEditBrowseCtrl m_textureBrowser;
+	afx_msg void OnChangeMfceditbrowseTexture();
 };

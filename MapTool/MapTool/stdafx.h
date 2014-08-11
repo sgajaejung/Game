@@ -70,4 +70,7 @@ using namespace common;
 #pragma comment( lib, "gdiplus.lib" ) 
 using namespace Gdiplus;
 
+
+#include "MapToolDef.h"
 #include "MapController.h"
+

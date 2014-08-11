@@ -23,6 +23,8 @@ CTabPanel::CTabPanel(CWnd* pParent /*=NULL*/)
 CTabPanel::~CTabPanel()
 {
 	SAFE_DELETE(m_heightMapPanel);
+	SAFE_DELETE(m_terrainPanel);
+	SAFE_DELETE(m_brushPanel);
 }
 
 void CTabPanel::DoDataExchange(CDataExchange* pDX)
@@ -98,18 +100,21 @@ void CTabPanel::OnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 		m_heightMapPanel->ShowWindow(SW_SHOW);
 		m_terrainPanel->ShowWindow(SW_HIDE);
 		m_brushPanel->ShowWindow(SW_HIDE);
+		cMapController::Get()->ChangeEditMode(EDIT_MODE::MODE_HEIGHTMAP);
 		break;
 
 	case 1:
 		m_terrainPanel->ShowWindow(SW_SHOW);
 		m_heightMapPanel->ShowWindow(SW_HIDE);
 		m_brushPanel->ShowWindow(SW_HIDE);
+		cMapController::Get()->ChangeEditMode(EDIT_MODE::MODE_TERRAIN);
 		break;
 
 	case 2:
 		m_brushPanel->ShowWindow(SW_SHOW);
 		m_terrainPanel->ShowWindow(SW_HIDE);
 		m_heightMapPanel->ShowWindow(SW_HIDE);
+		cMapController::Get()->ChangeEditMode(EDIT_MODE::MODE_BRUSH);
 		break;
 	}
 

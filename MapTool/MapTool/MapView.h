@@ -3,6 +3,7 @@
 
 // CMapView ∫‰¿‘¥œ¥Ÿ.
 
+class cTerrainCursor;
 class CMapView : public CView
 {
 public:
@@ -20,13 +21,17 @@ protected:
 	Matrix44 m_rotateTm;
 	graphic::cCamera m_camera;
 
-	bool m_LButtonDown;
-	bool m_RButtonDown;
-	bool m_MButtonDown;
-	CPoint m_curPos;
 	graphic::cGrid m_grid;
 	graphic::cCube m_cube;
 	graphic::cShader m_terrainShader;
+	graphic::cLine m_line;
+	cTerrainCursor *m_cursor;
+	common::Ray m_ray;
+
+	CPoint m_curPos;
+	bool m_LButtonDown;
+	bool m_RButtonDown;
+	bool m_MButtonDown;
 
 
 public:

@@ -2,7 +2,8 @@
 #include "MapController.h"
 
 
-cMapController::cMapController(void)
+cMapController::cMapController(void) :
+	m_editMode(EDIT_MODE::MODE_HEIGHTMAP)
 {
 }
 
@@ -42,4 +43,11 @@ bool cMapController::CreateDefaultTerrain()
 
 	NotifyObserver();
 	return true;
+}
+
+
+// 툴 편집 모드 설정.
+void cMapController::ChangeEditMode(EDIT_MODE::TYPE mode)
+{
+	m_editMode = mode;
 }

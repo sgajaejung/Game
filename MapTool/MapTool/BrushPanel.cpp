@@ -24,6 +24,7 @@ void CBrushPanel::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_TEXTURE_FILES, m_TextureFiles);
+	DDX_Control(pDX, IDC_MFCEDITBROWSE_TEXTURE, m_textureBrowser);
 }
 
 
@@ -32,6 +33,7 @@ BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CBrushPanel::OnBnClickedCancel)
 	ON_LBN_SELCHANGE(IDC_LIST_TEXTURE_FILES, &CBrushPanel::OnSelchangeListTextureFiles)
 	ON_WM_PAINT()
+	ON_EN_CHANGE(IDC_MFCEDITBROWSE_TEXTURE, &CBrushPanel::OnChangeMfceditbrowseTexture)
 END_MESSAGE_MAP()
 
 
@@ -40,7 +42,9 @@ BOOL CBrushPanel::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	UpdateTextureFiles();
+	m_textureBrowser.EnableFolderBrowseButton();
+	m_textureBrowser.SetWindowText( L"../../media/terrain/" );
+	UpdateTextureFiles("../../media/terrain/");
 
 	return TRUE;
 }
@@ -66,7 +70,7 @@ void CBrushPanel::Update()
 }
 
 
-void CBrushPanel::UpdateTextureFiles()
+void CBrushPanel::UpdateTextureFiles(const string &directoryPath)
 {
 	// 리스트 박스 초기화.
 	while (0 < m_TextureFiles.GetCount())
@@ -78,7 +82,7 @@ void CBrushPanel::UpdateTextureFiles()
 	extList.push_back("png");
 	extList.push_back("bmp");
 	list<string> textureFiles;
-	common::CollectFiles(extList, "../../media/terrain/", textureFiles);
+	common::CollectFiles(extList, directoryPath, textureFiles);
 
 	BOOST_FOREACH(auto &fileName, textureFiles)
 	{
@@ -116,4 +120,15 @@ void CBrushPanel::OnPaint()
 			graph->DrawImage(m_texture, dest );
 		}
 	}
+}
+
+
+void CBrushPanel::OnChangeMfceditbrowseTexture()
+{
+	CString wfilePath;
+	m_textureBrowser.GetWindowText(wfilePath);
+	string filePath = common::wstr2str((wstring)wfilePath);
+	filePath += "\\";
+	UpdateTextureFiles(filePath);
+
 }
