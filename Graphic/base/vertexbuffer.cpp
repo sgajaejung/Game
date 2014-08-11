@@ -68,13 +68,19 @@ void cVertexBuffer::Bind() const
 
 void cVertexBuffer::RenderLineStrip()
 {
+	Matrix44 matIdentity;
+	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&matIdentity );
+
 	DWORD lighting;
 	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
 	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
 	Bind();
 	GetDevice()->DrawPrimitive( D3DPT_LINESTRIP, 0, m_vertexCount-1);
 	GetDevice()->SetRenderState( D3DRS_LIGHTING, lighting );
+	GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
+
 
 
 void cVertexBuffer::Clear()

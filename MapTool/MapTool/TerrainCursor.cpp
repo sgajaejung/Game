@@ -7,8 +7,10 @@ using namespace graphic;
 
 cTerrainCursor::cTerrainCursor() :
 	m_innerRadius(30)
+,	m_outerRadius(60)
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
+	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
 
 }
 
@@ -21,6 +23,7 @@ cTerrainCursor::~cTerrainCursor()
 void cTerrainCursor::Render()
 {
 	m_innerCircle.RenderLineStrip();
+	m_outerCircle.RenderLineStrip();
 }
 
 
@@ -28,23 +31,31 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 {
 	m_pos = cursorPos;
 
-	sVertexDiffuse *vertices = (sVertexDiffuse*)m_innerCircle.Lock();	
+	sVertexDiffuse *innerVertices = (sVertexDiffuse*)m_innerCircle.Lock();	
+	sVertexDiffuse *outerVertices = (sVertexDiffuse*)m_outerCircle.Lock();	
 	
 	float angle = 0.f;
 	int index = 0;
-	const float offset = MATH_PI*2.f / (float)CURSOR_VERTEX_COUNT;
+	const float offset = MATH_PI*2.f / (float)(CURSOR_VERTEX_COUNT-1);
 
 	while ((angle < MATH_PI*2.f) && (index < CURSOR_VERTEX_COUNT))
 	{
 		Vector3 inner(m_innerRadius*cos(angle), 0.f, m_innerRadius*sin(angle));
 		inner += cursorPos;
-		vertices[ index].p = inner;
-		vertices[ index].p.y = terrain.GetHeight(inner.x, inner.z) + 0.2f;
-		vertices[ index].c = D3DXCOLOR( 1, 0, 0, 0 );
+		innerVertices[ index].p = inner;
+		innerVertices[ index].p.y = terrain.GetHeight(inner.x, inner.z);
+		innerVertices[ index].c = D3DXCOLOR( 1, 0, 0, 0 );
+
+		Vector3 outer(m_outerRadius*cos(angle), 0.f, m_outerRadius*sin(angle));
+		outer += cursorPos;
+		outerVertices[ index].p = outer;
+		outerVertices[ index].p.y = terrain.GetHeight(outer.x, outer.z);
+		outerVertices[ index].c = D3DXCOLOR( 1, 0, 0, 0 );
 
 		index++;
 		angle += offset;
 	}
 
 	m_innerCircle.Unlock();
+	m_outerCircle.Unlock();
 }

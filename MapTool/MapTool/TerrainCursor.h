@@ -18,6 +18,8 @@ public:
 private:
 	Vector3 m_pos;
 	float m_innerRadius;
+	float m_outerRadius;
 	graphic::cVertexBuffer m_innerCircle;
+	graphic::cVertexBuffer m_outerCircle;
 };
 
