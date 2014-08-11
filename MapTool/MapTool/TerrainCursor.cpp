@@ -8,6 +8,7 @@ using namespace graphic;
 cTerrainCursor::cTerrainCursor() :
 	m_innerRadius(30)
 ,	m_outerRadius(60)
+,	m_innerAlpha(1.f)
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
 	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );

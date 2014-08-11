@@ -127,16 +127,12 @@ void CMapView::Render()
 		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
 		{
 			// Render Brush Line
-			//const Ray ray(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
-			//	m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix());
 			const Vector3 p0 = m_ray.orig + Vector3(10,10,0);
 			const Vector3 p1 = m_ray.orig + m_ray.dir * 200.f;
 			m_line.SetLine( p0, p1, 0.5f );
-			m_line.Render();
-
+			//m_line.Render();
 			m_cursor->Render();
 		}
-
 
 		graphic::GetRenderer()->RenderAxis();
 
