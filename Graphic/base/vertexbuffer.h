@@ -20,11 +20,13 @@ namespace graphic
 		int GetSizeOfVertex() const;
 		int GetVertexCount() const;
 
+		void RenderLineStrip();
+
 
 	private:
 		LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
 		DWORD m_fvf;
-		int m_sizeOfVertex;
+		int m_sizeOfVertex; // stride
 		int m_vertexCount;
 	};
 

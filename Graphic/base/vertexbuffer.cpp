@@ -66,6 +66,17 @@ void cVertexBuffer::Bind() const
 }
 
 
+void cVertexBuffer::RenderLineStrip()
+{
+	DWORD lighting;
+	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	Bind();
+	GetDevice()->DrawPrimitive( D3DPT_LINESTRIP, 0, m_vertexCount-1);
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, lighting );
+}
+
+
 void cVertexBuffer::Clear()
 {
 	m_fvf = 0;
@@ -73,3 +84,4 @@ void cVertexBuffer::Clear()
 	m_sizeOfVertex = 0;
 	SAFE_RELEASE(m_pVtxBuff);	
 }
+

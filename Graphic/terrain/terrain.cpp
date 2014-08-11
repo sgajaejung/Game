@@ -8,16 +8,6 @@ using namespace std;
 using namespace Gdiplus;
 using namespace graphic;
 
-// global constants
-//enum {
-//	CELL_COL_COUNT = 64,
-//	CELL_ROW_COUNT = 64,
-//	VERTEX_COL_COUNT = CELL_COL_COUNT+1,
-//	VERTEX_ROW_COUNT = CELL_ROW_COUNT+1,
-//	CELL_SIZE = 50,
-//	WIDTH = CELL_COL_COUNT * CELL_SIZE,
-//	HEIGHT = CELL_ROW_COUNT * CELL_SIZE,
-//};
 
 
 cTerrain::cTerrain() :
