@@ -126,8 +126,8 @@ bool cViewer::OnInit()
 	//m_character.SetAnimation( "../media/max script/tiac_normal.ani" );
 	m_character.SetAnimation( "../media/max script/tiac_la.ani" );
 	m_character.LoadWeapon( "../media/max script/tiac_weapon.dat" );
-	m_character.SetRenderBoundingBox(true);
-	m_character.SetRenderWeaponBoundingBox(true);
+	//m_character.SetRenderBoundingBox(true);
+	//m_character.SetRenderWeaponBoundingBox(true);
 
 
 	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );

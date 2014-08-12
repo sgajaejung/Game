@@ -148,16 +148,6 @@ void CMapView::Render()
 void CMapView::Update(float elapseT)
 {
 	graphic::GetRenderer()->Update(elapseT);
-
-	if (m_cursor)
-	{
-		m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
-			m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
-
-		Vector3 pickPos;
-		cMapController::Get()->GetTerrain().Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
-		m_cursor->UpdateCursor( cMapController::Get()->GetTerrain(), pickPos );
-	}
 }
 
 
@@ -207,6 +197,17 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	else
 	{
 		m_curPos = point;
+
+		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+		{
+			m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
+				m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+
+			Vector3 pickPos;
+			cMapController::Get()->GetTerrain().Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
+			m_cursor->UpdateCursor( cMapController::Get()->GetTerrain(), pickPos );
+		}
+
 	}
 
 	CView::OnMouseMove(nFlags, point);

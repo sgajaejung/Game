@@ -94,6 +94,8 @@ void CBrushPanel::UpdateTextureFiles(const string &directoryPath)
 
 void CBrushPanel::OnSelchangeListTextureFiles()
 {
+	RET(m_TextureFiles.GetCurSel() < 0);
+
 	CString fileName;
 	m_TextureFiles.GetText(m_TextureFiles.GetCurSel(), fileName);
 	SAFE_DELETE(m_texture);
