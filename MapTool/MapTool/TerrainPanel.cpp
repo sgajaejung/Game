@@ -54,16 +54,23 @@ BOOL CTerrainPanel::OnInitDialog()
 
 
 // MapController 가 업데이트 될 때 호출된다.
-void CTerrainPanel::Update()
+void CTerrainPanel::Update(int type)
 {
-	m_colCellCount = cMapController::Get()->GetTerrain().GetColCellCount();
-	m_rowCellCount = cMapController::Get()->GetTerrain().GetRowCellCount();
-	m_cellSize = cMapController::Get()->GetTerrain().GetCellSize();
-	const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
-	m_textureName = wstr.c_str();
-	m_textureBrowser.SetWindowText(m_textureName);
+	switch (type)
+	{
+	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
+		{
+			m_colCellCount = cMapController::Get()->GetTerrain().GetColCellCount();
+			m_rowCellCount = cMapController::Get()->GetTerrain().GetRowCellCount();
+			m_cellSize = cMapController::Get()->GetTerrain().GetCellSize();
+			const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
+			m_textureName = wstr.c_str();
+			m_textureBrowser.SetWindowText(m_textureName);
 
-	UpdateData(FALSE);
+			UpdateData(FALSE);
+		}
+		break;
+	}
 }
 
 

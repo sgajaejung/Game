@@ -7,7 +7,7 @@
 // CBrushPanel 대화 상자입니다.
 
 class CBrushPanel : public CDialogEx
-								, public common::iObserver
+								, public common::iObserver2
 {
 public:
 	CBrushPanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -18,11 +18,12 @@ public:
 
 
 public:
-	virtual void Update() override;
+	virtual void Update(int type) override;
 
 
 protected:
 	void UpdateTextureFiles( const string &directoryPath );
+	void UpdateLayerList();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	Image *m_texture;
@@ -38,4 +39,12 @@ public:
 	CMFCEditBrowseCtrl m_textureBrowser;
 	afx_msg void OnChangeMfceditbrowseTexture();
 	CListCtrl m_layerList;
+	CSliderCtrl m_innerRSlider;
+	CSliderCtrl m_outerRSlider;
+	float m_innerRadius;
+	float m_outerRadius;
+	afx_msg void OnNMCustomdrawSliderInnerRadius(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMCustomdrawSliderOuterRadius(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditInnerRadius();
+	afx_msg void OnEnChangeEditOuterRadius2();
 };

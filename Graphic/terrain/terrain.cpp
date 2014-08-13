@@ -15,6 +15,7 @@ cTerrain::cTerrain() :
 ,	m_colCellCount(0)
 ,	m_cellSize(0)
 ,	m_textureUVFactor(1.f)
+,	m_heightFactor(3.f)
 {
 }
 
@@ -63,6 +64,9 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 bool cTerrain::UpdateHeightMap( const string &heightMapFileName, 
 	const string &textureFileName, const float heightFactor )
 {
+	m_heightFactor = heightFactor;
+	m_heightMapFileName = heightMapFileName;
+
 	const wstring wfileName = common::str2wstr(heightMapFileName);
 	Bitmap bmp(wfileName.c_str());
 
@@ -209,6 +213,12 @@ bool cTerrain::Pick(const int x, const int y, const Vector3 &orig, const Vector3
 // √ ±‚»≠.
 void cTerrain::Clear()
 {
+	m_rowCellCount = 0;
+	m_colCellCount = 0;
+	m_cellSize = 0;
+	m_heightFactor = 3.f;
+	m_textureUVFactor = 1.f;
+	m_heightMapFileName.clear();
 	m_grid.Clear();
 }
 
@@ -217,3 +227,4 @@ const string& cTerrain::GetTextureName()
 {
 	return m_grid.GetTexture().GetTextureName();
 }
+

@@ -5,7 +5,10 @@
 using namespace graphic;
 
 
-cGrid2::cGrid2()
+cGrid2::cGrid2() :
+	m_rowCellCount(0)
+,	m_colCellCount(0)
+,	m_cellSize(0)
 {
 	m_mtrl.InitWhite();
 }
@@ -81,6 +84,47 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 		m_idxBuff.Unlock();
 	}
 
+}
+
+
+// uv 값을 textureUVFactor 에 맞춰 재 조정한다.
+void cGrid2::SetTextureUVFactor(const float textureUVFactor)
+{
+	// 아직 grid가 초기화 되지 않았다면 uv 값을 조정하지 않는다.
+	RET (m_rowCellCount <= 0);
+
+	// init member
+	const int rowCellCount = m_rowCellCount;
+	const int colCellCount = m_colCellCount;
+	const float cellSize = m_cellSize;
+
+	// Init Grid
+	const int rowVtxCnt  = rowCellCount+1;
+	const int colVtxCnt  = colCellCount+1;
+	const int cellCnt = rowCellCount * colCellCount;
+	const int vtxCount= rowVtxCnt * colVtxCnt;
+
+	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
+	const float startx = -cellSize*(colCellCount/2);
+	const float starty = cellSize*(rowCellCount/2);
+	const float endx = startx + cellSize*colCellCount;
+	const float endy = starty - cellSize*rowCellCount;
+
+	const float uCoordIncrementSize = 1.0f / (float)colCellCount * textureUVFactor;
+	const float vCoordIncrementSize = 1.0f / (float)rowCellCount * textureUVFactor;
+
+	int i=0;
+	for (float y=starty; y >= endy; y -= cellSize, ++i)
+	{
+		int k=0;
+		for (float x=startx; x <= endx; x += cellSize, ++k )
+		{
+			int index = (i * colVtxCnt) + k;
+			vertices[ index].u = (float)k*uCoordIncrementSize;
+			vertices[ index].v = (float)i*vCoordIncrementSize;
+		}
+	}
+	m_vtxBuff.Unlock();
 }
 
 

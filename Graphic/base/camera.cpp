@@ -215,6 +215,15 @@ void cCamera::MoveRight( const float len )
 }
 
 
+// dir 방향으로 이동한다.
+void cCamera::MoveAxis( const Vector3 &dir, const float len )
+{
+	m_lookAt += dir * len;
+	m_eyePos += dir * len;
+	UpdateViewMatrix();
+}
+
+
 // lookAt 은 고정된채로 eyePos 를 이동한다.
 void cCamera::Zoom( const float len )
 {

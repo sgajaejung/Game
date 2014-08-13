@@ -14,6 +14,7 @@ CMapView::CMapView() :
 	m_dxInit(false)
 ,	m_RButtonDown(false)
 ,	m_LButtonDown(false)
+,	m_MButtonDown(false)
 {
 
 }
@@ -65,9 +66,6 @@ void CMapView::Dump(CDumpContext& dc) const
 
 bool CMapView::Init()
 {
-	m_camera.SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
-	m_camera.SetProjection( D3DX_PI / 4.f, (float)WINDOW_WIDTH / (float) WINDOW_HEIGHT, 1.f, 10000.0f);
-
 	graphic::GetDevice()->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 	graphic::GetDevice()->LightEnable (
@@ -109,17 +107,18 @@ void CMapView::Render()
 
 		const Matrix44 matIdentity;
 
-		m_terrainShader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		cCamera &camera = cMapController::Get()->GetCamera();
+		m_terrainShader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
 		m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_terrainShader.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_terrainShader.SetVector( "vEyePos", camera.GetEyePos());
 		m_terrainShader.SetMatrix( "mWIT", matIdentity);
 		m_terrainShader.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
 
 
-		m_terrainShader2.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		m_terrainShader2.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
 		m_terrainShader2.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_terrainShader2.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_terrainShader2.SetVector( "vEyePos", camera.GetEyePos());
 		m_terrainShader2.SetMatrix( "mWIT", matIdentity);
 		m_terrainShader2.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.2SetTexture("ShadowMap", m_pShadowTex);
@@ -160,16 +159,18 @@ void CMapView::Update(float elapseT)
 
 void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	SetFocus();
+	SetCapture();
 	m_LButtonDown = true;
-
+	m_curPos = point;
 	CView::OnLButtonDown(nFlags, point);
 }
 
 
 void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	ReleaseCapture();
 	m_LButtonDown = false;
-
 	CView::OnLButtonUp(nFlags, point);
 }
 
@@ -194,21 +195,15 @@ void CMapView::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 {
+	cCamera &camera = cMapController::Get()->GetCamera();
+
 	if (m_LButtonDown)
 	{
 		m_curPos = point;
 
 		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
 		{
-			m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
-				m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
-
-			Vector3 pickPos;
-			graphic::cTerrainEditor &terrain = cMapController::Get()->GetTerrain();
-			graphic::cTerrainCursor &cursor = cMapController::Get()->GetTerrainCursor();
-			terrain.Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
-			cursor.UpdateCursor( terrain, pickPos );
-			terrain.Brush( cursor );
+			cMapController::Get()->Brush(point);
 		}
 
 	}
@@ -216,8 +211,21 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		CPoint pos = point - m_curPos;
 		m_curPos = point;
-		m_camera.Pitch2(pos.y * 0.005f); 
-		m_camera.Yaw2(pos.x * 0.005f); 
+		camera.Pitch2(pos.y * 0.005f); 
+		camera.Yaw2(pos.x * 0.005f); 
+	}
+	else if (m_MButtonDown)
+	{
+		CPoint pos = point - m_curPos;
+		m_curPos = point;
+
+		Vector3 dir = camera.GetDirection();
+		dir.y = 0;
+		dir.Normalize();
+
+		const float len = camera.GetDistance();
+		camera.MoveRight( -pos.x * len * 0.001f );
+		camera.MoveAxis( dir, pos.y * len * 0.001f );
 	}
 	else
 	{
@@ -225,8 +233,8 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 
 		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
 		{
-			m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
-				m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+			m_ray.Create(m_curPos.x, m_curPos.y, VIEW_WIDTH, VIEW_HEIGHT, 
+				camera.GetProjectionMatrix(), camera.GetViewMatrix() );
 
 			Vector3 pickPos;
 			cMapController::Get()->GetTerrain().Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
@@ -241,28 +249,31 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMapView::OnMButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	SetFocus();
+	SetCapture();
+	m_MButtonDown = true;
 	CView::OnMButtonDown(nFlags, point);
 }
 
 
 void CMapView::OnMButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	m_MButtonDown = false;
+	ReleaseCapture();
 	CView::OnMButtonUp(nFlags, point);
 }
 
 
 BOOL CMapView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	const float len = m_camera.GetDistance();
+	cCamera &camera = cMapController::Get()->GetCamera();
+	
+	const float len = camera.GetDistance();
 	float zoomLen = (len > 100)? 50 : (len/4.f);
 	if (nFlags & 0x4)
 		zoomLen = zoomLen/10.f;
 
-	m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );	
+	camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );	
 
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }

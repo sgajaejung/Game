@@ -29,6 +29,7 @@ namespace graphic
 		float GetTerrainHeight() const;
 		const string& GetTextureName();
 		float GetTextureUVFactor() const;
+		float GetHeightFactor() const;
 
 		virtual void Clear();
 
@@ -39,11 +40,13 @@ namespace graphic
 			const string &textureFileName, const float heightFactor );
 
 
-	private:
+	protected:
 		int m_rowCellCount;
 		int m_colCellCount;
 		float m_cellSize;
+		float m_heightFactor;
 		float m_textureUVFactor;
+		string m_heightMapFileName;
 		cGrid2 m_grid;
 	};
 
@@ -54,4 +57,5 @@ namespace graphic
 	inline float cTerrain::GetTerrainWidth() const { return m_colCellCount * m_cellSize; }
 	inline float cTerrain::GetTerrainHeight() const { return m_rowCellCount * m_cellSize; }
 	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
+	inline float cTerrain::GetHeightFactor() const { return m_heightFactor; }
 }

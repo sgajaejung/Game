@@ -87,11 +87,11 @@ BOOL CMapToolDlg::OnInitDialog()
 	// Create Main Model View
 	m_mapView = new CMapView();
 	m_mapView->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
-		CRect(0,25, WINDOW_WIDTH, WINDOW_HEIGHT+25), this, 0);
+		CRect(0,25, VIEW_WIDTH, VIEW_HEIGHT+25), this, 0);
 
 	// Create Direct
 	graphic::cRenderer::Get()->CreateDirectX(
-		m_mapView->GetSafeHwnd(), WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_mapView->GetSafeHwnd(), VIEW_WIDTH, VIEW_HEIGHT);
 
 	m_mapView->Init();
 	m_mapView->ShowWindow(SW_SHOW);

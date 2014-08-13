@@ -19,7 +19,6 @@ protected:
 	bool m_dxInit;
 	string m_filePath;
 	Matrix44 m_rotateTm;
-	graphic::cCamera m_camera;
 
 	graphic::cGrid m_grid;
 	graphic::cCube m_cube;

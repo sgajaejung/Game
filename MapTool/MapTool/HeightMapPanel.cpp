@@ -12,6 +12,8 @@ CHeightMapPanel::CHeightMapPanel(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CHeightMapPanel::IDD, pParent)
 ,	m_heightMap(NULL)
 ,	m_texture(NULL)
+, m_heightFactor(0)
+, m_uvFactor(0)
 {
 
 }
@@ -25,6 +27,10 @@ void CHeightMapPanel::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_HEIGHTMAP, m_HeightMapList);
 	DDX_Control(pDX, IDC_LIST_HEIGHTMAP_TEX, m_TextureList);
+	DDX_Control(pDX, IDC_SLIDER_HEIGHT_FACTOR, m_heightSlider);
+	DDX_Text(pDX, IDC_EDIT_HEIGHT_FACTOR, m_heightFactor);
+	DDX_Control(pDX, IDC_SLIDER_UV_FACTOR, m_uvSlider);
+	DDX_Text(pDX, IDC_EDIT_UV_FACTOR, m_uvFactor);
 }
 
 
@@ -36,6 +42,10 @@ BEGIN_MESSAGE_MAP(CHeightMapPanel, CDialogEx)
 	ON_WM_PAINT()
 	ON_LBN_SELCHANGE(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnSelchangeListHeightmapTex)
 	ON_LBN_DBLCLK(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnDblclkListHeightmapTex)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_HEIGHT_FACTOR, &CHeightMapPanel::OnNMCustomdrawSliderHeightFactor)
+	ON_EN_CHANGE(IDC_EDIT_HEIGHT_FACTOR, &CHeightMapPanel::OnEnChangeEditHeightFactor)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_UV_FACTOR, &CHeightMapPanel::OnNMCustomdrawSliderUvFactor)
+	ON_EN_CHANGE(IDC_EDIT_UV_FACTOR, &CHeightMapPanel::OnEnChangeEditUvFactor)
 END_MESSAGE_MAP()
 
 
@@ -44,8 +54,12 @@ BOOL CHeightMapPanel::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	m_heightSlider.SetRange(0, 1000);
+	m_uvSlider.SetRange(0, 1000);
+
 	UpdateHeightMapList();
 	UpdateTextureList();
+	UpdateTerrainInfo();
 
 	return TRUE;
 }
@@ -95,6 +109,18 @@ void CHeightMapPanel::OnBnClickedOk()
 void CHeightMapPanel::OnBnClickedCancel()
 {
 	//CDialogEx::OnCancel();
+}
+
+
+void CHeightMapPanel::UpdateTerrainInfo()
+{
+	m_heightFactor = cMapController::Get()->GetTerrain().GetHeightFactor();
+	m_heightSlider.SetPos( (int)(m_heightFactor * 100.f) );
+
+	m_uvFactor = cMapController::Get()->GetTerrain().GetTextureUVFactor();
+	m_uvSlider.SetPos( (int)(m_uvFactor * 100.f) );
+
+	UpdateData(FALSE);
 }
 
 
@@ -202,7 +228,50 @@ void CHeightMapPanel::OnDblclkListHeightmapTex()
 
 
 // MapController 가 업데이트 될 때 호출된다.
-void CHeightMapPanel::Update()
+void CHeightMapPanel::Update(int type)
 {
 
+	switch (type)
+	{
+	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
+		UpdateTerrainInfo();
+		break;
+	}
+
+}
+
+
+void CHeightMapPanel::OnNMCustomdrawSliderHeightFactor(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	m_heightFactor = m_heightSlider.GetPos() / 100.f;
+	cMapController::Get()->UpdateHeightFactor(m_heightFactor);
+	UpdateData(FALSE);
+	*pResult = 0;
+}
+
+
+void CHeightMapPanel::OnEnChangeEditHeightFactor()
+{
+	UpdateData();
+	m_heightSlider.SetPos( m_heightFactor * 100.f );
+	cMapController::Get()->UpdateHeightFactor(m_heightFactor);
+}
+
+
+void CHeightMapPanel::OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	m_uvFactor = m_uvSlider.GetPos() / 100.f;
+	cMapController::Get()->GetTerrain().SetTextureUVFactor(m_uvFactor);
+	UpdateData(FALSE);
+	*pResult = 0;
+}
+
+
+void CHeightMapPanel::OnEnChangeEditUvFactor()
+{
+	UpdateData();
+	m_uvSlider.SetPos( m_uvFactor * 100.f );
+	cMapController::Get()->GetTerrain().SetTextureUVFactor(m_uvFactor);
 }

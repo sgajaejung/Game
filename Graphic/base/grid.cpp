@@ -31,10 +31,10 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 	m_vtxBuff.Create( vtxCount, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
 	{
 		sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock();
-		const float startx = -cellSize*(rowCellCount/2);
-		const float starty = cellSize*(colCellCount/2);
-		const float endx = startx + cellSize*rowCellCount;
-		const float endy = starty - cellSize*colCellCount;
+		const float startx = -cellSize*(colCellCount/2);
+		const float starty = cellSize*(rowCellCount/2);
+		const float endx = startx + cellSize*colCellCount;
+		const float endy = starty - cellSize*rowCellCount;
 
 		const float uCoordIncrementSize = 1.0f / (float)colCellCount;
 		const float vCoordIncrementSize = 1.0f / (float)rowCellCount;

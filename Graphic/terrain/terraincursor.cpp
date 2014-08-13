@@ -52,7 +52,7 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 		outer += cursorPos;
 		outerVertices[ index].p = outer;
 		outerVertices[ index].p.y = terrain.GetHeight(outer.x, outer.z);
-		outerVertices[ index].c = D3DXCOLOR( 1, 0, 0, 0 );
+		outerVertices[ index].c = D3DXCOLOR( 0, 0, 1, 0 );
 
 		index++;
 		angle += offset;

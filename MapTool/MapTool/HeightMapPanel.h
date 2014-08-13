@@ -1,11 +1,12 @@
 #pragma once
 #include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CHeightMapPanel 대화 상자입니다.
 
 class CHeightMapPanel : public CDialogEx
-									, public common::iObserver
+									, public common::iObserver2
 {
 public:
 	CHeightMapPanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -16,7 +17,8 @@ public:
 
 
 public:
-	virtual void Update() override;
+	virtual void Update(int type) override;
+	void UpdateTerrainInfo();
 	void UpdateHeightMapList();
 	void UpdateTextureList();
 
@@ -41,4 +43,12 @@ public:
 	CListBox m_TextureList;
 	afx_msg void OnSelchangeListHeightmapTex();
 	afx_msg void OnDblclkListHeightmapTex();
+	CSliderCtrl m_heightSlider;
+	float m_heightFactor;
+	afx_msg void OnNMCustomdrawSliderHeightFactor(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditHeightFactor();
+	CSliderCtrl m_uvSlider;
+	float m_uvFactor;
+	afx_msg void OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditUvFactor();
 };

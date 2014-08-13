@@ -38,7 +38,7 @@ string common::GetFileName(const std::string &fileName)
 
 
 //-----------------------------------------------------------------------------//
-// searchPath폴더에 findExt 확장자 리스트에 포함된 파일을 pFileList에 저장한다.
+// searchPath폴더에 findExt 확장자 리스트에 포함된 파일을 out에 저장한다.
 //
 // searchPath: 탐색하고자 하는 디렉토리 경로
 // findExt: 찾고자 하는 확장자, 2개이상 설정할수있게 하기위해서 리스트 자료형태가 되었다.

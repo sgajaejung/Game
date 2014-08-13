@@ -44,6 +44,7 @@ namespace graphic
 		void MoveFront( const float len );
 		void MoveUp( const float len );
 		void MoveRight( const float len );
+		void MoveAxis( const Vector3 &dir, const float len );
 		void Zoom( const float len );
 
 
