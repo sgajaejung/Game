@@ -12,7 +12,8 @@ public:
 	bool LoadHeightMapTexture(const string &fileName);
 	bool CreateDefaultTerrain();
 
-	graphic::cTerrain& GetTerrain();
+	graphic::cTerrainEditor& GetTerrain();
+	graphic::cTerrainCursor& GetTerrainCursor();
 	const string& GetHeightMapFileName();
 	const string& GetTextureFileName();
 
@@ -21,14 +22,17 @@ public:
 
 
 private:
-	graphic::cTerrain m_terrain;
+	graphic::cTerrainEditor m_terrain;
+	graphic::cTerrainCursor m_cursor;
 	string m_heightMapFileName;
 	string m_textFileName;
 	EDIT_MODE::TYPE m_editMode;
 };
 
 
-inline graphic::cTerrain& cMapController::GetTerrain() { return m_terrain; }
+inline graphic::cTerrainEditor& cMapController::GetTerrain() { return m_terrain; }
+inline graphic::cTerrainCursor& cMapController::GetTerrainCursor() { return m_cursor; }
 inline const string& cMapController::GetHeightMapFileName() { return m_heightMapFileName; }
 inline const string& cMapController::GetTextureFileName() { return m_textFileName; }
 inline EDIT_MODE::TYPE cMapController::GetEditMode() const { return m_editMode; }
+

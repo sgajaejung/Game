@@ -25,6 +25,7 @@ void CBrushPanel::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_TEXTURE_FILES, m_TextureFiles);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE_TEXTURE, m_textureBrowser);
+	DDX_Control(pDX, IDC_LIST_LAYER, m_layerList);
 }
 
 
@@ -100,6 +101,10 @@ void CBrushPanel::OnSelchangeListTextureFiles()
 	m_TextureFiles.GetText(m_TextureFiles.GetCurSel(), fileName);
 	SAFE_DELETE(m_texture);
 	m_texture = Image::FromFile(fileName);
+
+	const string strFileName = wstr2str((wstring)fileName);
+	cMapController::Get()->GetTerrainCursor().SelectBrushTexture(strFileName);
+
 	InvalidateRect(NULL, FALSE);
 }
 

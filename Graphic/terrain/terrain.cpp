@@ -14,6 +14,7 @@ cTerrain::cTerrain() :
 	m_rowCellCount(0)
 ,	m_colCellCount(0)
 ,	m_cellSize(0)
+,	m_textureUVFactor(1.f)
 {
 }
 
@@ -50,6 +51,7 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 	m_rowCellCount = rowCellCount;
 	m_colCellCount = colCellCount;
 	m_cellSize = cellSize;
+	m_textureUVFactor = textureUVFactor;
 	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
 
 	return true;

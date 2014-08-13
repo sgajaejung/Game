@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MapTool.h"
 #include "MapView.h"
-#include "TerrainCursor.h"
 
 
 using namespace graphic;
@@ -14,14 +13,13 @@ using namespace graphic;
 CMapView::CMapView() :
 	m_dxInit(false)
 ,	m_RButtonDown(false)
-,	m_cursor(NULL)
+,	m_LButtonDown(false)
 {
 
 }
 
 CMapView::~CMapView()
 {
-	SAFE_DELETE(m_cursor);
 }
 
 BEGIN_MESSAGE_MAP(CMapView, CView)
@@ -83,8 +81,7 @@ bool CMapView::Init()
 	m_dxInit = true;
 
 	m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
-
-	m_cursor = new cTerrainCursor();
+	m_terrainShader2.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
 
 	return true;
 }
@@ -119,10 +116,20 @@ void CMapView::Render()
 		m_terrainShader.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
 
-		m_terrainShader.SetRenderPass(1);
-		//cMapController::Get()->GetTerrain().Render();
-		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
 
+		m_terrainShader2.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		m_terrainShader2.SetVector( "vLightDir", Vector3(0,-1,0) );
+		m_terrainShader2.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_terrainShader2.SetMatrix( "mWIT", matIdentity);
+		m_terrainShader2.SetMatrix( "mWorld", matIdentity);
+		//m_terrainShader.2SetTexture("ShadowMap", m_pShadowTex);
+
+		//m_terrainShader.SetRenderPass(1);
+		//cMapController::Get()->GetTerrain().Render();
+		//cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
+
+		m_terrainShader2.SetRenderPass(1);
+		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader2);
 
 		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
 		{
@@ -131,7 +138,7 @@ void CMapView::Render()
 			const Vector3 p1 = m_ray.orig + m_ray.dir * 200.f;
 			m_line.SetLine( p0, p1, 0.5f );
 			//m_line.Render();
-			m_cursor->Render();
+			cMapController::Get()->GetTerrainCursor().Render();
 		}
 
 		graphic::GetRenderer()->RenderAxis();
@@ -153,7 +160,7 @@ void CMapView::Update(float elapseT)
 
 void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_LButtonDown = true;
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -161,7 +168,7 @@ void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_LButtonDown = false;
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -187,7 +194,25 @@ void CMapView::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (m_RButtonDown)
+	if (m_LButtonDown)
+	{
+		m_curPos = point;
+
+		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+		{
+			m_ray.Create(m_curPos.x, m_curPos.y, WINDOW_WIDTH, WINDOW_HEIGHT, 
+				m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+
+			Vector3 pickPos;
+			graphic::cTerrainEditor &terrain = cMapController::Get()->GetTerrain();
+			graphic::cTerrainCursor &cursor = cMapController::Get()->GetTerrainCursor();
+			terrain.Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
+			cursor.UpdateCursor( terrain, pickPos );
+			terrain.Brush( cursor );
+		}
+
+	}
+	else if (m_RButtonDown)
 	{
 		CPoint pos = point - m_curPos;
 		m_curPos = point;
@@ -205,7 +230,7 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 
 			Vector3 pickPos;
 			cMapController::Get()->GetTerrain().Pick( m_curPos.x, m_curPos.y, m_ray.orig, m_ray.dir, pickPos);
-			m_cursor->UpdateCursor( cMapController::Get()->GetTerrain(), pickPos );
+			cMapController::Get()->GetTerrainCursor().UpdateCursor(cMapController::Get()->GetTerrain(), pickPos );
 		}
 
 	}

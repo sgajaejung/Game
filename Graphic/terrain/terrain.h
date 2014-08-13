@@ -19,15 +19,18 @@ namespace graphic
 		float GetHeight(const float x, const float z);
 		float GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out );
 		bool Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);
-		void Render();
-		void RenderShader(cShader &shader);
+		virtual void Render();
+		virtual void RenderShader(cShader &shader);
 
 		int GetRowCellCount() const;
 		int GetColCellCount() const;
 		float GetCellSize() const;
+		float GetTerrainWidth() const;
+		float GetTerrainHeight() const;
 		const string& GetTextureName();
+		float GetTextureUVFactor() const;
 
-		void Clear();
+		virtual void Clear();
 
 
 	protected:
@@ -40,6 +43,7 @@ namespace graphic
 		int m_rowCellCount;
 		int m_colCellCount;
 		float m_cellSize;
+		float m_textureUVFactor;
 		cGrid2 m_grid;
 	};
 
@@ -47,4 +51,7 @@ namespace graphic
 	inline int cTerrain::GetRowCellCount() const { return m_rowCellCount; }
 	inline int cTerrain::GetColCellCount() const { return m_colCellCount; }
 	inline float cTerrain::GetCellSize() const { return m_cellSize; }
+	inline float cTerrain::GetTerrainWidth() const { return m_colCellCount * m_cellSize; }
+	inline float cTerrain::GetTerrainHeight() const { return m_rowCellCount * m_cellSize; }
+	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
 }

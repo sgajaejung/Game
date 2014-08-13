@@ -6,9 +6,10 @@
 using namespace graphic;
 
 cTerrainCursor::cTerrainCursor() :
-	m_innerRadius(30)
+	m_innerRadius(10)
 ,	m_outerRadius(60)
 ,	m_innerAlpha(1.f)
+,	m_brushTexture(NULL)
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
 	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
@@ -59,4 +60,21 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 
 	m_innerCircle.Unlock();
 	m_outerCircle.Unlock();
+}
+
+
+// 텍스쳐 브러쉬를 선택한다.
+void cTerrainCursor::SelectBrushTexture(const string &fileName )
+{
+	if (fileName.empty())
+	{
+		m_brushTexture = NULL;
+		return;
+	}
+
+	m_brushTexture = cResourceManager::Get()->LoadTexture(fileName);
+	if (!m_brushTexture)
+	{
+		MessageBoxA(NULL, "텍스쳐 파일을 읽을 수 없습니다.", "ERROR", MB_OK);
+	}
 }

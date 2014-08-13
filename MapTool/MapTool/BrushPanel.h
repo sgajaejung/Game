@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "afxeditbrowsectrl.h"
+#include "afxcmn.h"
 
 
 // CBrushPanel 대화 상자입니다.
@@ -36,4 +37,5 @@ public:
 	afx_msg void OnPaint();
 	CMFCEditBrowseCtrl m_textureBrowser;
 	afx_msg void OnChangeMfceditbrowseTexture();
+	CListCtrl m_layerList;
 };

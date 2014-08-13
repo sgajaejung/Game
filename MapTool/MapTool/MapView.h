@@ -24,8 +24,8 @@ protected:
 	graphic::cGrid m_grid;
 	graphic::cCube m_cube;
 	graphic::cShader m_terrainShader;
+	graphic::cShader m_terrainShader2;
 	graphic::cLine m_line;
-	cTerrainCursor *m_cursor;
 	common::Ray m_ray;
 
 	CPoint m_curPos;

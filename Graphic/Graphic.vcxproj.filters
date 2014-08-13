@@ -115,6 +115,12 @@
     <ClInclude Include="base\skybox.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="terrain\terraineditor.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain\terraincursor.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -216,6 +222,12 @@
     </ClCompile>
     <ClCompile Include="base\skybox.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain\terraineditor.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain\terraincursor.cpp">
+      <Filter>terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
