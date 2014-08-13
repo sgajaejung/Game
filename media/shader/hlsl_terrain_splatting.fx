@@ -347,10 +347,10 @@ float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 	Out = Color * decale;
 
 	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
-	Out = (alpha.a * tex2D(Samp1, In.Tex)) + ((1 - alpha.a) * Out);
-	Out = (alpha.r * tex2D(Samp2, In.Tex)) + ((1 - alpha.r) * Out);
-	Out = (alpha.g * tex2D(Samp3, In.Tex)) + ((1 - alpha.g) * Out);
-	Out = (alpha.b * tex2D(Samp4, In.Tex)) + ((1 - alpha.b) * Out);
+	Out = (alpha.a * (Color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
+	Out = (alpha.r * (Color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
+	Out = (alpha.g * (Color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
+	Out = (alpha.b * (Color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
 
 	//Out = tex2D(Samp1, In.Tex);
 	//Out = float4(alpha.a, alpha.a, alpha.a, alpha.a);
