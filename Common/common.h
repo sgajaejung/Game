@@ -60,4 +60,5 @@ using std::wstringstream;
 #include "etc/stringfunc.h"
 #include "etc/dbg.h"
 #include "etc/observer.h"
+#include "etc/observer2.h"
 #include "etc/rect.h"

@@ -52,6 +52,9 @@
     <ClInclude Include="math\ray.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="etc\observer2.h">
+      <Filter>Etc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -90,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="math\ray.cpp">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="etc\observer2.cpp">
+      <Filter>Etc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
