@@ -114,6 +114,10 @@ void CTerrainPanel::OnChangeMfceditbrowseTexture()
 	const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
 	if (fileName != wstr.c_str())
 	{
+		m_textureName = fileName;
+		const string strFileName = wstr2str((wstring)fileName);
+		cMapController::Get()->GetTerrain().CreateTerrainTexture(strFileName);
 
+		UpdateData(FALSE);
 	}
 }
