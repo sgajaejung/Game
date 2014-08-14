@@ -18,7 +18,8 @@ namespace graphic
 
 		float GetHeight(const float x, const float z);
 		float GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out );
-		bool Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);
+		bool Pick(const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);
+		cModel* PickModel(const Vector3 &orig, const Vector3 &dir);
 
 		bool AddRigidModel(const cModel &model);
 		cModel* FindRigidModel(const int id);
@@ -57,6 +58,8 @@ namespace graphic
 		float m_textureUVFactor;
 		string m_heightMapFileName;
 		cGrid2 m_grid;
+
+		cShader *m_modelShader;	// reference
 		vector<cModel*> m_rigids;
 	};
 

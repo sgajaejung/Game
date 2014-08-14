@@ -24,6 +24,7 @@ protected:
 	graphic::cCube m_cube;
 	graphic::cShader m_terrainShader;
 	graphic::cShader m_terrainShader2;
+	graphic::cShader *m_modelShader; // reference
 	graphic::cLine m_line;
 	common::Ray m_ray;
 

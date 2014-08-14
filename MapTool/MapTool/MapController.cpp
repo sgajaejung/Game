@@ -63,7 +63,7 @@ void cMapController::Brush(CPoint point)
 		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
 
 	Vector3 pickPos;
-	m_terrain.Pick( point.x, point.y, ray.orig, ray.dir, pickPos );
+	m_terrain.Pick( ray.orig, ray.dir, pickPos );
 	m_cursor.UpdateCursor( m_terrain, pickPos );
 
 	const int oldLayerCount = m_terrain.GetSplatLayerCount();
@@ -84,7 +84,7 @@ void cMapController::UpdateBrush()
 		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
 
 	Vector3 pickPos;
-	m_terrain.Pick( pos.x, pos.y, ray.orig, ray.dir, pickPos);
+	m_terrain.Pick( ray.orig, ray.dir, pickPos);
 	m_cursor.UpdateCursor(m_terrain, pickPos );
 
 	NotifyObserver( NOTIFY_TYPE::NOTIFY_CHANGE_CURSOR );

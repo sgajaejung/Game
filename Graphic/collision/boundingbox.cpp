@@ -53,7 +53,8 @@ bool overlaps( float min1, float max1, float min2, float max2 )
 // OBB vs OBB 충돌처리.
 bool cBoundingBox::Collision( cBoundingBox &box )
 {
-	vector<Vector3> normals(6);
+	//vector<Vector3> normals(6);
+	Vector3 normals[ 6];
 	normals[ 0] = Vector3(0,1,0).MultiplyNormal(m_tm);
 	normals[ 1] = Vector3(0,0,1).MultiplyNormal(m_tm);
 	normals[ 2] = Vector3(1,0,0).MultiplyNormal(m_tm);
@@ -89,7 +90,7 @@ bool cBoundingBox::Collision( cBoundingBox &box )
 		vertices2[ i] *= box.m_tm;
 
 
-	for( u_int i = 0 ; i < normals.size() ; i++ )
+	for( u_int i = 0 ; i < 6; i++ )
 	{
 		float shape1Min, shape1Max, shape2Min, shape2Max ;
 		SATtest( normals[ i], vertices1, shape1Min, shape1Max ) ;
@@ -101,6 +102,60 @@ bool cBoundingBox::Collision( cBoundingBox &box )
 	}
 
 	return true;
+}
+
+
+// 피킹 되었다면 true를 리턴한다.
+// orig, dir : ray 값.
+bool cBoundingBox::Pick(const Vector3 &orig, const Vector3 &dir)
+{
+	Vector3 vertices[8] = {
+		Vector3(m_max.x, m_max.y, m_min.z),
+		Vector3(m_min.x, m_max.y, m_min.z),
+		Vector3(m_min.x, m_max.y, m_max.z),
+		Vector3(m_max.x, m_max.y, m_max.z),
+		Vector3(m_max.x, m_min.y, m_min.z),
+		Vector3(m_min.x, m_min.y, m_min.z), 
+		Vector3(m_max.x, m_min.y, m_max.z),
+		Vector3(m_min.x, m_min.y, m_max.z),
+	};
+	for (u_int i=0; i < 8; ++i)
+		vertices[ i] *= m_tm;
+
+	//       3-----2
+	//      /|      /|
+	//     1-----0 |
+	//	   | 7 -  | 6
+	//	   |/      |/
+	//	   5-----4
+	Triangle triangle[ 12] = {
+	// top
+	Triangle(vertices[0], vertices[1], vertices[2]),
+	Triangle(vertices[1], vertices[3], vertices[2]),
+	// left
+	Triangle(vertices[1], vertices[5], vertices[7]),
+	Triangle(vertices[3], vertices[1], vertices[7]),
+	// right
+	Triangle(vertices[0], vertices[2], vertices[6]),
+	Triangle(vertices[0], vertices[6], vertices[4]),
+	// back
+	Triangle(vertices[2], vertices[3], vertices[6]),
+	Triangle(vertices[3], vertices[7], vertices[6]),
+	// front
+	Triangle(vertices[1], vertices[0], vertices[4]),
+	Triangle(vertices[1], vertices[4], vertices[5]),
+	// bottom
+	Triangle(vertices[4], vertices[7], vertices[5]),
+	Triangle(vertices[4], vertices[6], vertices[7]),
+	};
+
+	for (int i=0; i < 12; ++i)
+	{
+		float a, b, c;
+		if (triangle[ i].Intersect(orig, dir, &a, &b, &c))
+			return true;
+	}
+	return false;
 }
 
 

@@ -56,8 +56,10 @@ BOOL CModelPanel::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	m_placeModelList.InsertColumn(0, L"num");
-	m_placeModelList.InsertColumn(1, L"model");
+	m_placeModelList.InsertColumn(0, L"num", LVCFMT_LEFT, 35);
+	m_placeModelList.InsertColumn(1, L"model", LVCFMT_LEFT, 300);
+	m_placeModelList.SetExtendedStyle(m_placeModelList.GetExtendedStyle() |
+		LVS_EX_FULLROWSELECT);
 
 	m_modelBrowser.EnableFolderBrowseButton();
 	m_modelBrowser.SetWindowText( L"../../media/" );
@@ -69,6 +71,12 @@ BOOL CModelPanel::OnInitDialog()
 
 void CModelPanel::Update(int type)
 {
+	switch (type)
+	{
+	case NOTIFY_TYPE::NOTIFY_ADD_PLACE_MODEL:
+		UpdatePlaceModelList();
+		break;
+	}
 
 }
 
@@ -125,6 +133,8 @@ void CModelPanel::UpdatePlaceModelList()
 	{
 		const wstring str1 = common::formatw("%d", i+1);
 		m_placeModelList.InsertItem(i, str1.c_str());
-		//m_placeModelList.SetItemText(i, 1, 
+
+		const wstring str2 = str2wstr( common::GetFileName(models[ i]->GetFileName()) );
+		m_placeModelList.SetItemText(i, 1, str2.c_str());
 	}
 }

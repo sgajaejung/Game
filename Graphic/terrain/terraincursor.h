@@ -32,7 +32,8 @@ namespace graphic
 
 		// model
 		void SelectModel(const string &fileName);
-		const cModel& GetSelectModel() const;
+		void SelectModel(cModel *model);
+		const cModel* GetSelectModel() const;
 		void CancelSelectModel();
 		bool IsSelectModel() const;
 
@@ -49,8 +50,7 @@ namespace graphic
 		cTexture *m_brushTexture; // reference
 
 		// model
-		bool m_isSelectModel;
-		cModel m_selectModel;
+		cModel *m_selectModel;
 	};
 
 
@@ -62,8 +62,9 @@ namespace graphic
 	inline void cTerrainCursor::SetInnerBrushAlpha(float alpha) { m_innerAlpha = alpha; }
 	inline const cTexture* cTerrainCursor::GetBrushTexture() const { return m_brushTexture; }
 	inline const Vector3& cTerrainCursor::GetCursorPos() const { return m_pos; }
-	inline const cModel& cTerrainCursor::GetSelectModel() const { return m_selectModel; }
-	inline void cTerrainCursor::CancelSelectModel() { m_isSelectModel = false; }
-	inline bool cTerrainCursor::IsSelectModel() const { return m_isSelectModel; }
+	inline const cModel* cTerrainCursor::GetSelectModel() const { return m_selectModel; }
+	inline void cTerrainCursor::CancelSelectModel() { m_selectModel = NULL; }
+	inline bool cTerrainCursor::IsSelectModel() const { return m_selectModel? true : false; }
+	inline void cTerrainCursor::SelectModel(cModel *model) { m_selectModel = model; }
 }
 

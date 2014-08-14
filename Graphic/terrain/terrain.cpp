@@ -14,12 +14,17 @@ cTerrain::cTerrain() :
 ,	m_cellSize(0)
 ,	m_textureUVFactor(1.f)
 ,	m_heightFactor(3.f)
+,	m_modelShader(NULL)
 {
 	m_rigids.reserve(32);
+
+	m_modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
+
 }
 
 cTerrain::~cTerrain()
 {
+	Clear();
 }
 
 
@@ -115,7 +120,9 @@ void cTerrain::RenderShader(cShader &shader)
 	shader.SetVector( "vFog", fog);
 
 	m_grid.RenderShader(shader);
-	//RenderShaderRigidModels(shader);
+
+	if (m_modelShader)
+		RenderShaderRigidModels(*m_modelShader);
 }
 
 
@@ -134,8 +141,7 @@ void cTerrain::RenderShaderRigidModels(cShader &shader)
 {
 	BOOST_FOREACH (auto model, m_rigids)
 	{
-		//model->RenderShader(shader);
-		model->Render();
+		model->RenderShader(shader);
 	}
 }
 
@@ -225,9 +231,21 @@ float cTerrain::GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT V
 
 
 // 피킹 처리.
-bool cTerrain::Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out)
+bool cTerrain::Pick(const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out)
 {
 	return m_grid.Pick(orig, dir, out);
+}
+
+
+// 모델 피킹.
+cModel* cTerrain::PickModel(const Vector3 &orig, const Vector3 &dir)
+{
+	BOOST_FOREACH (auto &model, m_rigids)
+	{
+		if (model->Pick(orig, dir))
+			return model;
+	}
+	return NULL;
 }
 
 
@@ -243,7 +261,9 @@ void cTerrain::Clear()
 	m_grid.Clear();
 
 	BOOST_FOREACH (auto model, m_rigids)
+	{
 		SAFE_DELETE(model);
+	}
 	m_rigids.clear();
 }
 

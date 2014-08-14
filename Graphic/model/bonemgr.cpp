@@ -103,7 +103,8 @@ void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
 	const Matrix44 identity;
 	for (int i=0; i < (int)m_boundingBox.size(); ++i)
 	{
-		m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
+		if (m_bones[ i])
+			m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
 		m_boundingBox[ i].Render(identity);
 	}
 }

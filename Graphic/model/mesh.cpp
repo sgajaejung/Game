@@ -58,7 +58,7 @@ void cMesh::CreateMesh( const vector<Vector3> &vertices,
 		m_idxBuff.Unlock();
 	}
 
-	//CreateBoundingBox(m_boundingBox);
+	CreateBoundingBox(m_boundingBox);
 }
 
 

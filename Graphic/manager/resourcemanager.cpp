@@ -212,6 +212,12 @@ void cResourceManager::Clear()
 	}
 	m_anies.clear();
 
+	// remove shader
+	BOOST_FOREACH (auto kv, m_shaders)
+	{
+		delete kv.second;
+	}
+	m_shaders.clear();
 }
 
 

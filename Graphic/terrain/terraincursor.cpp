@@ -10,12 +10,10 @@ cTerrainCursor::cTerrainCursor() :
 ,	m_outerRadius(60)
 ,	m_innerAlpha(1.f)
 ,	m_brushTexture(NULL)
-,	m_isSelectModel(false)
-,	m_selectModel(common::GenerateId())
+,	m_selectModel(NULL)
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
-	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
-
+	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );	
 }
 
 
@@ -33,8 +31,8 @@ void cTerrainCursor::RenderBrush()
 
 void cTerrainCursor::RenderModel()
 {
-	if (m_isSelectModel)
-		m_selectModel.Render();
+	if (m_selectModel)
+		m_selectModel->Render();
 }
 
 
@@ -71,9 +69,12 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 	m_outerCircle.Unlock();
 
 
-	Matrix44 matT;
-	matT.SetTranslate(cursorPos);
-	m_selectModel.SetTM(matT);
+	if (m_selectModel)
+	{
+		Matrix44 matT;
+		matT.SetTranslate(cursorPos);
+		m_selectModel->SetTM(matT);
+	}
 }
 
 
@@ -97,5 +98,10 @@ void cTerrainCursor::SelectBrushTexture(const string &fileName )
 // ¸ðµ¨ ¼±ÅÃ.
 void cTerrainCursor::SelectModel(const string &fileName)
 {
-	m_isSelectModel = m_selectModel.Create(fileName);
+	if (!m_selectModel)
+	{
+		m_selectModel = new cModel(common::GenerateId());
+		m_selectModel->SetRenderBoundingBox(true);
+	}
+	m_selectModel->Create(fileName);
 }
