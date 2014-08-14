@@ -182,6 +182,7 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_LButtonDown && 
 		(cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_MODEL))
 	{
+		// 모델이 선택되어 있는 상태라면, 모델을 지형위에 위치 시킨다.
 		if (cMapController::Get()->GetTerrainCursor().IsSelectModel())
 		{
 			if (const graphic::cModel *model = cMapController::Get()->GetTerrainCursor().GetSelectModel())
@@ -192,6 +193,8 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		else
 		{
+			// 모델이 선택되어 있지 않다면, 지형위의 모델을 피킹해서 선택한다.
+
 			cCamera &camera = cMapController::Get()->GetCamera();
 			m_ray.Create(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
 				camera.GetProjectionMatrix(), camera.GetViewMatrix() );

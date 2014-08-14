@@ -151,8 +151,7 @@ bool cBoundingBox::Pick(const Vector3 &orig, const Vector3 &dir)
 
 	for (int i=0; i < 12; ++i)
 	{
-		float a, b, c;
-		if (triangle[ i].Intersect(orig, dir, &a, &b, &c))
+		if (triangle[ i].Intersect(orig, dir))
 			return true;
 	}
 	return false;

@@ -264,5 +264,6 @@ cModel* cModel::Clone() const
 // 스크린 좌표 x,y 로 모델이 선택이 되었는지 판단한다. 피킹되었다면 true를 리턴한다.
 bool cModel::Pick(const Vector3 &orig, const Vector3 &dir)
 {
+	m_boundingBox.SetTransform(m_matTM);
 	return m_boundingBox.Pick(orig, dir);
 }
