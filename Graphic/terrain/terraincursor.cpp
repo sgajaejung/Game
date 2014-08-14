@@ -19,6 +19,7 @@ cTerrainCursor::cTerrainCursor() :
 
 cTerrainCursor::~cTerrainCursor()
 {
+	SAFE_DELETE(m_selectModel);
 }
 
 
@@ -98,10 +99,21 @@ void cTerrainCursor::SelectBrushTexture(const string &fileName )
 // 모델 선택.
 void cTerrainCursor::SelectModel(const string &fileName)
 {
-	if (!m_selectModel)
+	if (m_selectModel)
 	{
-		m_selectModel = new cModel(common::GenerateId());
-		m_selectModel->SetRenderBoundingBox(true);
+		if (m_selectModel->GetFileName() == fileName)
+			return;
 	}
+
+	SAFE_DELETE (m_selectModel);
+	m_selectModel = new cModel(common::GenerateId());
+	//m_selectModel->SetRenderBoundingBox(true);
 	m_selectModel->Create(fileName);
+}
+
+
+// 선택된 모델을 초기화한다.
+void cTerrainCursor::CancelSelectModel()
+{
+	SAFE_DELETE(m_selectModel);
 }

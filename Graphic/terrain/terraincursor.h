@@ -63,7 +63,6 @@ namespace graphic
 	inline const cTexture* cTerrainCursor::GetBrushTexture() const { return m_brushTexture; }
 	inline const Vector3& cTerrainCursor::GetCursorPos() const { return m_pos; }
 	inline const cModel* cTerrainCursor::GetSelectModel() const { return m_selectModel; }
-	inline void cTerrainCursor::CancelSelectModel() { m_selectModel = NULL; }
 	inline bool cTerrainCursor::IsSelectModel() const { return m_selectModel? true : false; }
 	inline void cTerrainCursor::SelectModel(cModel *model) { m_selectModel = model; }
 }

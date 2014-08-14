@@ -13,7 +13,6 @@ CTerrainPanel::CTerrainPanel(CWnd* pParent /*=NULL*/)
 	, m_colCellCount(0)
 	, m_rowCellCount(0)
 	, m_cellSize(0)
-	, m_textureName(_T(""))
 {
 
 }
@@ -28,7 +27,6 @@ void CTerrainPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_COL_CELLCNT, m_colCellCount);
 	DDX_Text(pDX, IDC_STATIC_ROW_CELLCNT, m_rowCellCount);
 	DDX_Text(pDX, IDC_STATIC_CELLSIZE, m_cellSize);
-	DDX_Text(pDX, IDC_STATIC_TEXTURE, m_textureName);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE_TEXTURE, m_textureBrowser);
 }
 
@@ -64,8 +62,7 @@ void CTerrainPanel::Update(int type)
 			m_rowCellCount = cMapController::Get()->GetTerrain().GetRowCellCount();
 			m_cellSize = cMapController::Get()->GetTerrain().GetCellSize();
 			const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
-			m_textureName = wstr.c_str();
-			m_textureBrowser.SetWindowText(m_textureName);
+			m_textureBrowser.SetWindowText(wstr.c_str());
 
 			UpdateData(FALSE);
 		}
@@ -88,7 +85,15 @@ void CTerrainPanel::OnBnClickedCancel()
 
 void CTerrainPanel::OnBnClickedButtonLoadTerrain()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 파일 열기 창 오픈
+	wchar_t szFilter[] = L"Terrain (*.trn) | *.trn; | All Files(*.*)|*.*||";
+	CFileDialog dlg(TRUE, L"trn", L"Terrain", OFN_HIDEREADONLY, szFilter);
+	if(IDOK == dlg.DoModal())
+	{
+		const CString strPathName = dlg.GetPathName();
+		const string fileName = wstr2str((wstring)strPathName);
+		cMapController::Get()->LoadTerrainFile(fileName);
+	}
 }
 
 
@@ -101,7 +106,15 @@ void CTerrainPanel::OnBnClickedButtonCrterrain()
 
 void CTerrainPanel::OnBnClickedButtonSaveTerrain()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 파일 저장 창 오픈
+	wchar_t szFilter[] = L"Terrain (*.trn) | *.trn; | All Files(*.*)|*.*||";
+	CFileDialog dlg(FALSE, L"trn", L"Terrain", OFN_HIDEREADONLY, szFilter);
+	if(IDOK == dlg.DoModal())
+	{
+		const CString strPathName = dlg.GetPathName();
+		const string fileName = wstr2str((wstring)strPathName);
+		cMapController::Get()->SaveTerrainFile(fileName);
+	}
 }
 
 
@@ -114,7 +127,6 @@ void CTerrainPanel::OnChangeMfceditbrowseTexture()
 	const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
 	if (fileName != wstr.c_str())
 	{
-		m_textureName = fileName;
 		const string strFileName = wstr2str((wstring)fileName);
 		cMapController::Get()->GetTerrain().CreateTerrainTexture(strFileName);
 

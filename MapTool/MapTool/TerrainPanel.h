@@ -32,7 +32,6 @@ public:
 	int m_colCellCount;
 	int m_rowCellCount;
 	float m_cellSize;
-	CString m_textureName;
 	CMFCEditBrowseCtrl m_textureBrowser;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnChangeMfceditbrowseTexture();

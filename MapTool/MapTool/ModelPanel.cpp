@@ -131,10 +131,11 @@ void CModelPanel::UpdatePlaceModelList()
 	vector<graphic::cModel*> &models = cMapController::Get()->GetTerrain().GetRigidModels();
 	for (u_int i=0; i < models.size(); ++i)
 	{
-		const wstring str1 = common::formatw("%d", i+1);
-		m_placeModelList.InsertItem(i, str1.c_str());
+		const wstring num = common::formatw("%d", i+1);
+		const wstring fileName = str2wstr( common::GetFileName(models[ i]->GetFileName()) );
 
-		const wstring str2 = str2wstr( common::GetFileName(models[ i]->GetFileName()) );
-		m_placeModelList.SetItemText(i, 1, str2.c_str());
+		m_placeModelList.InsertItem(i, num.c_str());
+		m_placeModelList.SetItemText(i, 1, fileName.c_str());
+		m_placeModelList.SetItemData(i, models[ i]->GetId() );
 	}
 }

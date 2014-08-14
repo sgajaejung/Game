@@ -121,6 +121,15 @@
     <ClInclude Include="terrain\terraincursor.h">
       <Filter>terrain</Filter>
     </ClInclude>
+    <ClInclude Include="terrain\rawterrain.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain\terrainimporter.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain\terrainexporter.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -227,6 +236,12 @@
       <Filter>terrain</Filter>
     </ClCompile>
     <ClCompile Include="terrain\terraincursor.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain\terrainimporter.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain\terrainexporter.cpp">
       <Filter>terrain</Filter>
     </ClCompile>
   </ItemGroup>

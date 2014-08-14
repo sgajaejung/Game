@@ -49,9 +49,13 @@ using namespace common;
 
 #include "sprite/sprite.h"
 
+#include "terrain/rawterrain.h"
 #include "terrain/terrain.h"
 #include "terrain/terraincursor.h"
 #include "terrain/terraineditor.h"
+#include "terrain/terrainimporter.h"
+#include "terrain/terrainexporter.h"
+
 
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"

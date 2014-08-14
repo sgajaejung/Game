@@ -8,8 +8,10 @@ public:
 	cMapController(void);
 	~cMapController(void);
 
+	bool LoadTerrainFile(const string &fileName);
 	bool LoadHeightMap(const string &fileName);
 	bool LoadHeightMapTexture(const string &fileName);
+	bool SaveTerrainFile(const string &fileName);
 	bool CreateDefaultTerrain();
 
 	graphic::cCamera& GetCamera();

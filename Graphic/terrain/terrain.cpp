@@ -297,18 +297,20 @@ cModel* cTerrain::FindRigidModel(const int id)
 
 
 // 정적 모델 제거
-bool cTerrain::RemoveRigidModel(cModel *model)
+// destruct : true 이면 메모리를 소거한다.
+bool cTerrain::RemoveRigidModel(cModel *model, const bool destruct) // destruct=true
 {
 	const bool result = common::removevector(m_rigids, model);
-	SAFE_DELETE(model);
+	if (destruct)
+		SAFE_DELETE(model);
 	return result;
 }
 
 
 // 정적 모델 제거.
-bool cTerrain::RemoveRigidModel(const int id)
+bool cTerrain::RemoveRigidModel(const int id, const bool destruct) //destruct=true
 {
 	cModel *model = FindRigidModel(id);
 	RETV(!model, false);
-	return RemoveRigidModel(model);
+	return RemoveRigidModel(model, destruct);
 }

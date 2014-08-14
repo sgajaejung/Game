@@ -7,9 +7,9 @@ namespace graphic
 	namespace importer 
 	{
 
-		bool ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &raw );
+		bool ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &out );
 
-		bool ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &rawAni );
+		bool ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &out );
 
 		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
 

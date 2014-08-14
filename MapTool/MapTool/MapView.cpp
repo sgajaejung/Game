@@ -194,17 +194,17 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 		else
 		{
 			// 모델이 선택되어 있지 않다면, 지형위의 모델을 피킹해서 선택한다.
-
 			cCamera &camera = cMapController::Get()->GetCamera();
 			m_ray.Create(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
 				camera.GetProjectionMatrix(), camera.GetViewMatrix() );
 
 			// 모델 피킹.
-			Vector3 pickPos;
 			if (graphic::cModel *model = 
 				cMapController::Get()->GetTerrain().PickModel(m_ray.orig, m_ray.dir))
 			{
+				cMapController::Get()->GetTerrain().RemoveRigidModel(model, false);
 				cMapController::Get()->GetTerrainCursor().SelectModel(model);
+				cMapController::Get()->UpdatePlaceModel();
 			}
 
 		}

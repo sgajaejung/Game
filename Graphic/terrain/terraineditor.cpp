@@ -23,6 +23,40 @@ cTerrainEditor::~cTerrainEditor()
 }
 
 
+// 지형 파일 로드
+bool cTerrainEditor::LoadTerrain( const string &fileName )
+{
+
+	return true;
+}
+
+
+// 지형정보를 sRawTerrain에 저장한다.
+void cTerrainEditor::GetRawTerrain( OUT sRawTerrain &out )
+{
+	out.rowCellCount = m_rowCellCount;
+	out.colCellCount = m_colCellCount;
+	out.cellSize = m_cellSize;
+	out.textureFactor = m_textureUVFactor;
+	out.heightFactor = m_heightFactor;
+
+	for (int i=0; i < m_numLayer; ++i)
+	{
+		if (m_layer[ i].texture)
+			out.layer[ i].texture = m_layer[ i].texture->GetTextureName();
+	}
+
+	out.models.reserve( m_rigids.size() );
+	for (u_int i=0; i < m_rigids.size(); ++i)
+	{
+		out.models.push_back( sRawTerrrainModel() );
+		out.models.back().fileName = m_rigids[ i]->GetFileName();
+		out.models.back().tm = m_rigids[ i]->GetTM();
+	}
+
+}
+
+
 void cTerrainEditor::Render()
 {
 	if (m_numLayer > 0)

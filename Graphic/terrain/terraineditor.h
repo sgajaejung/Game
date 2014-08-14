@@ -23,6 +23,9 @@ namespace graphic
 		cTerrainEditor();
 		virtual ~cTerrainEditor();
 
+		bool LoadTerrain( const string &fileName );
+		void GetRawTerrain( OUT sRawTerrain &out );
+
 		void Brush( const cTerrainCursor &cursor );
 		int GetSplatLayerCount() const;
 		const sSplatLayer& GetSplatLayer(int layer) const;

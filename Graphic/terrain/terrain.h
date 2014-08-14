@@ -23,8 +23,8 @@ namespace graphic
 
 		bool AddRigidModel(const cModel &model);
 		cModel* FindRigidModel(const int id);
-		bool RemoveRigidModel(cModel *model);
-		bool RemoveRigidModel(const int id);
+		bool RemoveRigidModel(cModel *model, const bool destruct=true);
+		bool RemoveRigidModel(const int id, const bool destruct=true);
 		vector<cModel*>& GetRigidModels();
 
 		virtual void Render();
