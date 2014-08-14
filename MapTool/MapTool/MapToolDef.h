@@ -15,6 +15,7 @@ namespace EDIT_MODE
 		MODE_HEIGHTMAP,
 		MODE_TERRAIN,
 		MODE_BRUSH,
+		MODE_MODEL,
 	};
 }
 

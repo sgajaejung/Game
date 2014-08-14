@@ -96,6 +96,10 @@ void CBrushPanel::Update(int type)
 {
 	switch (type)
 	{
+	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
+		m_layerList.DeleteAllItems();
+		break;
+
 	case NOTIFY_TYPE::NOTIFY_ADD_LAYER:
 		UpdateLayerList();
 		break;

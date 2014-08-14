@@ -42,7 +42,7 @@ bool cMapController::LoadHeightMapTexture(const string &fileName)
 bool cMapController::CreateDefaultTerrain()
 {
 	m_terrain.CreateTerrain(64, 64, 50.f, 8.f);
-	m_terrain.CreateTerrainTexture( "../../media/terrain/grass014.jpg");
+	m_terrain.CreateTerrainTexture( "../../media/terrain/¸ð·¡1.jpg");
 
 	NotifyObserver();
 	return true;

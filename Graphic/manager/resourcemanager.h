@@ -24,6 +24,8 @@ namespace graphic
 		sRawAniGroup* FindAnimation( const string &fileName );
 		cTexture* FindTexture( const string &fileName );
 		cShader * FindShader( const string &fileName );
+
+		void SetMediaDirectory( const string &path );
 		void Clear();
 
 		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
@@ -34,6 +36,9 @@ namespace graphic
 		map<string, sRawAniGroup*> m_anies;	// key = fileName
 		map<string, cTexture*> m_textures; // key = fileName
 		map<string, cShader*> m_shaders; // key = fileName
+		string m_mediaDirectory; // default : ../media/
 	};
 
+
+	inline void cResourceManager::SetMediaDirectory( const string &path ) { m_mediaDirectory = path; }
 }

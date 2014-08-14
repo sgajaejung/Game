@@ -8,7 +8,8 @@
 using namespace graphic;
 
 
-cResourceManager::cResourceManager()
+cResourceManager::cResourceManager() :
+	m_mediaDirectory("../media/")
 {
 
 }
@@ -98,7 +99,7 @@ cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSi
 	if (!texture->Create(fileName, isSizePow2))
 	{
 		string newPath;
-		if (common::FindFile(fileName, "../media/", newPath))
+		if (common::FindFile(fileName, m_mediaDirectory, newPath))
 		{
 			if (!texture->Create(newPath, isSizePow2))
 			{
@@ -123,7 +124,7 @@ cTexture* cResourceManager::LoadTexture( const string &dirPath, const string &fi
 	if (!texture->Create(fileName, isSizePow2))
 	{
 		string newPath;
-		if (common::FindFile(fileName, "../media/"+dirPath+"/", newPath))
+		if (common::FindFile(fileName, m_mediaDirectory +dirPath+"/", newPath))
 		{
 			if (!texture->Create(newPath, isSizePow2))
 			{
@@ -147,7 +148,7 @@ cShader* cResourceManager::LoadShader( const string &fileName )
 	if (!shader->Create(fileName, "TShader", false))
 	{
 		string newPath;
-		if (common::FindFile(fileName, "../media/", newPath))
+		if (common::FindFile(fileName, m_mediaDirectory, newPath))
 		{
 			if (!shader->Create(newPath, "TShader"))
 			{
