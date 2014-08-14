@@ -19,6 +19,13 @@ namespace graphic
 		float GetHeight(const float x, const float z);
 		float GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out );
 		bool Pick(const int x, const int y, const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);
+
+		bool AddRigidModel(const cModel &model);
+		cModel* FindRigidModel(const int id);
+		bool RemoveRigidModel(cModel *model);
+		bool RemoveRigidModel(const int id);
+		vector<cModel*>& GetRigidModels();
+
 		virtual void Render();
 		virtual void RenderShader(cShader &shader);
 
@@ -38,6 +45,8 @@ namespace graphic
 		float GetHeightMapEntry( int row, int col );
 		bool UpdateHeightMap( const string &heightMapFileName, 
 			const string &textureFileName, const float heightFactor );
+		void RenderRigidModels();
+		void RenderShaderRigidModels(cShader &shader);
 
 
 	protected:
@@ -48,6 +57,7 @@ namespace graphic
 		float m_textureUVFactor;
 		string m_heightMapFileName;
 		cGrid2 m_grid;
+		vector<cModel*> m_rigids;
 	};
 
 
@@ -58,4 +68,5 @@ namespace graphic
 	inline float cTerrain::GetTerrainHeight() const { return m_rowCellCount * m_cellSize; }
 	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
 	inline float cTerrain::GetHeightFactor() const { return m_heightFactor; }
+	inline vector<cModel*>& cTerrain::GetRigidModels() { return m_rigids; }
 }

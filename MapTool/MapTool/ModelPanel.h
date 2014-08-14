@@ -1,6 +1,7 @@
 #pragma once
 #include "afxeditbrowsectrl.h"
 #include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CModelPanel 대화 상자입니다.
@@ -19,6 +20,7 @@ public:
 public:
 	virtual void Update(int type) override;
 	void UpdateModelList(const string &directoryPath);
+	void UpdatePlaceModelList();
 
 
 protected:
@@ -33,4 +35,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnChangeMfceditbrowseModel();
 	afx_msg void OnSelchangeListModel();
+	CListCtrl m_placeModelList;
 };

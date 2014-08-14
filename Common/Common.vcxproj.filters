@@ -55,6 +55,9 @@
     <ClInclude Include="etc\observer2.h">
       <Filter>Etc</Filter>
     </ClInclude>
+    <ClInclude Include="etc\genid.h">
+      <Filter>Etc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -95,6 +98,9 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="etc\observer2.cpp">
+      <Filter>Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="etc\genid.cpp">
       <Filter>Etc</Filter>
     </ClCompile>
   </ItemGroup>

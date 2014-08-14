@@ -62,3 +62,5 @@ using std::wstringstream;
 #include "etc/observer.h"
 #include "etc/observer2.h"
 #include "etc/rect.h"
+#include "etc/genid.h"
+

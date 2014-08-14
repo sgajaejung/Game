@@ -23,6 +23,7 @@ void CModelPanel::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE_MODEL, m_modelBrowser);
 	DDX_Control(pDX, IDC_LIST_MODEL, m_modelList);
+	DDX_Control(pDX, IDC_LIST_PLACE_MODEL, m_placeModelList);
 }
 
 
@@ -54,6 +55,9 @@ void CModelPanel::OnBnClickedCancel()
 BOOL CModelPanel::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	m_placeModelList.InsertColumn(0, L"num");
+	m_placeModelList.InsertColumn(1, L"model");
 
 	m_modelBrowser.EnableFolderBrowseButton();
 	m_modelBrowser.SetWindowText( L"../../media/" );
@@ -101,8 +105,26 @@ void CModelPanel::OnChangeMfceditbrowseModel()
 
 void CModelPanel::OnSelchangeListModel()
 {
+	const int idx = m_modelList.GetCurSel();
+	RET (idx < 0);
 
-
-	
+	CString wfileName;
+	m_modelList.GetText(idx, wfileName);
+	const string fileName = wstr2str((wstring)wfileName);
+	cMapController::Get()->GetTerrainCursor().SelectModel( fileName);	
 }
 
+
+// 지형에 위치한 모델들을 리스트에 출력한다.
+void CModelPanel::UpdatePlaceModelList()
+{
+	m_placeModelList.DeleteAllItems();
+
+	vector<graphic::cModel*> &models = cMapController::Get()->GetTerrain().GetRigidModels();
+	for (u_int i=0; i < models.size(); ++i)
+	{
+		const wstring str1 = common::formatw("%d", i+1);
+		m_placeModelList.InsertItem(i, str1.c_str());
+		//m_placeModelList.SetItemText(i, 1, 
+	}
+}

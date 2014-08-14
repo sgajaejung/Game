@@ -21,6 +21,7 @@ public:
 	void Brush(CPoint point);
 	void UpdateBrush();
 	void UpdateHeightFactor(const float heightFactor);
+	void UpdatePlaceModel();
 
 	void ChangeEditMode(EDIT_MODE::TYPE mode);
 	EDIT_MODE::TYPE GetEditMode() const;
@@ -33,7 +34,6 @@ private:
 	string m_heightMapFileName;
 	string m_textFileName;
 	EDIT_MODE::TYPE m_editMode;
-
 };
 
 

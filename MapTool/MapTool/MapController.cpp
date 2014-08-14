@@ -95,5 +95,11 @@ void cMapController::UpdateBrush()
 void cMapController::UpdateHeightFactor(const float heightFactor)
 {
 	m_terrain.SetHeightFactor(heightFactor);
-	//m_cursor.UpdateCursor
+}
+
+
+// 지형위에 모델이 추가되거나 제거 될 때 호출한다.
+void cMapController::UpdatePlaceModel()
+{
+	NotifyObserver( NOTIFY_TYPE::NOTIFY_ADD_PLACE_MODEL );
 }

@@ -14,7 +14,8 @@ namespace graphic
 		cTerrainCursor(void);
 		virtual ~cTerrainCursor(void);
 
-		void Render();
+		void RenderBrush();
+		void RenderModel();
 		void UpdateCursor( graphic::cTerrain &terrain, const Vector3 &cursorPos);
 
 		int GetInnerBrushRadius() const;
@@ -23,20 +24,33 @@ namespace graphic
 		void SetInnerBrushRadius(int radius);
 		void SetOuterBrushRadius(int radius);
 		void SetInnerBrushAlpha(float alpha);
+		const Vector3& GetCursorPos() const;
 
+		// brush
 		void SelectBrushTexture(const string &fileName );
 		const cTexture* GetBrushTexture() const;
-		const Vector3& GetCursorPos() const;
+
+		// model
+		void SelectModel(const string &fileName);
+		const cModel& GetSelectModel() const;
+		void CancelSelectModel();
+		bool IsSelectModel() const;
 
 
 	private:
 		Vector3 m_pos;
+		
+		// brush
 		float m_innerRadius;
 		float m_outerRadius;
 		float m_innerAlpha;
-		graphic::cVertexBuffer m_innerCircle;
-		graphic::cVertexBuffer m_outerCircle;
-		cTexture *m_brushTexture;
+		cVertexBuffer m_innerCircle;
+		cVertexBuffer m_outerCircle;
+		cTexture *m_brushTexture; // reference
+
+		// model
+		bool m_isSelectModel;
+		cModel m_selectModel;
 	};
 
 
@@ -48,4 +62,8 @@ namespace graphic
 	inline void cTerrainCursor::SetInnerBrushAlpha(float alpha) { m_innerAlpha = alpha; }
 	inline const cTexture* cTerrainCursor::GetBrushTexture() const { return m_brushTexture; }
 	inline const Vector3& cTerrainCursor::GetCursorPos() const { return m_pos; }
+	inline const cModel& cTerrainCursor::GetSelectModel() const { return m_selectModel; }
+	inline void cTerrainCursor::CancelSelectModel() { m_isSelectModel = false; }
+	inline bool cTerrainCursor::IsSelectModel() const { return m_isSelectModel; }
 }
+

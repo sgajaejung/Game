@@ -10,6 +10,8 @@ cTerrainCursor::cTerrainCursor() :
 ,	m_outerRadius(60)
 ,	m_innerAlpha(1.f)
 ,	m_brushTexture(NULL)
+,	m_isSelectModel(false)
+,	m_selectModel(common::GenerateId())
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
 	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
@@ -22,10 +24,17 @@ cTerrainCursor::~cTerrainCursor()
 }
 
 
-void cTerrainCursor::Render()
+void cTerrainCursor::RenderBrush()
 {
 	m_innerCircle.RenderLineStrip();
 	m_outerCircle.RenderLineStrip();
+}
+
+
+void cTerrainCursor::RenderModel()
+{
+	if (m_isSelectModel)
+		m_selectModel.Render();
 }
 
 
@@ -60,6 +69,11 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 
 	m_innerCircle.Unlock();
 	m_outerCircle.Unlock();
+
+
+	Matrix44 matT;
+	matT.SetTranslate(cursorPos);
+	m_selectModel.SetTM(matT);
 }
 
 
@@ -77,4 +91,11 @@ void cTerrainCursor::SelectBrushTexture(const string &fileName )
 	{
 		MessageBoxA(NULL, "텍스쳐 파일을 읽을 수 없습니다.", "ERROR", MB_OK);
 	}
+}
+
+
+// 모델 선택.
+void cTerrainCursor::SelectModel(const string &fileName)
+{
+	m_isSelectModel = m_selectModel.Create(fileName);
 }

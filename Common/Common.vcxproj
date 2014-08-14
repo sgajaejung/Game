@@ -73,6 +73,7 @@
     <ClInclude Include="container\vectorhelper.h" />
     <ClInclude Include="etc\dbg.h" />
     <ClInclude Include="etc\filepath.h" />
+    <ClInclude Include="etc\genid.h" />
     <ClInclude Include="etc\observer.h" />
     <ClInclude Include="etc\observer2.h" />
     <ClInclude Include="etc\rect.h" />
@@ -93,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="etc\dbg.cpp" />
     <ClCompile Include="etc\filepath.cpp" />
+    <ClCompile Include="etc\genid.cpp" />
     <ClCompile Include="etc\observer.cpp" />
     <ClCompile Include="etc\observer2.cpp" />
     <ClCompile Include="etc\rect.cpp" />

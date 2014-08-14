@@ -130,15 +130,17 @@ void CMapView::Render()
 		m_terrainShader2.SetRenderPass(1);
 		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader2);
 
-		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+
+		switch (cMapController::Get()->GetEditMode())
 		{
-			// Render Brush Line
-			const Vector3 p0 = m_ray.orig + Vector3(10,10,0);
-			const Vector3 p1 = m_ray.orig + m_ray.dir * 200.f;
-			m_line.SetLine( p0, p1, 0.5f );
-			//m_line.Render();
-			cMapController::Get()->GetTerrainCursor().Render();
+		case EDIT_MODE::MODE_BRUSH:
+			cMapController::Get()->GetTerrainCursor().RenderBrush();
+			break;
+		case EDIT_MODE::MODE_MODEL:
+			cMapController::Get()->GetTerrainCursor().RenderModel();
+			break;
 		}
+
 
 		graphic::GetRenderer()->RenderAxis();
 
@@ -170,6 +172,16 @@ void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	ReleaseCapture();
+
+	// 지형위에 모델을 위치 시킨다.
+	if (m_LButtonDown && 
+		(cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_MODEL) &&
+		cMapController::Get()->GetTerrainCursor().IsSelectModel())
+	{
+		cMapController::Get()->GetTerrain().AddRigidModel( 
+			cMapController::Get()->GetTerrainCursor().GetSelectModel() );
+	}
+
 	m_LButtonDown = false;
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -231,7 +243,8 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		m_curPos = point;
 
-		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+		if ((cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH) ||
+			(cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_MODEL))
 		{
 			m_ray.Create(m_curPos.x, m_curPos.y, VIEW_WIDTH, VIEW_HEIGHT, 
 				camera.GetProjectionMatrix(), camera.GetViewMatrix() );
@@ -289,6 +302,12 @@ void CMapView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, flag? D3DCULL_CCW : D3DCULL_NONE);
 			graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, flag? D3DFILL_SOLID : D3DFILL_WIREFRAME);
 			flag = !flag;
+		}
+		break;
+
+	case VK_ESCAPE:
+		{
+			cMapController::Get()->GetTerrainCursor().CancelSelectModel();
 		}
 		break;
 	}

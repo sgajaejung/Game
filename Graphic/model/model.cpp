@@ -37,6 +37,7 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 
 	Clear();
 
+	m_fileName = modelName;
 	const bool isSkinnedMesh = !rawMeshes->bones.empty();
 
 	// 스키닝 애니메이션이면 Bone을 생성한다.
@@ -239,4 +240,13 @@ cBoundingBox* cModel::GetCollisionBox()
 void cModel::Collision( int testNum, ICollisionable *obj )
 {
 
+}
+
+
+// 모델을 복사해서 리턴한다.
+cModel* cModel::Clone() const
+{
+	cModel *clone = new cModel(GenerateId());
+	clone->Create(m_fileName, m_type);
+	return clone;
 }

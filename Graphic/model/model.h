@@ -29,6 +29,7 @@ namespace graphic
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
 		sRawAniGroup* GetCurrentAnimation();
+		cModel* Clone() const;
 
 		// ICollisionable Interface
 		virtual bool IsTest( int testNum ) override;
@@ -45,6 +46,7 @@ namespace graphic
 
 	protected:
 		int m_id;
+		string m_fileName; //model ΖΔΐΟ Έν.
 		MODEL_TYPE::TYPE m_type;
 		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;

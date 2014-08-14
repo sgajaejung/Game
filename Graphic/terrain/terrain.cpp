@@ -15,6 +15,7 @@ cTerrain::cTerrain() :
 ,	m_textureUVFactor(1.f)
 ,	m_heightFactor(3.f)
 {
+	m_rigids.reserve(32);
 }
 
 cTerrain::~cTerrain()
@@ -114,6 +115,28 @@ void cTerrain::RenderShader(cShader &shader)
 	shader.SetVector( "vFog", fog);
 
 	m_grid.RenderShader(shader);
+	//RenderShaderRigidModels(shader);
+}
+
+
+// 정적 모델 출력
+void cTerrain::RenderRigidModels()
+{
+	BOOST_FOREACH (auto model, m_rigids)
+	{
+		model->Render();
+	}
+}
+
+
+// 정적 모델 출력.
+void cTerrain::RenderShaderRigidModels(cShader &shader)
+{
+	BOOST_FOREACH (auto model, m_rigids)
+	{
+		//model->RenderShader(shader);
+		model->Render();
+	}
 }
 
 
@@ -218,6 +241,10 @@ void cTerrain::Clear()
 	m_textureUVFactor = 1.f;
 	m_heightMapFileName.clear();
 	m_grid.Clear();
+
+	BOOST_FOREACH (auto model, m_rigids)
+		SAFE_DELETE(model);
+	m_rigids.clear();
 }
 
 
@@ -226,3 +253,42 @@ const string& cTerrain::GetTextureName()
 	return m_grid.GetTexture().GetTextureName();
 }
 
+
+// 정적 모델 추가
+bool cTerrain::AddRigidModel(const cModel &model)
+{
+	RETV(FindRigidModel(model.GetId()), false); // already exist return
+
+	m_rigids.push_back(model.Clone());
+	return true;
+}
+
+
+// 정적 모델 찾기.
+cModel* cTerrain::FindRigidModel(const int id)
+{
+	BOOST_FOREACH (auto model, m_rigids)
+	{
+		if (model->GetId() == id)
+			return model;
+	}
+	return NULL;
+}
+
+
+// 정적 모델 제거
+bool cTerrain::RemoveRigidModel(cModel *model)
+{
+	const bool result = common::removevector(m_rigids, model);
+	SAFE_DELETE(model);
+	return result;
+}
+
+
+// 정적 모델 제거.
+bool cTerrain::RemoveRigidModel(const int id)
+{
+	cModel *model = FindRigidModel(id);
+	RETV(!model, false);
+	return RemoveRigidModel(model);
+}

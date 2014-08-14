@@ -22,7 +22,6 @@ cMesh::cMesh(const int id, const sRawBone &rawBone) :
 
 cMesh::~cMesh()
 {
-
 }
 
 
