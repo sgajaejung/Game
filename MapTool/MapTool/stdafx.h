@@ -64,10 +64,6 @@
 #include "../../wxMemMonitorLib/wxMemMonitor.h"
 using namespace common;
 
-
-#include <objidl.h>
-#include <gdiplus.h> 
-#pragma comment( lib, "gdiplus.lib" ) 
 using namespace Gdiplus;
 
 

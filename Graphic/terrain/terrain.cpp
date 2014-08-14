@@ -1,9 +1,7 @@
 
 #include "stdafx.h"
 #include "terrain.h"
-#include <objidl.h>
-#include <gdiplus.h> 
-#pragma comment( lib, "gdiplus.lib" ) 
+
 using namespace std;
 using namespace Gdiplus;
 using namespace graphic;
@@ -68,7 +66,7 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 	m_heightMapFileName = heightMapFileName;
 
 	const wstring wfileName = common::str2wstr(heightMapFileName);
-	Bitmap bmp(wfileName.c_str());
+	Gdiplus::Bitmap bmp(wfileName.c_str());
 
 	const int VERTEX_COL_COUNT = m_colCellCount + 1;
 	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
@@ -86,7 +84,7 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 		{
 			sVertexNormTex *vtx = pv + (k*VERTEX_COL_COUNT) + i;
 
-			Color color;
+			Gdiplus::Color color;
 			bmp.GetPixel(i*incX, k*incY, &color);
 			const float h = ((color.GetR() + color.GetG() + color.GetB()) / 3.f) 
 				* heightFactor;

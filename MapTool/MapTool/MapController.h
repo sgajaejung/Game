@@ -33,6 +33,7 @@ private:
 	string m_heightMapFileName;
 	string m_textFileName;
 	EDIT_MODE::TYPE m_editMode;
+
 };
 
 
