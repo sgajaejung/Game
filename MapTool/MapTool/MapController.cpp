@@ -22,9 +22,16 @@ cMapController::~cMapController(void)
 bool cMapController::LoadTerrainFile(const string &fileName)
 {
 	sRawTerrain rawTerrain;
-	importer::ReadRawTerrainFile(fileName, rawTerrain);
+	if (importer::ReadRawTerrainFile(fileName, rawTerrain))
+	{
+		m_terrain.LoadTerrain(rawTerrain);
+	}
+	else
+	{
+		return false;
+	}
 
-
+	NotifyObserver();
 	return true;
 }
 
@@ -55,10 +62,31 @@ bool cMapController::LoadHeightMapTexture(const string &fileName)
 bool cMapController::SaveTerrainFile(const string &fileName)
 {
 	sRawTerrain rawTerrain;
-	m_terrain.GetRawTerrain(rawTerrain);
-	exporter::WriteRawTerrainFile(fileName, rawTerrain);
+	m_terrain.GenerateRawTerrain(rawTerrain);
 
-	return true;
+	// 알파 텍스쳐 파일 이름 설정.
+	string name = common::GetFileNameExceptExt(fileName);
+	name += "_alpha.png";
+	string path = common::GetFilePathExceptFileName(fileName);
+	if (!path.empty())
+		path += "\\";
+
+	const string alphaTextureName = path + name;
+	rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureName);
+	m_terrain.GetAlphaTexture().WriteFile(alphaTextureName);
+
+	const bool result = exporter::WriteRawTerrainFile(fileName, rawTerrain);
+
+	if (result)
+	{
+		AfxMessageBox( L"저장 성공!\n\n모든 파일 경로는 media 폴더의 상대주소로 저장됩니다. \nmedia폴더 안에 있지 않은 파일은 문제가 될 수 있으니,\n다시 한번 확인해주세요." );
+	}
+	else
+	{
+		AfxMessageBox( L"파일 저장 실패" );
+	}
+
+	return result;
 }
 
 
@@ -66,7 +94,7 @@ bool cMapController::SaveTerrainFile(const string &fileName)
 bool cMapController::CreateDefaultTerrain()
 {
 	m_terrain.CreateTerrain(64, 64, 50.f, 8.f);
-	m_terrain.CreateTerrainTexture( "../../media/terrain/모래1.jpg");
+	m_terrain.CreateTerrainTexture( "../../media/terrain/모래1.jpg" );
 
 	NotifyObserver();
 	return true;

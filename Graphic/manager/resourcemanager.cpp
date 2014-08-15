@@ -226,3 +226,17 @@ RESOURCE_TYPE::TYPE cResourceManager::GetFileKind( const string &fileName )
 {
 	return importer::GetFileKind(fileName);
 }
+
+
+// 파일경로 fileName을 media 폴더의 상대 주소로 바꿔서 리턴한다.
+// ex)
+// media : c:/project/media,  
+// fileName : c:/project/media/terrain/file.txt
+// result = ./terrain/file.txt
+string cResourceManager::GetRelativePathToMedia( const string &fileName )
+{
+	const string mediaFullPath = common::GetFullFileName(m_mediaDirectory);
+	const string fullFileName = common::GetFullFileName(fileName);
+	const string relatePath = common::RelativePathTo( mediaFullPath, fullFileName);
+	return relatePath;
+}

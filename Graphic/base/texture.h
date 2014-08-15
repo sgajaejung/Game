@@ -10,6 +10,8 @@ namespace graphic
 
 		bool Create(const string &fileName, bool isSizePow2=true);
 		bool Create(const int width, const int height, const D3DFORMAT format);
+		bool WriteFile( const string &fileName );
+
 		void Bind(int stage);
 		void Bind(cShader &shader, const string &key);
 		void Lock(D3DLOCKED_RECT &out);

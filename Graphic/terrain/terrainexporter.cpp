@@ -8,6 +8,15 @@ using namespace graphic::exporter;
 using namespace std;
 
 
+// 파일경로의 역슬래쉬를 슬래쉬로 바꾼다.
+string ConvertRS2S(const string &str)
+{
+	string tmp = str;
+	common::replaceAll(tmp, "\\", "/");
+	return tmp;
+}
+
+
 // 지형정보를 json 포맷으로 저장한다.
 bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &terrain )
 {
@@ -23,9 +32,9 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 	of << "\t\"rowCellCount\" : " << terrain.rowCellCount << "," << endl;
 	of << "\t\"colCellCount\" : " << terrain.colCellCount << "," << endl;
 	of << "\t\"cellSize\" : " << terrain.cellSize << "," << endl;
-	of << "\t\"heightMap\" : " << "\"" << terrain.heightMap << "\"," << endl;
-	of << "\t\"bg texture\" : " << "\"" << terrain.bgTexture << "\"," << endl;
-	of << "\t\"alpha texture\" : " << "\"" << terrain.alphaTexture << "\"," << endl;
+	of << "\t\"heightMap\" : " << "\"" << ConvertRS2S(terrain.heightMap) << "\"," << endl;
+	of << "\t\"bg texture\" : " << "\"" << ConvertRS2S(terrain.bgTexture) << "\"," << endl;
+	of << "\t\"alpha texture\" : " << "\"" << ConvertRS2S(terrain.alphaTexture) << "\"," << endl;
 	of << "\t\"texture factor\" : " << terrain.textureFactor << "," << endl;
 	of << "\t\"height factor\" : " << terrain.heightFactor << "," << endl;
 
@@ -33,7 +42,7 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 	for (int i=0; i < 4; ++i)
 	{
 		of << "\t\t{" << endl;
-		of << "\t\t\t\"texture\" : " << "\"" << terrain.layer[ i].texture<< "\"" << endl;
+		of << "\t\t\t\"texture\" : " << "\"" << ConvertRS2S(terrain.layer[ i].texture) << "\"" << endl;
 		of << "\t\t}"; 
 		if (i < 3)
 			of << ",";
@@ -46,7 +55,7 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 	for (u_int i=0; i < terrain.models.size(); ++i)
 	{
 		of << "\t\t{" << endl;
-		of << "\t\t\t\"filename\" : " << "\"" << terrain.models[ i].fileName
+		of << "\t\t\t\"filename\" : " << "\"" << ConvertRS2S(terrain.models[ i].fileName)
 			<< "\"," << endl;
 		of << "\t\t\t\"tm1\" : " << "\"" << "0 0 0 0" << "\"" << endl;
 		of << "\t\t}"; 
@@ -62,3 +71,4 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 
 	return true;
 }
+

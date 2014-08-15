@@ -19,6 +19,8 @@ cTexture::~cTexture()
 
 bool cTexture::Create(const string &fileName, bool isSizePow2)//isSizePow2=true
 {
+	Clear();
+
 	m_fileName = fileName;
 
 	if (isSizePow2)
@@ -37,7 +39,7 @@ bool cTexture::Create(const string &fileName, bool isSizePow2)//isSizePow2=true
 
 bool cTexture::Create(const int width, const int height, const D3DFORMAT format)
 {
-	m_fileName = "";
+	Clear();
 
 	if (FAILED(GetDevice()->CreateTexture( width, height, 1, 0, format, 
 		D3DPOOL_MANAGED, &m_texture, NULL )))
@@ -54,6 +56,8 @@ bool cTexture::Create(const int width, const int height, const D3DFORMAT format)
 // D3DX_DEFAULT_NONPOW2 옵션을 켠 상태에서 텍스쳐를 생성한다.
 bool cTexture::CreateEx(const string &fileName)
 {
+	Clear();
+
 	if (FAILED(D3DXCreateTextureFromFileExA(
 		GetDevice(), fileName.c_str(),
 		D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2, // option On
@@ -99,5 +103,17 @@ void cTexture::Unlock()
 
 void cTexture::Clear()
 {
+	m_fileName.clear();
 	SAFE_RELEASE(m_texture);
+}
+
+
+// 텍스쳐를 파일에 저장한다.
+bool cTexture::WriteFile( const string &fileName )
+{
+	if (FAILED(D3DXSaveTextureToFileA(fileName.c_str(), D3DXIFF_PNG, m_texture, NULL)))
+	{
+		return false;
+	}
+	return true;
 }

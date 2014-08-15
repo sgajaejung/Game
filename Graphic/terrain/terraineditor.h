@@ -24,13 +24,15 @@ namespace graphic
 		virtual ~cTerrainEditor();
 
 		bool LoadTerrain( const string &fileName );
-		void GetRawTerrain( OUT sRawTerrain &out );
+		bool LoadTerrain( const sRawTerrain &rawTerrain );
+		void GenerateRawTerrain( OUT sRawTerrain &out );
 
 		void Brush( const cTerrainCursor &cursor );
 		int GetSplatLayerCount() const;
 		const sSplatLayer& GetSplatLayer(int layer) const;
 		void SetHeightFactor(const float heightFactor);
 		void SetTextureUVFactor(const float textureUVFactor);
+		cTexture& GetAlphaTexture();
 
 		virtual void Render() override;
 		virtual void RenderShader(cShader &shader) override;
@@ -55,4 +57,5 @@ namespace graphic
 
 	inline int cTerrainEditor::GetSplatLayerCount() const { return m_numLayer; }
 	inline const sSplatLayer& cTerrainEditor::GetSplatLayer(int layer) const { return m_layer[ layer]; }
+	inline cTexture& cTerrainEditor::GetAlphaTexture() { return m_alphaTexture; }
 }

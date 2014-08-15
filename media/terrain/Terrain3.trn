@@ -1,0 +1,30 @@
+{
+	"terrain version" : "v1",
+	"info" : 
+	{
+	"rowCellCount" : 64,
+	"colCellCount" : 64,
+	"cellSize" : 50,
+	"heightMap" : "",
+	"bg texture" : "./terrain/¹Ù´Úµ¹.jpg",
+	"alpha texture" : "./terrain/Terrain3_alpha.png",
+	"texture factor" : 8,
+	"height factor" : 3,
+	"layer" : [
+		{
+			"texture" : "./terrain/±âº»Èë.jpg"
+		},
+		{
+			"texture" : "./terrain/¹Ù´Ú.jpg"
+		},
+		{
+			"texture" : "./terrain/ÀÜµð.jpg"
+		},
+		{
+			"texture" : "./terrain/Ç®.jpg"
+		}
+	],
+	"model" : [
+	]
+	}
+}

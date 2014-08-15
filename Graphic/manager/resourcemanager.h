@@ -26,6 +26,8 @@ namespace graphic
 		cShader * FindShader( const string &fileName );
 
 		void SetMediaDirectory( const string &path );
+		const string& GetMediaDirectory() const;
+		string GetRelativePathToMedia( const string &fileName );
 		void Clear();
 
 		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
@@ -41,4 +43,5 @@ namespace graphic
 
 
 	inline void cResourceManager::SetMediaDirectory( const string &path ) { m_mediaDirectory = path; }
+	inline const string& cResourceManager::GetMediaDirectory() const { return m_mediaDirectory; }
 }

@@ -26,14 +26,82 @@ string common::GetFilePathExceptFileName(const std::string &fileName)
 
 
 /**
+ @brief  fileName에서 확장자를 리턴한다.
+ */
+string common::GetFileExt(const string &fileName)
+{
+	char *ext = PathFindExtensionA(fileName.c_str());
+	return ext;
+}
+
+
+// 디렉토리 경로를 포함한 총 파일 이름을 리턴한다. (상대경로일 때 이용).
+string common::GetFullFileName(const string &fileName)
+{
+	char dstFileName[ MAX_PATH] = {NULL, };
+
+	if (IsRelativePath(fileName))
+	{
+		char curDir[ MAX_PATH];
+		GetCurrentDirectoryA(MAX_PATH, curDir);
+		const string path = string(curDir) + "/" + fileName;
+		GetFullPathNameA(path.c_str(), path.size(), dstFileName, NULL);
+	}
+	else
+	{
+		//GetFullPathNameA(fileName.c_str(), fileName.size(), dstFileName, NULL);
+		return fileName;
+	}
+
+	return dstFileName;
+}
+
+
+/**
  @brief fileName의 디렉토리 경로를 제외한 파일이름과 확장자를 리턴한다.
  */
-string common::GetFileName(const std::string &fileName)
+string common::GetFileName(const string &fileName)
 {
 	char srcFileName[ MAX_PATH];
 	strcpy_s(srcFileName, MAX_PATH, fileName.c_str() );
 	char *name = PathFindFileNameA(srcFileName);
 	return name;
+}
+
+
+/**
+ @brief fileName의 디렉토리 경로, 확장자를 제외한 파일이름을 리턴한다.
+ */
+string common::GetFileNameExceptExt(const string &fileName)
+{
+	char srcFileName[ MAX_PATH];
+	strcpy_s(srcFileName, MAX_PATH, fileName.c_str() );
+	char *name = PathFindFileNameA(srcFileName);
+	PathRemoveExtensionA(name);
+	return name;
+}
+
+
+// pathFrom경로에서 pathTo 경로의 파일을 접근하기 위한 상대경로를 리턴한다.
+// ex) 
+// pathFrom : c:/project/media,  pathTo : c:/project/media/terrain/file.txt
+// result = ./terrain/file.txt
+string common::RelativePathTo(const string &pathFrom, const string &pathTo)
+{
+	char szOut[ MAX_PATH];
+
+	PathRelativePathToA(szOut, 
+		pathFrom.c_str(), FILE_ATTRIBUTE_DIRECTORY, 
+		pathTo.c_str(), FILE_ATTRIBUTE_NORMAL);
+
+	return szOut;
+}
+
+
+// 상대 경로이면 true를 리턴한다.
+bool common::IsRelativePath(const string &path)
+{
+	return PathIsRelativeA(path.c_str())? true : false;
 }
 
 

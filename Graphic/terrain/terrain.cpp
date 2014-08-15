@@ -29,10 +29,12 @@ cTerrain::~cTerrain()
 
 
 bool cTerrain::CreateFromHeightMap( const string &heightMapFileName, 
-	const string &textureFileName, const float heightFactor, const float textureUVFactor )
+	const string &textureFileName, const float heightFactor, const float textureUVFactor,
+	const int rowCellCount, const int colCellCount, const float cellSize)
 	// heightFactor=3.f, textureUVFactor=1.f
+	// rowCellCount=64, colCellCount=64, cellSize=50.f
 {
-	CreateTerrain(64, 64, 50.f, textureUVFactor);
+	CreateTerrain(rowCellCount, colCellCount, cellSize, textureUVFactor);
 	UpdateHeightMap(heightMapFileName, textureFileName, heightFactor );
 	return true;
 }

@@ -31,26 +31,64 @@ bool cTerrainEditor::LoadTerrain( const string &fileName )
 }
 
 
+// 지형정보를 토대로 지형을 생성한다.
+bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
+{
+	Clear();
+
+	const string mediaDir = cResourceManager::Get()->GetMediaDirectory();
+
+	if (rawTerrain.heightMap.empty())
+	{
+		CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
+			rawTerrain.cellSize, rawTerrain.textureFactor );
+		CreateTerrainTexture( mediaDir+rawTerrain.bgTexture );
+	}
+	else
+	{
+		CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
+			rawTerrain.heightFactor, rawTerrain.textureFactor, 
+			rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
+	}
+
+	for (int i=0; i < MAX_LAYER; ++i)
+	{
+		if (rawTerrain.layer[ i].texture.empty())
+			break;
+
+		AddLayer();
+		m_layer[ i].texture = cResourceManager::Get()->LoadTexture( 
+			mediaDir+rawTerrain.layer[ i].texture );
+	}
+
+	m_alphaTexture.Create( mediaDir+rawTerrain.alphaTexture );
+
+	return true;
+}
+
+
 // 지형정보를 sRawTerrain에 저장한다.
-void cTerrainEditor::GetRawTerrain( OUT sRawTerrain &out )
+void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 {
 	out.rowCellCount = m_rowCellCount;
 	out.colCellCount = m_colCellCount;
 	out.cellSize = m_cellSize;
+	out.heightMap = cResourceManager::Get()->GetRelativePathToMedia(m_heightMapFileName);
+	out.bgTexture = cResourceManager::Get()->GetRelativePathToMedia(m_grid.GetTexture().GetTextureName());
 	out.textureFactor = m_textureUVFactor;
 	out.heightFactor = m_heightFactor;
 
 	for (int i=0; i < m_numLayer; ++i)
 	{
 		if (m_layer[ i].texture)
-			out.layer[ i].texture = m_layer[ i].texture->GetTextureName();
+			out.layer[ i].texture = cResourceManager::Get()->GetRelativePathToMedia(m_layer[ i].texture->GetTextureName());
 	}
 
 	out.models.reserve( m_rigids.size() );
 	for (u_int i=0; i < m_rigids.size(); ++i)
 	{
 		out.models.push_back( sRawTerrrainModel() );
-		out.models.back().fileName = m_rigids[ i]->GetFileName();
+		out.models.back().fileName = cResourceManager::Get()->GetRelativePathToMedia(m_rigids[ i]->GetFileName());
 		out.models.back().tm = m_rigids[ i]->GetTM();
 	}
 
@@ -214,7 +252,6 @@ void cTerrainEditor::Clear()
 {
 	cTerrain::Clear();
 	InitLayer();
-
 }
 
 
