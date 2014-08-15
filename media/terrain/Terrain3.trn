@@ -25,6 +25,10 @@
 		}
 	],
 	"model" : [
+		{
+			"filename" : "./max script/dick.dat",
+			"tm1" : "0 0 0 0"
+		}
 	]
 	}
 }

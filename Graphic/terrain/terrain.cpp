@@ -286,6 +286,20 @@ bool cTerrain::AddRigidModel(const cModel &model)
 }
 
 
+// 정적 모델 추가
+cModel* cTerrain::AddRigidModel(const string &fileName)
+{
+	cModel *model = new cModel(common::GenerateId());
+	if (!model->Create(fileName))
+	{
+		delete model;
+		return NULL;
+	}
+	m_rigids.push_back(model);
+	return model;
+}
+
+
 // 정적 모델 찾기.
 cModel* cTerrain::FindRigidModel(const int id)
 {

@@ -38,6 +38,7 @@ bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
 
 	const string mediaDir = cResourceManager::Get()->GetMediaDirectory();
 
+	// 높이맵으로 만들어진 지형이면, 높이 맵을 로딩한다.
 	if (rawTerrain.heightMap.empty())
 	{
 		CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
@@ -46,6 +47,7 @@ bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
 	}
 	else
 	{
+		// 기본 지형에서 만들어진 지형이면, 기본 지형을 생성한다.
 		CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
 			rawTerrain.heightFactor, rawTerrain.textureFactor, 
 			rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
@@ -59,6 +61,14 @@ bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
 		AddLayer();
 		m_layer[ i].texture = cResourceManager::Get()->LoadTexture( 
 			mediaDir+rawTerrain.layer[ i].texture );
+	}
+
+	for (u_int i=0; i < rawTerrain.models.size(); ++i)
+	{
+		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
+		{
+			model->SetTM(rawTerrain.models[ i].tm);
+		}
 	}
 
 	m_alphaTexture.Create( mediaDir+rawTerrain.alphaTexture );

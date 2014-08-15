@@ -13,7 +13,9 @@ namespace graphic
 		bool CreateFromHeightMap( const string &heightMapFileName, 
 			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f,
 			 const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
+
 		bool CreateTerrainTexture( const string &textureFileName );
+		
 		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f,
 			const float textureUVFactor=1.f );
 
@@ -23,6 +25,7 @@ namespace graphic
 		cModel* PickModel(const Vector3 &orig, const Vector3 &dir);
 
 		bool AddRigidModel(const cModel &model);
+		cModel* AddRigidModel(const string &fileName);
 		cModel* FindRigidModel(const int id);
 		bool RemoveRigidModel(cModel *model, const bool destruct=true);
 		bool RemoveRigidModel(const int id, const bool destruct=true);
