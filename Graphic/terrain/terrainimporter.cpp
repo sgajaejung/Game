@@ -23,7 +23,6 @@ using namespace graphic::importer;
 // json 포맷으로 저장된 파일을 해석해서 sRawTerrain 구조체에 채워 리턴한다.
 bool importer::ReadRawTerrainFile( const string &fileName, OUT sRawTerrain &out )
 {
-	bool result = true;
 	try
 	{
 
@@ -101,10 +100,10 @@ void importer::ReadRawModelV1( ptree &props, OUT sRawTerrrainModel &out )
 	out.fileName = props.get<string>("filename", "");
 
 	Matrix44 tm;
-	string mat1 = props.get<string>("tm1", "");
-	string mat2 = props.get<string>("tm2", "");
-	string mat3 = props.get<string>("tm3", "");
-	string mat4 = props.get<string>("tm4", "");
+	const string mat1 = props.get<string>("tm1", "");
+	const string mat2 = props.get<string>("tm2", "");
+	const string mat3 = props.get<string>("tm3", "");
+	const string mat4 = props.get<string>("tm4", "");
 
 	sscanf(mat1.c_str(), "%f %f %f %f", &tm._11, &tm._12, &tm._13, &tm._14);
 	sscanf(mat2.c_str(), "%f %f %f %f", &tm._21, &tm._22, &tm._23, &tm._24);
