@@ -100,6 +100,16 @@ void importer::ReadRawModelV1( ptree &props, OUT sRawTerrrainModel &out )
 {
 	out.fileName = props.get<string>("filename", "");
 
+	Matrix44 tm;
 	string mat1 = props.get<string>("tm1", "");
+	string mat2 = props.get<string>("tm2", "");
+	string mat3 = props.get<string>("tm3", "");
+	string mat4 = props.get<string>("tm4", "");
 
+	sscanf(mat1.c_str(), "%f %f %f %f", &tm._11, &tm._12, &tm._13, &tm._14);
+	sscanf(mat2.c_str(), "%f %f %f %f", &tm._21, &tm._22, &tm._23, &tm._24);
+	sscanf(mat3.c_str(), "%f %f %f %f", &tm._31, &tm._32, &tm._33, &tm._34);
+	sscanf(mat4.c_str(), "%f %f %f %f", &tm._41, &tm._42, &tm._43, &tm._44);
+
+	out.tm = tm;
 }

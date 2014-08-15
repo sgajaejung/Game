@@ -57,7 +57,19 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 		of << "\t\t{" << endl;
 		of << "\t\t\t\"filename\" : " << "\"" << ConvertRS2S(terrain.models[ i].fileName)
 			<< "\"," << endl;
-		of << "\t\t\t\"tm1\" : " << "\"" << "0 0 0 0" << "\"" << endl;
+		of << "\t\t\t\"tm1\" : " << "\"" << 
+			terrain.models[ i].tm._11 << " " << terrain.models[ i].tm._12 << " " << 
+			terrain.models[ i].tm._13 << " " << terrain.models[ i].tm._14 << "\"," << endl;
+		of << "\t\t\t\"tm2\" : " << "\"" << 
+			terrain.models[ i].tm._21 << " " << terrain.models[ i].tm._22 << " " << 
+			terrain.models[ i].tm._23 << " " << terrain.models[ i].tm._24 << "\"," << endl;
+		of << "\t\t\t\"tm3\" : " << "\"" << 
+			terrain.models[ i].tm._31 << " " << terrain.models[ i].tm._32 << " " << 
+			terrain.models[ i].tm._33 << " " << terrain.models[ i].tm._34 << "\"," << endl;
+		of << "\t\t\t\"tm4\" : " << "\"" << 
+			terrain.models[ i].tm._41 << " " << terrain.models[ i].tm._42 << " " << 
+			terrain.models[ i].tm._43 << " " << terrain.models[ i].tm._44 << "\"" << endl;
+
 		of << "\t\t}"; 
 		if (i <  terrain.models.size()-1)
 			of << ",";
