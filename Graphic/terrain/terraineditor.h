@@ -6,8 +6,15 @@ namespace graphic
 
 	struct sSplatLayer
 	{
-		int layer;
+		//int layer;
 		cTexture *texture;
+		
+		sSplatLayer() : texture(NULL) {}
+		//sSplatLayer(int layer0) : layer(layer0) {}
+
+		//bool operator==(const sSplatLayer &l) {
+		//	return layer == l.layer;
+		//}
 	};
 
 
@@ -28,8 +35,10 @@ namespace graphic
 		void GenerateRawTerrain( OUT sRawTerrain &out );
 
 		void Brush( const cTerrainCursor &cursor );
-		int GetSplatLayerCount() const;
-		const sSplatLayer& GetSplatLayer(int layer) const;
+		int GetLayerCount() const;
+		const sSplatLayer& GetLayer(int layer) const;
+		void DeleteLayer(int layer);
+
 		void SetHeightFactor(const float heightFactor);
 		void SetTextureUVFactor(const float textureUVFactor);
 		cTexture& GetAlphaTexture();
@@ -45,17 +54,18 @@ namespace graphic
 		sSplatLayer& GetTopLayer();
 		bool AddLayer();
 		void GetTextureUV(const Vector3 &pos, OUT float &tu, OUT float &tv);
+		DWORD GetAlphaMask(const int layer);
 
 
 	private:
-		sSplatLayer m_layer[ MAX_LAYER];
-		int m_numLayer;
+		vector<sSplatLayer> m_layer; //MAX_LAYER °¹¼ö ¸¸Å­ Å©±â°¡ ÀâÈù´Ù.
+		//int m_numLayer;
 		cTexture m_alphaTexture;
 		cTexture m_emptyTexture;
 	};
 
 
-	inline int cTerrainEditor::GetSplatLayerCount() const { return m_numLayer; }
-	inline const sSplatLayer& cTerrainEditor::GetSplatLayer(int layer) const { return m_layer[ layer]; }
+	inline int cTerrainEditor::GetLayerCount() const { return m_layer.size(); }
+	inline const sSplatLayer& cTerrainEditor::GetLayer(int layer) const { return m_layer[ layer]; }
 	inline cTexture& cTerrainEditor::GetAlphaTexture() { return m_alphaTexture; }
 }

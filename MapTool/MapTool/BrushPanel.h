@@ -49,4 +49,6 @@ public:
 	afx_msg void OnEnChangeEditOuterRadius2();
 	BOOL m_IsEraseMode;
 	afx_msg void OnBnClickedCheckErase();
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnDeleteLayer();
 };

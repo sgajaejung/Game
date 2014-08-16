@@ -22,6 +22,7 @@ public:
 
 	void Brush(CPoint point);
 	void UpdateBrush();
+	void UpdateSplatLayer();
 	void UpdateHeightFactor(const float heightFactor);
 	void UpdatePlaceModel();
 

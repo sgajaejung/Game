@@ -8,8 +8,10 @@ using namespace Gdiplus;
 using namespace graphic;
 
 
-cTerrainEditor::cTerrainEditor() : 
-	m_numLayer(0)
+
+cTerrainEditor::cTerrainEditor()
+	//m_numLayer(0)
+//,	m_layer(MAX_LAYER)
 {
 	InitLayer();
 
@@ -88,7 +90,7 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 	out.textureFactor = m_textureUVFactor;
 	out.heightFactor = m_heightFactor;
 
-	for (int i=0; i < m_numLayer; ++i)
+	for (u_int i=0; i < m_layer.size(); ++i)
 	{
 		if (m_layer[ i].texture)
 			out.layer[ i].texture = cResourceManager::Get()->GetRelativePathToMedia(m_layer[ i].texture->GetTextureName());
@@ -107,34 +109,35 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 
 void cTerrainEditor::Render()
 {
-	if (m_numLayer > 0)
+	if (m_layer.empty())
 	{
+		cTerrain::Render();
 	}
 	else
 	{
-		cTerrain::Render();
+		
 	}
 }
 
 
 void cTerrainEditor::RenderShader(cShader &shader)
 {
-	if (m_numLayer > 0)
+	if (m_layer.empty())
+	{
+		cTerrain::RenderShader(shader);
+	}
+	else
 	{
 		shader.SetTexture( "SplattingAlphaMap", m_alphaTexture );
 		shader.SetFloat( "alphaUVFactor", GetTextureUVFactor() );
 
 		const string texName[] = {"Tex1", "Tex2", "Tex3", "Tex4" };
-		for (int i=0; i < m_numLayer; ++i)
+		for (u_int i=0; i < m_layer.size(); ++i)
 			shader.SetTexture( texName[ i], *m_layer[ i].texture );
-		for (int i=m_numLayer; i < MAX_LAYER; ++i)
+		for (u_int i=m_layer.size(); i < MAX_LAYER; ++i)
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
 		shader.SetRenderPass(3);
-		cTerrain::RenderShader(shader);
-	}
-	else
-	{
 		cTerrain::RenderShader(shader);
 	}
 }
@@ -152,8 +155,10 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 	}
 
 	sSplatLayer &curLayer = GetTopLayer();
+	const int layerIdx = m_layer.size()-1;
 	curLayer.texture = (cTexture*)cursor.GetBrushTexture();
-	const int MASK = ~(0xFF << (24 - (curLayer.layer * 8)));
+	//const int MASK = ~(0xFF << (24 - (layerIdx * 8)));
+	const int MASK = ~GetAlphaMask(layerIdx);
 
 	float u, v;
 	GetTextureUV(cursor.GetCursorPos(), u, v);
@@ -186,7 +191,7 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 				int color = (int)(255.f * cursor.GetInnerBrushAlpha());
 				if (cursor.IsEraseMode()) // 지우개 모드일 때는 역의 값을 넣게한다.
 					color = 255-color;
-				color = color << (24 - (curLayer.layer * 8));
+				color = color << (24 - (layerIdx * 8));
 
 				*ppixel = color | (*ppixel & MASK);
 			}
@@ -199,12 +204,12 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 				if (cursor.IsEraseMode()) // 지우개 모드일 때는 역의 값을 넣게한다.
 					color = 255-color;
 
-				const int dest = (*ppixel >> (24 - (curLayer.layer * 8))) & 0xFF;
+				const int dest = (*ppixel >> (24 - (layerIdx * 8))) & 0xFF;
 
 				if ( (cursor.IsEraseMode() && (color < dest)) ||
 					(!cursor.IsEraseMode() && (color > dest)))
 				{
-					color = color << (24 - (curLayer.layer * 8));
+					color = color << (24 - (layerIdx * 8));
 					*ppixel = color | (*ppixel & MASK);
 				}
 			}
@@ -217,12 +222,7 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 
 void cTerrainEditor::InitLayer()
 {
-	m_numLayer = 0;
-	for (int i=0; i < MAX_LAYER; ++i)
-	{
-		m_layer[ i].layer = i;
-		m_layer[ i].texture = NULL;
-	}
+	m_layer.clear();
 
 	m_alphaTexture.Clear();
 	m_alphaTexture.Create( ALPHA_TEXTURE_SIZE_W, ALPHA_TEXTURE_SIZE_H,
@@ -233,20 +233,61 @@ void cTerrainEditor::InitLayer()
 // 최상위 레이어 리턴
 sSplatLayer& cTerrainEditor::GetTopLayer()
 {
-	if (m_numLayer <= 0)
-		m_numLayer = 1;
-	return m_layer[ m_numLayer - 1];
+	if (m_layer.empty())
+		m_layer.push_back(sSplatLayer());
+	return m_layer.back();
 }
 
 
 // 레이어 추가.
 bool cTerrainEditor::AddLayer()
 {
-	if (m_numLayer >= MAX_LAYER)
+	if (m_layer.size() >= MAX_LAYER)
 		return false;
 
-	++m_numLayer;
+	m_layer.push_back(sSplatLayer());
 	return true;
+}
+
+
+// layer 에 해당하는 마스크를 리턴한다.
+DWORD cTerrainEditor::GetAlphaMask(const int layer)
+{
+	return (0xFF << (24 - (layer * 8)));
+}
+
+
+// layer 위치의 레이어를 제거하고, 나머지는 밀어 올린다.
+void cTerrainEditor::DeleteLayer(int layer)
+{
+	RET(m_layer.empty());
+
+	common::rotatepopvector(m_layer, (u_int)layer);
+
+	// 비어있는 알파 이미지도 같이 밀어올린다.
+	const DWORD delMask = GetAlphaMask(layer);
+	DWORD moveMask = 0;
+	for (u_int i=layer; i < m_layer.size(); ++i)
+		moveMask |= GetAlphaMask(i+1);
+
+	D3DLOCKED_RECT lockrect;
+	m_alphaTexture.Lock(lockrect);
+
+	BYTE *pbits = (BYTE*)lockrect.pBits;
+	for (int ay=0; ay < ALPHA_TEXTURE_SIZE_H; ++ay)
+	{
+		for (int ax=0; ax < ALPHA_TEXTURE_SIZE_W; ++ax)
+		{
+			// A8R8G8B8 Format
+			DWORD *ppixel = (DWORD*)(pbits + (ax*4) + (lockrect.Pitch * ay));
+			DWORD moveVal = *ppixel & moveMask;
+			*ppixel = *ppixel & ~(delMask | moveMask); // 이동할 AlphaTexture 초기화
+			*ppixel = *ppixel | (moveVal << 8);
+		}
+	}
+
+	m_alphaTexture.Unlock();
+
 }
 
 

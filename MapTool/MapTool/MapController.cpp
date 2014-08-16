@@ -118,10 +118,10 @@ void cMapController::Brush(CPoint point)
 	m_terrain.Pick( ray.orig, ray.dir, pickPos );
 	m_cursor.UpdateCursor( m_terrain, pickPos );
 
-	const int oldLayerCount = m_terrain.GetSplatLayerCount();
+	const int oldLayerCount = m_terrain.GetLayerCount();
 	m_terrain.Brush( m_cursor );
 
-	if (m_terrain.GetSplatLayerCount() != oldLayerCount)
+	if (m_terrain.GetLayerCount() != oldLayerCount)
 	{
 		NotifyObserver(NOTIFY_TYPE::NOTIFY_ADD_LAYER);
 	}
@@ -140,6 +140,13 @@ void cMapController::UpdateBrush()
 	m_cursor.UpdateCursor(m_terrain, pickPos );
 
 	NotifyObserver( NOTIFY_TYPE::NOTIFY_CHANGE_CURSOR );
+}
+
+
+// 스플래팅 지형 레이어 업데이트.
+void cMapController::UpdateSplatLayer()
+{
+	NotifyObserver( NOTIFY_TYPE::NOTIFY_CHANGE_SPLATLAYER );
 }
 
 

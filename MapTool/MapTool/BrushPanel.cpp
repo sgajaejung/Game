@@ -5,10 +5,10 @@
 #include "MapTool.h"
 #include "BrushPanel.h"
 #include "afxdialogex.h"
+#include <afxwin.h>
 
 
 // CBrushPanel 대화 상자입니다.
-
 CBrushPanel::CBrushPanel(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBrushPanel::IDD, pParent)
 ,	m_texture(NULL)
@@ -48,6 +48,8 @@ BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_INNER_RADIUS, &CBrushPanel::OnEnChangeEditInnerRadius)
 	ON_EN_CHANGE(IDC_EDIT_OUTER_RADIUS2, &CBrushPanel::OnEnChangeEditOuterRadius2)
 	ON_BN_CLICKED(IDC_CHECK_ERASE, &CBrushPanel::OnBnClickedCheckErase)
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_BRUSHMENU_DELETE_LAYER, &CBrushPanel::OnDeleteLayer)
 END_MESSAGE_MAP()
 
 
@@ -104,6 +106,10 @@ void CBrushPanel::Update(int type)
 		UpdateLayerList();
 		m_IsEraseMode = FALSE;
 		cMapController::Get()->GetTerrainCursor().EnableEraseMode(false);
+		break;
+
+	case NOTIFY_TYPE::NOTIFY_CHANGE_SPLATLAYER:
+		UpdateLayerList();
 		break;
 	}
 }
@@ -185,10 +191,10 @@ void CBrushPanel::UpdateLayerList()
 	m_layerList.DeleteAllItems();
 
 	graphic::cTerrainEditor &terrain = cMapController::Get()->GetTerrain();
-	for (int i=0; i < terrain.GetSplatLayerCount(); ++i)
+	for (int i=0; i < terrain.GetLayerCount(); ++i)
 	{
 		wstring layer = common::formatw( "%d", i + 1 );
-		wstring texture = str2wstr(terrain.GetSplatLayer(i).texture->GetTextureName());
+		wstring texture = str2wstr(terrain.GetLayer(i).texture->GetTextureName());
 		m_layerList.InsertItem( i, layer.c_str() );
 		m_layerList.SetItemText(i, 1, texture.c_str());
 	}
@@ -242,4 +248,39 @@ void CBrushPanel::OnBnClickedCheckErase()
 {
 	UpdateData();
 	cMapController::Get()->GetTerrainCursor().EnableEraseMode(m_IsEraseMode? true : false);
+}
+
+
+// 메뉴 출력.
+void CBrushPanel::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	if (&m_layerList == pWnd)
+	{
+		if (m_layerList.GetSelectedCount() <= 0)
+			return;
+
+		CPoint p;
+		GetCursorPos(&p);
+
+		CMenu menu;
+		menu.CreatePopupMenu();
+		menu.AppendMenu(MF_STRING, ID_BRUSHMENU_DELETE_LAYER, _T("Delete Layer"));
+		menu.TrackPopupMenu(TPM_LEFTALIGN, p.x, p.y, this);		
+	}
+}
+
+
+// 선택된 레이어 제거.
+void CBrushPanel::OnDeleteLayer()
+{
+	if (m_layerList.GetSelectedCount() <= 0)
+		return;
+
+	POSITION pos = m_layerList.GetFirstSelectedItemPosition();
+	const int item = m_layerList.GetNextSelectedItem(pos);
+	if (item < 0)
+		return;
+
+	cMapController::Get()->GetTerrain().DeleteLayer(item);
+	cMapController::Get()->UpdateSplatLayer();
 }

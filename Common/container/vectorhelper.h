@@ -25,4 +25,13 @@ namespace common
 	}
 
 
+	template <class Seq>
+	void rotatepopvector(Seq &seq, const unsigned int idx)
+	{
+		if ((seq.size()-1) > idx) // elements를 회전해서 제거한다.
+			std::rotate( seq.begin()+idx, seq.begin()+idx+1, seq.end() );
+		seq.pop_back();
+	}
+
+
 }
