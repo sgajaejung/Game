@@ -36,4 +36,5 @@ public:
 	afx_msg void OnChangeMfceditbrowseModel();
 	afx_msg void OnSelchangeListModel();
 	CListCtrl m_placeModelList;
+	afx_msg void OnDblclkListModel();
 };

@@ -27,6 +27,8 @@ namespace graphic
 		const Vector3& GetCursorPos() const;
 
 		// brush
+		void EnableEraseMode(const bool erase);
+		bool IsEraseMode() const;
 		void SelectBrushTexture(const string &fileName );
 		const cTexture* GetBrushTexture() const;
 
@@ -42,6 +44,7 @@ namespace graphic
 		Vector3 m_pos;
 		
 		// brush
+		bool m_isEraseMode;
 		float m_innerRadius;
 		float m_outerRadius;
 		float m_innerAlpha;
@@ -54,6 +57,7 @@ namespace graphic
 	};
 
 
+	inline bool cTerrainCursor::IsEraseMode() const { return m_isEraseMode; }
 	inline int cTerrainCursor::GetInnerBrushRadius() const { return m_innerRadius; }
 	inline int cTerrainCursor::GetOuterBrushRadius() const { return m_outerRadius; }
 	inline void cTerrainCursor::SetInnerBrushRadius(int radius) { m_innerRadius = radius; }

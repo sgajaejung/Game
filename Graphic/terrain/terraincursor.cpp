@@ -9,6 +9,7 @@ cTerrainCursor::cTerrainCursor() :
 	m_innerRadius(10)
 ,	m_outerRadius(60)
 ,	m_innerAlpha(1.f)
+,	m_isEraseMode(false)
 ,	m_brushTexture(NULL)
 ,	m_selectModel(NULL)
 {
@@ -54,13 +55,13 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 		inner += cursorPos;
 		innerVertices[ index].p = inner;
 		innerVertices[ index].p.y = terrain.GetHeight(inner.x, inner.z);
-		innerVertices[ index].c = D3DXCOLOR( 1, 0, 0, 0 );
+		innerVertices[ index].c = m_isEraseMode? D3DXCOLOR(1,1,1,1) : D3DXCOLOR(1,0,0,0);
 
 		Vector3 outer(m_outerRadius*cos(angle), 0.f, m_outerRadius*sin(angle));
 		outer += cursorPos;
 		outerVertices[ index].p = outer;
 		outerVertices[ index].p.y = terrain.GetHeight(outer.x, outer.z);
-		outerVertices[ index].c = D3DXCOLOR( 0, 0, 1, 0 );
+		outerVertices[ index].c = m_isEraseMode? D3DXCOLOR(1,1,1,1) : D3DXCOLOR(0,0,1,0);
 
 		index++;
 		angle += offset;
@@ -76,6 +77,13 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 		matT.SetTranslate(cursorPos);
 		m_selectModel->SetTM(matT);
 	}
+}
+
+
+// 브러쉬 지우개 모드 설정.
+void cTerrainCursor::EnableEraseMode(const bool erase)
+{
+	m_isEraseMode = erase;
 }
 
 

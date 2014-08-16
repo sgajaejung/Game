@@ -184,6 +184,8 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 			if (len <= cursor.GetInnerBrushRadius())
 			{
 				int color = (int)(255.f * cursor.GetInnerBrushAlpha());
+				if (cursor.IsEraseMode()) // 지우개 모드일 때는 역의 값을 넣게한다.
+					color = 255-color;
 				color = color << (24 - (curLayer.layer * 8));
 
 				*ppixel = color | (*ppixel & MASK);
@@ -194,9 +196,13 @@ void cTerrainEditor::Brush( const cTerrainCursor &cursor )
 				const float w = cursor.GetOuterBrushRadius() - cursor.GetInnerBrushRadius();
 				const float delta = 1.f - ((len - cursor.GetInnerBrushRadius()) / w);
 				int color = (int)(cursor.GetInnerBrushAlpha() * delta * 255.f);
+				if (cursor.IsEraseMode()) // 지우개 모드일 때는 역의 값을 넣게한다.
+					color = 255-color;
 
 				const int dest = (*ppixel >> (24 - (curLayer.layer * 8))) & 0xFF;
-				if (color > dest)
+
+				if ( (cursor.IsEraseMode() && (color < dest)) ||
+					(!cursor.IsEraseMode() && (color > dest)))
 				{
 					color = color << (24 - (curLayer.layer * 8));
 					*ppixel = color | (*ppixel & MASK);

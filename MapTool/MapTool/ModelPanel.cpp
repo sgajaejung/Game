@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_MFCEDITBROWSE_MODEL, &CModelPanel::OnChangeMfceditbrowseModel)
 	ON_LBN_SELCHANGE(IDC_LIST_MODEL, &CModelPanel::OnSelchangeListModel)
+	ON_LBN_DBLCLK(IDC_LIST_MODEL, &CModelPanel::OnDblclkListModel)
 END_MESSAGE_MAP()
 
 
@@ -112,6 +113,12 @@ void CModelPanel::OnChangeMfceditbrowseModel()
 
 
 void CModelPanel::OnSelchangeListModel()
+{
+	// 아직 아무일도 없음.
+}
+
+
+void CModelPanel::OnDblclkListModel()
 {
 	const int idx = m_modelList.GetCurSel();
 	RET (idx < 0);

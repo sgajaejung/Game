@@ -14,6 +14,7 @@ CBrushPanel::CBrushPanel(CWnd* pParent /*=NULL*/)
 ,	m_texture(NULL)
 , m_innerRadius(0)
 , m_outerRadius(0)
+, m_IsEraseMode(FALSE)
 {
 
 }
@@ -32,6 +33,7 @@ void CBrushPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_OUTER_RADIUS, m_outerRSlider);
 	DDX_Text(pDX, IDC_EDIT_INNER_RADIUS, m_innerRadius);
 	DDX_Text(pDX, IDC_EDIT_OUTER_RADIUS2, m_outerRadius);
+	DDX_Check(pDX, IDC_CHECK_ERASE, m_IsEraseMode);
 }
 
 
@@ -45,6 +47,7 @@ BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_OUTER_RADIUS, &CBrushPanel::OnNMCustomdrawSliderOuterRadius)
 	ON_EN_CHANGE(IDC_EDIT_INNER_RADIUS, &CBrushPanel::OnEnChangeEditInnerRadius)
 	ON_EN_CHANGE(IDC_EDIT_OUTER_RADIUS2, &CBrushPanel::OnEnChangeEditOuterRadius2)
+	ON_BN_CLICKED(IDC_CHECK_ERASE, &CBrushPanel::OnBnClickedCheckErase)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +102,8 @@ void CBrushPanel::Update(int type)
 	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
 	case NOTIFY_TYPE::NOTIFY_ADD_LAYER:
 		UpdateLayerList();
+		m_IsEraseMode = FALSE;
+		cMapController::Get()->GetTerrainCursor().EnableEraseMode(false);
 		break;
 	}
 }
@@ -230,4 +235,11 @@ void CBrushPanel::OnEnChangeEditOuterRadius2()
 	m_outerRSlider.SetPos(m_outerRadius);
 	cMapController::Get()->GetTerrainCursor().SetOuterBrushRadius(m_outerRadius);
 	cMapController::Get()->UpdateBrush();
+}
+
+
+void CBrushPanel::OnBnClickedCheckErase()
+{
+	UpdateData();
+	cMapController::Get()->GetTerrainCursor().EnableEraseMode(m_IsEraseMode? true : false);
 }

@@ -47,4 +47,6 @@ public:
 	afx_msg void OnNMCustomdrawSliderOuterRadius(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeEditInnerRadius();
 	afx_msg void OnEnChangeEditOuterRadius2();
+	BOOL m_IsEraseMode;
+	afx_msg void OnBnClickedCheckErase();
 };
