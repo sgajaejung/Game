@@ -1,5 +1,7 @@
 #pragma once
 #include "afxeditbrowsectrl.h"
+#include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CTerrainPanel 대화 상자입니다.
@@ -35,4 +37,14 @@ public:
 	CMFCEditBrowseCtrl m_textureBrowser;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnChangeMfceditbrowseTexture();
+	CComboBox m_ComboEditMode;
+	afx_msg void OnCbnSelchangeComboTerrainEdit();
+	CSliderCtrl m_SliderRadius;
+	float m_Radius;
+	afx_msg void OnNMCustomdrawSliderOuterRadius(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditOuterRadius2();
+	CSliderCtrl m_SliderSpeed;
+	float m_Speed;
+	afx_msg void OnNMCustomdrawSliderSpeed(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditSpeed();
 };

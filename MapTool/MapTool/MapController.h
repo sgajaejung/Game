@@ -20,11 +20,13 @@ public:
 	const string& GetHeightMapFileName();
 	const string& GetTextureFileName();
 
-	void Brush(CPoint point);
+	void BrushTerrain(CPoint point, const float elapseT);
+	void BrushTexture(CPoint point);
 	void UpdateBrush();
 	void UpdateSplatLayer();
 	void UpdateHeightFactor(const float heightFactor);
 	void UpdatePlaceModel();
+	void SendNotifyMessage(const NOTIFY_TYPE::TYPE type);
 
 	void ChangeEditMode(EDIT_MODE::TYPE mode);
 	EDIT_MODE::TYPE GetEditMode() const;

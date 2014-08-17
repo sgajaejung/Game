@@ -12,6 +12,8 @@ cTerrainCursor::cTerrainCursor() :
 ,	m_isEraseMode(false)
 ,	m_brushTexture(NULL)
 ,	m_selectModel(NULL)
+,	m_editMode(TERRAIN_EDIT_MODE::NONE)
+,	m_brushSpeed(20.f)
 {
 	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
 	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );	
@@ -21,6 +23,13 @@ cTerrainCursor::cTerrainCursor() :
 cTerrainCursor::~cTerrainCursor()
 {
 	SAFE_DELETE(m_selectModel);
+}
+
+
+void cTerrainCursor::RenderTerrainBrush()
+{
+	//m_innerCircle.RenderLineStrip();
+	m_outerCircle.RenderLineStrip();
 }
 
 

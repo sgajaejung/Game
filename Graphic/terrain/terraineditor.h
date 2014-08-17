@@ -34,7 +34,8 @@ namespace graphic
 		bool LoadTerrain( const sRawTerrain &rawTerrain );
 		void GenerateRawTerrain( OUT sRawTerrain &out );
 
-		void Brush( const cTerrainCursor &cursor );
+		void BrushTerrain( const cTerrainCursor &cursor, const float elapseT );
+		void BrushTexture( const cTerrainCursor &cursor );
 		int GetLayerCount() const;
 		const sSplatLayer& GetLayer(int layer) const;
 		void DeleteLayer(int layer);

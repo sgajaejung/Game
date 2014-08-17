@@ -4,11 +4,23 @@
 namespace graphic
 {
 
+	namespace TERRAIN_EDIT_MODE 
+	{
+		enum TYPE
+		{
+			NONE,
+			UP,
+			DOWN,
+		};
+	};
+
+
 	class cTerrainCursor
 	{
 		enum {
 			CURSOR_VERTEX_COUNT = 64,
 		};
+
 
 	public:
 		cTerrainCursor(void);
@@ -16,6 +28,7 @@ namespace graphic
 
 		void RenderBrush();
 		void RenderModel();
+		void RenderTerrainBrush();
 		void UpdateCursor( graphic::cTerrain &terrain, const Vector3 &cursorPos);
 
 		int GetInnerBrushRadius() const;
@@ -25,6 +38,12 @@ namespace graphic
 		void SetOuterBrushRadius(int radius);
 		void SetInnerBrushAlpha(float alpha);
 		const Vector3& GetCursorPos() const;
+
+		// terrain
+		void SetTerrainEditMode(const TERRAIN_EDIT_MODE::TYPE type);
+		TERRAIN_EDIT_MODE::TYPE GetTerrainEditMode() const;
+		void SetBrushSpeed(const float offset);
+		float GetBrushSpeed() const;
 
 		// brush
 		void EnableEraseMode(const bool erase);
@@ -43,6 +62,10 @@ namespace graphic
 	private:
 		Vector3 m_pos;
 		
+		// terrain edit
+		TERRAIN_EDIT_MODE::TYPE m_editMode;
+		float m_brushSpeed; // 지형 높낮이 조절 속도 값. (defalut: 20)
+
 		// brush
 		bool m_isEraseMode;
 		float m_innerRadius;
@@ -69,5 +92,8 @@ namespace graphic
 	inline const cModel* cTerrainCursor::GetSelectModel() const { return m_selectModel; }
 	inline bool cTerrainCursor::IsSelectModel() const { return m_selectModel? true : false; }
 	inline void cTerrainCursor::SelectModel(cModel *model) { m_selectModel = model; }
+	inline void cTerrainCursor::SetTerrainEditMode(const TERRAIN_EDIT_MODE::TYPE type) { m_editMode = type; }
+	inline TERRAIN_EDIT_MODE::TYPE cTerrainCursor::GetTerrainEditMode() const { return m_editMode; }
+	inline void cTerrainCursor::SetBrushSpeed(const float offset) { m_brushSpeed = offset; }
+	inline float cTerrainCursor::GetBrushSpeed() const { return m_brushSpeed; }
 }
-

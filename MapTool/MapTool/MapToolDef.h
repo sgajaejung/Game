@@ -1,8 +1,8 @@
 #pragma once
 
 
-static const int VIEW_WIDTH = 800;
-static const int VIEW_HEIGHT = 600;
+static const int VIEW_WIDTH = 1024;
+static const int VIEW_HEIGHT = 768;
 static const int REAL_WINDOW_WIDTH = VIEW_WIDTH+18;
 static const int REAL_WINDOW_HEIGHT = VIEW_HEIGHT+70;
 
@@ -29,5 +29,6 @@ namespace NOTIFY_TYPE
 		NOTIFY_CHANGE_CURSOR,
 		NOTIFY_CHANGE_SPLATLAYER,
 		NOTIFY_ADD_PLACE_MODEL,
+		NOTIFY_CHANGE_TERRAIN_EDIT_MODE,
 	};
 }

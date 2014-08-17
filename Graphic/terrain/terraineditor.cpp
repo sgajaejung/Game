@@ -143,7 +143,53 @@ void cTerrainEditor::RenderShader(cShader &shader)
 }
 
 
-void cTerrainEditor::Brush( const cTerrainCursor &cursor )
+// 지형의 높낮이를 조절한다.
+void cTerrainEditor::BrushTerrain( const cTerrainCursor &cursor, const float elapseT )
+{
+	if (m_colCellCount <= 0)
+		return; // 아직 지형이 로딩되지 않아서 리턴한다.
+
+	const int VERTEX_COL_COUNT = m_colCellCount + 1;
+	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
+
+	const Vector3 cursorPos = cursor.GetCursorPos();
+
+	if (sVertexNormTex *pv = (sVertexNormTex*)m_grid.GetVertexBuffer().Lock())
+	{
+		for (int i=0; i < VERTEX_COL_COUNT; ++i)
+		{
+			for (int k=0; k < VERTEX_ROW_COUNT; ++k)
+			{
+				sVertexNormTex *vtx = pv + (k*VERTEX_COL_COUNT) + i;
+
+				Vector3 v = vtx->p - cursorPos;
+				const float length = v.Length();
+				if (cursor.GetOuterBrushRadius() < length)
+					continue;
+
+				float offsetH = 0.f;
+				if (cursor.GetTerrainEditMode() == TERRAIN_EDIT_MODE::UP)
+				{
+					offsetH = cursor.GetBrushSpeed() * elapseT;
+				}
+				else if (cursor.GetTerrainEditMode() == TERRAIN_EDIT_MODE::DOWN)
+				{
+					offsetH = -cursor.GetBrushSpeed() * elapseT;
+				}
+
+				vtx->p.y += offsetH * (cursor.GetOuterBrushRadius() - length) / cursor.GetOuterBrushRadius();
+			}
+		}
+
+		m_grid.GetVertexBuffer().Unlock();
+	}
+
+	m_grid.CalculateNormals();
+}
+
+
+// 지형에 텍스쳐를 입힌다.
+void cTerrainEditor::BrushTexture( const cTerrainCursor &cursor )
 {
 	RET(!cursor.GetBrushTexture());
 

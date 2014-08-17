@@ -108,8 +108,20 @@ void cMapController::ChangeEditMode(EDIT_MODE::TYPE mode)
 }
 
 
+void cMapController::BrushTerrain(CPoint point, const float elapseT)
+{
+	const Ray ray(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
+		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+
+	Vector3 pickPos;
+	m_terrain.Pick( ray.orig, ray.dir, pickPos );
+	m_cursor.UpdateCursor( m_terrain, pickPos );
+	m_terrain.BrushTerrain( m_cursor, elapseT );
+}
+
+
 // 스플래팅 텍스쳐 모드에서, 마우스로 브러슁을 할 때 호출한다.
-void cMapController::Brush(CPoint point)
+void cMapController::BrushTexture(CPoint point)
 {
 	const Ray ray(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
 		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
@@ -119,7 +131,7 @@ void cMapController::Brush(CPoint point)
 	m_cursor.UpdateCursor( m_terrain, pickPos );
 
 	const int oldLayerCount = m_terrain.GetLayerCount();
-	m_terrain.Brush( m_cursor );
+	m_terrain.BrushTexture( m_cursor );
 
 	if (m_terrain.GetLayerCount() != oldLayerCount)
 	{
@@ -161,4 +173,11 @@ void cMapController::UpdateHeightFactor(const float heightFactor)
 void cMapController::UpdatePlaceModel()
 {
 	NotifyObserver( NOTIFY_TYPE::NOTIFY_ADD_PLACE_MODEL );
+}
+
+
+// 외부에서 업데이트 사항을 알릴때 사용한다.
+void cMapController::SendNotifyMessage(const NOTIFY_TYPE::TYPE type)
+{
+	NotifyObserver( type );
 }

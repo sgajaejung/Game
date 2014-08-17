@@ -138,6 +138,9 @@ void CMapView::Render()
 
 		switch (cMapController::Get()->GetEditMode())
 		{
+		case EDIT_MODE::MODE_TERRAIN:
+			cMapController::Get()->GetTerrainCursor().RenderTerrainBrush();
+			break;
 		case EDIT_MODE::MODE_BRUSH:
 			cMapController::Get()->GetTerrainCursor().RenderBrush();
 			break;
@@ -161,6 +164,15 @@ void CMapView::Render()
 void CMapView::Update(float elapseT)
 {
 	graphic::GetRenderer()->Update(elapseT);
+
+	// 지형 높낮이 편집.
+	if (EDIT_MODE::MODE_TERRAIN == cMapController::Get()->GetEditMode())
+	{
+		if (m_LButtonDown)
+		{
+			cMapController::Get()->BrushTerrain(m_curPos, elapseT);
+		}
+	}
 }
 
 
@@ -179,7 +191,7 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 	ReleaseCapture();
 
 	// 지형위에 모델을 위치 시킨다.
-	if (m_LButtonDown && 
+	if (m_LButtonDown &&
 		(cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_MODEL))
 	{
 		// 모델이 선택되어 있는 상태라면, 모델을 지형위에 위치 시킨다.
@@ -228,7 +240,7 @@ void CMapView::OnRButtonDown(UINT nFlags, CPoint point)
 void CMapView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	ReleaseCapture();
-	m_RButtonDown = false;	
+	m_RButtonDown = false;
 	CView::OnRButtonUp(nFlags, point);
 }
 
@@ -241,9 +253,15 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		m_curPos = point;
 
-		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_BRUSH)
+		switch (cMapController::Get()->GetEditMode())
 		{
-			cMapController::Get()->Brush(point);
+		case EDIT_MODE::MODE_TERRAIN:
+			//cMapController::Get()->BrushTerrain(point);
+			break;
+
+		case EDIT_MODE::MODE_BRUSH:
+			cMapController::Get()->BrushTexture(point);
+			break;
 		}
 
 	}
