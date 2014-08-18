@@ -1,14 +1,36 @@
 
 #include "stdafx.h"
 #include "grid2.h"
+#include <fstream>
+
+
+namespace graphic
+{
+
+	// cGrid 클래스를 파일에 저장하고 로드할 때 사용된다.
+	struct sGridBinary
+	{
+		char header[3]; // GRD
+		char version;
+		int rowCellCount;
+		int colCellCount;
+		float cellSize;
+		float textureUVFactor;
+		float *heightMap; // (rowCellCount+1) * (colCellCount+1) 개수 만큰 저장된다.
+	};
+
+}
+
 
 using namespace graphic;
+
 
 
 cGrid2::cGrid2() :
 	m_rowCellCount(0)
 ,	m_colCellCount(0)
 ,	m_cellSize(0)
+,	m_textureUVFactor(8)
 {
 	m_mtrl.InitWhite();
 }
@@ -26,6 +48,7 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 	m_rowCellCount = rowCellCount;
 	m_colCellCount = colCellCount;
 	m_cellSize = cellSize;
+	m_textureUVFactor = textureUVFactor;
 
 	// Init Grid
 	const int rowVtxCnt  = rowCellCount+1;
@@ -94,6 +117,8 @@ void cGrid2::SetTextureUVFactor(const float textureUVFactor)
 	RET (m_rowCellCount <= 0);
 
 	// init member
+	m_textureUVFactor = textureUVFactor;
+
 	const int rowCellCount = m_rowCellCount;
 	const int colCellCount = m_colCellCount;
 	const float cellSize = m_cellSize;
@@ -125,6 +150,102 @@ void cGrid2::SetTextureUVFactor(const float textureUVFactor)
 		}
 	}
 	m_vtxBuff.Unlock();
+}
+
+
+// m_rowCellCount. m_colCellCount, m_cellSize, Height  값을 저장한다.
+// Header : GRD
+bool cGrid2::WriteGridFile(const string &fileName)
+{
+	const int rowVtxCnt  = m_rowCellCount+1;
+	const int colVtxCnt  = m_colCellCount+1;
+	const int vtxCount = rowVtxCnt * colVtxCnt;
+
+
+	// sGridBinary 구조체 생성.
+	sGridBinary gbin;
+	gbin.header[0] = 'G';
+	gbin.header[1] = 'R';
+	gbin.header[2] = 'D';
+	gbin.version = '1';
+	gbin.rowCellCount = m_rowCellCount;
+	gbin.colCellCount = m_colCellCount;
+	gbin.cellSize = m_cellSize;
+	gbin.textureUVFactor = m_textureUVFactor;
+	gbin.heightMap = new float[ vtxCount];
+	
+	if (sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock())
+	{
+		for (int i=0; i < vtxCount; ++i)
+			gbin.heightMap[ i] = vertices[ i].p.y;
+		m_vtxBuff.Unlock();
+	}
+
+	
+	// sGridBinary 구조체 파일에 저장.
+	using namespace std;
+	ofstream of(fileName);
+	if (!of.is_open())
+		return false;
+
+	of.write( (char*)&gbin, sizeof(gbin) );
+	of.write( (char*)gbin.heightMap, sizeof(float) * vtxCount );
+
+	
+	// sGridBinary 제거.
+	delete[] gbin.heightMap;
+
+	return true;
+}
+
+
+// 파일로부터 정보를 가져와 Grid 클래스를 생성한다.
+// GRD 포맷이어야 한다. 
+// 현재는 version 1만 지원한다.
+bool cGrid2::ReadGridFromFile(const string &fileName)
+{
+	using namespace std;
+	ifstream ifs(fileName);
+	if (!ifs.is_open())
+		return false;
+
+	sGridBinary gbin;
+	ifs.read( gbin.header, sizeof(gbin.header) );
+
+	if ((gbin.header[ 0] != 'G') || (gbin.header[ 1] != 'R') || (gbin.header[ 2] != 'D'))
+		return false;
+
+	ifs.read( &gbin.version, sizeof(gbin.version) );
+	if (gbin.version != '1')
+		return false;
+
+	ifs.seekg(0);
+
+	ifs.read( (char*)&gbin, sizeof(gbin) );
+
+	const int vtxCount = (gbin.rowCellCount+1) * (gbin.colCellCount+1);
+	gbin.heightMap = new float[ vtxCount];
+	ifs.read( (char*)gbin.heightMap, sizeof(float)*vtxCount );
+
+	// cGrid 초기화.
+	Clear();
+
+	Create(gbin.rowCellCount, gbin.colCellCount, gbin.cellSize, gbin.textureUVFactor );
+	
+	// 높이맵 설정.
+	if (sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock())
+	{
+		for (int i=0; i < vtxCount; ++i)
+			vertices[ i].p.y = gbin.heightMap[ i];
+		m_vtxBuff.Unlock();
+	}
+
+	CalculateNormals();
+
+	// sGridBinanry 제거.
+	delete[] gbin.heightMap;
+
+	return true;
 }
 
 

@@ -21,6 +21,7 @@ namespace graphic
 		int colCellCount;
 		int rowCellCount;
 		float cellSize;
+		int heightMapStyle; // 0=heightMap, 1=grid format
 		string heightMap;
 		string bgTexture;
 		string alphaTexture;

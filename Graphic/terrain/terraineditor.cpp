@@ -25,11 +25,17 @@ cTerrainEditor::~cTerrainEditor()
 }
 
 
+// 지형 정보를 저장한다.  알파 텍스쳐 제외.
+bool cTerrainEditor::SaveTerrain( const string &fileName )
+{
+	return m_grid.WriteGridFile(fileName);
+}
+
+
 // 지형 파일 로드
 bool cTerrainEditor::LoadTerrain( const string &fileName )
 {
-
-	return true;
+	return m_grid.ReadGridFromFile(fileName);
 }
 
 
@@ -40,21 +46,32 @@ bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
 
 	const string mediaDir = cResourceManager::Get()->GetMediaDirectory();
 
-	// 높이맵으로 만들어진 지형이면, 높이 맵을 로딩한다.
-	if (rawTerrain.heightMap.empty())
+	if (rawTerrain.heightMapStyle == 0)
 	{
-		CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
-			rawTerrain.cellSize, rawTerrain.textureFactor );
-		CreateTerrainTexture( mediaDir+rawTerrain.bgTexture );
+		// 높이맵으로 만들어진 지형이면, 높이 맵을 로딩한다.
+		if (rawTerrain.heightMap.empty())
+		{
+			CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
+				rawTerrain.cellSize, rawTerrain.textureFactor );
+			CreateTerrainTexture( mediaDir+rawTerrain.bgTexture );
+		}
+		else
+		{
+			// 기본 지형에서 만들어진 지형이면, 기본 지형을 생성한다.
+			CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
+				rawTerrain.heightFactor, rawTerrain.textureFactor, 
+				rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
+		}
 	}
-	else
+	else if (rawTerrain.heightMapStyle == 1)
 	{
-		// 기본 지형에서 만들어진 지형이면, 기본 지형을 생성한다.
-		CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
+		CreateFromGRDFormat(mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
 			rawTerrain.heightFactor, rawTerrain.textureFactor, 
 			rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
 	}
 
+
+	// 레이어 생성
 	for (int i=0; i < MAX_LAYER; ++i)
 	{
 		if (rawTerrain.layer[ i].texture.empty())
@@ -65,6 +82,7 @@ bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
 			mediaDir+rawTerrain.layer[ i].texture );
 	}
 
+	// 모델 생성.
 	for (u_int i=0; i < rawTerrain.models.size(); ++i)
 	{
 		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
@@ -85,6 +103,7 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 	out.rowCellCount = m_rowCellCount;
 	out.colCellCount = m_colCellCount;
 	out.cellSize = m_cellSize;
+	out.heightMapStyle = 1;//(m_heightMapFileName.empty()? 1 : 0);
 	out.heightMap = cResourceManager::Get()->GetRelativePathToMedia(m_heightMapFileName);
 	out.bgTexture = cResourceManager::Get()->GetRelativePathToMedia(m_grid.GetTexture().GetTextureName());
 	out.textureFactor = m_textureUVFactor;

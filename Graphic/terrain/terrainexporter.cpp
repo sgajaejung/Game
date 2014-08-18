@@ -32,6 +32,7 @@ bool exporter::WriteRawTerrainFile( const string &fileName, const sRawTerrain &t
 	of << "\t\"rowCellCount\" : " << terrain.rowCellCount << "," << endl;
 	of << "\t\"colCellCount\" : " << terrain.colCellCount << "," << endl;
 	of << "\t\"cellSize\" : " << terrain.cellSize << "," << endl;
+	of << "\t\"heightMapStyle\" : " << terrain.heightMapStyle <<  "," << endl;
 	of << "\t\"heightMap\" : " << "\"" << ConvertRS2S(terrain.heightMap) << "\"," << endl;
 	of << "\t\"bg texture\" : " << "\"" << ConvertRS2S(terrain.bgTexture) << "\"," << endl;
 	of << "\t\"alpha texture\" : " << "\"" << ConvertRS2S(terrain.alphaTexture) << "\"," << endl;

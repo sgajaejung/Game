@@ -14,6 +14,10 @@ namespace graphic
 			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f,
 			 const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
 
+		bool CreateFromGRDFormat( const string &gridFileName, 
+			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f,
+			const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
+
 		bool CreateTerrainTexture( const string &textureFileName );
 		
 		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f,

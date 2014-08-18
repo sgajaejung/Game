@@ -35,7 +35,28 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 	// rowCellCount=64, colCellCount=64, cellSize=50.f
 {
 	CreateTerrain(rowCellCount, colCellCount, cellSize, textureUVFactor);
-	UpdateHeightMap(heightMapFileName, textureFileName, heightFactor );
+	const bool result = UpdateHeightMap(heightMapFileName, textureFileName, heightFactor );
+	return result;
+}
+
+
+bool cTerrain::CreateFromGRDFormat( const string &gridFileName, 
+	const string &textureFileName, const float heightFactor, const float textureUVFactor,
+	const int rowCellCount, const int colCellCount, const float cellSize)
+	// heightFactor=3.f, textureUVFactor=1.f
+	// rowCellCount=64, colCellCount=64, cellSize=50.f
+{
+	CreateTerrain(rowCellCount, colCellCount, cellSize, textureUVFactor);
+
+	if (!m_grid.ReadGridFromFile(gridFileName))
+		return false;
+
+	m_grid.CalculateNormals();
+	m_grid.GetTexture().Create( textureFileName );
+
+	m_heightFactor = heightFactor;
+	m_heightMapFileName = gridFileName;
+
 	return true;
 }
 
@@ -75,6 +96,8 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 
 	const wstring wfileName = common::str2wstr(heightMapFileName);
 	Gdiplus::Bitmap bmp(wfileName.c_str());
+	if (Gdiplus::Ok != bmp.GetLastStatus())
+		return false;
 
 	const int VERTEX_COL_COUNT = m_colCellCount + 1;
 	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;

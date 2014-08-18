@@ -15,6 +15,8 @@ namespace graphic
 		void Create( const int rowCellCount, const int colCellCount, const float cellSize, 
 			const float textureUVFactor=8.f);
 		void SetTextureUVFactor(const float textureUVFactor);
+		bool WriteGridFile(const string &fileName);
+		bool ReadGridFromFile(const string &fileName);
 
 		void Render(const int stage=0);
 		void RenderShader(cShader &shader);
@@ -41,6 +43,7 @@ namespace graphic
 		int m_rowCellCount;
 		int m_colCellCount;
 		float m_cellSize;
+		float m_textureUVFactor;
 	};
 
 

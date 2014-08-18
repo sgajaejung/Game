@@ -18,24 +18,6 @@ cMapController::~cMapController(void)
 }
 
 
-// 지형 파일 열기.
-bool cMapController::LoadTerrainFile(const string &fileName)
-{
-	sRawTerrain rawTerrain;
-	if (importer::ReadRawTerrainFile(fileName, rawTerrain))
-	{
-		m_terrain.LoadTerrain(rawTerrain);
-	}
-	else
-	{
-		return false;
-	}
-
-	NotifyObserver();
-	return true;
-}
-
-
 // 높이맵 파일을 읽어서 지형에 적용한다.
 bool cMapController::LoadHeightMap(const string &fileName)
 {
@@ -58,22 +40,55 @@ bool cMapController::LoadHeightMapTexture(const string &fileName)
 }
 
 
+// 지형 파일 열기. (*.TRN 파일을 읽는다.)
+bool cMapController::LoadTerrainFile(const string &fileName)
+{
+	sRawTerrain rawTerrain;
+	if (importer::ReadRawTerrainFile(fileName, rawTerrain))
+	{
+		m_terrain.LoadTerrain(rawTerrain);
+	}
+	else
+	{
+		return false;
+	}
+
+	NotifyObserver();
+	return true;
+}
+
+
 // 지형 정보를 파일에 저장한다.
 bool cMapController::SaveTerrainFile(const string &fileName)
 {
 	sRawTerrain rawTerrain;
 	m_terrain.GenerateRawTerrain(rawTerrain);
 
-	// 알파 텍스쳐 파일 이름 설정.
-	string name = common::GetFileNameExceptExt(fileName);
-	name += "_alpha.png";
-	string path = common::GetFilePathExceptFileName(fileName);
-	if (!path.empty())
-		path += "\\";
+	// 지형 정보 저장.
+	{
+		string name = common::GetFileNameExceptExt(fileName);
+		name += "_geo.grd";
+		string path = common::GetFilePathExceptFileName(fileName);
+		if (!path.empty())
+			path += "\\";
 
-	const string alphaTextureName = path + name;
-	rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureName);
-	m_terrain.GetAlphaTexture().WriteFile(alphaTextureName);
+		const string heigtmapFileName = path + name;
+		rawTerrain.heightMap = graphic::cResourceManager::Get()->GetRelativePathToMedia(heigtmapFileName);
+		m_terrain.SaveTerrain( heigtmapFileName );
+	}	
+
+	// 알파 텍스쳐 파일 이름 설정.
+	{
+		string name = common::GetFileNameExceptExt(fileName);
+		name += "_alpha.png";
+		string path = common::GetFilePathExceptFileName(fileName);
+		if (!path.empty())
+			path += "\\";
+
+		const string alphaTextureFileName = path + name;
+		rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureFileName);
+		m_terrain.GetAlphaTexture().WriteFile(alphaTextureFileName);
+	}
 
 	const bool result = exporter::WriteRawTerrainFile(fileName, rawTerrain);
 

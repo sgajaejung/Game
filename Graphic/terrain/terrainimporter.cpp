@@ -55,6 +55,7 @@ void importer::ReadRawTerrainFileV1( ptree &props, OUT sRawTerrain &out )
 	out.rowCellCount = props.get<int>("rowCellCount");
 	out.colCellCount = props.get<int>("colCellCount");
 	out.cellSize = props.get<float>("cellSize");
+	out.heightMapStyle = props.get<int>("heightMapStyle", 0);
 	out.heightMap = props.get<string>("heightMap", emptyStr);
 	out.bgTexture = props.get<string>("bg texture", emptyStr);
 	out.alphaTexture = props.get<string>("alpha texture", emptyStr);
