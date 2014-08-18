@@ -25,6 +25,8 @@ namespace graphic
 		string heightMap;
 		string bgTexture;
 		string alphaTexture;
+		int alphaTextureWidth;
+		int alphaTextureHeight;
 		float textureFactor;
 		float heightFactor;
 		sRawLayer layer[4];

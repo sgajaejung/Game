@@ -106,6 +106,8 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 	out.heightMapStyle = 1;//(m_heightMapFileName.empty()? 1 : 0);
 	out.heightMap = cResourceManager::Get()->GetRelativePathToMedia(m_heightMapFileName);
 	out.bgTexture = cResourceManager::Get()->GetRelativePathToMedia(m_grid.GetTexture().GetTextureName());
+	out.alphaTextureWidth = ALPHA_TEXTURE_SIZE_W;
+	out.alphaTextureHeight = ALPHA_TEXTURE_SIZE_H;
 	out.textureFactor = m_textureUVFactor;
 	out.heightFactor = m_heightFactor;
 

@@ -184,7 +184,7 @@ bool cGrid2::WriteGridFile(const string &fileName)
 	
 	// sGridBinary 구조체 파일에 저장.
 	using namespace std;
-	ofstream of(fileName);
+	ofstream of(fileName, ios_base::binary | ios_base::out);
 	if (!of.is_open())
 		return false;
 
@@ -205,7 +205,7 @@ bool cGrid2::WriteGridFile(const string &fileName)
 bool cGrid2::ReadGridFromFile(const string &fileName)
 {
 	using namespace std;
-	ifstream ifs(fileName);
+	ifstream ifs(fileName, ios_base::binary | ios_base::in);
 	if (!ifs.is_open())
 		return false;
 
@@ -219,7 +219,7 @@ bool cGrid2::ReadGridFromFile(const string &fileName)
 	if (gbin.version != '1')
 		return false;
 
-	ifs.seekg(0);
+	ifs.seekg(0, ifs.beg);// 처음으로 돌아간다.
 
 	ifs.read( (char*)&gbin, sizeof(gbin) );
 

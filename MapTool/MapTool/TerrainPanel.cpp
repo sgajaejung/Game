@@ -126,6 +126,28 @@ void CTerrainPanel::OnBnClickedButtonLoadTerrain()
 
 void CTerrainPanel::OnBnClickedButtonCrterrain()
 {
+	if (cMapController::Get()->GetTerrain().IsLoaded())
+	{
+		if (IDYES == ::AfxMessageBox(L"이미 열려있는 지형 정보가 있습니다. 저장하시겠습니까?", 
+			MB_YESNO))
+		{
+			// 파일 저장 창 오픈
+			wchar_t szFilter[] = L"Terrain (*.trn) | *.trn; | All Files(*.*)|*.*||";
+			CFileDialog dlg(FALSE, L"trn", L"Terrain", OFN_HIDEREADONLY, szFilter);
+			if(IDOK == dlg.DoModal())
+			{
+				const CString strPathName = dlg.GetPathName();
+				const string fileName = wstr2str((wstring)strPathName);
+				cMapController::Get()->SaveTerrainFile(fileName);
+			}
+			else
+			{
+				// 파일 저장 실패, 종료.
+			}			
+			
+		}
+	}
+
 	cMapController::Get()->CreateDefaultTerrain();
 
 }

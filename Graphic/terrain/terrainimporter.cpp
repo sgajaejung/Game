@@ -59,6 +59,8 @@ void importer::ReadRawTerrainFileV1( ptree &props, OUT sRawTerrain &out )
 	out.heightMap = props.get<string>("heightMap", emptyStr);
 	out.bgTexture = props.get<string>("bg texture", emptyStr);
 	out.alphaTexture = props.get<string>("alpha texture", emptyStr);
+	out.alphaTextureHeight = props.get<int>("alpha texture height", 256);
+	out.alphaTextureWidth = props.get<int>("alpha texture width", 256);
 	out.textureFactor = props.get<float>("texture factor", 1.f);
 	out.heightFactor = props.get<float>("height factor", 1.f);
 

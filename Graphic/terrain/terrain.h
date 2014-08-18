@@ -28,6 +28,8 @@ namespace graphic
 		bool Pick(const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out);
 		cModel* PickModel(const Vector3 &orig, const Vector3 &dir);
 
+		bool IsLoaded() const;
+
 		bool AddRigidModel(const cModel &model);
 		cModel* AddRigidModel(const string &fileName);
 		cModel* FindRigidModel(const int id);
@@ -80,4 +82,5 @@ namespace graphic
 	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
 	inline float cTerrain::GetHeightFactor() const { return m_heightFactor; }
 	inline vector<cModel*>& cTerrain::GetRigidModels() { return m_rigids; }
+	inline bool cTerrain::IsLoaded() const { return m_rowCellCount > 0; }
 }

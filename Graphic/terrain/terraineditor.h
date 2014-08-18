@@ -22,8 +22,8 @@ namespace graphic
 	{
 		enum {
 			MAX_LAYER = 4,
-			ALPHA_TEXTURE_SIZE_W = 200,
-			ALPHA_TEXTURE_SIZE_H = 200,
+			ALPHA_TEXTURE_SIZE_W = 256,
+			ALPHA_TEXTURE_SIZE_H = 256,
 		};
 
 	public:
