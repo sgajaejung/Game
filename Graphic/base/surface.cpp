@@ -25,6 +25,9 @@ cSurface::~cSurface()
 // 텍스쳐, 타겟 서피스, Z버퍼 생성.
 bool cSurface::CreateRenderTarget(const int width, const int height)
 {
+	m_width = width;
+	m_height = height;
+
 	if (FAILED(GetDevice()->CreateTexture(width, height, 1, 
 		D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8,
 		D3DPOOL_DEFAULT, &m_texture, NULL)))
@@ -65,6 +68,9 @@ void cSurface::UnBind()
 	GetDevice()->SetRenderTarget(0, m_oldBackBuffer);
 	GetDevice()->SetDepthStencilSurface(m_oldZBuffer);
 	GetDevice()->SetViewport(&m_oldViewport);
+
+	SAFE_RELEASE(m_oldBackBuffer);
+	SAFE_RELEASE(m_oldZBuffer);
 }
 
 
