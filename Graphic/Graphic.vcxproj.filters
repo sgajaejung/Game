@@ -130,6 +130,9 @@
     <ClInclude Include="terrain\terrainexporter.h">
       <Filter>terrain</Filter>
     </ClInclude>
+    <ClInclude Include="base\surface.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -243,6 +246,9 @@
     </ClCompile>
     <ClCompile Include="terrain\terrainexporter.cpp">
       <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="base\surface.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

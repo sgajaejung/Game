@@ -253,17 +253,10 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		m_curPos = point;
 
-		switch (cMapController::Get()->GetEditMode())
+		if (EDIT_MODE::MODE_BRUSH == cMapController::Get()->GetEditMode())
 		{
-		case EDIT_MODE::MODE_TERRAIN:
-			//cMapController::Get()->BrushTerrain(point);
-			break;
-
-		case EDIT_MODE::MODE_BRUSH:
 			cMapController::Get()->BrushTexture(point);
-			break;
 		}
-
 	}
 	else if (m_RButtonDown)
 	{

@@ -10,8 +10,6 @@ using namespace graphic;
 
 
 cTerrainEditor::cTerrainEditor()
-	//m_numLayer(0)
-//,	m_layer(MAX_LAYER)
 {
 	InitLayer();
 
@@ -247,8 +245,6 @@ void cTerrainEditor::BrushTexture( const cTerrainCursor &cursor )
 			const float ru = fabs(au-u) * WIDTH;
 			const float rv = fabs(av-v) * HEIGHT;
 			const float len = sqrt( ru*ru + rv*rv );
-			//float len = sqrt( ((au-u)*(au-u)) + ((av-v)*(av-v)) );
-			//len *= (COL_CELL_COUNT * CELL_SIZE);
 
 			// A8R8G8B8 Format
 			DWORD *ppixel = (DWORD*)(pbits + (ax*4) + (lockrect.Pitch * ay));

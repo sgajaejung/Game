@@ -6,15 +6,8 @@ namespace graphic
 
 	struct sSplatLayer
 	{
-		//int layer;
-		cTexture *texture;
-		
+		cTexture *texture;	
 		sSplatLayer() : texture(NULL) {}
-		//sSplatLayer(int layer0) : layer(layer0) {}
-
-		//bool operator==(const sSplatLayer &l) {
-		//	return layer == l.layer;
-		//}
 	};
 
 
@@ -60,8 +53,7 @@ namespace graphic
 
 
 	private:
-		vector<sSplatLayer> m_layer; //MAX_LAYER 갯수 만큼 크기가 잡힌다.
-		//int m_numLayer;
+		vector<sSplatLayer> m_layer;
 		cTexture m_alphaTexture;
 		cTexture m_emptyTexture;
 	};
