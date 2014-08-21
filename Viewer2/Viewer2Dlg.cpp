@@ -294,7 +294,7 @@ void CViewer2Dlg::OnDropFiles(HDROP hDropInfo)
 void CViewer2Dlg::OnBnClickedCheckWireframe()
 {
 	UpdateData();
-	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame);
+	graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, !m_WireFrame? D3DCULL_CCW : D3DCULL_NONE);
 	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, !m_WireFrame? D3DFILL_SOLID : D3DFILL_WIREFRAME);
 }
 

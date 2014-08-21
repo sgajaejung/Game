@@ -31,6 +31,7 @@ using namespace common;
 #include "base/skybox.h"
 #include "base/sphere.h"
 #include "base/surface.h"
+#include "base/circle.h"
 
 #include "model/node.h"
 

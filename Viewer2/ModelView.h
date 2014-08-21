@@ -32,6 +32,7 @@ protected:
 
 	bool m_showSkybox;
 
+	graphic::cCircle m_circle;
 
 public:
 #ifdef _DEBUG
