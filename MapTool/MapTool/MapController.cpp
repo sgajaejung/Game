@@ -87,7 +87,7 @@ bool cMapController::SaveTerrainFile(const string &fileName)
 
 		const string alphaTextureFileName = path + name;
 		rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureFileName);
-		m_terrain.GetAlphaTexture().WriteFile(alphaTextureFileName);
+		m_terrain.GetAlphaTexture().WritePNGFile(alphaTextureFileName);
 	}
 
 	const bool result = exporter::WriteRawTerrainFile(fileName, rawTerrain);

@@ -126,6 +126,59 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 }
 
 
+// 스플래팅된 최종 지형 텍스쳐를 파일에 저장한다.
+void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
+{
+	cShader shader;
+	shader.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
+
+	cSurface surface;
+	surface.CreateRenderTarget(512, 512);
+
+	surface.Begin();
+
+	GetDevice()->Clear(0L, NULL
+		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
+		, 0x00000000, 1.0f, 0L);
+
+	const float width = GetTerrainWidth();
+	cCamera camera(Vector3(0,width/2,0), Vector3(0,0,0), Vector3(0,0,1));
+	camera.SetProjection( D3DX_PI / 2.f, 1.f, 1, width/2 );
+
+	Matrix44 matIdentity;
+	shader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
+	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+	shader.SetVector( "vEyePos", camera.GetEyePos());
+	shader.SetMatrix( "mWIT", matIdentity);
+	shader.SetMatrix( "mWorld", matIdentity);
+	
+	//RenderShader(shader);
+	if (m_layer.empty())
+	{
+		shader.SetRenderPass(0);
+		cTerrain::RenderShader(shader);
+	}
+	else
+	{
+		shader.SetTexture( "SplattingAlphaMap", m_alphaTexture );
+		shader.SetFloat( "alphaUVFactor", GetTextureUVFactor() );
+
+		const string texName[] = {"Tex1", "Tex2", "Tex3", "Tex4" };
+		for (u_int i=0; i < m_layer.size(); ++i)
+			shader.SetTexture( texName[ i], *m_layer[ i].texture );
+		for (u_int i=m_layer.size(); i < MAX_LAYER; ++i)
+			shader.SetTexture( texName[ i], m_emptyTexture );
+
+		shader.SetRenderPass(4);
+		cTerrain::RenderShader(shader);
+	}
+
+	surface.End();
+
+	surface.WritePNGFile( fileName );
+}
+
+
 void cTerrainEditor::Render()
 {
 	if (m_layer.empty())

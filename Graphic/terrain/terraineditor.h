@@ -27,6 +27,7 @@ namespace graphic
 		bool LoadTerrain( const string &fileName );
 		bool LoadTerrain( const sRawTerrain &rawTerrain );
 		void GenerateRawTerrain( OUT sRawTerrain &out );
+		void WriteTerrainTextureToPNGFile( const string &fileName );
 
 		void BrushTerrain( const cTerrainCursor &cursor, const float elapseT );
 		void BrushTexture( const cTerrainCursor &cursor );

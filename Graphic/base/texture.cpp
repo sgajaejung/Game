@@ -109,7 +109,7 @@ void cTexture::Clear()
 
 
 // 텍스쳐를 파일에 저장한다.
-bool cTexture::WriteFile( const string &fileName )
+bool cTexture::WritePNGFile( const string &fileName )
 {
 	if (FAILED(D3DXSaveTextureToFileA(fileName.c_str(), D3DXIFF_PNG, m_texture, NULL)))
 	{

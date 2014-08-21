@@ -363,6 +363,26 @@ float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 }
 
 
+
+// -------------------------------------------------------------
+// 5패스:픽셀셰이더, 스플래팅  (조명X)
+// -------------------------------------------------------------
+float4 PS_pass4(VS_OUTPUT In) : COLOR
+{
+	float4 Out;
+
+	Out = tex2D(Samp, In.Tex);
+
+	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
+	Out = (alpha.a * (tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
+	Out = (alpha.r * (tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
+	Out = (alpha.g * (tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
+	Out = (alpha.b * (tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
+
+    return Out;
+}
+
+
 	
 // -------------------------------------------------------------
 // 테크닉
@@ -399,6 +419,14 @@ technique TShader
     {
         VertexShader = compile vs_3_0 VS_pass3();
 		PixelShader  = compile ps_3_0 PS_pass3();
+    }
+
+
+	// 스플래팅 
+    pass P4
+    {
+        VertexShader = compile vs_3_0 VS_pass0();
+		PixelShader  = compile ps_3_0 PS_pass4();
     }
 
 }

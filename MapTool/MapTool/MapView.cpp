@@ -84,8 +84,6 @@ bool CMapView::Init()
 	m_terrainShader2.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
 	m_modelShader = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
 
-	m_surface.CreateRenderTarget(512, 512);
-
 	return true;
 }
 
@@ -110,20 +108,9 @@ void CMapView::Render()
 		graphic::GetRenderer()->RenderFPS();
 		//graphic::GetRenderer()->RenderGrid();
 
-
-		m_surface.Begin();
-		graphic::GetDevice()->Clear(0L, NULL
-			, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-			, 0x00000000, 1.0f, 0L);
-
-
-		graphic::cCamera camera(
-			Vector3(0,500,0), Vector3(0,0,0), Vector3(0,0,1));
-		camera.SetProjection( D3DX_PI / 4.f, (float)VIEW_WIDTH / (float) VIEW_HEIGHT, 1.f, 10000.0f);
-
 		const Matrix44 matIdentity;
 
-		//cCamera &camera = cMapController::Get()->GetCamera();
+		cCamera &camera = cMapController::Get()->GetCamera();
 		m_terrainShader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
 		m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
 		m_terrainShader.SetVector( "vEyePos", camera.GetEyePos());
@@ -163,13 +150,7 @@ void CMapView::Render()
 			break;
 		}
 
-
 		graphic::GetRenderer()->RenderAxis();
-
-		m_surface.End();
-/**/
-
-		m_surface.Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -197,8 +178,7 @@ void CMapView::Update(float elapseT)
 
 void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	m_surface.WriteFile( "terrainTexture.png" );
-
+	//cMapController::Get()->GetTerrain().WriteTerrainTextureToPNGFile( "terrainTexture.png" );
 	SetFocus();
 	SetCapture();
 	m_LButtonDown = true;

@@ -29,7 +29,7 @@ bool cSurface::CreateRenderTarget(const int width, const int height)
 	m_height = height;
 
 	if (FAILED(GetDevice()->CreateTexture(width, height, 1, 
-		D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8,
+		D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8,
 		D3DPOOL_DEFAULT, &m_texture, NULL)))
 		return false;
 
@@ -47,32 +47,8 @@ bool cSurface::CreateRenderTarget(const int width, const int height)
 
 
 // 파일로 저장.
-bool cSurface::WriteFile(const string &fileName)
+bool cSurface::WritePNGFile(const string &fileName)
 {
-	D3DLOCKED_RECT rect;
-	if (FAILED(m_texture->LockRect( 0, &rect, NULL, 0 )))
-		return false;
-
-	BYTE *pbits = (BYTE*)rect.pBits;
-
-	for (int ay=0; ay < m_height; ++ay)
-	{
-		for (int ax=0; ax < m_width; ++ax)
-		{
-			// A8R8G8B8 Format
-			DWORD *ppixel = (DWORD*)(pbits + (ax*4) + (rect.Pitch * ay));
-
-
-			int a = 0;
-
-			
-		}
-	}
-
-
-	m_texture->UnlockRect( 0 );
-
-
 	if (FAILED(D3DXSaveTextureToFileA(fileName.c_str(), D3DXIFF_PNG, m_texture, NULL)))
 	{
 		return false;
