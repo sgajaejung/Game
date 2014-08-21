@@ -1,5 +1,6 @@
 #pragma once
 
+
 namespace graphic
 {
 
@@ -10,8 +11,11 @@ namespace graphic
 		virtual ~cSurface();
 
 		bool CreateRenderTarget(const int width, const int height);
-		void Bind();
-		void UnBind();
+		bool WriteFile(const string &fileName);
+
+		void Begin();
+		void End();
+		void Render();
 		void Clear();
 
 		IDirect3DTexture9* GetTexture();

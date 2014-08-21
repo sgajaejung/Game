@@ -46,8 +46,44 @@ bool cSurface::CreateRenderTarget(const int width, const int height)
 }
 
 
+// 파일로 저장.
+bool cSurface::WriteFile(const string &fileName)
+{
+	D3DLOCKED_RECT rect;
+	if (FAILED(m_texture->LockRect( 0, &rect, NULL, 0 )))
+		return false;
+
+	BYTE *pbits = (BYTE*)rect.pBits;
+
+	for (int ay=0; ay < m_height; ++ay)
+	{
+		for (int ax=0; ax < m_width; ++ax)
+		{
+			// A8R8G8B8 Format
+			DWORD *ppixel = (DWORD*)(pbits + (ax*4) + (rect.Pitch * ay));
+
+
+			int a = 0;
+
+			
+		}
+	}
+
+
+	m_texture->UnlockRect( 0 );
+
+
+	if (FAILED(D3DXSaveTextureToFileA(fileName.c_str(), D3DXIFF_PNG, m_texture, NULL)))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+
 // 렌더 타겟을 교체한다.
-void cSurface::Bind()
+void cSurface::Begin()
 {
 	GetDevice()->GetRenderTarget(0, &m_oldBackBuffer);
 	GetDevice()->GetDepthStencilSurface(&m_oldZBuffer);
@@ -63,7 +99,7 @@ void cSurface::Bind()
 
 
 // 렌더 타겟을 원본으로 되돌린다.
-void cSurface::UnBind()
+void cSurface::End()
 {
 	GetDevice()->SetRenderTarget(0, m_oldBackBuffer);
 	GetDevice()->SetDepthStencilSurface(m_oldZBuffer);
@@ -71,6 +107,30 @@ void cSurface::UnBind()
 
 	SAFE_RELEASE(m_oldBackBuffer);
 	SAFE_RELEASE(m_oldZBuffer);
+}
+
+
+// 서피스 출력.
+void cSurface::Render()
+{
+	GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
+	GetDevice()->SetTextureStageState(0,D3DTSS_COLORARG1,	D3DTA_TEXTURE);
+	GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP,    D3DTOP_DISABLE);
+	float scale = 128.0f;
+	typedef struct {FLOAT p[4]; FLOAT tu, tv;} TVERTEX;
+
+	TVERTEX Vertex[4] = {
+		// x  y  z rhw tu tv
+		{0, scale, 0, 1, 0, 0,},
+		{scale, scale,0, 1, 1, 0,},
+		{scale, scale+scale,0, 1, 1, 1,},
+		{0, scale+scale,0, 1, 0, 1,},
+	};
+	GetDevice()->SetTexture( 0, m_texture );
+	GetDevice()->SetVertexShader(NULL);
+	GetDevice()->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
+	GetDevice()->SetPixelShader(0);
+	GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof( TVERTEX ) );
 }
 
 

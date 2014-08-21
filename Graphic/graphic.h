@@ -30,6 +30,8 @@ using namespace common;
 #include "base/camera.h"
 #include "base/skybox.h"
 #include "base/sphere.h"
+#include "base/surface.h"
+
 #include "model/node.h"
 
 #include "collision/boundingbox.h"

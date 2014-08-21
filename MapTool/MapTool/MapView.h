@@ -28,6 +28,8 @@ protected:
 	graphic::cLine m_line;
 	common::Ray m_ray;
 
+	graphic::cSurface m_surface;
+
 	CPoint m_curPos;
 	bool m_LButtonDown;
 	bool m_RButtonDown;
