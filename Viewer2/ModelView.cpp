@@ -72,7 +72,6 @@ void CModelView::Init()
 
 	cController::Get()->AddObserver(this);
 
-	m_circle.Create(Vector3(0,0,0), 100, 10);
 }
 
 
@@ -116,8 +115,6 @@ void CModelView::Render()
 
 		cController::Get()->RenderShader(m_shader);
 		//cController::Get()->Render();
-
-		m_circle.Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
