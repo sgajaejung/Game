@@ -46,7 +46,7 @@ bool cMapController::LoadTerrainFile(const string &fileName)
 	sRawTerrain rawTerrain;
 	if (importer::ReadRawTerrainFile(fileName, rawTerrain))
 	{
-		m_terrain.LoadTerrain(rawTerrain);
+		m_terrain.ReadTerrainFile(rawTerrain);
 	}
 	else
 	{
@@ -74,7 +74,7 @@ bool cMapController::SaveTerrainFile(const string &fileName)
 
 		const string heigtmapFileName = path + name;
 		rawTerrain.heightMap = graphic::cResourceManager::Get()->GetRelativePathToMedia(heigtmapFileName);
-		m_terrain.SaveTerrain( heigtmapFileName );
+		m_terrain.WriteTerrainFile( heigtmapFileName );
 	}	
 
 	// 알파 텍스쳐 파일 이름 설정.

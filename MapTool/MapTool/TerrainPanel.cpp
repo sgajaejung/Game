@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(CTerrainPanel, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_OUTER_RADIUS2, &CTerrainPanel::OnEnChangeEditOuterRadius2)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_SPEED, &CTerrainPanel::OnNMCustomdrawSliderSpeed)
 	ON_EN_CHANGE(IDC_EDIT_SPEED, &CTerrainPanel::OnEnChangeEditSpeed)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE_TERRAIN_TEXTURE, &CTerrainPanel::OnBnClickedButtonSaveTerrainTexture)
 END_MESSAGE_MAP()
 
 
@@ -167,6 +168,23 @@ void CTerrainPanel::OnBnClickedButtonSaveTerrain()
 }
 
 
+void CTerrainPanel::OnBnClickedButtonSaveTerrainTexture()
+{
+	if (IDYES == AfxMessageBox( L"스플래팅된 지형 텍스쳐를 저장 하시겠습니까?", MB_YESNO))
+	{
+		// 파일 저장 창 오픈
+		wchar_t szFilter[] = L"Terrain (*.png) | *.png; | All Files(*.*)|*.*||";
+		CFileDialog dlg(FALSE, L"png", L"TerrainTexture", OFN_HIDEREADONLY, szFilter);
+		if(IDOK == dlg.DoModal())
+		{
+			const CString strPathName = dlg.GetPathName();
+			const string fileName = wstr2str((wstring)strPathName);
+			cMapController::Get()->GetTerrain().WriteTerrainTextureToPNGFile( fileName );
+		}		
+	}
+}
+
+
 void CTerrainPanel::OnChangeMfceditbrowseTexture()
 {
 	CString fileName;
@@ -232,3 +250,4 @@ void CTerrainPanel::OnEnChangeEditSpeed()
 	m_SliderSpeed.SetPos(m_Speed);
 	cMapController::Get()->GetTerrainCursor().SetBrushSpeed(m_Speed);
 }
+

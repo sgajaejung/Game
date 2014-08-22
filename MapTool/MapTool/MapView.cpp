@@ -178,7 +178,6 @@ void CMapView::Update(float elapseT)
 
 void CMapView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	//cMapController::Get()->GetTerrain().WriteTerrainTextureToPNGFile( "terrainTexture.png" );
 	SetFocus();
 	SetCapture();
 	m_LButtonDown = true;

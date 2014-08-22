@@ -24,21 +24,21 @@ cTerrainEditor::~cTerrainEditor()
 
 
 // 지형 정보를 저장한다.  알파 텍스쳐 제외.
-bool cTerrainEditor::SaveTerrain( const string &fileName )
+bool cTerrainEditor::WriteTerrainFile( const string &fileName )
 {
 	return m_grid.WriteGridFile(fileName);
 }
 
 
 // 지형 파일 로드
-bool cTerrainEditor::LoadTerrain( const string &fileName )
+bool cTerrainEditor::ReadTerrainFile( const string &fileName )
 {
 	return m_grid.ReadGridFromFile(fileName);
 }
 
 
 // 지형정보를 토대로 지형을 생성한다.
-bool cTerrainEditor::LoadTerrain( const sRawTerrain &rawTerrain )
+bool cTerrainEditor::ReadTerrainFile( const sRawTerrain &rawTerrain )
 {
 	Clear();
 
@@ -130,7 +130,7 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 {
 	cShader shader;
-	shader.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
+	shader.Create( "../../media/shader/hlsl_terrain_splatting_texture_write.fx", "TShader" );
 
 	cSurface surface;
 	surface.CreateRenderTarget(512, 512);
@@ -169,7 +169,7 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 		for (u_int i=m_layer.size(); i < MAX_LAYER; ++i)
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
-		shader.SetRenderPass(4);
+		shader.SetRenderPass(1);
 		cTerrain::RenderShader(shader);
 	}
 

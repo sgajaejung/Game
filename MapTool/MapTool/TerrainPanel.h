@@ -47,4 +47,5 @@ public:
 	float m_Speed;
 	afx_msg void OnNMCustomdrawSliderSpeed(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeEditSpeed();
+	afx_msg void OnBnClickedButtonSaveTerrainTexture();
 };

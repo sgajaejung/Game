@@ -23,9 +23,9 @@ namespace graphic
 		cTerrainEditor();
 		virtual ~cTerrainEditor();
 
-		bool SaveTerrain( const string &fileName );
-		bool LoadTerrain( const string &fileName );
-		bool LoadTerrain( const sRawTerrain &rawTerrain );
+		bool WriteTerrainFile( const string &fileName );
+		bool ReadTerrainFile( const string &fileName );
+		bool ReadTerrainFile( const sRawTerrain &rawTerrain );
 		void GenerateRawTerrain( OUT sRawTerrain &out );
 		void WriteTerrainTextureToPNGFile( const string &fileName );
 
