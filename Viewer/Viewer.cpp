@@ -37,6 +37,7 @@ private:
 	graphic::cSprite *m_image;
 	graphic::cShader m_shader;
 	graphic::cShader m_shaderSkin;
+	graphic::cShader *m_shaderSkin2;
 	graphic::cTerrain m_terrain;
 	graphic::cCube m_cube;
 	graphic::cSphere m_sphere;
@@ -130,13 +131,20 @@ bool cViewer::OnInit()
 	//m_character.SetRenderWeaponBoundingBox(true);
 
 
-	m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
+	//m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
+	m_shader.Create( "../media/shader/hlsl_terrain_splatting.fx", "TShader" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
 	m_shaderSkin.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
-	m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f, 4.f);
+	//m_shaderSkin2.Create( "../media/shader/hlsl_skinning_no_light.fx", "TShader" );
+	m_shaderSkin2 = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
+	//m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f, 4.f);
+	m_terrain.CreateFromTRNFile( "../media/terrain/terrain7.trn" );
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
 	//m_sphere.Create(100, 20, 20);
+
+	
+
 /**/
 
 	// 그림자 텍스처 생성
@@ -288,7 +296,12 @@ void cViewer::OnRender(const float elapseT)
 		Matrix44 m = matView * matProj * mT;
 		m_shader.SetMatrix( "mWVPT", m );
 
-		m_shader.SetRenderPass(2);
+		m_shaderSkin2->SetMatrix( "mVP",  m_camera.GetViewProjectionMatrix());
+		m_shaderSkin2->SetVector( "vLightDir", Vector3(0,-1,0) );
+		m_shaderSkin2->SetVector( "vEyePos", m_camera.GetEyePos());
+
+		//m_shader.SetRenderPass(2);
+		m_shader.SetRenderPass(3);
 		m_terrain.RenderShader(m_shader);
 
 		m_cube.Render(matIdentity);

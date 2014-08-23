@@ -23,10 +23,6 @@ namespace graphic
 		void SetTextureUVFactor(const float textureUVFactor);
 
 
-		virtual void Render() override;
-		virtual void RenderShader(cShader &shader) override;
-
-
 	protected:
 		void GetTextureUV(const Vector3 &pos, OUT float &tu, OUT float &tv);
 

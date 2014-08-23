@@ -164,42 +164,6 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 }
 
 
-void cTerrainEditor::Render()
-{
-	if (m_layer.empty())
-	{
-		cTerrain::Render();
-	}
-	else
-	{
-		
-	}
-}
-
-
-void cTerrainEditor::RenderShader(cShader &shader)
-{
-	if (m_layer.empty())
-	{
-		cTerrain::RenderShader(shader);
-	}
-	else
-	{
-		shader.SetTexture( "SplattingAlphaMap", m_alphaTexture );
-		shader.SetFloat( "alphaUVFactor", GetTextureUVFactor() );
-
-		const string texName[] = {"Tex1", "Tex2", "Tex3", "Tex4" };
-		for (u_int i=0; i < m_layer.size(); ++i)
-			shader.SetTexture( texName[ i], *m_layer[ i].texture );
-		for (u_int i=m_layer.size(); i < MAX_LAYER; ++i)
-			shader.SetTexture( texName[ i], m_emptyTexture );
-
-		shader.SetRenderPass(3);
-		cTerrain::RenderShader(shader);
-	}
-}
-
-
 // 지형의 높낮이를 조절한다.
 void cTerrainEditor::BrushTerrain( const cTerrainCursor &cursor, const float elapseT )
 {

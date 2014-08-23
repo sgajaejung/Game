@@ -96,17 +96,6 @@ VS_OUTPUT VS_pass0(
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
 	float4 Out;
-
-//	float3 L = -vLightDir.xyz;
-//	float3 H = normalize(L + normalize(In.Eye));
-// float3 N = normalize(In.N);
-
-//	Out = 	I_a * K_a
-//				+ I_d * K_d * max(0, dot(N,L));
-//				+ I_s * pow( max(0, dot(N,H)), 16);
-
-//	Out = Out * tex2D(Samp, In.Tex);
-
 	Out = tex2D(Samp, In.Tex);
     return Out;
 }

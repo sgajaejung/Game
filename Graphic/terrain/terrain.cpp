@@ -19,8 +19,6 @@ cTerrain::cTerrain() :
 {
 	m_rigids.reserve(32);
 
-	m_modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
-
 }
 
 cTerrain::~cTerrain()
@@ -225,7 +223,26 @@ void cTerrain::RenderShader(cShader &shader)
 	Vector3 fog(1.f, 10000.f, 0);  // near, far
 	shader.SetVector( "vFog", fog);
 
+	if (m_layer.empty())
+	{
+	}
+	else
+	{
+		shader.SetTexture( "SplattingAlphaMap", m_alphaTexture );
+		shader.SetFloat( "alphaUVFactor", GetTextureUVFactor() );
+
+		const string texName[] = {"Tex1", "Tex2", "Tex3", "Tex4" };
+		for (u_int i=0; i < m_layer.size(); ++i)
+			shader.SetTexture( texName[ i], *m_layer[ i].texture );
+		for (u_int i=m_layer.size(); i < MAX_LAYER; ++i)
+			shader.SetTexture( texName[ i], m_emptyTexture );
+	}
+
+	shader.SetRenderPass(3);
 	m_grid.RenderShader(shader);
+
+	if (!m_modelShader)
+		m_modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
 
 	if (m_isShowModel && m_modelShader)
 		RenderShaderRigidModels(*m_modelShader);
