@@ -24,74 +24,17 @@ cTerrainEditor::~cTerrainEditor()
 
 
 // 지형 정보를 저장한다.  알파 텍스쳐 제외.
-bool cTerrainEditor::WriteTerrainFile( const string &fileName )
+// GRD 포맷으로 저장된다.
+bool cTerrainEditor::WriteGRDFile( const string &fileName )
 {
-	return m_grid.WriteGridFile(fileName);
+	return m_grid.WriteFile(fileName);
 }
 
 
 // 지형 파일 로드
-bool cTerrainEditor::ReadTerrainFile( const string &fileName )
+bool cTerrainEditor::CreateFromGRDFile( const string &fileName )
 {
-	return m_grid.ReadGridFromFile(fileName);
-}
-
-
-// 지형정보를 토대로 지형을 생성한다.
-bool cTerrainEditor::ReadTerrainFile( const sRawTerrain &rawTerrain )
-{
-	Clear();
-
-	const string mediaDir = cResourceManager::Get()->GetMediaDirectory();
-
-	if (rawTerrain.heightMapStyle == 0)
-	{
-		// 높이맵으로 만들어진 지형이면, 높이 맵을 로딩한다.
-		if (rawTerrain.heightMap.empty())
-		{
-			CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
-				rawTerrain.cellSize, rawTerrain.textureFactor );
-			CreateTerrainTexture( mediaDir+rawTerrain.bgTexture );
-		}
-		else
-		{
-			// 기본 지형에서 만들어진 지형이면, 기본 지형을 생성한다.
-			CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
-				rawTerrain.heightFactor, rawTerrain.textureFactor, 
-				rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
-		}
-	}
-	else if (rawTerrain.heightMapStyle == 1)
-	{
-		CreateFromGRDFormat(mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
-			rawTerrain.heightFactor, rawTerrain.textureFactor, 
-			rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
-	}
-
-
-	// 레이어 생성
-	for (int i=0; i < MAX_LAYER; ++i)
-	{
-		if (rawTerrain.layer[ i].texture.empty())
-			break;
-
-		AddLayer();
-		m_layer[ i].texture = cResourceManager::Get()->LoadTexture( 
-			mediaDir+rawTerrain.layer[ i].texture );
-	}
-
-	// 모델 생성.
-	for (u_int i=0; i < rawTerrain.models.size(); ++i)
-	{
-		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
-		{
-			model->SetTM(rawTerrain.models[ i].tm);
-		}
-	}
-
-	m_alphaTexture.Create( mediaDir+rawTerrain.alphaTexture );
-
-	return true;
+	return m_grid.CreateFromFile(fileName);
 }
 
 
@@ -126,6 +69,43 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 }
 
 
+// 지형 정보를 파일에 저장한다.
+// TRN 포맷으로 저장된다.
+bool cTerrainEditor::WriteTRNFile(const string &fileName)
+{
+	sRawTerrain rawTerrain;
+	GenerateRawTerrain(rawTerrain);
+
+	// 지형 정보 저장. (*.GRD)
+	{
+		string name = common::GetFileNameExceptExt(fileName);
+		name += "_geo.grd";
+		string path = common::GetFilePathExceptFileName(fileName);
+		if (!path.empty())
+			path += "\\";
+
+		const string heigtmapFileName = path + name;
+		rawTerrain.heightMap = graphic::cResourceManager::Get()->GetRelativePathToMedia(heigtmapFileName);
+		WriteGRDFile( heigtmapFileName );
+	}
+
+	// 알파 텍스쳐 파일 이름 설정. (*.PNG)
+	{
+		string name = common::GetFileNameExceptExt(fileName);
+		name += "_alpha.png";
+		string path = common::GetFilePathExceptFileName(fileName);
+		if (!path.empty())
+			path += "\\";
+
+		const string alphaTextureFileName = path + name;
+		rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureFileName);
+		m_alphaTexture.WritePNGFile(alphaTextureFileName);
+	}
+
+	return exporter::WriteRawTerrainFile(fileName, rawTerrain);
+}
+
+
 // 스플래팅된 최종 지형 텍스쳐를 파일에 저장한다.
 void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 {
@@ -153,6 +133,9 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 	shader.SetMatrix( "mWorld", matIdentity);
 	
 	//RenderShader(shader);
+	const bool oldShowModel = m_isShowModel;
+	m_isShowModel = false;
+
 	if (m_layer.empty())
 	{
 		shader.SetRenderPass(0);
@@ -172,6 +155,8 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 		shader.SetRenderPass(1);
 		cTerrain::RenderShader(shader);
 	}
+
+	m_isShowModel = oldShowModel;
 
 	surface.End();
 
@@ -336,77 +321,6 @@ void cTerrainEditor::BrushTexture( const cTerrainCursor &cursor )
 }
 
 
-void cTerrainEditor::InitLayer()
-{
-	m_layer.clear();
-
-	m_alphaTexture.Clear();
-	m_alphaTexture.Create( ALPHA_TEXTURE_SIZE_W, ALPHA_TEXTURE_SIZE_H,
-		D3DFMT_A8R8G8B8 );
-}
-
-
-// 최상위 레이어 리턴
-sSplatLayer& cTerrainEditor::GetTopLayer()
-{
-	if (m_layer.empty())
-		m_layer.push_back(sSplatLayer());
-	return m_layer.back();
-}
-
-
-// 레이어 추가.
-bool cTerrainEditor::AddLayer()
-{
-	if (m_layer.size() >= MAX_LAYER)
-		return false;
-
-	m_layer.push_back(sSplatLayer());
-	return true;
-}
-
-
-// layer 에 해당하는 마스크를 리턴한다.
-DWORD cTerrainEditor::GetAlphaMask(const int layer)
-{
-	return (0xFF << (24 - (layer * 8)));
-}
-
-
-// layer 위치의 레이어를 제거하고, 나머지는 밀어 올린다.
-void cTerrainEditor::DeleteLayer(int layer)
-{
-	RET(m_layer.empty());
-
-	common::rotatepopvector(m_layer, (u_int)layer);
-
-	// 비어있는 알파 이미지도 같이 밀어올린다.
-	const DWORD delMask = GetAlphaMask(layer);
-	DWORD moveMask = 0;
-	for (u_int i=layer; i < m_layer.size(); ++i)
-		moveMask |= GetAlphaMask(i+1);
-
-	D3DLOCKED_RECT lockrect;
-	m_alphaTexture.Lock(lockrect);
-
-	BYTE *pbits = (BYTE*)lockrect.pBits;
-	for (int ay=0; ay < ALPHA_TEXTURE_SIZE_H; ++ay)
-	{
-		for (int ax=0; ax < ALPHA_TEXTURE_SIZE_W; ++ax)
-		{
-			// A8R8G8B8 Format
-			DWORD *ppixel = (DWORD*)(pbits + (ax*4) + (lockrect.Pitch * ay));
-			DWORD moveVal = *ppixel & moveMask;
-			*ppixel = *ppixel & ~(delMask | moveMask); // 이동할 AlphaTexture 초기화
-			*ppixel = *ppixel | (moveVal << 8);
-		}
-	}
-
-	m_alphaTexture.Unlock();
-
-}
-
-
 void cTerrainEditor::GetTextureUV(const Vector3 &pos, OUT float &tu, OUT float &tv)
 {
 	const float width = GetColCellCount() * GetCellSize();
@@ -418,13 +332,6 @@ void cTerrainEditor::GetTextureUV(const Vector3 &pos, OUT float &tu, OUT float &
 
 	tu = x / (float)width;
 	tv = z / (float)height;
-}
-
-
-void cTerrainEditor::Clear()
-{
-	cTerrain::Clear();
-	InitLayer();
 }
 
 

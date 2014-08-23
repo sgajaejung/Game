@@ -120,7 +120,7 @@ void CTerrainPanel::OnBnClickedButtonLoadTerrain()
 	{
 		const CString strPathName = dlg.GetPathName();
 		const string fileName = wstr2str((wstring)strPathName);
-		cMapController::Get()->LoadTerrainFile(fileName);
+		cMapController::Get()->LoadTRNFile(fileName);
 	}
 }
 
@@ -139,7 +139,7 @@ void CTerrainPanel::OnBnClickedButtonCrterrain()
 			{
 				const CString strPathName = dlg.GetPathName();
 				const string fileName = wstr2str((wstring)strPathName);
-				cMapController::Get()->SaveTerrainFile(fileName);
+				cMapController::Get()->SaveTRNFile(fileName);
 			}
 			else
 			{
@@ -163,7 +163,7 @@ void CTerrainPanel::OnBnClickedButtonSaveTerrain()
 	{
 		const CString strPathName = dlg.GetPathName();
 		const string fileName = wstr2str((wstring)strPathName);
-		cMapController::Get()->SaveTerrainFile(fileName);
+		cMapController::Get()->SaveTRNFile(fileName);
 	}
 }
 

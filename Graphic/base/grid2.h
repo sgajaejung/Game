@@ -14,12 +14,13 @@ namespace graphic
 
 		void Create( const int rowCellCount, const int colCellCount, const float cellSize, 
 			const float textureUVFactor=8.f);
-		void SetTextureUVFactor(const float textureUVFactor);
-		bool WriteGridFile(const string &fileName);
-		bool ReadGridFromFile(const string &fileName);
+		bool CreateFromFile(const string &fileName);
+		bool WriteFile(const string &fileName);
 
 		void Render(const int stage=0);
 		void RenderShader(cShader &shader);
+
+		void SetTextureUVFactor(const float textureUVFactor);
 		int GetRowCellCount() const;
 		int GetColCellCount() const;
 

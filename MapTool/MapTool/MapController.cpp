@@ -21,7 +21,6 @@ cMapController::~cMapController(void)
 // 높이맵 파일을 읽어서 지형에 적용한다.
 bool cMapController::LoadHeightMap(const string &fileName)
 {
-	m_heightMapFileName = fileName;
 	const bool result = m_terrain.CreateFromHeightMap(fileName, "empty" );
 
 	NotifyObserver();
@@ -41,14 +40,9 @@ bool cMapController::LoadHeightMapTexture(const string &fileName)
 
 
 // 지형 파일 열기. (*.TRN 파일을 읽는다.)
-bool cMapController::LoadTerrainFile(const string &fileName)
+bool cMapController::LoadTRNFile(const string &fileName)
 {
-	sRawTerrain rawTerrain;
-	if (importer::ReadRawTerrainFile(fileName, rawTerrain))
-	{
-		m_terrain.ReadTerrainFile(rawTerrain);
-	}
-	else
+	if (!m_terrain.CreateFromTRNFile(fileName))
 	{
 		return false;
 	}
@@ -59,39 +53,10 @@ bool cMapController::LoadTerrainFile(const string &fileName)
 
 
 // 지형 정보를 파일에 저장한다.
-bool cMapController::SaveTerrainFile(const string &fileName)
+// TRN 포맷으로 저장된다.
+bool cMapController::SaveTRNFile(const string &fileName)
 {
-	sRawTerrain rawTerrain;
-	m_terrain.GenerateRawTerrain(rawTerrain);
-
-	// 지형 정보 저장.
-	{
-		string name = common::GetFileNameExceptExt(fileName);
-		name += "_geo.grd";
-		string path = common::GetFilePathExceptFileName(fileName);
-		if (!path.empty())
-			path += "\\";
-
-		const string heigtmapFileName = path + name;
-		rawTerrain.heightMap = graphic::cResourceManager::Get()->GetRelativePathToMedia(heigtmapFileName);
-		m_terrain.WriteTerrainFile( heigtmapFileName );
-	}	
-
-	// 알파 텍스쳐 파일 이름 설정.
-	{
-		string name = common::GetFileNameExceptExt(fileName);
-		name += "_alpha.png";
-		string path = common::GetFilePathExceptFileName(fileName);
-		if (!path.empty())
-			path += "\\";
-
-		const string alphaTextureFileName = path + name;
-		rawTerrain.alphaTexture = graphic::cResourceManager::Get()->GetRelativePathToMedia(alphaTextureFileName);
-		m_terrain.GetAlphaTexture().WritePNGFile(alphaTextureFileName);
-	}
-
-	const bool result = exporter::WriteRawTerrainFile(fileName, rawTerrain);
-
+	const bool result = m_terrain.WriteTRNFile(fileName);
 	if (result)
 	{
 		AfxMessageBox( L"저장 성공!\n\n모든 파일 경로는 media 폴더의 상대주소로 저장됩니다. \nmedia폴더 안에 있지 않은 파일은 문제가 될 수 있으니,\n다시 한번 확인해주세요." );

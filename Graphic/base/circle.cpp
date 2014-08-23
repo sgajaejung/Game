@@ -4,14 +4,13 @@
 
 using namespace graphic;
 
-cCircle::cCircle()
+cCircle::cCircle() :
+	m_radius(1)
 {
-
 }
 
 cCircle::~cCircle()
-{
-	
+{	
 }
 
 

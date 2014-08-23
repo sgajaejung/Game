@@ -17,6 +17,7 @@ namespace graphic
 		float cellSize;
 		float textureUVFactor;
 		float *heightMap; // (rowCellCount+1) * (colCellCount+1) 개수 만큰 저장된다.
+									 // 높이 값을 저장한다.
 	};
 
 }
@@ -153,9 +154,10 @@ void cGrid2::SetTextureUVFactor(const float textureUVFactor)
 }
 
 
+// GRD 포맷으로 저장된다.
 // m_rowCellCount. m_colCellCount, m_cellSize, Height  값을 저장한다.
 // Header : GRD
-bool cGrid2::WriteGridFile(const string &fileName)
+bool cGrid2::WriteFile(const string &fileName)
 {
 	const int rowVtxCnt  = m_rowCellCount+1;
 	const int colVtxCnt  = m_colCellCount+1;
@@ -202,7 +204,7 @@ bool cGrid2::WriteGridFile(const string &fileName)
 // 파일로부터 정보를 가져와 Grid 클래스를 생성한다.
 // GRD 포맷이어야 한다. 
 // 현재는 version 1만 지원한다.
-bool cGrid2::ReadGridFromFile(const string &fileName)
+bool cGrid2::CreateFromFile(const string &fileName)
 {
 	using namespace std;
 	ifstream ifs(fileName, ios_base::binary | ios_base::in);
