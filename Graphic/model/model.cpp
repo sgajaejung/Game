@@ -267,10 +267,10 @@ cModel* cModel::Clone() const
 	clone->Create(m_fileName, m_type);
 
 	clone->SetTM(m_TM);
+	clone->SetShader(m_shader);
 	clone->SetRenderMesh(m_isRenderMesh);
 	clone->SetRenderBone(m_isRenderBone);
 	clone->SetRenderBoundingBox(m_isRenderBoundingBox);
-	clone->SetShader(m_shader);
 
 	return clone;
 }

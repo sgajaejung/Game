@@ -82,7 +82,6 @@ namespace graphic
 	protected:
 		virtual void RenderShader(cShader &shader);
 		void RenderRigidModels();
-		//void RenderShaderRigidModels(cShader &shader);
 
 		float GetHeightMapEntry( int row, int col );
 		bool UpdateHeightMap( const string &heightMapFileName, 

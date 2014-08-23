@@ -109,12 +109,12 @@ void CModelView::Render()
 		}
 
 
-		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix() );
-		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
+		//m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix() );
+		//m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
 
-		cController::Get()->RenderShader(m_shader);
-		//cController::Get()->Render();
+		//cController::Get()->RenderShader(m_shader);
+		cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();

@@ -54,11 +54,11 @@ void cController::Render()
 }
 
 
-void cController::RenderShader(graphic::cShader &shader)
-{
-	RET(!m_character);
-	m_character->RenderShader(shader);
-}
+//void cController::RenderShader(graphic::cShader &shader)
+//{
+//	RET(!m_character);
+//	m_character->RenderShader(shader);
+//}
 
 
 void cController::Update(const float elapseT)

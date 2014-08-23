@@ -14,7 +14,7 @@ public:
 	const string& GetCurrentAnimationFileName();
 
 	void Render();
-	void RenderShader(graphic::cShader &shader);
+	//void RenderShader(graphic::cShader &shader);
 	void Update(const float elapseT);
 	void SetAnimationPlay(const bool isPlay);
 	bool IsAnimationPlay() const;

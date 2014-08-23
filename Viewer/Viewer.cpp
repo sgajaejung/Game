@@ -60,7 +60,7 @@ private:
 	bool m_MButtonDown;
 	Matrix44 m_rotateTm;
 
-	graphic::cCamera m_camera;
+	//graphic::cCamera m_camera;
 
 	Vector3 m_boxPos;
 
@@ -132,7 +132,7 @@ bool cViewer::OnInit()
 
 
 	//m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
-	m_shader.Create( "../media/shader/hlsl_terrain_splatting.fx", "TShader" );
+	//m_shader.Create( "../media/shader/hlsl_terrain_splatting.fx", "TShader" );
 	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
 	m_shaderSkin.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
 	//m_shaderSkin2.Create( "../media/shader/hlsl_skinning_no_light.fx", "TShader" );
@@ -174,8 +174,8 @@ bool cViewer::OnInit()
 	
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	m_camera.SetCamera(Vector3(100,500,-500), Vector3(0,0,0), Vector3(0,1,0));
-	m_camera.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
+	graphic::cMainCamera::Get()->SetCamera(Vector3(100,500,-500), Vector3(0,0,0), Vector3(0,1,0));
+	graphic::cMainCamera::Get()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
 
 	graphic::GetDevice()->LightEnable (
 		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
@@ -252,7 +252,7 @@ void cViewer::OnRender(const float elapseT)
 
 		m_shaderSkin.SetMatrix( "mVP", matView * matProj);
 		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shaderSkin.SetVector( "vEyePos", m_camera.GetEyePos());
+		m_shaderSkin.SetVector( "vEyePos", graphic::cMainCamera::Get()->GetEyePos());
 
 		m_shaderSkin.SetRenderPass(1);
 		m_character.SetTM(m_cube.GetTransform());
@@ -268,14 +268,15 @@ void cViewer::OnRender(const float elapseT)
 		graphic::GetDevice()->SetViewport(&oldViewport);
 		pOldBackBuffer->Release();
 		pOldZBuffer->Release();
-		graphic::GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&m_camera.GetViewMatrix() );
-		graphic::GetDevice()->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX*)&m_camera.GetProjectionMatrix() );
+		graphic::GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&graphic::cMainCamera::Get()->GetViewMatrix() );
+		graphic::GetDevice()->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX*)&graphic::cMainCamera::Get()->GetProjectionMatrix() );
 
-		m_shaderSkin.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		m_shaderSkin.SetMatrix( "mVP", graphic::cMainCamera::Get()->GetViewProjectionMatrix());
 		m_shaderSkin.SetRenderPass(0);
 		//m_model.SetTM(m_cube.GetTransform());
 		//m_model.RenderShader(m_shaderSkin);
-		m_character.RenderShader(m_shaderSkin);
+		//m_character.RenderShader(m_shaderSkin);
+		m_character.Render();
 
 
 		//------------------------------------------------------------------------
@@ -288,21 +289,22 @@ void cViewer::OnRender(const float elapseT)
 			, 0.5f, 0.5f, 0.0f, 1.0f);
 		Matrix44 mT = *(Matrix44*)&mTT;
 
-		m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
-		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
-		m_shader.SetTexture("ShadowMap", m_pShadowTex);
+		//m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
+		//m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
+		//m_shader.SetTexture("ShadowMap", m_pShadowTex);
 
-		Matrix44 m = matView * matProj * mT;
-		m_shader.SetMatrix( "mWVPT", m );
+		//Matrix44 m = matView * matProj * mT;
+		//m_shader.SetMatrix( "mWVPT", m );
 
-		m_shaderSkin2->SetMatrix( "mVP",  m_camera.GetViewProjectionMatrix());
-		m_shaderSkin2->SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shaderSkin2->SetVector( "vEyePos", m_camera.GetEyePos());
+		//m_shaderSkin2->SetMatrix( "mVP",  m_camera.GetViewProjectionMatrix());
+		//m_shaderSkin2->SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_shaderSkin2->SetVector( "vEyePos", m_camera.GetEyePos());
 
 		//m_shader.SetRenderPass(2);
-		m_shader.SetRenderPass(3);
-		m_terrain.RenderShader(m_shader);
+		//m_shader.SetRenderPass(3);
+		//m_terrain.RenderShader(m_shader);
+		m_terrain.Render();
 
 		m_cube.Render(matIdentity);
 
@@ -383,12 +385,12 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 			dbg::Print( "%d %d", fwKeys, zDelta);
 
-			const float len = m_camera.GetDistance();
+			const float len = graphic::cMainCamera::Get()->GetDistance();
 			float zoomLen = (len > 100)? 50 : (len/4.f);
 			if (fwKeys & 0x4)
 				zoomLen = zoomLen/10.f;
 
-			m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );
+			graphic::cMainCamera::Get()->Zoom( (zDelta<0)? -zoomLen : zoomLen );
 		}
 		break;
 
@@ -473,8 +475,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				Quaternion q1(m_camera.GetRight(), -y * 0.01f);
-				Quaternion q2(m_camera.GetUpVector(), -x * 0.01f);
+				Quaternion q1(graphic::cMainCamera::Get()->GetRight(), -y * 0.01f);
+				Quaternion q2(graphic::cMainCamera::Get()->GetUpVector(), -x * 0.01f);
 
 				m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
 			}
@@ -485,8 +487,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				m_camera.Yaw2( x * 0.005f );
-				m_camera.Pitch2( y * 0.005f );
+				graphic::cMainCamera::Get()->Yaw2( x * 0.005f );
+				graphic::cMainCamera::Get()->Pitch2( y * 0.005f );
 			}
 			else if (m_MButtonDown)
 			{
@@ -494,16 +496,18 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
 				m_curPos = point;
 
-				const float len = m_camera.GetDistance();
-				m_camera.MoveRight( -pos.x * len * 0.001f );
-				m_camera.MoveUp( pos.y * len * 0.001f );
+				const float len = graphic::cMainCamera::Get()->GetDistance();
+				graphic::cMainCamera::Get()->MoveRight( -pos.x * len * 0.001f );
+				graphic::cMainCamera::Get()->MoveUp( pos.y * len * 0.001f );
 			}
 			else
 			{
 				POINT pos = {LOWORD(lParam), HIWORD(lParam)};
 
 				Vector3 pickPos;
-				Ray ray(pos.x, pos.y, 1024, 768, m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix());
+				Ray ray(pos.x, pos.y, 1024, 768, 
+					graphic::cMainCamera::Get()->GetProjectionMatrix(), 
+					graphic::cMainCamera::Get()->GetViewMatrix());
 				const float y = m_terrain.GetHeightFromRay(ray.orig, ray.dir, pickPos);
 
 				pickPos.y = y;

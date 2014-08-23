@@ -80,8 +80,7 @@ bool CMapView::Init()
 	m_cube.SetColor( 0xFF0000FF );
 	m_dxInit = true;
 
-	m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
-	//m_terrainShader2.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
+	//m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
 	m_modelShader = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
 
 	return true;
@@ -108,32 +107,15 @@ void CMapView::Render()
 		graphic::GetRenderer()->RenderFPS();
 		//graphic::GetRenderer()->RenderGrid();
 
-		const Matrix44 matIdentity;
-
-		cCamera &camera = *cMainCamera::Get();
-		//m_terrainShader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		//m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_terrainShader.SetVector( "vEyePos", camera.GetEyePos());
-		//m_terrainShader.SetMatrix( "mWIT", matIdentity);
-		//m_terrainShader.SetMatrix( "mWorld", matIdentity);
-		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
-
+		//cCamera &camera = *cMainCamera::Get();
 		//m_modelShader->SetMatrix( "mVP", camera.GetViewProjectionMatrix());
 		//m_modelShader->SetVector( "vLightDir", Vector3(0,-1,0) );
 		//m_modelShader->SetVector( "vEyePos", camera.GetEyePos());
-
-		//m_terrainShader2.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		//m_terrainShader2.SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_terrainShader2.SetVector( "vEyePos", camera.GetEyePos());
-		//m_terrainShader2.SetMatrix( "mWIT", matIdentity);
-		//m_terrainShader2.SetMatrix( "mWorld", matIdentity);
-		//m_terrainShader.2SetTexture("ShadowMap", m_pShadowTex);
 
 		//m_terrainShader.SetRenderPass(1);
 		//cMapController::Get()->GetTerrain().Render();
 		//cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
 
-		//m_terrainShader2.SetRenderPass(1);
 		cMapController::Get()->GetTerrain().Render();
 
 

@@ -238,9 +238,6 @@ void cTerrain::RenderShader(cShader &shader)
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
 	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
-	//shader.SetMatrix( "mWIT", Matrix44::Identity);
-	//shader.SetMatrix( "mWorld", Matrix44::Identity);
-
 	shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
 	if (m_layer.empty())
@@ -276,16 +273,6 @@ void cTerrain::RenderRigidModels()
 		model->Render();
 	}
 }
-
-//
-// 정적 모델 출력.
-//void cTerrain::RenderShaderRigidModels(cShader &shader)
-//{
-//	BOOST_FOREACH (auto model, m_rigids)
-//	{
-//		model->RenderShader(shader);
-//	}
-//}
 
 
 float Lerp(float p1, float p2, float alpha)

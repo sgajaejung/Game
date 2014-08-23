@@ -21,6 +21,9 @@ cCharacter::~cCharacter()
 
 bool cCharacter::Create(const string &modelName)
 {
+	SetShader( 
+		cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+
 	m_weaponNode1 = NULL;
 	return cModel::Create(modelName);
 }
