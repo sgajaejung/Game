@@ -59,15 +59,23 @@ bool cRigidMesh::Move(const float elapseTime)
 // 출력.
 void cRigidMesh::Render(const Matrix44 &parentTm)
 {
+	//cMesh::Render(parentTm);
+	if (m_shader)
+	{
+		//RenderShader(*m_shader, parentTm);
+		cMesh::RenderShader(*m_shader, parentTm);
+		return;
+	}
+
 	cMesh::Render(parentTm);
 }
 
 
 // 셰이더 출력.
-void cRigidMesh::RenderShader( const Matrix44 &parentTm )
-{
-	if (cShader *shader = cResourceManager::Get()->LoadShader("rigid.fx"))
-	{
-		cMesh::RenderShader(*shader, parentTm);
-	}
-}
+//void cRigidMesh::RenderShader( const Matrix44 &parentTm )
+//{
+//	if (cShader *shader = cResourceManager::Get()->LoadShader("rigid.fx"))
+//	{
+//		cMesh::RenderShader(*shader, parentTm);
+//	}
+//}

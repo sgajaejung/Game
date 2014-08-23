@@ -7,8 +7,8 @@ using namespace graphic;
 cMapController::cMapController(void) :
 	m_editMode(EDIT_MODE::MODE_HEIGHTMAP)
 {
-	m_camera.SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
-	m_camera.SetProjection( D3DX_PI / 4.f, (float)VIEW_WIDTH / (float) VIEW_HEIGHT, 1.f, 10000.0f);
+	cMainCamera::Get()->SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
+	cMainCamera::Get()->SetProjection( D3DX_PI / 4.f, (float)VIEW_WIDTH / (float) VIEW_HEIGHT, 1.f, 10000.0f);
 
 }
 
@@ -91,7 +91,7 @@ void cMapController::ChangeEditMode(EDIT_MODE::TYPE mode)
 void cMapController::BrushTerrain(CPoint point, const float elapseT)
 {
 	const Ray ray(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
-		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+		cMainCamera::Get()->GetProjectionMatrix(), cMainCamera::Get()->GetViewMatrix() );
 
 	Vector3 pickPos;
 	m_terrain.Pick( ray.orig, ray.dir, pickPos );
@@ -104,7 +104,7 @@ void cMapController::BrushTerrain(CPoint point, const float elapseT)
 void cMapController::BrushTexture(CPoint point)
 {
 	const Ray ray(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
-		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+		cMainCamera::Get()->GetProjectionMatrix(), cMainCamera::Get()->GetViewMatrix() );
 
 	Vector3 pickPos;
 	m_terrain.Pick( ray.orig, ray.dir, pickPos );
@@ -125,7 +125,7 @@ void cMapController::UpdateBrush()
 {
 	CPoint pos(VIEW_WIDTH/2, VIEW_HEIGHT/2);
 	Ray ray(pos.x, pos.y, VIEW_WIDTH, VIEW_HEIGHT, 
-		m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix() );
+		cMainCamera::Get()->GetProjectionMatrix(), cMainCamera::Get()->GetViewMatrix() );
 
 	Vector3 pickPos;
 	m_terrain.Pick( ray.orig, ray.dir, pickPos);

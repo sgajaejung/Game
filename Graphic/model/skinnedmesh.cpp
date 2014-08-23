@@ -20,8 +20,16 @@ cSkinnedMesh::~cSkinnedMesh()
 
 void cSkinnedMesh::Render(const Matrix44 &parentTm)
 {
-	ApplyPalette();
-	cMesh::Render(parentTm);
+	if (m_shader)
+	{
+		ApplyPaletteShader(*m_shader);
+		cMesh::RenderShader(*m_shader, parentTm);
+	}
+	else
+	{
+		ApplyPalette();
+		cMesh::Render(parentTm);
+	}
 }
 
 void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )

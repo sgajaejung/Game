@@ -58,7 +58,6 @@ namespace graphic
 		vector<cModel*>& GetRigidModels();
 
 		virtual void Render();
-		virtual void RenderShader(cShader &shader);
 
 		// info
 		int GetRowCellCount() const;
@@ -81,11 +80,13 @@ namespace graphic
 
 
 	protected:
+		virtual void RenderShader(cShader &shader);
+		void RenderRigidModels();
+		//void RenderShaderRigidModels(cShader &shader);
+
 		float GetHeightMapEntry( int row, int col );
 		bool UpdateHeightMap( const string &heightMapFileName, 
 			const string &textureFileName, const float heightFactor );
-		void RenderRigidModels();
-		void RenderShaderRigidModels(cShader &shader);
 
 		DWORD GetAlphaMask(const int layer);
 
@@ -103,9 +104,9 @@ namespace graphic
 		float m_textureUVFactor;
 		string m_heightMapFileName;
 		cGrid2 m_grid;
+		cShader *m_shader; // reference
 
 		// model
-		cShader *m_modelShader;	// reference
 		vector<cModel*> m_rigids;
 		bool m_isShowModel; // default : true
 

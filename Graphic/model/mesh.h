@@ -14,9 +14,6 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
-		virtual void RenderShader( const Matrix44 &parentTm ) override;
-		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm ) override;
-		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm) override;
 
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);
@@ -31,6 +28,9 @@ namespace graphic
 		void CreateBoneWeight( const vector<sVertexWeight> &weights );
 		void CreateMaterials(const sRawMesh &rawMesh);
 		void CreateAttributes(const sRawMesh &rawMesh);
+
+		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
+		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);
 
 
 	protected:

@@ -52,6 +52,9 @@ void cCharacter::LoadWeapon(const string &fileName)
 bool cCharacter::Move(const float elapseTime)
 {
 	cModel::Move(elapseTime);
+
+	if (m_weapon)
+		m_weapon->SetTM(m_TM);
 	
 	if (m_weapon && m_weaponNode1 && m_weaponBoneNode1)
 	{
@@ -80,21 +83,21 @@ void cCharacter::Render()
 }
 
 
-void cCharacter::RenderShader(cShader &shader)
-{
-	cModel::RenderShader(shader);
-
-	if (m_weapon)
-		m_weapon->RenderShader(shader);
-}
+//void cCharacter::RenderShader(cShader &shader)
+//{
+//	cModel::RenderShader(shader);
+//
+//	if (m_weapon)
+//		m_weapon->Render();
+//}
 
 
 void cCharacter::RenderShadow(cShader &shader)
 {
 	cModel::RenderShadow(shader);
 
-	if (m_weapon)
-		m_weapon->RenderShadow(shader);
+	//if (m_weapon)
+	//	m_weapon->RenderShadow(shader);
 }
 
 
@@ -105,18 +108,18 @@ void cCharacter::SetRenderWeaponBoundingBox(const bool isRenderBoundingBox)
 }
 
 
-void cCharacter::SetTM(const Matrix44 &tm)
-{
-	cModel::SetTM(tm);
-	if (m_weapon)
-		m_weapon->SetTM(tm);
-}
-
-
-void cCharacter::MultiplyTM(const Matrix44 &tm)
-{
-	cModel::MultiplyTM(tm);
-	if (m_weapon)
-		m_weapon->MultiplyTM(tm);
-}
-
+//void cCharacter::SetTM(const Matrix44 &tm)
+//{
+//	cModel::SetTM(tm);
+//	if (m_weapon)
+//		m_weapon->SetTM(tm);
+//}
+//
+//
+//void cCharacter::MultiplyTM(const Matrix44 &tm)
+//{
+//	cModel::MultiplyTM(tm);
+//	if (m_weapon)
+//		m_weapon->MultiplyTM(tm);
+//}
+//

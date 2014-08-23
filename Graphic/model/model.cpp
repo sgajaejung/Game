@@ -12,7 +12,8 @@ using namespace graphic;
 
 
 cModel::cModel(const int id) :
-	m_id(id)
+	cNode(id, "model" )
+	//m_id(id)
 ,	m_bone(NULL)
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
@@ -20,6 +21,7 @@ cModel::cModel(const int id) :
 ,	m_type(MODEL_TYPE::RIGID)
 ,	m_curAni(NULL)
 {
+	m_nodeType = MODEL;
 	
 }
 
@@ -122,46 +124,58 @@ bool cModel::Move(const float elapseTime)
 
 void cModel::Render()
 {
+
+	// 셰이더가 설정되지 않았다면 업데이트 한다.
+	if (m_shader &&  !m_meshes.empty()) // check shader setting
+	{
+		if (m_meshes[ 0]->GetShader() == NULL)
+		{
+			BOOST_FOREACH (auto node, m_meshes)
+				node->SetShader(m_shader);
+		}		
+	}
+
+
 	Matrix44 identity;
 	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&identity);
 
 	if (m_isRenderMesh)
 	{
 		BOOST_FOREACH (auto node, m_meshes)
-			node->Render(m_matTM);
+			node->Render(m_TM);
 	}
 
 	if (m_isRenderBone && m_bone)
-		m_bone->Render(m_matTM);
+		m_bone->Render(m_TM);
 
 	if (m_bone && m_isRenderBoundingBox)
-		m_bone->RenderBoundingBox(m_matTM);
+		m_bone->RenderBoundingBox(m_TM);
 }
 
 
-void cModel::RenderShader(cShader &shader)
-{
-	if (m_isRenderMesh)
-	{
-		BOOST_FOREACH (auto node, m_meshes)
-			node->RenderShader(shader, m_matTM);
-	}
-
-	// 셰이더 쓰지 않고 그냥 출력.
-	if (m_isRenderBone && m_bone)
-		m_bone->Render(m_matTM);
-
-	if (m_bone && m_isRenderBoundingBox) 
-		m_bone->RenderBoundingBox(m_matTM);
-}
+//void cModel::RenderShader(cShader &shader)
+//{
+//	if (m_isRenderMesh)
+//	{
+//		BOOST_FOREACH (auto node, m_meshes)
+//			node->RenderShader(shader, m_TM);
+//	}
+//
+//	// 셰이더 쓰지 않고 그냥 출력.
+//	if (m_isRenderBone && m_bone)
+//		m_bone->Render(m_TM);
+//
+//	if (m_bone && m_isRenderBoundingBox) 
+//		m_bone->RenderBoundingBox(m_TM);
+//}
 
 
 void cModel::RenderShadow(cShader &shader)
 {
 	if (m_isRenderMesh)
 	{
-		BOOST_FOREACH (auto node, m_meshes)
-			node->RenderShadow(shader, m_matTM);
+		//BOOST_FOREACH (auto node, m_meshes)
+		//	node->RenderShadow(shader, m_TM);
 	}
 }
 
@@ -221,7 +235,7 @@ bool cModel::IsTest( int testNum )
 
 void cModel::UpdateCollisionBox()
 {
-	m_boundingBox.SetTransform(m_matTM);
+	m_boundingBox.SetTransform(m_TM);
 }
 
 
@@ -252,10 +266,11 @@ cModel* cModel::Clone() const
 	cModel *clone = new cModel(GenerateId());
 	clone->Create(m_fileName, m_type);
 
-	clone->SetTM(m_matTM);
+	clone->SetTM(m_TM);
 	clone->SetRenderMesh(m_isRenderMesh);
 	clone->SetRenderBone(m_isRenderBone);
 	clone->SetRenderBoundingBox(m_isRenderBoundingBox);
+	clone->SetShader(m_shader);
 
 	return clone;
 }
@@ -264,6 +279,6 @@ cModel* cModel::Clone() const
 // 스크린 좌표 x,y 로 모델이 선택이 되었는지 판단한다. 피킹되었다면 true를 리턴한다.
 bool cModel::Pick(const Vector3 &orig, const Vector3 &dir)
 {
-	m_boundingBox.SetTransform(m_matTM);
+	m_boundingBox.SetTransform(m_TM);
 	return m_boundingBox.Pick(orig, dir);
 }

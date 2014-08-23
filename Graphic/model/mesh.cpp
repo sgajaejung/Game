@@ -136,6 +136,13 @@ bool cMesh::Move(const float elapseTime)
 // Render
 void cMesh::Render(const Matrix44 &parentTm)
 {
+	if (m_shader)
+	{
+		RenderShader(*m_shader, parentTm);
+		return;
+	}
+
+
 	if (m_attributes.empty())
 	{
 		if (!m_mtrls.empty())
@@ -180,16 +187,13 @@ void cMesh::Render(const Matrix44 &parentTm)
 }
 
 
-// 기본 셰이더를 통해 출력한다.
-void cMesh::RenderShader( const Matrix44 &parentTm )
-{
-	// 아무일도 없음.
-}
-
-
 // 셰이더를 통해 화면을 그린다.
 void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 {
+	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
+	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
+
 	if (m_attributes.empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
@@ -257,6 +261,7 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 {
+
 	if (m_attributes.empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;

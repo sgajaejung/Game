@@ -14,7 +14,7 @@ public:
 	bool LoadHeightMapTexture(const string &fileName);
 	bool SaveTRNFile(const string &fileName);
 
-	graphic::cCamera& GetCamera();
+	//graphic::cCamera& GetCamera();
 	graphic::cTerrainEditor& GetTerrain();
 	graphic::cTerrainCursor& GetTerrainCursor();
 	const string& GetHeightMapFileName();
@@ -33,7 +33,7 @@ public:
 
 
 private:
-	graphic::cCamera m_camera;
+	//graphic::cCamera m_camera;
 	graphic::cTerrainEditor m_terrain;
 	graphic::cTerrainCursor m_cursor;
 	string m_textFileName;
@@ -41,7 +41,7 @@ private:
 };
 
 
-inline graphic::cCamera& cMapController::GetCamera() { return m_camera; }
+//inline graphic::cCamera& cMapController::GetCamera() { return m_camera; }
 inline graphic::cTerrainEditor& cMapController::GetTerrain() { return m_terrain; }
 inline graphic::cTerrainCursor& cMapController::GetTerrainCursor() { return m_cursor; }
 inline const string& cMapController::GetHeightMapFileName() { return m_terrain.GetHeightMapFileName(); }

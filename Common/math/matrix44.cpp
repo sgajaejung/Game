@@ -5,6 +5,7 @@
 
 using namespace common;
 
+const Matrix44 Matrix44::Identity;
 
 Matrix44::Matrix44()
 {

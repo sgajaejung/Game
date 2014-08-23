@@ -16,13 +16,16 @@ namespace graphic
 		const Matrix44& GetOffset() const;
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
-		virtual void RenderShader(const Matrix44 &parentTm) override;
-		virtual void RenderShader(cShader &shader, const Matrix44 &parentTm) override;
 
 		int GetCurrentFrame() const;
 		int GetPlayFrame() const;
 		void SetCurrentFrame(const int curFrame);
 		void UpdateAccTM();
+
+
+	protected:
+		//virtual void RenderShader(const Matrix44 &parentTm);
+		//virtual void RenderShader(cShader &shader, const Matrix44 &parentTm);
 
 
 	private:

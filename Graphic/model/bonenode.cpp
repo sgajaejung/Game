@@ -159,32 +159,18 @@ void cBoneNode::Render(const Matrix44 &parentTm)
 }
 
 
-void cBoneNode::RenderShader(cShader &shader, const Matrix44 &parentTm)
-{
-	RET(!m_mesh);
-
-	if (m_track)
-		m_mesh->RenderShader( shader, m_offset * m_accTM * parentTm);
-	else
-		m_mesh->RenderShader(shader, parentTm);
-
-	BOOST_FOREACH (auto p, m_children)
-		p->RenderShader( shader, parentTm );
-}
-
-
-void cBoneNode::RenderShader(const Matrix44 &parentTm)
-{
-	RET(!m_mesh);
-
-	if (m_track)
-		m_mesh->RenderShader( m_offset * m_accTM * parentTm);
-	else
-		m_mesh->RenderShader( parentTm);
-
-	BOOST_FOREACH (auto p, m_children)
-		p->RenderShader( parentTm );
-}
+//void cBoneNode::RenderShader(cShader &shader, const Matrix44 &parentTm)
+//{
+//	RET(!m_mesh);
+//
+//	if (m_track)
+//		m_mesh->RenderShader( shader, m_offset * m_accTM * parentTm);
+//	else
+//		m_mesh->RenderShader(shader, parentTm);
+//
+//	BOOST_FOREACH (auto p, m_children)
+//		p->RenderShader( shader, parentTm );
+//}
 
 
 void cBoneNode::SetCurrentFrame(const int curFrame) 

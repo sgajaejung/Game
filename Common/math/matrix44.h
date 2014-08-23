@@ -18,6 +18,7 @@ namespace common
 			};
 			float	m[4][4];
 		};
+		static const Matrix44 Identity; // 전역 단위행렬 상수.
 
 		Matrix44();
 		inline void SetIdentity();

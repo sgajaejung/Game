@@ -126,6 +126,9 @@ void cTerrainCursor::SelectModel(const string &fileName)
 	m_selectModel = new cModel(common::GenerateId());
 	//m_selectModel->SetRenderBoundingBox(true);
 	m_selectModel->Create(fileName);
+
+	cShader *modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
+	m_selectModel->SetShader(modelShader);
 }
 
 

@@ -14,8 +14,8 @@ cTerrain::cTerrain() :
 ,	m_cellSize(0)
 ,	m_textureUVFactor(1.f)
 ,	m_heightFactor(3.f)
-,	m_modelShader(NULL)
 ,	m_isShowModel(true)
+,	m_shader(NULL)
 {
 	m_rigids.reserve(32);
 
@@ -71,8 +71,6 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 
 
 	// 레이어 생성
-	InitLayer();
-
 	for (int i=0; i < MAX_LAYER; ++i)
 	{
 		if (rawTerrain.layer[ i].texture.empty())
@@ -83,12 +81,16 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 			mediaDir+rawTerrain.layer[ i].texture );
 	}
 
+
 	// 모델 생성.
+	cShader *modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
+
 	for (u_int i=0; i < rawTerrain.models.size(); ++i)
 	{
 		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
 		{
 			model->SetTM(rawTerrain.models[ i].tm);
+			model->SetShader(modelShader);
 		}
 	}
 
@@ -119,6 +121,9 @@ bool cTerrain::CreateFromGRDFormat( const string &gridFileName,
 	// rowCellCount=64, colCellCount=64, cellSize=50.f
 {
 	Clear();
+
+	if (!m_shader)
+		m_shader = cResourceManager::Get()->LoadShader(  "hlsl_terrain_splatting.fx" );
 
 	InitLayer();
 	m_rowCellCount = rowCellCount;
@@ -152,6 +157,9 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 	// rowCellCount=64, colCellCount=64, cellSize=50.f, textureUVFactor=1.f
 {
 	Clear();
+
+	if (!m_shader)
+		m_shader = cResourceManager::Get()->LoadShader(  "hlsl_terrain_splatting.fx" );
 
 	InitLayer();
 
@@ -214,14 +222,26 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 
 void cTerrain::Render()
 {
-	m_grid.Render();
+	if (m_shader)
+	{
+		RenderShader(*m_shader);
+	}
+	else
+	{
+		m_grid.Render();
+	}
 }
 
 
 void cTerrain::RenderShader(cShader &shader)
 {
-	Vector3 fog(1.f, 10000.f, 0);  // near, far
-	shader.SetVector( "vFog", fog);
+	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
+	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
+	//shader.SetMatrix( "mWIT", Matrix44::Identity);
+	//shader.SetMatrix( "mWorld", Matrix44::Identity);
+
+	shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
 	if (m_layer.empty())
 	{
@@ -243,11 +263,8 @@ void cTerrain::RenderShader(cShader &shader)
 	
 	m_grid.RenderShader(shader);
 
-	if (!m_modelShader)
-		m_modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
-
-	if (m_isShowModel && m_modelShader)
-		RenderShaderRigidModels(*m_modelShader);
+	if (m_isShowModel)
+		RenderRigidModels();
 }
 
 
@@ -260,15 +277,15 @@ void cTerrain::RenderRigidModels()
 	}
 }
 
-
+//
 // 정적 모델 출력.
-void cTerrain::RenderShaderRigidModels(cShader &shader)
-{
-	BOOST_FOREACH (auto model, m_rigids)
-	{
-		model->RenderShader(shader);
-	}
-}
+//void cTerrain::RenderShaderRigidModels(cShader &shader)
+//{
+//	BOOST_FOREACH (auto model, m_rigids)
+//	{
+//		model->RenderShader(shader);
+//	}
+//}
 
 
 float Lerp(float p1, float p2, float alpha)

@@ -81,7 +81,7 @@ bool CMapView::Init()
 	m_dxInit = true;
 
 	m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
-	m_terrainShader2.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
+	//m_terrainShader2.Create( "../../media/shader/hlsl_terrain_splatting.fx", "TShader" );
 	m_modelShader = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
 
 	return true;
@@ -110,31 +110,31 @@ void CMapView::Render()
 
 		const Matrix44 matIdentity;
 
-		cCamera &camera = cMapController::Get()->GetCamera();
-		m_terrainShader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_terrainShader.SetVector( "vEyePos", camera.GetEyePos());
-		m_terrainShader.SetMatrix( "mWIT", matIdentity);
-		m_terrainShader.SetMatrix( "mWorld", matIdentity);
+		cCamera &camera = *cMainCamera::Get();
+		//m_terrainShader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
+		//m_terrainShader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_terrainShader.SetVector( "vEyePos", camera.GetEyePos());
+		//m_terrainShader.SetMatrix( "mWIT", matIdentity);
+		//m_terrainShader.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.SetTexture("ShadowMap", m_pShadowTex);
 
-		m_modelShader->SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		m_modelShader->SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_modelShader->SetVector( "vEyePos", camera.GetEyePos());
+		//m_modelShader->SetMatrix( "mVP", camera.GetViewProjectionMatrix());
+		//m_modelShader->SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_modelShader->SetVector( "vEyePos", camera.GetEyePos());
 
-		m_terrainShader2.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		m_terrainShader2.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_terrainShader2.SetVector( "vEyePos", camera.GetEyePos());
-		m_terrainShader2.SetMatrix( "mWIT", matIdentity);
-		m_terrainShader2.SetMatrix( "mWorld", matIdentity);
+		//m_terrainShader2.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
+		//m_terrainShader2.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_terrainShader2.SetVector( "vEyePos", camera.GetEyePos());
+		//m_terrainShader2.SetMatrix( "mWIT", matIdentity);
+		//m_terrainShader2.SetMatrix( "mWorld", matIdentity);
 		//m_terrainShader.2SetTexture("ShadowMap", m_pShadowTex);
 
 		//m_terrainShader.SetRenderPass(1);
 		//cMapController::Get()->GetTerrain().Render();
 		//cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
 
-		m_terrainShader2.SetRenderPass(1);
-		cMapController::Get()->GetTerrain().RenderShader(m_terrainShader2);
+		//m_terrainShader2.SetRenderPass(1);
+		cMapController::Get()->GetTerrain().Render();
 
 
 		switch (cMapController::Get()->GetEditMode())
@@ -206,7 +206,7 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 		else
 		{
 			// 모델이 선택되어 있지 않다면, 지형위의 모델을 피킹해서 선택한다.
-			cCamera &camera = cMapController::Get()->GetCamera();
+			cCamera &camera = *cMainCamera::Get();
 			m_ray.Create(point.x, point.y, VIEW_WIDTH, VIEW_HEIGHT, 
 				camera.GetProjectionMatrix(), camera.GetViewMatrix() );
 
@@ -247,7 +247,7 @@ void CMapView::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	cCamera &camera = cMapController::Get()->GetCamera();
+	cCamera &camera = *cMainCamera::Get();
 
 	if (m_LButtonDown)
 	{
@@ -318,7 +318,7 @@ void CMapView::OnMButtonUp(UINT nFlags, CPoint point)
 
 BOOL CMapView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	cCamera &camera = cMapController::Get()->GetCamera();
+	cCamera &camera = *cMainCamera::Get();
 	
 	const float len = camera.GetDistance();
 	float zoomLen = (len > 100)? 50 : (len/4.f);

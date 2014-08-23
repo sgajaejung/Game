@@ -7,7 +7,8 @@ namespace graphic
 	class cBoundingBox;
 
 	DECLARE_TYPE_NAME_SCOPE(graphic, cModel)
-	class cModel : public ICollisionable
+	class cModel : public cNode 
+						, public ICollisionable
 						, public memmonitor::Monitor<cModel, TYPE_NAME(cModel)>
 	{
 	public:
@@ -17,16 +18,14 @@ namespace graphic
 		virtual bool Create(const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO);
 		virtual bool Move(const float elapseTime);
 		virtual void Render();
-		virtual void RenderShader(cShader &shader);
-		virtual void RenderShadow(cShader &shader);
-		virtual void SetTM(const Matrix44 &tm);
-		virtual void MultiplyTM(const Matrix44 &tm);
+		//virtual void SetTM(const Matrix44 &tm);
+		//virtual void MultiplyTM(const Matrix44 &tm);
 
 		void Clear();
 
 		void SetAnimation(const string &aniFileName);
-		int GetId() const;
-		const Matrix44& GetTM() const;
+		//int GetId() const;
+		//const Matrix44& GetTM() const;
 		const string& GetFileName() const;
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
@@ -48,15 +47,20 @@ namespace graphic
 
 
 	protected:
-		int m_id;
+		//virtual void RenderShader(cShader &shader);
+		virtual void RenderShadow(cShader &shader);
+
+
+	protected:
+		//int m_id;
 		string m_fileName; //model 파일 명.
 		MODEL_TYPE::TYPE m_type;
 		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;
-		Matrix44 m_matTM;
+		//Matrix44 m_matTM;
 		cBoundingBox m_boundingBox; // only rigid mesh model
 		sRawAniGroup *m_curAni; // reference, 애니메이션 정보.
-
+		
 		// debug 용.
 		bool m_isRenderMesh; // default = true
 		bool m_isRenderBone; // default = false
@@ -64,10 +68,10 @@ namespace graphic
 	};
 
 
-	inline int cModel::GetId() const { return m_id; }
-	inline void cModel::SetTM(const Matrix44 &tm) { m_matTM = tm; }
-	inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
-	inline const Matrix44& cModel::GetTM() const { return m_matTM; }
+	//inline int cModel::GetId() const { return m_id; }
+	//inline void cModel::SetTM(const Matrix44 &tm) { m_matTM = tm; }
+	//inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
+	//inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
 	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 	inline const string& cModel::GetFileName() const { return m_fileName; }

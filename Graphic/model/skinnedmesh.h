@@ -11,11 +11,12 @@ namespace graphic
 		virtual ~cSkinnedMesh();
 
 		virtual void Render(const Matrix44 &parentTm) override;
-		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm ) override;
-		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm) override;
 
 
 	protected:
+		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
+		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);
+
 		void ApplyPalette();
 		void ApplyPaletteShader(cShader &shader);
 
