@@ -35,16 +35,10 @@ private:
 	graphic::cCharacter m_character;
 
 	graphic::cSprite *m_image;
-	graphic::cShader m_shader;
-	graphic::cShader m_shaderSkin;
-	graphic::cShader *m_shaderSkin2;
 	graphic::cTerrain m_terrain;
 	graphic::cCube m_cube;
 	graphic::cSphere m_sphere;
 
-	LPDIRECT3DTEXTURE9 m_pShadowTex;
-	LPDIRECT3DSURFACE9 m_pShadowSurf;
-	LPDIRECT3DSURFACE9 m_pShadowTexZ;
 	Vector3 m_light2;
 	Vector3 m_pos;
 
@@ -130,36 +124,10 @@ bool cViewer::OnInit()
 	//m_character.SetRenderBoundingBox(true);
 	//m_character.SetRenderWeaponBoundingBox(true);
 
-
-	//m_shader.Create( "../media/shader/hlsl_rigid_phong.fx", "TShader" );
-	//m_shader.Create( "../media/shader/hlsl_terrain_splatting.fx", "TShader" );
-	//m_shader.Create( "../media/shader/hlsl_rigid.fx", "TShader" );
-	m_shaderSkin.Create( "../media/shader/hlsl_skinning_using_texcoord.fx", "TShader" );
-	//m_shaderSkin2.Create( "../media/shader/hlsl_skinning_no_light.fx", "TShader" );
-	m_shaderSkin2 = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
-	//m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f, 4.f);
 	m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
 	//m_sphere.Create(100, 20, 20);
-
-	
-
-/**/
-
-	// 그림자 텍스처 생성
-	if (FAILED(graphic::GetDevice()->CreateTexture(MAP_SIZE, MAP_SIZE, 1, 
-		D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8,
-		D3DPOOL_DEFAULT, &m_pShadowTex, NULL)))
-		return false;
-	if (FAILED(m_pShadowTex->GetSurfaceLevel(0, &m_pShadowSurf)))
-		return false;
-	if (FAILED(graphic::GetDevice()->CreateDepthStencilSurface(
-		MAP_SIZE, MAP_SIZE, D3DFMT_D24S8, 
-		D3DMULTISAMPLE_NONE, 0, TRUE,
-		&m_pShadowTexZ, NULL)))
-		return false;
-
 
 	m_mtrl.InitWhite();
 
@@ -218,122 +186,11 @@ void cViewer::OnRender(const float elapseT)
 		if (m_scene)
 			m_scene->Render(matIdentity);
 
-
-
-		//---------------------------------------------------------------
-		// 모델 출력 + 그림자.
-		LPDIRECT3DSURFACE9 pOldBackBuffer, pOldZBuffer;
-		D3DVIEWPORT9 oldViewport;
-
-		graphic::GetDevice()->GetRenderTarget(0, &pOldBackBuffer);
-		graphic::GetDevice()->GetDepthStencilSurface(&pOldZBuffer);
-		graphic::GetDevice()->GetViewport(&oldViewport);
-
-		graphic::GetDevice()->SetRenderTarget(0, m_pShadowSurf);
-		graphic::GetDevice()->SetDepthStencilSurface(m_pShadowTexZ);
-		// 뷰포트변경  x y  width    height   minz maxz
-		D3DVIEWPORT9 viewport = {0,0, MAP_SIZE,MAP_SIZE,0.0f,1.0f};
-		graphic::GetDevice()->SetViewport(&viewport);
-
-		// 그림자맵 클리어
-		graphic::GetDevice()->Clear(0L, NULL
-			, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-			, 0x00000000, 1.0f, 0L);
-
-		const Matrix44 cubeTm = m_cube.GetTransform();
-		m_pos = Vector3(cubeTm._41, cubeTm._42, cubeTm._43);
-		m_light2 = Vector3(500,1000,0);
-
-		Matrix44 matView;// 뷰 행렬
-		matView.SetView2( m_light2, m_pos, Vector3(0,1,0));
-
-		Matrix44 matProj;// 투영 행렬
-		matProj.SetProjection( D3DX_PI/2.5f, 1, 0.1f, 10000);
-
-		m_shaderSkin.SetMatrix( "mVP", matView * matProj);
-		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shaderSkin.SetVector( "vEyePos", m_light2);
-		//m_shaderSkin.SetVector( "vEyePos", graphic::cMainCamera::Get()->GetEyePos());
-
-		m_shaderSkin.SetRenderPass(1);
 		m_character.SetTM(m_cube.GetTransform());
-		//m_character.RenderShadow(m_shaderSkin);
-		//m_model.RenderShadow(m_shaderSkin);
-
-
-		//-----------------------------------------------------
-		// 렌더링타겟 복구
-		//-----------------------------------------------------
-		graphic::GetDevice()->SetRenderTarget(0, pOldBackBuffer);
-		graphic::GetDevice()->SetDepthStencilSurface(pOldZBuffer);
-		graphic::GetDevice()->SetViewport(&oldViewport);
-		pOldBackBuffer->Release();
-		pOldZBuffer->Release();
-		graphic::GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&graphic::cMainCamera::Get()->GetViewMatrix() );
-		graphic::GetDevice()->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX*)&graphic::cMainCamera::Get()->GetProjectionMatrix() );
-
-		m_shaderSkin.SetMatrix( "mVP", graphic::cMainCamera::Get()->GetViewProjectionMatrix());
-		m_shaderSkin.SetRenderPass(0);
-		//m_model.SetTM(m_cube.GetTransform());
-		//m_model.RenderShader(m_shaderSkin);
-		//m_character.RenderShader(m_shaderSkin);
 		m_character.Render(Matrix44::Identity);
-
-
-		//------------------------------------------------------------------------
-		// 지형 출력.
-		//------------------------------------------------------------------------
-		D3DXMATRIX mTT;
-		mTT = D3DXMATRIX(0.5f, 0.0f, 0.0f, 0.0f
-			, 0.0f,-0.5f, 0.0f, 0.0f
-			, 0.0f, 0.0f, 1.0f, 0.0f
-			, 0.5f, 0.5f, 0.0f, 1.0f);
-		Matrix44 mT = *(Matrix44*)&mTT;
-
-		//m_shader.SetMatrix( "mVP", m_camera.GetViewProjectionMatrix());
-		//m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_shader.SetVector( "vEyePos", m_camera.GetEyePos());
-		//m_shader.SetTexture("ShadowMap", m_pShadowTex);
-
-		//Matrix44 m = matView * matProj * mT;
-		//m_shader.SetMatrix( "mWVPT", m );
-
-		//m_shaderSkin2->SetMatrix( "mVP",  m_camera.GetViewProjectionMatrix());
-		//m_shaderSkin2->SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_shaderSkin2->SetVector( "vEyePos", m_camera.GetEyePos());
-
-		//m_shader.SetRenderPass(2);
-		//m_shader.SetRenderPass(3);
-		//m_terrain.RenderShader(m_shader);
 		m_terrain.Render();
-
 		m_cube.Render(matIdentity);
 
-
-
-#if 1 // 디버그용 텍스처 출력
-		{
-			graphic::GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
-			graphic::GetDevice()->SetTextureStageState(0,D3DTSS_COLORARG1,	D3DTA_TEXTURE);
-			graphic::GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP,    D3DTOP_DISABLE);
-			float scale = 128.0f;
-			typedef struct {FLOAT p[4]; FLOAT tu, tv;} TVERTEX;
-
-			TVERTEX Vertex[4] = {
-				// x  y  z rhw tu tv
-				{0, scale, 0, 1, 0, 0,},
-				{scale, scale,0, 1, 1, 0,},
-				{scale, scale+scale,0, 1, 1, 1,},
-				{0, scale+scale,0, 1, 0, 1,},
-			};
-			graphic::GetDevice()->SetTexture( 0, m_pShadowTex );
-			graphic::GetDevice()->SetVertexShader(NULL);
-			graphic::GetDevice()->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
-			graphic::GetDevice()->SetPixelShader(0);
-			graphic::GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof( TVERTEX ) );
-		}
-#endif
-/**/
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
