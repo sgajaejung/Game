@@ -49,7 +49,7 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 	out.bgTexture = cResourceManager::Get()->GetRelativePathToMedia(m_grid.GetTexture().GetTextureName());
 	out.alphaTextureWidth = ALPHA_TEXTURE_SIZE_W;
 	out.alphaTextureHeight = ALPHA_TEXTURE_SIZE_H;
-	out.textureFactor = m_textureUVFactor;
+	out.textureFactor = m_grid.GetTextureUVFactor();
 	out.heightFactor = m_heightFactor;
 
 	for (u_int i=0; i < m_layer.size(); ++i)
@@ -343,6 +343,5 @@ void cTerrainEditor::SetHeightFactor(const float heightFactor)
 // 수정한다.
 void cTerrainEditor::SetTextureUVFactor(const float textureUVFactor)
 {
-	m_textureUVFactor = textureUVFactor;
 	m_grid.SetTextureUVFactor(textureUVFactor);
 }

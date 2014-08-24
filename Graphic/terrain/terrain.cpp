@@ -9,8 +9,7 @@ using namespace graphic;
 
 
 cTerrain::cTerrain() :
-	m_textureUVFactor(1.f)
-,	m_heightFactor(3.f)
+	m_heightFactor(3.f)
 ,	m_isShowModel(true)
 ,	m_shader(NULL)
 {
@@ -123,8 +122,6 @@ bool cTerrain::CreateFromGRDFormat( const string &gridFileName,
 
 	InitLayer();
 
-	m_textureUVFactor = textureUVFactor;
-
 	if (!m_grid.CreateFromFile(gridFileName))
 		return false;
 
@@ -157,7 +154,6 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 
 	InitLayer();
 
-	m_textureUVFactor = textureUVFactor;
 	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
 
 	return true;
@@ -235,6 +231,9 @@ void cTerrain::RenderShader(cShader &shader)
 	if (m_layer.empty())
 	{
 		shader.SetRenderPass(1);
+
+		if (m_isShowModel && !m_rigids.empty())
+			shader.SetRenderPass(2);
 	}
 	else
 	{
@@ -248,12 +247,39 @@ void cTerrain::RenderShader(cShader &shader)
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
 		shader.SetRenderPass(3);
+
+		//if (m_isShowModel && !m_rigids.empty())
+		//	shader.SetRenderPass(5);
 	}
-	
-	m_grid.RenderShader(shader);
 
 	if (m_isShowModel)
 		RenderRigidModels();
+
+	//D3DXMATRIX mTT= D3DXMATRIX(0.5f, 0.0f, 0.0f, 0.0f
+	//	, 0.0f,-0.5f, 0.0f, 0.0f
+	//	, 0.0f, 0.0f, 1.0f, 0.0f
+	//	, 0.5f, 0.5f, 0.0f, 1.0f);
+	//Matrix44 mT = *(Matrix44*)&mTT;
+
+	//Vector3 lightPos(500,1000,0);
+	//Vector3 pos(0,0,0);
+	//if (m_isShowModel && !m_rigids.empty())
+	//{
+	//	pos = m_rigids[ 0]->GetTM().GetPosition();
+	//}
+
+	//Matrix44 matView;// 뷰 행렬
+	//matView.SetView2( lightPos, pos, Vector3(0,1,0));
+	//Matrix44 matProj;// 투영 행렬
+	//matProj.SetProjection( D3DX_PI/2.5f, 1, 0.1f, 10000);
+	//shader.SetMatrix( "mWVPT", matView * matProj * mT );
+
+	//if (m_isShowModel && !m_rigids.empty())
+	//{
+	//	shader.SetTexture("ShadowMap", m_rigids[ 0]->GetShadow().GetTexture());
+	//}
+
+	m_grid.RenderShader(shader);
 }
 
 
@@ -262,7 +288,7 @@ void cTerrain::RenderRigidModels()
 {
 	BOOST_FOREACH (auto model, m_rigids)
 	{
-		model->Render();
+		model->Render(Matrix44::Identity);
 	}
 }
 
@@ -371,7 +397,6 @@ cModel* cTerrain::PickModel(const Vector3 &orig, const Vector3 &dir)
 void cTerrain::Clear()
 {
 	m_heightFactor = 3.f;
-	m_textureUVFactor = 1.f;
 	m_heightMapFileName.clear();
 	m_grid.Clear();
 

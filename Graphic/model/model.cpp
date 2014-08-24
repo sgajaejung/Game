@@ -13,11 +13,11 @@ using namespace graphic;
 
 cModel::cModel(const int id) :
 	cNode(id, "model" )
-	//m_id(id)
 ,	m_bone(NULL)
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
 ,	m_isRenderBoundingBox(false)
+,	m_isRenderShadow(false)
 ,	m_type(MODEL_TYPE::RIGID)
 ,	m_curAni(NULL)
 {
@@ -84,6 +84,9 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 	// 모델 충돌 박스를 생성한다.
 	GetCollisionBox();
 
+	// 그림자맵 생성.
+	m_shadow.Create(256, 256);
+
 	return true;
 }
 
@@ -122,7 +125,7 @@ bool cModel::Move(const float elapseTime)
 }
 
 
-void cModel::Render()
+void cModel::Render(const Matrix44 &tm)
 {
 
 	// 셰이더가 설정되지 않았다면 업데이트 한다.
@@ -135,9 +138,7 @@ void cModel::Render()
 		}		
 	}
 
-
-	Matrix44 identity;
-	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&identity);
+	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
 
 	if (m_isRenderMesh)
 	{
@@ -150,32 +151,27 @@ void cModel::Render()
 
 	if (m_bone && m_isRenderBoundingBox)
 		m_bone->RenderBoundingBox(m_TM);
+
+	// 그림자 업데이트.
+	if (m_isRenderShadow)
+	{
+		m_shadow.UpdateShadow(*this);
+		//m_shadow.RenderShadowMap();
+	}
 }
 
 
-//void cModel::RenderShader(cShader &shader)
-//{
-//	if (m_isRenderMesh)
-//	{
-//		BOOST_FOREACH (auto node, m_meshes)
-//			node->RenderShader(shader, m_TM);
-//	}
-//
-//	// 셰이더 쓰지 않고 그냥 출력.
-//	if (m_isRenderBone && m_bone)
-//		m_bone->Render(m_TM);
-//
-//	if (m_bone && m_isRenderBoundingBox) 
-//		m_bone->RenderBoundingBox(m_TM);
-//}
-
-
-void cModel::RenderShadow(cShader &shader)
+// 그림자 출력.
+void cModel::RenderShadow(const Matrix44 &viewProj, 
+	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
 {
+	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
+
 	if (m_isRenderMesh)
 	{
-		//BOOST_FOREACH (auto node, m_meshes)
-		//	node->RenderShadow(shader, m_TM);
+		const Matrix44 tm = m_TM * parentTm;
+		BOOST_FOREACH (auto node, m_meshes)
+			node->RenderShadow(viewProj, lightDir, lightDir, tm);
 	}
 }
 

@@ -21,7 +21,7 @@ bool cCharacterAnalyzer::Move(const float elapseTime)
 }
 
 
-void cCharacterAnalyzer::Render()
+void cCharacterAnalyzer::Render(const Matrix44 &tm)
 {
 
 }

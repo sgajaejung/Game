@@ -96,7 +96,6 @@ namespace graphic
 
 	protected:
 		float m_heightFactor;
-		float m_textureUVFactor;
 		string m_heightMapFileName;
 		cGrid2 m_grid;
 		cShader *m_shader; // reference
@@ -117,7 +116,7 @@ namespace graphic
 	inline float cTerrain::GetCellSize() const { return m_grid.GetCellSize(); }
 	inline float cTerrain::GetTerrainWidth() const { return m_grid.GetWidth(); }
 	inline float cTerrain::GetTerrainHeight() const { return m_grid.GetHeight(); }
-	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
+	inline float cTerrain::GetTextureUVFactor() const { return m_grid.GetTextureUVFactor(); }
 	inline float cTerrain::GetHeightFactor() const { return m_heightFactor; }
 	inline vector<cModel*>& cTerrain::GetRigidModels() { return m_rigids; }
 	inline bool cTerrain::IsLoaded() const { return m_grid.GetRowCellCount() > 0; }

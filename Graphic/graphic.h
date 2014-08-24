@@ -35,6 +35,9 @@ using namespace common;
 
 #include "model/node.h"
 
+#include "base/shadow1.h"
+
+
 #include "collision/boundingbox.h"
 #include "collision/collision.h"
 #include "collision/collisionmanager.h"

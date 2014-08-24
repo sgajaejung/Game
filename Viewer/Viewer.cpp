@@ -252,11 +252,12 @@ void cViewer::OnRender(const float elapseT)
 
 		m_shaderSkin.SetMatrix( "mVP", matView * matProj);
 		m_shaderSkin.SetVector( "vLightDir", Vector3(0,-1,0) );
-		m_shaderSkin.SetVector( "vEyePos", graphic::cMainCamera::Get()->GetEyePos());
+		m_shaderSkin.SetVector( "vEyePos", m_light2);
+		//m_shaderSkin.SetVector( "vEyePos", graphic::cMainCamera::Get()->GetEyePos());
 
 		m_shaderSkin.SetRenderPass(1);
 		m_character.SetTM(m_cube.GetTransform());
-		m_character.RenderShadow(m_shaderSkin);
+		//m_character.RenderShadow(m_shaderSkin);
 		//m_model.RenderShadow(m_shaderSkin);
 
 
@@ -276,7 +277,7 @@ void cViewer::OnRender(const float elapseT)
 		//m_model.SetTM(m_cube.GetTransform());
 		//m_model.RenderShader(m_shaderSkin);
 		//m_character.RenderShader(m_shaderSkin);
-		m_character.Render();
+		m_character.Render(Matrix44::Identity);
 
 
 		//------------------------------------------------------------------------

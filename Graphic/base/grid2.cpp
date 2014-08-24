@@ -352,4 +352,9 @@ void cGrid2::Clear()
 	m_vtxBuff.Clear();
 	m_idxBuff.Clear();
 	m_tex.Clear();
+
+	m_rowCellCount = 0;
+	m_colCellCount = 0;
+	m_cellSize = 0;
+	m_textureUVFactor = 8;
 }

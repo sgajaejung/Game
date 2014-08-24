@@ -43,7 +43,7 @@ void cTerrainCursor::RenderBrush()
 void cTerrainCursor::RenderModel()
 {
 	if (m_selectModel)
-		m_selectModel->Render();
+		m_selectModel->Render(Matrix44::Identity);
 }
 
 

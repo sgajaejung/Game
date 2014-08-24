@@ -32,6 +32,9 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) {return true;}
 		virtual void Render(const Matrix44 &parentTm);
+		virtual void RenderShadow(const Matrix44 &viewProj, 
+			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm);
+
 		//virtual void RenderShader( const Matrix44 &parentTm );
 		//virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
 		//virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);

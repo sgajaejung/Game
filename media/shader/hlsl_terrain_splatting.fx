@@ -135,7 +135,7 @@ struct VS_OUTPUT
 
 
 // -------------------------------------------------------------
-// 1패스:정점셰이더
+// 1패스: 지형 + 조명
 // -------------------------------------------------------------
 VS_OUTPUT VS_pass0(
       float4 Pos : POSITION,          // 모델정점
@@ -176,13 +176,12 @@ float4 PS_pass0(VS_OUTPUT In) : COLOR
 				+ I_s * pow( max(0, dot(N,H)), 16);
 
 	Out = Out * tex2D(Samp, In.Tex);
-	//Out = tex2D(Samp, In.Tex);
     return Out;
 }
 
 
 // -------------------------------------------------------------
-// 2패스:정점셰이더, 포그 출력
+// 2패스: 지형 + 조명
 // -------------------------------------------------------------
 VS_OUTPUT VS_pass1(
       float4 Pos : POSITION,          // 모델정점
@@ -248,10 +247,9 @@ struct VS_OUTPUT_SHADOW
 
 
 // -------------------------------------------------------------
-// 3패스:정점셰이더, 포그 출력, 그림자 출력.
+// 3패스: 지형 + 조명 + 그림자.
 // -------------------------------------------------------------
-VS_OUTPUT_SHADOW VS_pass2(
-      float4 Pos : POSITION,          // 모델정점
+VS_OUTPUT_SHADOW VS_pass2(float4 Pos : POSITION,          // 모델정점
 	  float3 Normal : NORMAL,		// 법선벡터
 	  float2 Tex : TEXCOORD0
 )
@@ -273,8 +271,9 @@ VS_OUTPUT_SHADOW VS_pass2(
     return Out;
 }
 
+
 // -------------------------------------------------------------
-// 3패스:픽셀셰이더, 포그 출력.
+// 3패스:픽셀셰이더,		지형 + 조명 + 포그 + 그림자
 // -------------------------------------------------------------
 float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 {
@@ -303,7 +302,7 @@ float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 
 
 // -------------------------------------------------------------
-// 4패스: 모델 + 포그 + 스플래팅 출력
+// 4패스: 지형 + 조명
 // -------------------------------------------------------------
 VS_OUTPUT_SHADOW VS_pass3(
       float4 Pos : POSITION,          // 모델정점
@@ -329,7 +328,7 @@ VS_OUTPUT_SHADOW VS_pass3(
 
 
 // -------------------------------------------------------------
-// 4패스:픽셀셰이더, 모델 + 포그 + 스플래팅 출력.
+// 4패스:픽셀셰이더,		지형 + 조명 + 포그 + 스플래팅 출력
 // -------------------------------------------------------------
 float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 {
@@ -365,7 +364,7 @@ float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 
 
 // -------------------------------------------------------------
-// 5패스:픽셀셰이더, 스플래팅  (조명X)
+// 5패스:픽셀셰이더,		지형 + 스플래팅  (조명X, 포그X)
 // -------------------------------------------------------------
 float4 PS_pass4(VS_OUTPUT In) : COLOR
 {
@@ -383,6 +382,42 @@ float4 PS_pass4(VS_OUTPUT In) : COLOR
 }
 
 
+
+// -------------------------------------------------------------
+// 5패스:픽셀셰이더,		지형 + 조명 + 포그 + 스플래팅 출력 + 그림자.
+// -------------------------------------------------------------
+float4 PS_pass5(VS_OUTPUT_SHADOW In) : COLOR
+{
+	float4 Out;
+
+	float3 L = -vLightDir.xyz;
+	float3 H = normalize(L + normalize(In.Eye));
+	float3 N = normalize(In.N);
+
+	float4 Color = 	I_a * K_a
+				+ I_d * K_d * max(0, dot(N,L));
+				+ I_s * pow( max(0, dot(N,H)), 16);
+
+	float4 decale = tex2D(Samp, In.Tex);
+	Out = Color * decale;
+
+	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
+	Out = (alpha.a * (Color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
+	Out = (alpha.r * (Color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
+	Out = (alpha.g * (Color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
+	Out = (alpha.b * (Color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
+
+	float4 shadow = tex2Dproj( ShadowMapSamp, In.TexShadow );
+	Out = Out * saturate(Color - (0.8f*shadow));
+
+	float distance = length(In.Eye);
+	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
+	Out = lerp(Out, fogColor, l);
+
+    return Out;
+}
+
+
 	
 // -------------------------------------------------------------
 // 테크닉
@@ -390,7 +425,7 @@ float4 PS_pass4(VS_OUTPUT In) : COLOR
 technique TShader
 {
 
-	// 퐁 셰이딩
+	// 지형 + 조명
     pass P0
     {
         VertexShader = compile vs_3_0 VS_pass0();
@@ -398,7 +433,7 @@ technique TShader
     }
 
 
-	// 포그 셰이딩.
+	// 지형 + 조명 + 포그
     pass P1
     {
         VertexShader = compile vs_3_0 VS_pass1();
@@ -406,7 +441,7 @@ technique TShader
     }
 
 
-    // 모델 + 그림자 출력
+    // 지형 + 조명 + 그림자
     pass P2
     {
         VertexShader = compile vs_3_0 VS_pass2();
@@ -414,7 +449,7 @@ technique TShader
     }
 
 
-	// 모델 + 스플래팅.
+	// 지형 + 조명 + 포그 + 스플래팅
     pass P3
     {
         VertexShader = compile vs_3_0 VS_pass3();
@@ -422,11 +457,18 @@ technique TShader
     }
 
 
-	// 스플래팅 
+	// 지형 + 스플래팅 (조명X, 포그X) (지형 텍스쳐 저장용)
     pass P4
     {
         VertexShader = compile vs_3_0 VS_pass0();
 		PixelShader  = compile ps_3_0 PS_pass4();
     }
 
+
+	// 지형 + 조명 + 포그 + 스플래팅 + 그림자
+    pass P5
+    {
+        VertexShader = compile vs_3_0 VS_pass2();
+		PixelShader  = compile ps_3_0 PS_pass5();
+    }
 }

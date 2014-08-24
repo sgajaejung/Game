@@ -96,6 +96,18 @@ void cNode::Render(const Matrix44 &parentTm)
 }
 
 
+// 자식노드의 RenderShadow를 호출한다.
+void cNode::RenderShadow(const Matrix44 &viewProj, 
+	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
+{
+	BOOST_FOREACH (auto node, m_children)
+	{
+		node->RenderShadow(viewProj, lightPos, lightDir, parentTm);
+	}
+}
+
+
+
 //// 셰이더 출력, 셰이더는 렌더링하는 객체에서 선택한다.
 //void cNode::RenderShader( const Matrix44 &parentTm )
 //{

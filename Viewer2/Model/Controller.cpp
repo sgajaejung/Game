@@ -50,7 +50,7 @@ bool cController::LoadFile( const string &fileName )
 void cController::Render()
 {
 	RET(!m_character);
-	m_character->Render();
+	m_character->Render(Matrix44::Identity);
 }
 
 

@@ -14,6 +14,8 @@ namespace graphic
 
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
+		virtual void RenderShadow(const Matrix44 &viewProj, 
+			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);

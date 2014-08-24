@@ -259,6 +259,72 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 }
 
 
+// 그림자 출력.
+void cMesh::RenderShadow(const Matrix44 &viewProj, 
+	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
+{
+	RET(!m_shader);
+
+	m_shader->SetMatrix( "mVP", viewProj);
+	m_shader->SetVector( "vLightDir", lightDir );
+	m_shader->SetVector( "vEyePos", lightPos);
+
+	if (m_attributes.empty())
+	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		m_shader->SetMatrix("mWorld", tm);
+
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		m_shader->SetMatrix("mWIT", wit);
+
+		m_vtxBuff.Bind();
+		m_idxBuff.Bind();
+
+		m_shader->Begin();
+		m_shader->BeginPass(1);
+
+		GetDevice()->DrawIndexedPrimitive( 
+			D3DPT_TRIANGLELIST, 0, 0, 
+			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+
+		m_shader->End();
+		m_shader->EndPass();
+	}
+	else
+	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		m_shader->SetMatrix("mWorld", tm);
+
+		Matrix44 wit = tm.Inverse();
+		wit.Transpose();
+		m_shader->SetMatrix("mWIT", wit);
+
+		m_shader->Begin();
+		m_vtxBuff.Bind();
+		m_idxBuff.Bind();
+
+		for (u_int i=0; i < m_attributes.size(); ++i)
+		{
+			const int mtrlId = m_attributes[ i].attribId;
+			if ((int)m_mtrls.size() <= mtrlId)
+				continue;
+
+			m_shader->BeginPass(1);
+
+			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+				m_vtxBuff.GetVertexCount(), 
+				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+
+			m_shader->EndPass();
+		}
+
+		m_shader->End();
+	}
+
+}
+
+
 void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 {
 

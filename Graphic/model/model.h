@@ -16,20 +16,25 @@ namespace graphic
 		virtual ~cModel();
 
 		virtual bool Create(const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO);
-		virtual bool Move(const float elapseTime);
-		virtual void Render();
-		//virtual void SetTM(const Matrix44 &tm);
-		//virtual void MultiplyTM(const Matrix44 &tm);
+		virtual bool Move(const float elapseTime) override;
+		virtual void Render(const Matrix44 &tm) override;
+		virtual void RenderShadow(const Matrix44 &viewProj, 
+			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
 		void Clear();
 
-		void SetAnimation(const string &aniFileName);
-		//int GetId() const;
-		//const Matrix44& GetTM() const;
+		// Model Infomations
 		const string& GetFileName() const;
+		cShadow1& GetShadow();
+		bool IsRenderShadow() const;
+		void SetRenderShadow(const bool show);
+
+		// Animation
+		void SetAnimation(const string &aniFileName);
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
 		sRawAniGroup* GetCurrentAnimation();
+
 		bool Pick(const Vector3 &orig, const Vector3 &dir);
 		cModel* Clone() const;
 
@@ -47,19 +52,14 @@ namespace graphic
 
 
 	protected:
-		//virtual void RenderShader(cShader &shader);
-		virtual void RenderShadow(cShader &shader);
-
-
-	protected:
-		//int m_id;
 		string m_fileName; //model 파일 명.
 		MODEL_TYPE::TYPE m_type;
 		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;
-		//Matrix44 m_matTM;
 		cBoundingBox m_boundingBox; // only rigid mesh model
 		sRawAniGroup *m_curAni; // reference, 애니메이션 정보.
+		cShadow1 m_shadow;
+		bool m_isRenderShadow; // default = false
 		
 		// debug 용.
 		bool m_isRenderMesh; // default = true
@@ -68,11 +68,10 @@ namespace graphic
 	};
 
 
-	//inline int cModel::GetId() const { return m_id; }
-	//inline void cModel::SetTM(const Matrix44 &tm) { m_matTM = tm; }
-	//inline void cModel::MultiplyTM(const Matrix44 &tm) { m_matTM *= tm; }
-	//inline const Matrix44& cModel::GetTM() const { return m_matTM; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
 	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 	inline const string& cModel::GetFileName() const { return m_fileName; }
+	inline cShadow1& cModel::GetShadow() { return m_shadow; }
+	inline bool cModel::IsRenderShadow() const { return m_isRenderShadow; }
+	inline void cModel::SetRenderShadow(const bool show) { m_isRenderShadow = show; }
 }

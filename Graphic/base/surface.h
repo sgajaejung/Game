@@ -18,6 +18,7 @@ namespace graphic
 		void Render();
 		void Clear();
 
+		bool IsLoaded() const;
 		IDirect3DTexture9* GetTexture();
 		IDirect3DSurface9* GetRenderTarget();
 		IDirect3DSurface9* GetZBuffer();
@@ -37,6 +38,7 @@ namespace graphic
 	};
 
 
+	inline bool cSurface::IsLoaded() const { return m_texture? true : false; }
 	inline IDirect3DTexture9* cSurface::GetTexture() { return m_texture; }
 	inline IDirect3DSurface9* cSurface::GetRenderTarget() { return m_surface; }
 	inline IDirect3DSurface9* cSurface::GetZBuffer() { return m_zbuffer; }
