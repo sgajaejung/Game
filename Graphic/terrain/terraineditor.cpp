@@ -41,9 +41,9 @@ bool cTerrainEditor::CreateFromGRDFile( const string &fileName )
 // 지형정보를 sRawTerrain에 저장한다.
 void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 {
-	out.rowCellCount = m_rowCellCount;
-	out.colCellCount = m_colCellCount;
-	out.cellSize = m_cellSize;
+	out.rowCellCount = m_grid.GetRowCellCount();
+	out.colCellCount = m_grid.GetColCellCount();
+	out.cellSize = m_grid.GetCellSize();
 	out.heightMapStyle = 1;//(m_heightMapFileName.empty()? 1 : 0);
 	out.heightMap = cResourceManager::Get()->GetRelativePathToMedia(m_heightMapFileName);
 	out.bgTexture = cResourceManager::Get()->GetRelativePathToMedia(m_grid.GetTexture().GetTextureName());
@@ -107,7 +107,7 @@ bool cTerrainEditor::WriteTRNFile(const string &fileName)
 
 
 // 스플래팅된 최종 지형 텍스쳐를 파일에 저장한다.
-void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
+bool cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 {
 	cShader shader;
 	shader.Create( "../../media/shader/hlsl_terrain_splatting_texture_write.fx", "TShader" );
@@ -132,14 +132,10 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 	shader.SetMatrix( "mWIT", matIdentity);
 	shader.SetMatrix( "mWorld", matIdentity);
 	
-	//RenderShader(shader);
-	const bool oldShowModel = m_isShowModel;
-	m_isShowModel = false;
-
 	if (m_layer.empty())
 	{
 		shader.SetRenderPass(0);
-		cTerrain::RenderShader(shader);
+		m_grid.RenderShader(shader);
 	}
 	else
 	{
@@ -153,25 +149,24 @@ void cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
 		shader.SetRenderPass(1);
-		cTerrain::RenderShader(shader);
+		m_grid.RenderShader(shader);
 	}
-
-	m_isShowModel = oldShowModel;
 
 	surface.End();
 
-	surface.WritePNGFile( fileName );
+	const bool result = surface.WritePNGFile(fileName);
+	return result;
 }
 
 
 // 지형의 높낮이를 조절한다.
 void cTerrainEditor::BrushTerrain( const cTerrainCursor &cursor, const float elapseT )
 {
-	if (m_colCellCount <= 0)
+	if (!IsLoaded())
 		return; // 아직 지형이 로딩되지 않아서 리턴한다.
 
-	const int VERTEX_COL_COUNT = m_colCellCount + 1;
-	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
+	const int VERTEX_COL_COUNT = m_grid.GetColVertexCount();
+	const int VERTEX_ROW_COUNT = m_grid.GetRowVertexCount();
 
 	const Vector3 cursorPos = cursor.GetCursorPos();
 
@@ -305,7 +300,7 @@ void cTerrainEditor::GetTextureUV(const Vector3 &pos, OUT float &tu, OUT float &
 void cTerrainEditor::SetHeightFactor(const float heightFactor)
 {
 	m_heightFactor = heightFactor;
-	if (m_colCellCount <= 0)
+	if (!IsLoaded())
 		return; // 아직 지형이 로딩되지 않아서 리턴한다.
 	
 	const wstring wfileName = common::str2wstr(m_heightMapFileName);
@@ -313,13 +308,13 @@ void cTerrainEditor::SetHeightFactor(const float heightFactor)
 	if (Ok != bmp.GetLastStatus())
 		return;
 
-	const int VERTEX_COL_COUNT = m_colCellCount + 1;
-	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
-	const float WIDTH = m_colCellCount * m_cellSize;
-	const float HEIGHT = m_rowCellCount * m_cellSize;
+	const int VERTEX_COL_COUNT = m_grid.GetColVertexCount();
+	const int VERTEX_ROW_COUNT = m_grid.GetRowVertexCount();
+	const float WIDTH = m_grid.GetWidth();
+	const float HEIGHT = m_grid.GetHeight();
 
-	const float incX = (float)(bmp.GetWidth()-1) / (float)m_colCellCount;
-	const float incY = (float)(bmp.GetHeight()-1) /(float) m_rowCellCount;
+	const float incX = (float)(bmp.GetWidth()-1) / (float)m_grid.GetColCellCount();
+	const float incY = (float)(bmp.GetHeight()-1) /(float)m_grid.GetRowCellCount();
 
 	sVertexNormTex *pv = (sVertexNormTex*)m_grid.GetVertexBuffer().Lock();
 

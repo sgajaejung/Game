@@ -22,7 +22,6 @@ protected:
 
 	graphic::cGrid m_grid;
 	graphic::cCube m_cube;
-	graphic::cShader *m_modelShader; // reference
 	graphic::cLine m_line;
 	common::Ray m_ray;
 

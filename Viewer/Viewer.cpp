@@ -138,7 +138,7 @@ bool cViewer::OnInit()
 	//m_shaderSkin2.Create( "../media/shader/hlsl_skinning_no_light.fx", "TShader" );
 	m_shaderSkin2 = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
 	//m_terrain.CreateFromHeightMap( "../media/terrain/flat_terrain2.jpg", "../media/terrain/grass_spring1.bmp", 7.f, 4.f);
-	m_terrain.CreateFromTRNFile( "../media/terrain/terrain7.trn" );
+	m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
 
 	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
 	//m_sphere.Create(100, 20, 20);

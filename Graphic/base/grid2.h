@@ -21,8 +21,14 @@ namespace graphic
 		void RenderShader(cShader &shader);
 
 		void SetTextureUVFactor(const float textureUVFactor);
+		float GetTextureUVFactor() const;
 		int GetRowCellCount() const;
 		int GetColCellCount() const;
+		int GetRowVertexCount() const;
+		int GetColVertexCount() const;
+		float GetCellSize() const;
+		float GetWidth() const;
+		float GetHeight() const;
 
 		void CalculateNormals();
 		bool Pick( const Vector3 &orig, const Vector3 &dir, Vector3 &out );
@@ -54,4 +60,10 @@ namespace graphic
 	inline cMaterial& cGrid2::GetMaterial() { return m_mtrl; }
 	inline int cGrid2::GetRowCellCount() const { return m_rowCellCount; }
 	inline int cGrid2::GetColCellCount() const { return m_colCellCount; }
+	inline int cGrid2::GetRowVertexCount() const { return m_rowCellCount + 1; }
+	inline int cGrid2::GetColVertexCount() const { return m_colCellCount + 1; }
+	inline float cGrid2::GetCellSize() const { return m_cellSize; }
+	inline float cGrid2::GetWidth() const { return m_colCellCount * m_cellSize; }
+	inline float cGrid2::GetHeight() const { return m_rowCellCount * m_cellSize; }
+	inline float cGrid2::GetTextureUVFactor() const { return m_textureUVFactor; }
 }

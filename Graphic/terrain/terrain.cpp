@@ -9,10 +9,7 @@ using namespace graphic;
 
 
 cTerrain::cTerrain() :
-	m_rowCellCount(0)
-,	m_colCellCount(0)
-,	m_cellSize(0)
-,	m_textureUVFactor(1.f)
+	m_textureUVFactor(1.f)
 ,	m_heightFactor(3.f)
 ,	m_isShowModel(true)
 ,	m_shader(NULL)
@@ -65,8 +62,8 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 	else if (rawTerrain.heightMapStyle == 1)
 	{
 		CreateFromGRDFormat(mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
-			rawTerrain.heightFactor, rawTerrain.textureFactor, 
-			rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
+			rawTerrain.heightFactor, rawTerrain.textureFactor );
+			//rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
 	}
 
 
@@ -115,8 +112,7 @@ bool cTerrain::CreateFromHeightMap( const string &heightMapFileName,
 // Grid 포맷 파일로 지형을 생성한다.
 // GRD 포맷: 그리드의 높이 값을 저장하는 파일 포맷.
 bool cTerrain::CreateFromGRDFormat( const string &gridFileName, 
-	const string &textureFileName, const float heightFactor, const float textureUVFactor,
-	const int rowCellCount, const int colCellCount, const float cellSize)
+	const string &textureFileName, const float heightFactor, const float textureUVFactor )
 	// heightFactor=3.f, textureUVFactor=1.f
 	// rowCellCount=64, colCellCount=64, cellSize=50.f
 {
@@ -126,9 +122,7 @@ bool cTerrain::CreateFromGRDFormat( const string &gridFileName,
 		m_shader = cResourceManager::Get()->LoadShader(  "hlsl_terrain_splatting.fx" );
 
 	InitLayer();
-	m_rowCellCount = rowCellCount;
-	m_colCellCount = colCellCount;
-	m_cellSize = cellSize;
+
 	m_textureUVFactor = textureUVFactor;
 
 	if (!m_grid.CreateFromFile(gridFileName))
@@ -163,9 +157,6 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 
 	InitLayer();
 
-	m_rowCellCount = rowCellCount;
-	m_colCellCount = colCellCount;
-	m_cellSize = cellSize;
 	m_textureUVFactor = textureUVFactor;
 	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
 
@@ -186,13 +177,13 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 	if (Gdiplus::Ok != bmp.GetLastStatus())
 		return false;
 
-	const int VERTEX_COL_COUNT = m_colCellCount + 1;
-	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
-	const float WIDTH = m_colCellCount * m_cellSize;
-	const float HEIGHT = m_rowCellCount * m_cellSize;
+	const int VERTEX_COL_COUNT = m_grid.GetColVertexCount();
+	const int VERTEX_ROW_COUNT = m_grid.GetRowVertexCount();
+	const float WIDTH = m_grid.GetWidth();
+	const float HEIGHT = m_grid.GetHeight();
 
-	const float incX = (float)(bmp.GetWidth()-1) / (float)m_colCellCount;
-	const float incY = (float)(bmp.GetHeight()-1) /(float) m_rowCellCount;
+	const float incX = (float)(bmp.GetWidth()-1) / (float)m_grid.GetColCellCount();
+	const float incY = (float)(bmp.GetHeight()-1) /(float)m_grid.GetRowCellCount();
 
 	sVertexNormTex *pv = (sVertexNormTex*)m_grid.GetVertexBuffer().Lock();
 
@@ -219,7 +210,7 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 }
 
 
-
+// 지형 출력
 void cTerrain::Render()
 {
 	if (m_shader)
@@ -233,6 +224,7 @@ void cTerrain::Render()
 }
 
 
+// 셰이더로 지형을 출력한다.
 void cTerrain::RenderShader(cShader &shader)
 {
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
@@ -284,14 +276,11 @@ float Lerp(float p1, float p2, float alpha)
 // x/z평면에서 월드 좌표 x,z 위치에 해당하는 높이 값 y를 리턴한다.
 float cTerrain::GetHeight(const float x, const float z)
 {
-	const float WIDTH = m_colCellCount * m_cellSize;
-	const float HEIGHT = m_rowCellCount * m_cellSize;
+	float newX = x + (m_grid.GetWidth() / 2.0f);
+	float newZ = m_grid.GetHeight() - (z + (m_grid.GetHeight() / 2.0f));
 
-	float newX = x + (WIDTH / 2.0f);
-	float newZ = HEIGHT - (z + (HEIGHT / 2.0f));
-
-	newX /= m_cellSize;
-	newZ /= m_cellSize;
+	newX /= m_grid.GetCellSize();
+	newZ /= m_grid.GetCellSize();
 
 	const float col = ::floorf( newX );
 	const float row = ::floorf( newZ );
@@ -330,8 +319,8 @@ float cTerrain::GetHeight(const float x, const float z)
 // 맵을 2차원 배열로 봤을 때, row, col 인덱스의 높이 값을 리턴한다.
 float cTerrain::GetHeightMapEntry( int row, int col )
 {
-	const int VERTEX_COL_COUNT = m_colCellCount + 1;
-	const int VERTEX_ROW_COUNT = m_rowCellCount + 1;
+	const int VERTEX_COL_COUNT = m_grid.GetColVertexCount();
+	const int VERTEX_ROW_COUNT = m_grid.GetRowVertexCount();
 
 	const int vtxSize = (VERTEX_COL_COUNT) * (VERTEX_ROW_COUNT);
 
@@ -381,9 +370,6 @@ cModel* cTerrain::PickModel(const Vector3 &orig, const Vector3 &dir)
 // 초기화.
 void cTerrain::Clear()
 {
-	m_rowCellCount = 0;
-	m_colCellCount = 0;
-	m_cellSize = 0;
 	m_heightFactor = 3.f;
 	m_textureUVFactor = 1.f;
 	m_heightMapFileName.clear();

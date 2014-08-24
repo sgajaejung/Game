@@ -179,7 +179,14 @@ void CTerrainPanel::OnBnClickedButtonSaveTerrainTexture()
 		{
 			const CString strPathName = dlg.GetPathName();
 			const string fileName = wstr2str((wstring)strPathName);
-			cMapController::Get()->GetTerrain().WriteTerrainTextureToPNGFile( fileName );
+			if (cMapController::Get()->GetTerrain().WriteTerrainTextureToPNGFile(fileName))
+			{
+				AfxMessageBox( L"저장 성공" );
+			}
+			else
+			{
+				AfxMessageBox( L"실패" );
+			}
 		}		
 	}
 }

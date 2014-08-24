@@ -1,0 +1,110 @@
+{
+	"terrain version" : "v1",
+	"info" : 
+	{
+	"rowCellCount" : 64,
+	"colCellCount" : 64,
+	"cellSize" : 50,
+	"heightMapStyle" : 1,
+	"heightMap" : "./terrain/Terrain9_geo.grd",
+	"bg texture" : "./terrain/ÁøÈë.jpg",
+	"alpha texture" : "./terrain/Terrain9_alpha.png",
+	"alpha texture width" : 256,
+	"alpha texture height" : 256,
+	"texture factor" : 8,
+	"height factor" : 3,
+	"layer" : [
+		{
+			"texture" : "./terrain/Ç®.jpg"
+		},
+		{
+			"texture" : "./terrain/Ç®º¯Çü.jpg"
+		},
+		{
+			"texture" : "./terrain/È²¸ð·¡.jpg"
+		},
+		{
+			"texture" : "./terrain/¿¶ÀºÀÜµð.jpg"
+		}
+	],
+	"model" : [
+		{
+			"filename" : "./max script/cezanne.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-451.142 228.695 -701.178 1"
+		},
+		{
+			"filename" : "./max script/cezanne.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-606.994 141.757 -466.899 1"
+		},
+		{
+			"filename" : "./max script/danmei.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "931.595 0.100098 -923.46 1"
+		},
+		{
+			"filename" : "./max script/elichea2.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "70.8846 5.3916 18.1446 1"
+		},
+		{
+			"filename" : "./max script/elichea2.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-50.5148 0.536133 -265.706 1"
+		},
+		{
+			"filename" : "./max script/elichea2.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "135.758 4.34534 -443.023 1"
+		},
+		{
+			"filename" : "./max script/elichea2.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "366.362 14.1934 -157.988 1"
+		},
+		{
+			"filename" : "./max script/elichea3.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-586.089 0.100006 834.37 1"
+		},
+		{
+			"filename" : "./max script/elichea3.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-860.548 0.0999756 624.96 1"
+		},
+		{
+			"filename" : "./max script/elichea3.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "-978.545 0.100006 964.674 1"
+		},
+		{
+			"filename" : "./max script/hyde.dat",
+			"tm1" : "1 0 0 0",
+			"tm2" : "0 1 0 0",
+			"tm3" : "0 0 1 0",
+			"tm4" : "811.316 386.292 323.611 1"
+		}
+	]
+	}
+}

@@ -34,8 +34,7 @@ namespace graphic
 			 const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
 
 		bool CreateFromGRDFormat( const string &gridFileName, 
-			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f,
-			const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
+			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f );
 
 		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f,
 			const float textureUVFactor=1.f );
@@ -59,7 +58,7 @@ namespace graphic
 
 		virtual void Render();
 
-		// info
+		// terrain infomation
 		int GetRowCellCount() const;
 		int GetColCellCount() const;
 		float GetCellSize() const;
@@ -96,9 +95,6 @@ namespace graphic
 
 
 	protected:
-		int m_rowCellCount;
-		int m_colCellCount;
-		float m_cellSize;
 		float m_heightFactor;
 		float m_textureUVFactor;
 		string m_heightMapFileName;
@@ -116,15 +112,15 @@ namespace graphic
 	};
 
 
-	inline int cTerrain::GetRowCellCount() const { return m_rowCellCount; }
-	inline int cTerrain::GetColCellCount() const { return m_colCellCount; }
-	inline float cTerrain::GetCellSize() const { return m_cellSize; }
-	inline float cTerrain::GetTerrainWidth() const { return m_colCellCount * m_cellSize; }
-	inline float cTerrain::GetTerrainHeight() const { return m_rowCellCount * m_cellSize; }
+	inline int cTerrain::GetRowCellCount() const { return m_grid.GetRowCellCount(); }
+	inline int cTerrain::GetColCellCount() const { return m_grid.GetColCellCount(); }
+	inline float cTerrain::GetCellSize() const { return m_grid.GetCellSize(); }
+	inline float cTerrain::GetTerrainWidth() const { return m_grid.GetWidth(); }
+	inline float cTerrain::GetTerrainHeight() const { return m_grid.GetHeight(); }
 	inline float cTerrain::GetTextureUVFactor() const { return m_textureUVFactor; }
 	inline float cTerrain::GetHeightFactor() const { return m_heightFactor; }
 	inline vector<cModel*>& cTerrain::GetRigidModels() { return m_rigids; }
-	inline bool cTerrain::IsLoaded() const { return m_rowCellCount > 0; }
+	inline bool cTerrain::IsLoaded() const { return m_grid.GetRowCellCount() > 0; }
 	inline int cTerrain::GetLayerCount() const { return m_layer.size(); }
 	inline const sSplatLayer& cTerrain::GetLayer(int layer) const { return m_layer[ layer]; }
 	inline cTexture& cTerrain::GetAlphaTexture() { return m_alphaTexture; }

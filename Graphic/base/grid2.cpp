@@ -114,36 +114,29 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 // uv 값을 textureUVFactor 에 맞춰 재 조정한다.
 void cGrid2::SetTextureUVFactor(const float textureUVFactor)
 {
-	// 아직 grid가 초기화 되지 않았다면 uv 값을 조정하지 않는다.
-	RET (m_rowCellCount <= 0);
-
 	// init member
 	m_textureUVFactor = textureUVFactor;
 
-	const int rowCellCount = m_rowCellCount;
-	const int colCellCount = m_colCellCount;
-	const float cellSize = m_cellSize;
+	// 아직 grid가 초기화 되지 않았다면 uv 값을 조정하지 않는다.
+	RET (m_rowCellCount <= 0);
 
 	// Init Grid
-	const int rowVtxCnt  = rowCellCount+1;
-	const int colVtxCnt  = colCellCount+1;
-	const int cellCnt = rowCellCount * colCellCount;
-	const int vtxCount= rowVtxCnt * colVtxCnt;
+	const int colVtxCnt  = GetColVertexCount();
 
 	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
-	const float startx = -cellSize*(colCellCount/2);
-	const float starty = cellSize*(rowCellCount/2);
-	const float endx = startx + cellSize*colCellCount;
-	const float endy = starty - cellSize*rowCellCount;
+	const float startx = -m_cellSize*(m_colCellCount/2);
+	const float starty = m_cellSize*(m_rowCellCount/2);
+	const float endx = startx + m_cellSize*m_colCellCount;
+	const float endy = starty - m_cellSize*m_rowCellCount;
 
-	const float uCoordIncrementSize = 1.0f / (float)colCellCount * textureUVFactor;
-	const float vCoordIncrementSize = 1.0f / (float)rowCellCount * textureUVFactor;
+	const float uCoordIncrementSize = 1.0f / (float)m_colCellCount * textureUVFactor;
+	const float vCoordIncrementSize = 1.0f / (float)m_rowCellCount * textureUVFactor;
 
 	int i=0;
-	for (float y=starty; y >= endy; y -= cellSize, ++i)
+	for (float y=starty; y >= endy; y -= m_cellSize, ++i)
 	{
 		int k=0;
-		for (float x=startx; x <= endx; x += cellSize, ++k )
+		for (float x=startx; x <= endx; x += m_cellSize, ++k )
 		{
 			int index = (i * colVtxCnt) + k;
 			vertices[ index].u = (float)k*uCoordIncrementSize;
@@ -159,10 +152,7 @@ void cGrid2::SetTextureUVFactor(const float textureUVFactor)
 // Header : GRD
 bool cGrid2::WriteFile(const string &fileName)
 {
-	const int rowVtxCnt  = m_rowCellCount+1;
-	const int colVtxCnt  = m_colCellCount+1;
-	const int vtxCount = rowVtxCnt * colVtxCnt;
-
+	const int vtxCount = GetRowVertexCount() * GetColVertexCount();
 
 	// sGridBinary 구조체 생성.
 	sGridBinary gbin;

@@ -15,7 +15,6 @@ CMapView::CMapView() :
 ,	m_RButtonDown(false)
 ,	m_LButtonDown(false)
 ,	m_MButtonDown(false)
-,	m_modelShader(NULL)
 {
 
 }
@@ -80,9 +79,6 @@ bool CMapView::Init()
 	m_cube.SetColor( 0xFF0000FF );
 	m_dxInit = true;
 
-	//m_terrainShader.Create( "../../media/shader/hlsl_terrain.fx", "TShader" );
-	m_modelShader = graphic::cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
-
 	return true;
 }
 
@@ -107,17 +103,7 @@ void CMapView::Render()
 		graphic::GetRenderer()->RenderFPS();
 		//graphic::GetRenderer()->RenderGrid();
 
-		//cCamera &camera = *cMainCamera::Get();
-		//m_modelShader->SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-		//m_modelShader->SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_modelShader->SetVector( "vEyePos", camera.GetEyePos());
-
-		//m_terrainShader.SetRenderPass(1);
-		//cMapController::Get()->GetTerrain().Render();
-		//cMapController::Get()->GetTerrain().RenderShader(m_terrainShader);
-
 		cMapController::Get()->GetTerrain().Render();
-
 
 		switch (cMapController::Get()->GetEditMode())
 		{
