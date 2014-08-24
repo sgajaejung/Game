@@ -60,12 +60,26 @@ sRawAniGroup* cResourceManager::LoadAnimation( const string &fileName )
 
 	if (!importer::ReadRawAnimationFile(fileName, *anies))
 	{
-		delete anies;
-		return NULL;
+		string newPath;
+		if (common::FindFile(fileName, m_mediaDirectory, newPath))
+		{
+			if (!importer::ReadRawAnimationFile(newPath, *anies))
+			{
+				goto error;
+			}
+		}
+		else
+		{
+			goto error;
+		}
 	}
 
 	m_anies[ fileName] = anies;
 	return anies;
+
+error:
+	delete anies;
+	return NULL;
 }
 
 

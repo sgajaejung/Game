@@ -21,7 +21,6 @@ public:
 
 protected:
 	Matrix44 m_rotateTm;
-	graphic::cCamera m_camera;
 	graphic::cSkyBox m_skybox;
 	graphic::cShader m_shader;
 

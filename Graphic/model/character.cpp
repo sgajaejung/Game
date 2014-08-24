@@ -9,6 +9,8 @@ cCharacter::cCharacter(const int id) :
 	cModel(id)
 ,	m_weapon(NULL)
 ,	m_weaponNode1(NULL)
+,	m_weaponBoneNode1(NULL)
+,	m_weaponBoneNode2(NULL)
 {
 
 }
@@ -42,7 +44,7 @@ void cCharacter::LoadWeapon(const string &fileName)
 	RET(!m_weaponNode2);
 
 	if (!m_weapon)
-		m_weapon = new cModel(100);
+		m_weapon = new cModel(common::GenerateId());
 
 	if (!m_weapon->Create(fileName))
 		return;
@@ -90,4 +92,27 @@ void cCharacter::SetRenderWeaponBoundingBox(const bool isRenderBoundingBox)
 {
 	if (m_weapon)
 		m_weapon->SetRenderBoundingBox(isRenderBoundingBox);
+}
+
+
+// 캐릭터에게 명령을 내린다.
+void cCharacter::Action(const CHARACTER_ACTION::TYPE type, const int param1, const int param2)
+	// param1=0, param2 = 0
+{
+	BOOST_FOREACH (auto &action, m_actions)
+	{
+		if (action.type == type)
+		{
+			SetAnimation(action.animationFile);
+			break;
+		}
+	}
+
+}
+
+
+// 
+void cCharacter::SetActionData(const vector<sActionData> &actions)
+{
+	m_actions = actions;
 }

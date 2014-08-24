@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "character.h"
 #include "characteranalyzer.h"
 
 using namespace graphic;

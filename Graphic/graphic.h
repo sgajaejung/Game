@@ -51,7 +51,7 @@ using namespace common;
 #include "model/model.h"
 #include "model/bonemgr.h"
 #include "model/bonenode.h"
-#include "model/character.h"
+//#include "model/character.h"
 
 #include "sprite/sprite.h"
 

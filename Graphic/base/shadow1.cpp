@@ -7,12 +7,10 @@ using namespace graphic;
 
 cShadow1::cShadow1()
 {
-
 }
 
 cShadow1::~cShadow1()
 {
-
 }
 
 

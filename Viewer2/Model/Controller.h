@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Graphic/model/character.h"
+
 
 class cController : public common::cObservable
 							, public common::cSingleton<cController>							

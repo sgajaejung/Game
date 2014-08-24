@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="action\action.h" />
     <ClInclude Include="base\box.h" />
     <ClInclude Include="base\camera.h" />
     <ClInclude Include="base\circle.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="terrain\terraineditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="action\action.cpp" />
     <ClCompile Include="base\box.cpp" />
     <ClCompile Include="base\camera.cpp" />
     <ClCompile Include="base\circle.cpp" />

@@ -13,12 +13,6 @@ namespace graphic
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &tm) override;
 
-
-	protected:
-
-
-	private:
-		
 	};
 
 }

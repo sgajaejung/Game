@@ -142,6 +142,9 @@
     <ClInclude Include="base\shadow1.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="action\action.h">
+      <Filter>action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -268,6 +271,9 @@
     <ClCompile Include="base\shadow1.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="action\action.cpp">
+      <Filter>action</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="model">
@@ -290,6 +296,9 @@
     </Filter>
     <Filter Include="terrain">
       <UniqueIdentifier>{9985855d-6f18-4e28-8f9d-53164cfa9610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="action">
+      <UniqueIdentifier>{3988de06-3223-45da-bf9a-eabd68ea2673}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

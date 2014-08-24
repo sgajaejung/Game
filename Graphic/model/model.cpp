@@ -84,9 +84,6 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 	// 모델 충돌 박스를 생성한다.
 	GetCollisionBox();
 
-	// 그림자맵 생성.
-	m_shadow.Create(256, 256);
-
 	return true;
 }
 
@@ -155,6 +152,10 @@ void cModel::Render(const Matrix44 &tm)
 	// 그림자 업데이트.
 	if (m_isRenderShadow)
 	{
+		// 그림자맵 생성.
+		if (!m_shadow.IsLoaded())
+			m_shadow.Create(256, 256);
+
 		m_shadow.UpdateShadow(*this);
 		//m_shadow.RenderShadowMap();
 	}

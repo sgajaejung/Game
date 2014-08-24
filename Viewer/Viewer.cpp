@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "../wxMemMonitorLib/wxMemMonitor.h"
 #include "TestScene.h"
+#include "../Graphic/model/character.h"
 
 #include <objidl.h>
 #include <gdiplus.h> 
@@ -30,8 +31,6 @@ private:
 	graphic::cLight m_light;
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
-	graphic::cModel m_model;
-	graphic::cModel m_model2;
 	graphic::cCharacter m_character;
 
 	graphic::cSprite *m_image;
@@ -45,7 +44,6 @@ private:
 	cTestScene *m_scene;
 	//graphic::cCollisionManager collisionMgr;
 
-
 	string m_filePath;
 
 	POINT m_curPos;
@@ -53,8 +51,6 @@ private:
 	bool m_RButtonDown;
 	bool m_MButtonDown;
 	Matrix44 m_rotateTm;
-
-	//graphic::cCamera m_camera;
 
 	Vector3 m_boxPos;
 
@@ -66,20 +62,10 @@ private:
 INIT_FRAMEWORK(cViewer);
 
 
-static const UINT MAP_SIZE = 256;
-// 단축매크로
-#define RS   graphic::GetDevice()->SetRenderState
-#define TSS  graphic::GetDevice()->SetTextureStageState
-#define SAMP graphic::GetDevice()->SetSamplerState
-
-
-
 cViewer::cViewer() :
 	m_sprite(NULL)
 ,	m_image(NULL)
 ,	m_scene(NULL)
-,	m_model(100)
-,	m_model2(1)
 ,	m_character(1000)
 {
 	m_windowName = L"Viewer";
@@ -112,21 +98,33 @@ bool cViewer::OnInit()
 	//m_scene->SetPos(Vector3(100,100,0));
 
 
-	//m_model->Create( "../media/weapon.dat" );
-	m_model.Create( "../media/max script/valle1.dat" );
-	m_model.SetAnimation( "../media/max script/valle_forward.ani" );
-	m_model.SetRenderBoundingBox(true);
+	//m_model.Create( "../media/max script/valle1.dat" );
+	//m_model.SetAnimation( "../media/max script/valle_forward.ani" );
+
 
 	m_character.Create( "../media/max script/tiac.dat" );
-	//m_character.SetAnimation( "../media/max script/tiac_normal.ani" );
-	m_character.SetAnimation( "../media/max script/tiac_la.ani" );
 	m_character.LoadWeapon( "../media/max script/tiac_weapon.dat" );
 	//m_character.SetRenderBoundingBox(true);
 	//m_character.SetRenderWeaponBoundingBox(true);
 
+	using namespace graphic;
+
+	vector<sActionData> actions;
+	actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
+	actions.push_back( sActionData(CHARACTER_ACTION::RUN, "tiac_forward.ani") );
+	actions.push_back( sActionData(CHARACTER_ACTION::DASH, "tiac_dash.ani") );
+	actions.push_back( sActionData(CHARACTER_ACTION::GUARD, "tiac_guard.ani") );
+	actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_la.ani") );
+	m_character.SetActionData(actions);
+
+	m_character.Action( CHARACTER_ACTION::NORMAL );
+
+
+
+
 	m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
 
-	m_cube.SetCube(Vector3(-50,-50,-50), Vector3(50,50,50));
+	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 	//m_sphere.Create(100, 20, 20);
 
 	m_mtrl.InitWhite();
@@ -142,8 +140,8 @@ bool cViewer::OnInit()
 	
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	graphic::cMainCamera::Get()->SetCamera(Vector3(100,500,-500), Vector3(0,0,0), Vector3(0,1,0));
-	graphic::cMainCamera::Get()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
+	graphic::GetMainCamera()->SetCamera(Vector3(100,1500,-1500), Vector3(0,0,0), Vector3(0,1,0));
+	graphic::GetMainCamera()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
 
 	graphic::GetDevice()->LightEnable (
 		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
@@ -155,11 +153,16 @@ bool cViewer::OnInit()
 
 void cViewer::OnUpdate(const float elapseT)
 {
-	m_model.Move(elapseT);
+	//m_model.Move(elapseT);
 	m_character.Move(elapseT);
 
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
+
+
+	
+
+
 }
 
 
@@ -186,8 +189,9 @@ void cViewer::OnRender(const float elapseT)
 		if (m_scene)
 			m_scene->Render(matIdentity);
 
-		m_character.SetTM(m_cube.GetTransform());
+		//m_character.SetTM(m_cube.GetTransform());
 		m_character.Render(Matrix44::Identity);
+
 		m_terrain.Render();
 		m_cube.Render(matIdentity);
 
@@ -227,11 +231,11 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			switch (type)
 			{
 			case graphic::RESOURCE_TYPE::MESH:
-				m_model.Create(filePath);
+				//m_model.Create(filePath);
 				break;
 
 			case graphic::RESOURCE_TYPE::ANIMATION:
-				m_model.SetAnimation(filePath);
+				//m_model.SetAnimation(filePath);
 				break;
 			}
 		}
@@ -243,12 +247,12 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 			dbg::Print( "%d %d", fwKeys, zDelta);
 
-			const float len = graphic::cMainCamera::Get()->GetDistance();
+			const float len = graphic::GetMainCamera()->GetDistance();
 			float zoomLen = (len > 100)? 50 : (len/4.f);
 			if (fwKeys & 0x4)
 				zoomLen = zoomLen/10.f;
 
-			graphic::cMainCamera::Get()->Zoom( (zDelta<0)? -zoomLen : zoomLen );
+			graphic::GetMainCamera()->Zoom( (zDelta<0)? -zoomLen : zoomLen );
 		}
 		break;
 
@@ -259,13 +263,13 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (m_filePath.empty())
 					return;
-				m_model.Create(m_filePath);
+				//m_model.Create(m_filePath);
 			}
 			break;
 		case VK_BACK:
 			// 회전 행렬 초기화.
-			m_rotateTm.SetIdentity();
-			m_model.SetTM(m_rotateTm);
+			//m_rotateTm.SetIdentity();
+			//m_model.SetTM(m_rotateTm);
 			break;
 		case VK_TAB:
 			{
@@ -333,8 +337,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				Quaternion q1(graphic::cMainCamera::Get()->GetRight(), -y * 0.01f);
-				Quaternion q2(graphic::cMainCamera::Get()->GetUpVector(), -x * 0.01f);
+				Quaternion q1(graphic::GetMainCamera()->GetRight(), -y * 0.01f);
+				Quaternion q2(graphic::GetMainCamera()->GetUpVector(), -x * 0.01f);
 
 				m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
 			}
@@ -345,8 +349,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const int y = pos.y - m_curPos.y;
 				m_curPos = pos;
 
-				graphic::cMainCamera::Get()->Yaw2( x * 0.005f );
-				graphic::cMainCamera::Get()->Pitch2( y * 0.005f );
+				graphic::GetMainCamera()->Yaw2( x * 0.005f );
+				graphic::GetMainCamera()->Pitch2( y * 0.005f );
 			}
 			else if (m_MButtonDown)
 			{
@@ -354,9 +358,9 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 				const POINT pos = {point.x - m_curPos.x, point.y - m_curPos.y};
 				m_curPos = point;
 
-				const float len = graphic::cMainCamera::Get()->GetDistance();
-				graphic::cMainCamera::Get()->MoveRight( -pos.x * len * 0.001f );
-				graphic::cMainCamera::Get()->MoveUp( pos.y * len * 0.001f );
+				const float len = graphic::GetMainCamera()->GetDistance();
+				graphic::GetMainCamera()->MoveRight( -pos.x * len * 0.001f );
+				graphic::GetMainCamera()->MoveUp( pos.y * len * 0.001f );
 			}
 			else
 			{
@@ -364,8 +368,8 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 
 				Vector3 pickPos;
 				Ray ray(pos.x, pos.y, 1024, 768, 
-					graphic::cMainCamera::Get()->GetProjectionMatrix(), 
-					graphic::cMainCamera::Get()->GetViewMatrix());
+					graphic::GetMainCamera()->GetProjectionMatrix(), 
+					graphic::GetMainCamera()->GetViewMatrix());
 				const float y = m_terrain.GetHeightFromRay(ray.orig, ray.dir, pickPos);
 
 				pickPos.y = y;

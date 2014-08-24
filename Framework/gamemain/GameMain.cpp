@@ -41,7 +41,7 @@ int framework::FrameWorkWinMain(HINSTANCE hInstance,
 	cGameMain::Get()->Run();
 	cGameMain::Get()->ShutDown();
 	cGameMain::Release();
-	memmonitor::Cleanup();	
+	memmonitor::Cleanup();
 	return 0;
 }
 
