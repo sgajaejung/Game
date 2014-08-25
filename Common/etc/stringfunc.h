@@ -3,13 +3,16 @@
 
 namespace common
 {
-	void replaceAll(std::string& str, const std::string& from, const std::string& to);
+	void replaceAll(string& str, const string& from, const string& to);
 	string& trim(string &str);
 
-	std::string wstr2str(const std::wstring &wstr);
-	std::wstring str2wstr(const std::string &str);
+	string& lowerCase(string &str);
+	string& upperCase(string &str);
 
-	std::string format(const char* fmt, ...);
-	std::wstring formatw(const char* fmt, ...);
+	string wstr2str(const wstring &wstr);
+	wstring str2wstr(const string &str);
+
+	string format(const char* fmt, ...);
+	wstring formatw(const char* fmt, ...);
 
 }

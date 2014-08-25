@@ -110,6 +110,7 @@ bool cViewer::OnInit()
 	using namespace graphic;
 
 	vector<sActionData> actions;
+	actions.reserve(16);
 	actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
 	actions.push_back( sActionData(CHARACTER_ACTION::RUN, "tiac_forward.ani") );
 	actions.push_back( sActionData(CHARACTER_ACTION::DASH, "tiac_dash.ani") );
@@ -159,8 +160,17 @@ void cViewer::OnUpdate(const float elapseT)
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
 
-
-	
+	if (GetAsyncKeyState(VK_LEFT)
+		|| GetAsyncKeyState(VK_RIGHT)
+		|| GetAsyncKeyState(VK_UP)
+		|| GetAsyncKeyState(VK_DOWN))
+	{
+		m_character.Action(graphic::CHARACTER_ACTION::RUN);
+	}
+	else
+	{
+		m_character.Action(graphic::CHARACTER_ACTION::NORMAL);
+	}	
 
 
 }

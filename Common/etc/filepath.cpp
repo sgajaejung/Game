@@ -214,9 +214,11 @@ bool common::FindFile( const string &findName, const string &searchPath, string 
 		}
 		else if (fd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)
 		{
-			const string fileName = fd.cFileName;
-			if (fileName == GetFileName(findName))
+			string fileName = fd.cFileName;
+			if (lowerCase(fileName) == lowerCase(GetFileName(findName)))
 			{
+			//if (fileName == GetFileName(findName))
+			//{
 				out = searchPath + GetFileName(findName);
 				break;
 			}

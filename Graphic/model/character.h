@@ -33,7 +33,10 @@ namespace graphic
 		cBoneNode *m_weaponBoneNode1; // reference
 		cBoneNode *m_weaponBoneNode2; // reference
 
+		// action
 		vector<sActionData> m_actions;
+		CHARACTER_ACTION::TYPE m_action;
+
 	};
 
 }

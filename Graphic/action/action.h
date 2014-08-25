@@ -8,6 +8,7 @@ namespace graphic
 	{
 		enum TYPE
 		{
+			NONE,
 			NORMAL,
 			RUN,
 			DASH,

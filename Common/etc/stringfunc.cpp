@@ -96,3 +96,18 @@ std::wstring common::formatw(const char* fmt, ...)
 	va_end ( args );
 	return str2wstr(textString);
 }
+
+
+// 넘어온 인자 str 을 소문자로 바꿔서 리턴한다.
+string& common::lowerCase(string &str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), tolower);
+	return str;
+}
+
+// 넘어온 인자 str 을 대문자로 바꿔서 리턴한다.
+string& common::upperCase(string &str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), toupper);
+	return str;
+}

@@ -136,11 +136,11 @@ bool cMesh::Move(const float elapseTime)
 // Render
 void cMesh::Render(const Matrix44 &parentTm)
 {
-	if (m_shader)
-	{
-		RenderShader(*m_shader, parentTm);
-		return;
-	}
+	//if (m_shader)
+	//{
+	//	RenderShader(*m_shader, parentTm);
+	//	return;
+	//}
 
 
 	if (m_attributes.empty())

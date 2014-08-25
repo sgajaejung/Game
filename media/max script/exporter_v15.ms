@@ -737,14 +737,22 @@ fn WriteTVertTVFace obj =
 		local uv = (ConvertToD3D_UV tex)
 		format "% %\n" uv.x  uv.y to:Outfile
 	)
-		
-	format "TEXTURE-FACE = %\n" obj.faces.count to:Outfile	
-	for i=1 to obj.faces.count do
+
+	if (obj.material == undefined) then
 	(
-		local tvfaceidx = getTVFace obj i
-		local index = (ConvertToD3D_INDEX tvfaceidx)
-		format "% % %\n" (index.x as integer) (index.y as integer) (index.z as integer) to:Outfile
-	)	
+		format "TEXTURE-FACE = 0\n"  to:Outfile	
+	)
+	else
+	(
+		format "TEXTURE-FACE = %\n" obj.faces.count to:Outfile	
+		for i=1 to obj.faces.count do
+		(
+			local tvfaceidx = getTVFace obj i
+			local index = (ConvertToD3D_INDEX tvfaceidx)
+			format "% % %\n" (index.x as integer) (index.y as integer) (index.z as integer) to:Outfile
+		)	
+	)
+	
 )
 
 
@@ -904,7 +912,7 @@ fn WriteAni obj =
 	)
 	else
 	(
-		start = g_animationEndFrame
+		end = g_animationEndFrame
 	)
 	
 	

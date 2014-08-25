@@ -20,6 +20,9 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 		if (m_root && (parentId < 0))
 			continue;
 
+		if (m_bones[ id])
+			continue; // already exist continue;
+
 		cBoneNode *bone = new cBoneNode(id, m_palette, rawMeshes.bones[ i]);
 		SAFE_DELETE(m_bones[ id]);
 		m_bones[ id] = bone;

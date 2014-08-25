@@ -641,24 +641,25 @@ bool importer::ReadTextureCoordinate( std::ifstream &fin, const string &fileName
 			if (vtxSize > i)
 				rawMesh.tex[ i] = Vector3(fnum1, fnum2, 0);
 		}
+	}
 
-		string strTexFace;
-		int numTexFace;
-		fin >> strTexFace >> eq >> numTexFace;
+	string strTexFace;
+	int numTexFace;
+	fin >> strTexFace >> eq >> numTexFace;
 
-		vector<int> texFaces;
-		texFaces.reserve(numTexFace*3);
-		if (numTexFace > 0)
+	vector<int> texFaces;
+	texFaces.reserve(numTexFace*3);
+	if (numTexFace > 0)
+	{
+		int num1, num2, num3;
+		for (int i=0; i < numTexFace; ++i)
 		{
-			int num1, num2, num3;
-			for (int i=0; i < numTexFace; ++i)
-			{
-				fin >> num1 >> num2 >> num3;
-				texFaces.push_back( num1 );
-				texFaces.push_back( num2 );
-				texFaces.push_back( num3 );
-			}
+			fin >> num1 >> num2 >> num3;
+			texFaces.push_back( num1 );
+			texFaces.push_back( num2 );
+			texFaces.push_back( num3 );
 		}
+
 /*
 		map<int, vector<int> > vtxIdxMap; // vertex index, vertex index array
 		for (int i=0; i < vtxSize; ++i)

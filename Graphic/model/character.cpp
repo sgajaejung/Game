@@ -11,6 +11,7 @@ cCharacter::cCharacter(const int id) :
 ,	m_weaponNode1(NULL)
 ,	m_weaponBoneNode1(NULL)
 ,	m_weaponBoneNode2(NULL)
+,	m_action(CHARACTER_ACTION::NONE)
 {
 
 }
@@ -99,10 +100,13 @@ void cCharacter::SetRenderWeaponBoundingBox(const bool isRenderBoundingBox)
 void cCharacter::Action(const CHARACTER_ACTION::TYPE type, const int param1, const int param2)
 	// param1=0, param2 = 0
 {
+	RET(m_action == type);
+
 	BOOST_FOREACH (auto &action, m_actions)
 	{
 		if (action.type == type)
 		{
+			m_action = type;
 			SetAnimation(action.animationFile);
 			break;
 		}
