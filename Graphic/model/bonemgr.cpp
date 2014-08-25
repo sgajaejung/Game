@@ -12,13 +12,16 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 {
 	m_palette.resize(rawMeshes.bones.size(), Matrix44());
 	m_bones.resize(rawMeshes.bones.size(), NULL);
+	
+	sRawBone rootBone;
+	m_root = new cBoneNode(-1, m_palette, rootBone);
 
 	for (u_int i=0; i < rawMeshes.bones.size(); ++i)
 	{
 		const int id = rawMeshes.bones[ i].id;
 		const int parentId = rawMeshes.bones[ i].parentId;
-		if (m_root && (parentId < 0))
-			continue;
+		//if (m_root && (parentId < 0))
+		//	continue;
 
 		if (m_bones[ id])
 			continue; // already exist continue;
@@ -29,7 +32,8 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 
 		if (-1 >=  parentId) // root
 		{
-			m_root = bone;
+			//m_root = bone;
+			m_root->InsertChild( bone );
 		}
 		else
 		{
@@ -60,7 +64,9 @@ void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, i
 	RET(!node);
 	RET(node->GetId() >= (int)rawAnies.anies.size());
 
-	node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, true );
+	if (node->GetId() >= 0)
+		node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, true );
+
 	BOOST_FOREACH (auto p, node->GetChildren())
 	{
 		SetAnimationRec((cBoneNode*)p, rawAnies, nAniFrame );

@@ -28,6 +28,7 @@ namespace graphic
 		void SetMediaDirectory( const string &path );
 		const string& GetMediaDirectory() const;
 		string GetRelativePathToMedia( const string &fileName );
+		void ReloadFile();
 		void Clear();
 
 		RESOURCE_TYPE::TYPE GetFileKind( const string &fileName );
@@ -39,6 +40,7 @@ namespace graphic
 		map<string, cTexture*> m_textures; // key = fileName
 		map<string, cShader*> m_shaders; // key = fileName
 		string m_mediaDirectory; // default : ../media/
+		set<string> m_reLoadFile;
 	};
 
 

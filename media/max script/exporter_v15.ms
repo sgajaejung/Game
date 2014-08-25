@@ -937,6 +937,7 @@ fn WriteAni obj =
 	rotcount = rottrack.count
 
 	format "KEY_ROT = %\n" rotcount to:Outfile
+	
 	local multiquat = quat 0 0 0 1
 	for i = 1 to rottrack.count do
 	(
@@ -947,8 +948,8 @@ fn WriteAni obj =
 
 		local t = rottrack[i].time
 		if t < 0 then t = 0
+		
 		q = ConvertToD3D_QUAT multiquat
-
 		format "FRAME_ROT % % % % %\n" t q.x q.y q.z q.w to:Outfile
 	)
 	

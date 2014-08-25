@@ -89,6 +89,15 @@ sRawMeshGroup* cResourceManager::FindModel( const string &fileName )
 	auto it = m_meshes.find(fileName);
 	if (m_meshes.end() == it)
 		return NULL; // not exist
+
+	if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
+	{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
+		delete it->second;
+		m_meshes.erase(fileName);
+		m_reLoadFile.erase(fileName);
+		return NULL;
+	}
+
 	return it->second;
 }
 
@@ -99,6 +108,15 @@ sRawAniGroup* cResourceManager::FindAnimation( const string &fileName )
 	auto it = m_anies.find(fileName);
 	if (m_anies.end() == it)
 		return NULL; // not exist
+
+	if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
+	{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
+		delete it->second;
+		m_meshes.erase(fileName);
+		m_reLoadFile.erase(fileName);
+		return NULL;
+	}
+
 	return it->second;
 }
 
@@ -253,4 +271,15 @@ string cResourceManager::GetRelativePathToMedia( const string &fileName )
 	const string fullFileName = common::GetFullFileName(fileName);
 	const string relatePath = common::RelativePathTo( mediaFullPath, fullFileName);
 	return relatePath;
+}
+
+
+// 이미 로딩된 파일을 재사용하지 않고, 다시 로드한다.
+// 메쉬, 애니메이션만 해당된다.
+void cResourceManager::ReloadFile()
+{
+	BOOST_FOREACH (auto kv, m_meshes)
+		m_reLoadFile.insert(kv.first);
+	BOOST_FOREACH (auto kv, m_anies)
+		m_reLoadFile.insert(kv.first);
 }

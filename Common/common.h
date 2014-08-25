@@ -42,6 +42,7 @@ typedef unsigned int    u_int;
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <set>
 #include <boost/foreach.hpp>
 
 using std::string;
@@ -49,6 +50,7 @@ using std::wstring;
 using std::vector;
 using std::map;
 using std::list;
+using std::set;
 using std::stringstream;
 using std::wstringstream;
 

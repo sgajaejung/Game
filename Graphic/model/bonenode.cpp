@@ -69,6 +69,14 @@ void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
 // 에니메이션.
 bool cBoneNode::Move(const float elapseTime)
 {
+	if (m_id < 0)
+	{ // 최상위 루트 노드.
+		BOOST_FOREACH (auto p, m_children)
+			p->Move( elapseTime );
+		return true;
+	}
+
+
 	RETV(!m_isAni, true);
 	RETV(!m_track, true);
 

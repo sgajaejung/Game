@@ -59,13 +59,11 @@ bool cRigidMesh::Move(const float elapseTime)
 // Ãâ·Â.
 void cRigidMesh::Render(const Matrix44 &parentTm)
 {
-	//cMesh::Render(parentTm);
-	if (m_shader)
-	{
-		//RenderShader(*m_shader, parentTm);
-		cMesh::RenderShader(*m_shader, parentTm);
-		return;
-	}
+	//if (m_shader)
+	//{
+	//	cMesh::RenderShader(*m_shader, parentTm);
+	//	return;
+	//}
 
 	cMesh::Render(parentTm);
 }
