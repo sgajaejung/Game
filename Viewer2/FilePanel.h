@@ -39,4 +39,5 @@ public:
 	afx_msg void OnDblclkListModel();
 	CString m_textModelFile;
 	CString m_textAnimationFiles;
+	afx_msg void OnBnClickedButtonRefresh();
 };

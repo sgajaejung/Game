@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CFilePanel, CPanelBase)
 	ON_WM_SIZE()
 	ON_LBN_DBLCLK(IDC_LIST_ANIMATION, &CFilePanel::OnDblclkListAnimation)
 	ON_LBN_DBLCLK(IDC_LIST_MODEL, &CFilePanel::OnDblclkListModel)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CFilePanel::OnBnClickedButtonRefresh)
 END_MESSAGE_MAP()
 
 
@@ -155,4 +156,11 @@ void CFilePanel::OnDblclkListModel()
 
 	ShowLoadingDialog();
 	cController::Get()->LoadFile(fileName);
+}
+
+
+void CFilePanel::OnBnClickedButtonRefresh()
+{
+	UpdateModelFiles();
+	UpdateAnimationFiles();
 }
