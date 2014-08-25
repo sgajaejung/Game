@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_ERASE, &CBrushPanel::OnBnClickedCheckErase)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_BRUSHMENU_DELETE_LAYER, &CBrushPanel::OnDeleteLayer)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CBrushPanel::OnBnClickedButtonRefresh)
 END_MESSAGE_MAP()
 
 
@@ -181,7 +182,6 @@ void CBrushPanel::OnChangeMfceditbrowseTexture()
 	string filePath = common::wstr2str((wstring)wfilePath);
 	filePath += "\\";
 	UpdateTextureFiles(filePath);
-
 }
 
 
@@ -283,4 +283,14 @@ void CBrushPanel::OnDeleteLayer()
 
 	cMapController::Get()->GetTerrain().DeleteLayer(item);
 	cMapController::Get()->UpdateSplatLayer();
+}
+
+
+void CBrushPanel::OnBnClickedButtonRefresh()
+{
+	CString wfilePath;
+	m_textureBrowser.GetWindowText(wfilePath);
+	string filePath = common::wstr2str((wstring)wfilePath);
+	filePath += "\\";
+	UpdateTextureFiles(filePath);
 }

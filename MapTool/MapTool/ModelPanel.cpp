@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CDialogEx)
 	ON_EN_CHANGE(IDC_MFCEDITBROWSE_MODEL, &CModelPanel::OnChangeMfceditbrowseModel)
 	ON_LBN_SELCHANGE(IDC_LIST_MODEL, &CModelPanel::OnSelchangeListModel)
 	ON_LBN_DBLCLK(IDC_LIST_MODEL, &CModelPanel::OnDblclkListModel)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CModelPanel::OnBnClickedButtonRefresh)
 END_MESSAGE_MAP()
 
 
@@ -145,4 +146,14 @@ void CModelPanel::UpdatePlaceModelList()
 		m_placeModelList.SetItemText(i, 1, fileName.c_str());
 		m_placeModelList.SetItemData(i, models[ i]->GetId() );
 	}
+}
+
+
+void CModelPanel::OnBnClickedButtonRefresh()
+{
+	CString wfilePath;
+	m_modelBrowser.GetWindowText(wfilePath);
+	string filePath = common::wstr2str((wstring)wfilePath);
+	filePath += "\\";
+	UpdateModelList(filePath);
 }

@@ -51,4 +51,5 @@ public:
 	float m_uvFactor;
 	afx_msg void OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeEditUvFactor();
+	afx_msg void OnBnClickedButtonRefresh();
 };

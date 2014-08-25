@@ -37,4 +37,5 @@ public:
 	afx_msg void OnSelchangeListModel();
 	CListCtrl m_placeModelList;
 	afx_msg void OnDblclkListModel();
+	afx_msg void OnBnClickedButtonRefresh();
 };

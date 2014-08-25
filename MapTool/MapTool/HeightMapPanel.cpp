@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CHeightMapPanel, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_HEIGHT_FACTOR, &CHeightMapPanel::OnEnChangeEditHeightFactor)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_UV_FACTOR, &CHeightMapPanel::OnNMCustomdrawSliderUvFactor)
 	ON_EN_CHANGE(IDC_EDIT_UV_FACTOR, &CHeightMapPanel::OnEnChangeEditUvFactor)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CHeightMapPanel::OnBnClickedButtonRefresh)
 END_MESSAGE_MAP()
 
 
@@ -274,4 +275,11 @@ void CHeightMapPanel::OnEnChangeEditUvFactor()
 	UpdateData();
 	m_uvSlider.SetPos( m_uvFactor * 100.f );
 	cMapController::Get()->GetTerrain().SetTextureUVFactor(m_uvFactor);
+}
+
+
+void CHeightMapPanel::OnBnClickedButtonRefresh()
+{
+	UpdateHeightMapList();
+	UpdateTextureList();	
 }

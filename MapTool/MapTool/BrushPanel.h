@@ -51,4 +51,5 @@ public:
 	afx_msg void OnBnClickedCheckErase();
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnDeleteLayer();
+	afx_msg void OnBnClickedButtonRefresh();
 };
