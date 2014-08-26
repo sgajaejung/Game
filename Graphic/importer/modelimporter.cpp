@@ -6,12 +6,15 @@
 namespace graphic { namespace importer {
 
 	bool ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes );
-	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
 	bool ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	// V14 는 V13 포맷과 같음.
+	// V15, 16 포맷은 같음.
 	bool ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+
+	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
+	bool ReadRawAnimationFileV16( const string &fileName, OUT sRawAniGroup &rawAnies );
 
 
 	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
@@ -96,6 +99,10 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 		)
 	{
 		ReadRawAnimationFileV9(fileName, rawAni);
+	}
+	else if ((version == "EXPORTER_V16"))
+	{
+		ReadRawAnimationFileV16(fileName, rawAni);
 	}
 	else
 	{
@@ -394,6 +401,40 @@ bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup 
 	for (int i=0; i < aniCount; ++i)
 	{
 		rawAnies.anies.push_back( sRawAni() );
+		ReadAnimation(fin, rawAnies.anies.back());
+	}
+
+	return true;
+}
+
+
+bool importer::ReadRawAnimationFileV16( const string &fileName, OUT sRawAniGroup &rawAnies )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string animationExporter;
+	fin >> animationExporter;
+
+	if (animationExporter != "ANIMATION_EXPORT")
+		return false;
+
+	string exp, eq;
+	int aniCount;
+	fin >> exp >> eq >> aniCount;
+
+	for (int i=0; i < aniCount; ++i)
+	{
+		rawAnies.anies.push_back( sRawAni() );
+
+		string tok, eq, id;
+		fin >> tok >> eq >> id;
+
 		ReadAnimation(fin, rawAnies.anies.back());
 	}
 

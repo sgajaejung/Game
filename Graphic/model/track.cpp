@@ -122,31 +122,35 @@ bool cTrack::GetScaleKey( const int curFrame, OUT Vector3 &out )
 {
 	RETV(!m_curKeyScale[ 0], false);
 
-	if (!m_curKeyScale[ 1])
-	{
-		out = m_curKeyScale[ 0]->s;
-		return true;
-	}
-
-	// 프레임이 다음 노드를 가리키면 다음 에니메이션으로 넘어간다.
-	if (curFrame > m_curKeyScale[ 1]->t)
-	{
-		// 에니메이션의 마지막이면 마지막 키값을 리턴한다.
-		if ((int)m_rawAni.scale.size() <= m_keyScaleIdx+1)
-		{
-			out = m_curKeyScale[ 1]->s;
-			return true;
-		}
-
-		// 다음 에니메이션으로 넘어간다.
-		++m_keyScaleIdx;
-		m_curKeyScale[ 0] = m_curKeyScale[ 1];
-		m_curKeyScale[ 1] = (sKeyScale*)&m_rawAni.scale[ m_keyScaleIdx];
-	}
-
-	const float alpha = GetAlpha( m_curKeyScale[ 0]->t, m_curKeyScale[ 1]->t, (float)curFrame );
-	out = m_curKeyScale[ 0]->s.Interpolate( m_curKeyScale[ 1]->s, alpha );
+	out = Vector3(1,1,1);
 	return true;
+
+	// 일단 당분간 스케일링하는 에니메이션은 제외한다.
+	//if (!m_curKeyScale[ 1])
+	//{
+	//	out = m_curKeyScale[ 0]->s;
+	//	return true;
+	//}
+
+	//// 프레임이 다음 노드를 가리키면 다음 에니메이션으로 넘어간다.
+	//if (curFrame > m_curKeyScale[ 1]->t)
+	//{
+	//	// 에니메이션의 마지막이면 마지막 키값을 리턴한다.
+	//	if ((int)m_rawAni.scale.size() <= m_keyScaleIdx+1)
+	//	{
+	//		out = m_curKeyScale[ 1]->s;
+	//		return true;
+	//	}
+
+	//	// 다음 에니메이션으로 넘어간다.
+	//	++m_keyScaleIdx;
+	//	m_curKeyScale[ 0] = m_curKeyScale[ 1];
+	//	m_curKeyScale[ 1] = (sKeyScale*)&m_rawAni.scale[ m_keyScaleIdx];
+	//}
+
+	//const float alpha = GetAlpha( m_curKeyScale[ 0]->t, m_curKeyScale[ 1]->t, (float)curFrame );
+	//out = m_curKeyScale[ 0]->s.Interpolate( m_curKeyScale[ 1]->s, alpha );
+	//return true;
 }
 
 
