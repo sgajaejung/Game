@@ -66,7 +66,8 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 	{
 		ReadRawMeshFileV13(fileName, rawMeshes);
 	}
-	else if (version == "EXPORTER_V15")
+	else if ((version == "EXPORTER_V15")
+				|| (version == "EXPORTER_V16"))
 	{
 		ReadRawMeshFileV15(fileName, rawMeshes);
 	}
@@ -513,6 +514,8 @@ bool importer::ReadMeshInfoV11( std::ifstream &fin, OUT sRawMesh &rawMesh )
 		fin >> exp >> eq >> materialId;
 		if (materialId >= 0)
 			rawMesh.mtrlIds.push_back( materialId );
+		else
+			rawMesh.mtrlIds.push_back( 0 );
 	}
 
 	return true;

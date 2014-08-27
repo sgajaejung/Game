@@ -1,8 +1,9 @@
 
 -- version 16
--- 애니메이션 정보에 TRACK_ID 필드를 추가함.
+-- 1. 애니메이션 정보에 TRACK_ID 필드를 추가함.
 -- 본 애니메이션이라면 해당 본의 ID 가 저장되고,
 -- 정적 메쉬 애니메이션 이라면 메쉬 ID가 저장된다.
+-- 2. 매터리얼 아이디가 잘 못 저장되는 버그 수정.
 
 
 global Outfile -- 저장될 file
@@ -762,16 +763,29 @@ fn WriteMeshInfo obj =
 	format "MESH_NAME = %\n" obj.name to:Outfile
 	
 	mtrlCount = (GetMtrlCount obj)
-
+	
 	if (0 == mtrlCount) then
 	(
+		format "material count = 0\n setting standard material"
+		
 		format "MATERIAL_COUNT = 1\n" to:Outfile		
 		format "MATERIAL_ID = 0\n" to:Outfile
 	)
 	else if (1 == mtrlCount) then
 	(
+		format "material count = %\n" mtrlCount
+		format "material id = %\n" (GetMtrlId obj)
+		
 		format "MATERIAL_COUNT = %\n" mtrlCount to:Outfile		
-		format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile
+		
+		if ((GetMtrlId obj) == 0) then
+		(
+			format "MATERIAL_ID = %\n" ((GetMtrlIdFromMaterial obj.material[ 1])-1) to:Outfile
+		)
+		else
+		(
+			format "MATERIAL_ID = %\n" ((GetMtrlId obj)-1) to:Outfile
+		)
 	)
 	else
 	(
