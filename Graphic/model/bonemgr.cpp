@@ -67,6 +67,14 @@ void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, i
 	if (node->GetId() >= 0)
 		node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, true );
 
+	// animation exporter V17 이후부터 적용됨.
+	// 애니메이션이 업데이트 될 때, bone의 localTm 을 업데이트 시킨다.
+	if (!rawAnies.bones.empty() &&  (node->GetId() >= 0))
+	{
+		if (rawAnies.bones.size() > node->GetId())
+			node->SetLocalTM( rawAnies.bones[ node->GetId()].localTm );
+	}
+
 	BOOST_FOREACH (auto p, node->GetChildren())
 	{
 		SetAnimationRec((cBoneNode*)p, rawAnies, nAniFrame );

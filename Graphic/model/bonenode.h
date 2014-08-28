@@ -14,6 +14,7 @@ namespace graphic
 		void SetAccTM(const Matrix44 &mat);
 		const Matrix44& GetAccTM() const;
 		const Matrix44& GetOffset() const;
+		void SetOffset(const Matrix44 &mat);
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
 
@@ -51,6 +52,7 @@ namespace graphic
 	inline void cBoneNode::SetAccTM(const Matrix44& mat) { m_accTM = mat; }
 	inline const Matrix44& cBoneNode::GetAccTM() const { return m_accTM; }
 	inline const Matrix44& cBoneNode::GetOffset() const { return m_offset; }
+	inline void cBoneNode::SetOffset(const Matrix44 &mat) { m_offset = mat; }
 	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
 	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
 }
