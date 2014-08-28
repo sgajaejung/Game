@@ -31,8 +31,18 @@ sRawMeshGroup* cResourceManager::LoadModel( const string &fileName )
 
 	if (!importer::ReadRawMeshFile(fileName, *meshes))
 	{
-		delete meshes;
-		return NULL;
+		string newPath;
+		if (common::FindFile(fileName, m_mediaDirectory, newPath))
+		{
+			if (!importer::ReadRawMeshFile(newPath, *meshes))
+			{
+				goto error;
+			}
+		}
+		else
+		{
+			goto error;
+		}
 	}
 
 	// 메터리얼 설정.
@@ -46,6 +56,10 @@ sRawMeshGroup* cResourceManager::LoadModel( const string &fileName )
 
 	m_meshes[ fileName] = meshes;
 	return meshes;
+
+error:
+	delete meshes;
+	return NULL;
 }
 
 

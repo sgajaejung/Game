@@ -102,8 +102,8 @@ bool cViewer::OnInit()
 	//m_model.SetAnimation( "../media/max script/valle_forward.ani" );
 
 
-	m_character.Create( "../media/max script/tiac.dat" );
-	m_character.LoadWeapon( "../media/max script/tiac_weapon.dat" );
+	//m_character.Create( "tiac.dat" );
+	//m_character.LoadWeapon( "tiac_weapon.dat" );
 	//m_character.SetRenderBoundingBox(true);
 	//m_character.SetRenderWeaponBoundingBox(true);
 
@@ -200,9 +200,37 @@ void cViewer::OnRender(const float elapseT)
 			m_scene->Render(matIdentity);
 
 		//m_character.SetTM(m_cube.GetTransform());
-		m_character.Render(Matrix44::Identity);
+		//m_character.Render(Matrix44::Identity);
 
-		m_terrain.Render();
+		//m_terrain.Render();
+		
+
+		Matrix44 mat0;
+		mat0.SetTranslate(Vector3(0,50,0));
+		Matrix44 mat1;
+		mat1.SetRotationX(0.2f);
+		Matrix44 mat2;
+		mat2.SetRotationY(0.6f);
+		Matrix44 mat3;
+		mat3.SetRotationZ(0.8f);
+		Matrix44 mat4;
+		mat4.SetTranslate(Vector3(0,0,50));
+		Matrix44 mat5;
+		mat5.SetRotationZ(1);
+
+		Matrix44 tm = mat0 * mat1 * mat2 * mat3 * mat4 * mat5;
+		
+		Matrix44 tt = tm;
+		tt._41 = 0;
+		tt._42 = 0;
+		tt._43 = 0;
+		Quaternion q = tt.GetQuaternion();
+
+		Matrix44 tt3;
+		tt3.SetTranslate(tm.GetPosition());
+		Matrix44 tt2 = q.GetMatrix() * tt3;
+		m_cube.SetTransform(tt2);
+
 		m_cube.Render(matIdentity);
 
 

@@ -5,16 +5,19 @@
 
 namespace graphic { namespace importer {
 
+	// MeshFile Loader
 	bool ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	// V14 는 V13 포맷과 같음.
-	// V15, 16 포맷은 같음.
+	// V15, 16, 17포맷은 같음.
 	bool ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 
+	// AnimationFile Loader
 	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
 	bool ReadRawAnimationFileV16( const string &fileName, OUT sRawAniGroup &rawAnies );
+	bool ReadRawAnimationFileV17( const string &fileName, OUT sRawAniGroup &rawAnies );
 
 
 	bool ReadMeshInfo( std::ifstream &fin, OUT sRawMesh &rawMesh );
@@ -24,7 +27,7 @@ namespace graphic { namespace importer {
 	bool ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTextureCoordinate( std::ifstream &fin, const string &fileName, OUT sRawMesh &rawMesh, bool flag=false );
 	bool ReadAnimation(std::ifstream &fin, OUT sRawAni &rawAni );
-	bool ReadBone(std::ifstream &fin, OUT sRawMeshGroup &rawMeshes);
+	bool ReadBone(std::ifstream &fin, OUT vector<sRawBone> &bones);
 	bool ReadBoneInfo(std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTM(std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadVertexWeight(std::ifstream &fin, OUT sRawMesh &rawMesh );
@@ -33,6 +36,9 @@ namespace graphic { namespace importer {
 	bool ReadMaterialV15(std::ifstream &fin, const string &fileName, OUT sMaterial &mtrl);
 	bool ReadAttributeBuffer(std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadAttributes(std::ifstream &fin, OUT sAttribute &attribute);
+	bool ReadTrackInfo(std::ifstream &fin, OUT sRawAni &rawAni);
+	bool ReadKeyFrame(std::ifstream &fin, OUT sRawAni &rawAni);
+
 }}
 
 using namespace graphic;
@@ -67,7 +73,9 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 		ReadRawMeshFileV13(fileName, rawMeshes);
 	}
 	else if ((version == "EXPORTER_V15")
-				|| (version == "EXPORTER_V16"))
+				|| (version == "EXPORTER_V16")
+				|| (version == "EXPORTER_V17")
+				)
 	{
 		ReadRawMeshFileV15(fileName, rawMeshes);
 	}
@@ -104,6 +112,10 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 	else if ((version == "EXPORTER_V16"))
 	{
 		ReadRawAnimationFileV16(fileName, rawAni);
+	}
+	else if ((version == "EXPORTER_V17"))
+	{
+		ReadRawAnimationFileV17(fileName, rawAni);
 	}
 	else
 	{
@@ -156,7 +168,7 @@ bool importer::ReadRawMeshFileV9( const string &fileName, OUT sRawMeshGroup &raw
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
 
-	ReadBone(fin, rawMeshes);
+	ReadBone(fin, rawMeshes.bones);
 
 	return true;
 }
@@ -204,7 +216,7 @@ bool importer::ReadRawMeshFileV10( const string &fileName, OUT sRawMeshGroup &ra
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
 
-	ReadBone(fin, rawMeshes);
+	ReadBone(fin, rawMeshes.bones);
 
 	return true;
 }
@@ -260,7 +272,7 @@ bool importer::ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &ra
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
 
-	ReadBone(fin, rawMeshes);
+	ReadBone(fin, rawMeshes.bones);
 
 	return true;
 }
@@ -317,7 +329,7 @@ bool importer::ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &ra
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
 
-	ReadBone(fin, rawMeshes);
+	ReadBone(fin, rawMeshes.bones);
 
 	return true;
 }
@@ -373,7 +385,7 @@ bool importer::ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &ra
 		ReadVertexWeight(fin, rawMeshes.meshes.back());
 	}
 
-	ReadBone(fin, rawMeshes);
+	ReadBone(fin, rawMeshes.bones);
 
 	return true;
 }
@@ -437,6 +449,40 @@ bool importer::ReadRawAnimationFileV16( const string &fileName, OUT sRawAniGroup
 		fin >> tok >> eq >> id;
 
 		ReadAnimation(fin, rawAnies.anies.back());
+	}
+
+	return true;
+}
+
+
+bool importer::ReadRawAnimationFileV17( const string &fileName, OUT sRawAniGroup &rawAnies )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string animationExporter;
+	fin >> animationExporter;
+
+	if (animationExporter != "ANIMATION_EXPORT")
+		return false;
+
+	ReadBone(fin, rawAnies.bones);
+
+	string exp, eq;
+	int aniCount;
+	fin >> exp >> eq >> aniCount;
+
+	for (int i=0; i < aniCount; ++i)
+	{
+		rawAnies.anies.push_back( sRawAni() );
+
+		ReadTrackInfo(fin, rawAnies.anies.back());
+		ReadKeyFrame(fin, rawAnies.anies.back());
 	}
 
 	return true;
@@ -853,20 +899,20 @@ bool importer::ReadAnimation(std::ifstream &fin, OUT sRawAni &rawAni )
 
 
 // Bone 정보를 읽어온다.
-bool importer::ReadBone(std::ifstream &fin, OUT sRawMeshGroup &rawMeshes )
+bool importer::ReadBone(std::ifstream &fin, OUT vector<sRawBone> &bones )
 {
 	string boneObject, eq;
 	int boneObjectCount;
 	fin >> boneObject >> eq >> boneObjectCount;
 
-	rawMeshes.bones.reserve(boneObjectCount);
+	bones.reserve(boneObjectCount);
 
 	for (int i=0; i < boneObjectCount; ++i)
 	{
-		rawMeshes.bones.push_back( sRawBone() );
-		ReadVertexIndexNormalBone(fin, rawMeshes.bones.back());
-		ReadBoneInfo(fin, rawMeshes.bones.back());
-		ReadTM(fin, rawMeshes.bones.back());
+		bones.push_back( sRawBone() );
+		ReadVertexIndexNormalBone(fin, bones.back());
+		ReadBoneInfo(fin, bones.back());
+		ReadTM(fin, bones.back());
 	}
 
 	return true;
@@ -1192,6 +1238,106 @@ bool importer::ReadAttributes(std::ifstream &fin, OUT sAttribute &attribute)
 	fin >> id >> eq >> attribute.faceCount;
 	fin >> id >> eq >> attribute.vertexStart;
 	fin >> id >> eq >> attribute.vertexCount;
+
+	return true;
+}
+
+
+// Track 정보 읽음
+bool importer::ReadTrackInfo(std::ifstream &fin, OUT sRawAni &rawAni)
+{
+	// TRACK_ID = n
+	string tok, eq, id;
+	fin >> tok >> eq >> id;
+
+	// TRACK_NAME	= string
+	string trackName;
+	fin >> tok >> eq;
+	std::getline(fin, trackName);
+	common::trim(trackName);
+	if (!trackName.empty())
+	{
+		rawAni.name = trackName;
+	}
+
+	// 애니메이션 로딩.
+	float startT = 0;
+	float endT = 0;
+	string aniRange, strST, strET;
+	fin >> aniRange >> eq >> strST >> strET;
+	startT = (float)atof(strST.c_str());
+	endT = (float)atof(strET.c_str());
+
+	rawAni.start = startT;
+	rawAni.end = endT;
+
+	return true;
+}
+
+
+// 키프레임 애니메이션 정보를 읽는다.
+bool importer::ReadKeyFrame(std::ifstream &fin, OUT sRawAni &rawAni)
+{
+	string eq;
+
+	{ // 이동 애니메이션 로딩
+		string keypos;
+		int posSize;
+		fin >> keypos >> eq >> posSize;
+
+		rawAni.pos.resize(posSize);
+
+		for (int i=0; i < posSize; ++i)
+		{
+			string framePos, strT; // FRAME_POS
+			float x, y, z;
+			fin >> framePos >> strT >> x >> y >> z;
+			const float t = (float)atof(strT.c_str());
+
+			rawAni.pos[ i].t = t;
+			rawAni.pos[ i].p = Vector3(x, y, z);
+		}
+	}
+
+
+	{ // 회전 애니메이션 로딩.
+		string keyrot;
+		int rotSize;
+		fin >> keyrot >> eq >> rotSize;
+
+		rawAni.rot.resize(rotSize);
+
+		for (int i=0; i < rotSize; ++i)
+		{
+			string frameRot, strT; // FRAME_ROT
+			float x, y, z, w;
+			fin >> frameRot >> strT >> x >> y >> z >> w;
+			const float t = (float)atof(strT.c_str());
+
+			rawAni.rot[ i].t = t;
+			rawAni.rot[ i].q = Quaternion(x, y, z, w);
+		}
+	}
+
+
+	{ // 스케일 애니메이션 로딩.
+		string keyscale;
+		int scaleSize;
+		fin >> keyscale >> eq >> scaleSize;
+
+		rawAni.scale.resize(scaleSize);
+
+		for (int i=0; i < scaleSize; ++i)
+		{
+			string frameScale, strT; // FRAME_SCALE
+			float x, y, z;
+			fin >> frameScale >> strT >> x >> y >> z;
+			const float t = (float)atof(strT.c_str());
+
+			rawAni.scale[ i].t = t;
+			rawAni.scale[ i].s = Vector3(x, y, z);
+		}
+	}
 
 	return true;
 }

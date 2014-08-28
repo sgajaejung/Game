@@ -44,6 +44,7 @@ namespace graphic
 		ANITYPE type;
 		string name;		
 		vector<sRawAni> anies;
+		vector<sRawBone> bones;
 	};
 
 }
