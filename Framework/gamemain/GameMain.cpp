@@ -21,10 +21,10 @@ int framework::FrameWorkWinMain(HINSTANCE hInstance,
 	LPSTR lpCmdLine, 
 	int nCmdShow)
 {
-	if (!memmonitor::Init(memmonitor::INNER_PROCESS,hInstance,"config_memmonitor.json" ))
-	{
-		MessageBoxA(NULL, memmonitor::GetLastError().c_str(), "ERROR", MB_OK);
-	}
+	//if (!memmonitor::Init(memmonitor::INNER_PROCESS,hInstance,"config_memmonitor.json" ))
+	//{
+	//	MessageBoxA(NULL, memmonitor::GetLastError().c_str(), "ERROR", MB_OK);
+	//}
 
 	const HWND hWnd = InitWindow(hInstance, 
 		cGameMain::Get()->GetWindowName(), 

@@ -9,6 +9,8 @@
 #pragma comment( lib, "gdiplus.lib" ) 
 using namespace Gdiplus;
 
+#include "teracharacter.h"
+
 
 DECLARE_TYPE_NAME(cViewer)
 class cViewer : public framework::cGameMain
@@ -32,6 +34,7 @@ private:
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cCharacter m_character;
+	cTeraCharacter m_teraCharacter;
 
 	graphic::cSprite *m_image;
 	graphic::cTerrain m_terrain;
@@ -121,9 +124,17 @@ bool cViewer::OnInit()
 	m_character.Action( CHARACTER_ACTION::NORMAL );
 
 
+	m_teraCharacter.Create( "popori_face00.dat", "popori_hair00.dat",
+		"popori_body00.dat", "popori_hand00.dat", "popori_leg00.dat", "" );
+	//m_teraCharacter.Create( "popori_face0.dat", "popori_hair1.dat",
+	//	"popori_body0.dat", "popori_hand0.dat", "popori_leg0.dat", "" );
+	//m_teraCharacter.Create( "popori_face2.dat", "popori_hair2.dat",
+	//	"popori_body3.dat", "popori_hand3.dat", "popori_leg0.dat", "" );
+
+	m_teraCharacter.SetAnimation( "../media/maxscript/popori_idle.ani");
 
 
-	m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
+	//m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
 
 	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 	//m_sphere.Create(100, 20, 20);
@@ -141,7 +152,7 @@ bool cViewer::OnInit()
 	
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	graphic::GetMainCamera()->SetCamera(Vector3(100,1500,-1500), Vector3(0,0,0), Vector3(0,1,0));
+	graphic::GetMainCamera()->SetCamera(Vector3(100,500,-500), Vector3(0,0,0), Vector3(0,1,0));
 	graphic::GetMainCamera()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
 
 	graphic::GetDevice()->LightEnable (
@@ -156,6 +167,7 @@ void cViewer::OnUpdate(const float elapseT)
 {
 	//m_model.Move(elapseT);
 	m_character.Move(elapseT);
+	m_teraCharacter.Move(elapseT);
 
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
@@ -201,37 +213,10 @@ void cViewer::OnRender(const float elapseT)
 
 		//m_character.SetTM(m_cube.GetTransform());
 		//m_character.Render(Matrix44::Identity);
+		m_teraCharacter.Render();
 
 		//m_terrain.Render();
-		
-
-		Matrix44 mat0;
-		mat0.SetTranslate(Vector3(0,50,0));
-		Matrix44 mat1;
-		mat1.SetRotationX(0.2f);
-		Matrix44 mat2;
-		mat2.SetRotationY(0.6f);
-		Matrix44 mat3;
-		mat3.SetRotationZ(0.8f);
-		Matrix44 mat4;
-		mat4.SetTranslate(Vector3(0,0,50));
-		Matrix44 mat5;
-		mat5.SetRotationZ(1);
-
-		Matrix44 tm = mat0 * mat1 * mat2 * mat3 * mat4 * mat5;
-		
-		Matrix44 tt = tm;
-		tt._41 = 0;
-		tt._42 = 0;
-		tt._43 = 0;
-		Quaternion q = tt.GetQuaternion();
-
-		Matrix44 tt3;
-		tt3.SetTranslate(tm.GetPosition());
-		Matrix44 tt2 = q.GetMatrix() * tt3;
-		m_cube.SetTransform(tt2);
-
-		m_cube.Render(matIdentity);
+		//m_cube.Render(matIdentity);
 
 
 		//랜더링 끝

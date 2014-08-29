@@ -25,6 +25,7 @@ namespace graphic
 		cBoneNode* FindBone(const int id);
 		cBoneNode* FindBone(const string &name);
 		vector<Matrix44>& GetPalette();
+		void SetAnimationOption(DWORD option);
 
 
 	protected:

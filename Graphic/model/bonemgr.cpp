@@ -20,8 +20,6 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	{
 		const int id = rawMeshes.bones[ i].id;
 		const int parentId = rawMeshes.bones[ i].parentId;
-		//if (m_root && (parentId < 0))
-		//	continue;
 
 		if (m_bones[ id])
 			continue; // already exist continue;
@@ -32,8 +30,8 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 
 		if (-1 >=  parentId) // root
 		{
-			//m_root = bone;
 			m_root->InsertChild( bone );
+			bone->UpdateAccTM();
 		}
 		else
 		{
@@ -43,6 +41,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	}
 
 	CreateBoundingBox(rawMeshes);
+
 }
 
 cBoneMgr::~cBoneMgr()
@@ -71,7 +70,7 @@ void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, i
 	// 애니메이션이 업데이트 될 때, bone의 localTm 을 업데이트 시킨다.
 	if (!rawAnies.bones.empty() &&  (node->GetId() >= 0))
 	{
-		if (rawAnies.bones.size() > node->GetId())
+		if ((int)rawAnies.bones.size() > node->GetId())
 			node->SetLocalTM( rawAnies.bones[ node->GetId()].localTm );
 	}
 
@@ -248,3 +247,12 @@ void cBoneMgr::SetBoundingBoxIndex(cBoneNode *node, OUT map<int, int> &boneIndic
 	BOOST_FOREACH (auto &child, node->GetChildren())
 		SetBoundingBoxIndex((cBoneNode*)child, boneIndices, nextBoneIdx);
 }
+
+
+// 애니메이션 옵션 설정.
+void cBoneMgr::SetAnimationOption(DWORD option)
+{
+	BOOST_FOREACH (auto &bone, m_bones)
+		bone->SetAnimationOption(option);
+}
+

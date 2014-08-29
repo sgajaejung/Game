@@ -20,6 +20,7 @@ cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &ra
 ,	m_incPlayTime(0)
 ,	m_isAni(false)
 ,	m_isLoop(false)
+,	m_option(0)
 {
 	m_offset = rawBone.worldTm.Inverse();
 	m_localTM = rawBone.localTm;
@@ -77,8 +78,15 @@ bool cBoneNode::Move(const float elapseTime)
 	}
 
 
-	RETV(!m_isAni, true);
-	RETV(!m_track, true);
+	if (!m_isAni || !m_track)
+	{
+		UpdateAccTM();
+
+		BOOST_FOREACH (auto p, m_children)
+			p->Move( elapseTime );
+
+		return true;
+	}
 
 	m_curPlayTime += elapseTime;
 	m_incPlayTime += elapseTime;
@@ -125,21 +133,22 @@ bool cBoneNode::Move(const float elapseTime)
 	m_aniTM.SetIdentity();
 	m_track->Move( m_curPlayFrame, m_aniTM );
 
-	m_accTM = m_localTM * m_aniTM * m_TM;
+	m_accTM = GetCalculateAniTM();
+	//m_accTM = m_localTM * m_aniTM * m_TM;
 
-	// 만약 pos키값이 없으면 local TM의 좌표를 사용한다
-	if( m_aniTM._41 == 0.0f && m_aniTM._42 == 0.0f && m_aniTM._43 == 0.0f )
-	{
-		m_accTM._41 = m_localTM._41;
-		m_accTM._42 = m_localTM._42;
-		m_accTM._43 = m_localTM._43;
-	}
-	else	// pos키값을 좌표값으로 적용한다(이렇게 하지 않으면 TM의 pos성분이 두번적용된다)
-	{
-		m_accTM._41 = m_aniTM._41;
-		m_accTM._42 = m_aniTM._42;
-		m_accTM._43 = m_aniTM._43;
-	}
+	//// 만약 pos키값이 없으면 local TM의 좌표를 사용한다
+	//if( m_aniTM._41 == 0.0f && m_aniTM._42 == 0.0f && m_aniTM._43 == 0.0f )
+	//{
+	//	m_accTM._41 = m_localTM._41;
+	//	m_accTM._42 = m_localTM._42;
+	//	m_accTM._43 = m_localTM._43;
+	//}
+	//else	// pos키값을 좌표값으로 적용한다(이렇게 하지 않으면 TM의 pos성분이 두번적용된다)
+	//{
+	//	m_accTM._41 = m_aniTM._41;
+	//	m_accTM._42 = m_aniTM._42;
+	//	m_accTM._43 = m_aniTM._43;
+	//}
 
 	if (m_parent)
 		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
@@ -197,4 +206,27 @@ void cBoneNode::UpdateAccTM()
 	if (m_parent)
 		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
 	m_palette[ m_id] = m_offset * m_accTM;
+}
+
+
+Matrix44 cBoneNode::GetCalculateAniTM() const
+{
+	Matrix44 tm = m_localTM * m_aniTM * m_TM;
+
+	// 만약 pos키값이 없으면 local TM의 좌표를 사용한다
+	if ((m_option&0x01) || 
+		( m_aniTM._41 == 0.0f && m_aniTM._42 == 0.0f && m_aniTM._43 == 0.0f ))
+	{
+		tm._41 = m_localTM._41;
+		tm._42 = m_localTM._42;
+		tm._43 = m_localTM._43;
+	}
+	else	// pos키값을 좌표값으로 적용한다(이렇게 하지 않으면 TM의 pos성분이 두번적용된다)
+	{
+		tm._41 = m_aniTM._41;
+		tm._42 = m_aniTM._42;
+		tm._43 = m_aniTM._43;
+	}
+
+	return tm;
 }

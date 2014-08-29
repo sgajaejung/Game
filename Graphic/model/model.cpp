@@ -70,7 +70,7 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 		cMesh *p = NULL;
 		if (MODEL_TYPE::SKIN == m_type)
 		{
-			p = new cSkinnedMesh(id++, m_bone->GetPalette(), mesh);
+			p = new cSkinnedMesh(id++, &m_bone->GetPalette(), mesh);
 		}
 		else
 		{
@@ -140,14 +140,14 @@ void cModel::Render(const Matrix44 &tm)
 	if (m_isRenderMesh)
 	{
 		BOOST_FOREACH (auto node, m_meshes)
-			node->Render(m_TM);
+			node->Render(m_TM * tm);
 	}
 
 	if (m_isRenderBone && m_bone)
-		m_bone->Render(m_TM);
+		m_bone->Render(m_TM * tm);
 
 	if (m_bone && m_isRenderBoundingBox)
-		m_bone->RenderBoundingBox(m_TM);
+		m_bone->RenderBoundingBox(m_TM * tm);
 
 	// 그림자 업데이트.
 	if (m_isRenderShadow)
@@ -200,6 +200,23 @@ cMesh* cModel::FindMesh(const string &meshName)
 			return (cMesh*)mesh;
 	}
 	return NULL;
+}
+
+
+// 행렬파레트를 동기화 한다.
+bool cModel::SharePalette(vector<Matrix44> *palette)
+{
+	RETV(m_type != MODEL_TYPE::SKIN, false);
+
+	BOOST_FOREACH (auto &mesh, m_meshes)
+	{
+		if (cSkinnedMesh *skinMesh = dynamic_cast<cSkinnedMesh*>(mesh))
+		{
+			skinMesh->SetPalette(palette);
+		}
+	}
+
+	return true;
 }
 
 

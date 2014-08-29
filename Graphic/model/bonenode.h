@@ -14,7 +14,9 @@ namespace graphic
 		void SetAccTM(const Matrix44 &mat);
 		const Matrix44& GetAccTM() const;
 		const Matrix44& GetOffset() const;
+		Matrix44 GetCalculateAniTM() const;
 		void SetOffset(const Matrix44 &mat);
+
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
 
@@ -22,6 +24,7 @@ namespace graphic
 		int GetPlayFrame() const;
 		void SetCurrentFrame(const int curFrame);
 		void UpdateAccTM();
+		void SetAnimationOption(DWORD option);
 
 
 	protected:
@@ -46,6 +49,7 @@ namespace graphic
 
 		bool m_isAni; // TRUE일경우만 에니메이션이 된다.
 		bool m_isLoop; // 에니메이션 반복 여부
+		DWORD m_option; // 0x01 = 애니메이션에서 이동 정보는 무시한다.
 	};
 
 
@@ -55,4 +59,5 @@ namespace graphic
 	inline void cBoneNode::SetOffset(const Matrix44 &mat) { m_offset = mat; }
 	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
 	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
+	inline void cBoneNode::SetAnimationOption(DWORD option) { m_option = option; }
 }
