@@ -22,6 +22,9 @@
     <None Include="res\Viewer2.ico">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer2.h">
@@ -69,6 +72,9 @@
     <ClInclude Include="LoadingDialog.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="FileTreeCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -111,6 +117,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="LoadingDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTreeCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

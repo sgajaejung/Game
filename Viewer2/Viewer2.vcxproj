@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="res\Viewer2.ico" />
     <None Include="res\Viewer2.rc2" />
   </ItemGroup>
@@ -102,6 +103,7 @@
     <ClInclude Include="AnimationController2.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="FilePanel.h" />
+    <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="InputDlg.h" />
     <ClInclude Include="LoadingDialog.h" />
     <ClInclude Include="MainPanel.h" />
@@ -119,6 +121,7 @@
     <ClCompile Include="AnimationController2.cpp" />
     <ClCompile Include="AnimationPanel.cpp" />
     <ClCompile Include="FilePanel.cpp" />
+    <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="InputDlg.cpp" />
     <ClCompile Include="LoadingDialog.cpp" />
     <ClCompile Include="MainPanel.cpp" />

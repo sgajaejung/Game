@@ -23,10 +23,10 @@ CFilePanel::~CFilePanel()
 void CFilePanel::DoDataExchange(CDataExchange* pDX)
 {
 	CPanelBase::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST_MODEL, m_ModelFileList);
-	DDX_Control(pDX, IDC_LIST_ANIMATION, m_AnimationFileList);
 	DDX_Text(pDX, IDC_STATIC_MODEL_FILES, m_textModelFile);
 	DDX_Text(pDX, IDC_STATIC_ANIMATION_FILES, m_textAnimationFiles);
+	DDX_Control(pDX, IDC_TREE_MODEL, m_modelTree);
+	DDX_Control(pDX, IDC_TREE_ANIMATION, m_animationTree);
 }
 
 
@@ -34,9 +34,9 @@ BEGIN_MESSAGE_MAP(CFilePanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CFilePanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CFilePanel::OnBnClickedCancel)
 	ON_WM_SIZE()
-	ON_LBN_DBLCLK(IDC_LIST_ANIMATION, &CFilePanel::OnDblclkListAnimation)
-	ON_LBN_DBLCLK(IDC_LIST_MODEL, &CFilePanel::OnDblclkListModel)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CFilePanel::OnBnClickedButtonRefresh)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MODEL, &CFilePanel::OnSelchangedTreeModel)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_ANIMATION, &CFilePanel::OnSelchangedTreeAnimation)
 END_MESSAGE_MAP()
 
 
@@ -61,36 +61,22 @@ void CFilePanel::Update()
 // CFilePanel 메시지 처리기입니다.
 void CFilePanel::OnBnClickedOk()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
-
 
 void CFilePanel::OnBnClickedCancel()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 
 
 // ../media  폴더에서 *.dat 파일을 찾아서 리스팅한다.
 void CFilePanel::UpdateModelFiles()
 {
-	// 리스트 박스 초기화.
-	while (0 < m_ModelFileList.GetCount())
-		m_ModelFileList.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("dat");
-	list<string> modelFiles;
-	common::CollectFiles(extList, "../media/", modelFiles);
+	m_modelTree.Update( "../media/", extList );
 
-	BOOST_FOREACH(auto &fileName, modelFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_ModelFileList.InsertString(m_ModelFileList.GetCount(), wstr.c_str());
-	}
-
-	m_textModelFile.Format( L"Model Files : %d", modelFiles.size());
+	m_textModelFile.Format( L"Model Files : %d", m_modelTree.GetFileCount());
 	UpdateData(FALSE);
 }
 
@@ -98,23 +84,12 @@ void CFilePanel::UpdateModelFiles()
 // ../media  폴더에서 *.ani 파일을 찾아서 리스팅한다.
 void CFilePanel::UpdateAnimationFiles()
 {
-	// 리스트 박스 초기화.
-	while (0 < m_AnimationFileList.GetCount())
-		m_AnimationFileList.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("ani");
-	list<string> aniFiles;
-	common::CollectFiles(extList, "../media/", aniFiles);
+	m_animationTree.Update( "../media/", extList);
 
-	BOOST_FOREACH(auto &fileName, aniFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_AnimationFileList.InsertString(m_AnimationFileList.GetCount(), wstr.c_str());
-	}
-
-	m_textAnimationFiles.Format( L"Animation Files : %d", aniFiles.size());
+	m_textAnimationFiles.Format( L"Animation Files : %d", m_animationTree.GetFileCount());
 	UpdateData(FALSE);
 }
 
@@ -124,38 +99,8 @@ void CFilePanel::OnSize(UINT nType, int cx, int cy)
 {
 	__super::OnSize(nType, cx, cy);
 
-	MoveChildCtrlWindow(m_ModelFileList, cx, cy);
-	MoveChildCtrlWindow(m_AnimationFileList, cx, cy);	
-}
-
-
-// 애니메이션 파일을 연다.
-void CFilePanel::OnDblclkListAnimation()
-{
-	const int selIdx = m_AnimationFileList.GetCurSel();
-	if (selIdx < 0)
-		return;
-
-	CString text;
-	m_AnimationFileList.GetText(selIdx, text);
-	const string fileName = wstr2str((wstring)text);
-	cController::Get()->LoadFile(fileName);	
-}
-
-
-// 모델 파일을 연다.
-void CFilePanel::OnDblclkListModel()
-{
-	const int selIdx = m_ModelFileList.GetCurSel();
-	if (selIdx < 0)
-		return;
-
-	CString text;
-	m_ModelFileList.GetText(selIdx, text);
-	const string fileName = wstr2str((wstring)text);
-
-	ShowLoadingDialog();
-	cController::Get()->LoadFile(fileName);
+	MoveChildCtrlWindow(m_modelTree, cx, cy);
+	MoveChildCtrlWindow(m_animationTree, cx, cy);	
 }
 
 
@@ -164,4 +109,33 @@ void CFilePanel::OnBnClickedButtonRefresh()
 	UpdateModelFiles();
 	UpdateAnimationFiles();
 	graphic::cResourceManager::Get()->ReloadFile();
+}
+
+
+void CFilePanel::OnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_modelTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../media"))
+		return;
+
+	ShowLoadingDialog();
+	cController::Get()->LoadFile(fileName);
+
+}
+
+
+void CFilePanel::OnSelchangedTreeAnimation(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_modelTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../media"))
+		return;
+
+	ShowLoadingDialog();
+	cController::Get()->LoadFile(fileName);
 }
