@@ -18,7 +18,10 @@ public:
 
 protected:
 	void UpdateAnimationInfo();
-	void UpdateAnimationTree();
+	void UpdateAnimationTree(bool showDetails=false);
+
+	void InsertAnimationInfo(HTREEITEM hItem, const graphic::sRawAni &ani);
+	void InsertAnimationDetailInfo(HTREEITEM hItem, const graphic::sRawAni &ani, const graphic::sRawBone &bone);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -32,4 +35,6 @@ public:
 	int m_EndFrame;
 	CTreeCtrl m_AniTree;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnPanelDetailanimationinfo();
 };

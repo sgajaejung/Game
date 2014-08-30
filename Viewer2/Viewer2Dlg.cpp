@@ -185,9 +185,6 @@ BOOL CViewer2Dlg::OnInitDialog()
 	InitLoadingDialog(this);
 
 
-	cController::Get()->AddObserver(this);
-
-
 	// 해상도 콤보박스 초기화.
 	m_dispCombo.InsertString(0, L"800 X 600");
 	m_dispCombo.InsertString(1, L"1024 X 768");
@@ -196,6 +193,9 @@ BOOL CViewer2Dlg::OnInitDialog()
 	case 800: m_dispCombo.SetCurSel(0); break;
 	case 1024: m_dispCombo.SetCurSel(1); break;
 	}
+
+
+	cController::Get()->AddObserver(this);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
