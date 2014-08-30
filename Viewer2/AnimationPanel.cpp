@@ -102,7 +102,9 @@ void CAnimationPanel::UpdateAnimationTree(bool showDetails)// showDetails=false
 		InsertAnimationInfo(hItem, ani);
 
 		if (showDetails && !rawAnies->bones.empty())
-			InsertAnimationDetailInfo(hItem, ani, rawAnies->bones[ i]);
+			InsertAnimationDetailInfoBone(hItem, rawAnies->bones[ i]);
+		if (showDetails)
+			InsertAnimationDetailInfoAni(hItem, ani);
 	}
 
 	m_AniTree.Expand(hRoot, TVE_EXPAND);
@@ -129,8 +131,7 @@ void CAnimationPanel::InsertAnimationInfo(HTREEITEM hItem, const sRawAni &ani)
 
 
 // 애니메이션의 이동, 회전, 스케일링 정보를 출력한다.
-void CAnimationPanel::InsertAnimationDetailInfo(HTREEITEM hItem, const graphic::sRawAni &ani,
-	const graphic::sRawBone &bone)
+void CAnimationPanel::InsertAnimationDetailInfoBone(HTREEITEM hItem, const graphic::sRawBone &bone)
 {
 	// local tm
 	if (HTREEITEM hLocal = m_AniTree.InsertItem( L"localTM", hItem))
@@ -169,6 +170,12 @@ void CAnimationPanel::InsertAnimationDetailInfo(HTREEITEM hItem, const graphic::
 		m_AniTree.InsertItem( mat4.c_str(), hWorld);
 	}
 
+}
+
+
+// 애니메이션의 이동, 회전, 스케일링 정보를 출력한다.
+void CAnimationPanel::InsertAnimationDetailInfoAni(HTREEITEM hItem, const graphic::sRawAni &ani )
+{
 
 	// key pos
 	if (HTREEITEM hKeyPos = m_AniTree.InsertItem( 
@@ -210,7 +217,6 @@ void CAnimationPanel::InsertAnimationDetailInfo(HTREEITEM hItem, const graphic::
 			m_AniTree.InsertItem( str.c_str(), hKeyScale);
 		}
 	}
-
 
 }
 

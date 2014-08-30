@@ -76,11 +76,14 @@ void CPanelBase::MoveChildCtrlWindow(CWnd &wndCtrl, int cx, int cy)
 }
 
 
-HTREEITEM CPanelBase::FindTree( CTreeCtrl &treeCtrl, const wstring &text )
+HTREEITEM CPanelBase::FindTree( CTreeCtrl &treeCtrl, const wstring &findText )
 {
 	HTREEITEM hRoot = treeCtrl.GetRootItem();
 	vector<HTREEITEM> items;
 	items.reserve(treeCtrl.GetCount());
+
+	wstring lowerText = findText;
+	lowerCasew(lowerText);
 
 	items.push_back(hRoot);
 
@@ -88,9 +91,10 @@ HTREEITEM CPanelBase::FindTree( CTreeCtrl &treeCtrl, const wstring &text )
 	{
 		HTREEITEM hItem = items.back();
 		items.pop_back();
-		CString str = treeCtrl.GetItemText(hItem);
+		CString itemText = treeCtrl.GetItemText(hItem);
+		CString lowerItemText = lowerCasew((wstring)itemText).c_str();
 
-		const int idx = str.Find(text.c_str());
+		const int idx = lowerItemText.Find(lowerText.c_str());
 		if (idx >= 0)
 			return hItem;
 

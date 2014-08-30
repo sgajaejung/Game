@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Graphic/character/character.h"
+#include "../Graphic/character/characteranalyzer.h"
 
 
 class cController : public common::cObservable
@@ -11,7 +12,7 @@ public:
 	virtual ~cController();
 
 	bool LoadFile( const string &fileName );
-	graphic::cCharacter* GetCharacter();
+	graphic::cCharacterAnalyzer* GetCharacter();
 	const string& GetCurrentMeshFileName();
 	const string& GetCurrentAnimationFileName();
 
@@ -24,7 +25,7 @@ public:
 
 
 private:
-	graphic::cCharacter *m_character;
+	graphic::cCharacterAnalyzer *m_character;
 
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;
@@ -33,7 +34,7 @@ private:
 };
 
 
-inline graphic::cCharacter* cController::GetCharacter() { return m_character; }
+inline graphic::cCharacterAnalyzer* cController::GetCharacter() { return m_character; }
 inline const string& cController::GetCurrentMeshFileName() { return m_currentMeshFileName; }
 inline const string& cController::GetCurrentAnimationFileName() { return m_currentAnimationFileName; }
 inline void cController::SetAnimationPlay(const bool isPlay) { m_isPlay = isPlay; }

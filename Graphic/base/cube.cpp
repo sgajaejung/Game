@@ -109,6 +109,13 @@ void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 }
 
 
+void cCube::SetCube(const cCube &cube)
+{
+	SetCube(cube.GetMin(), cube.GetMax());
+	m_tm = cube.GetTransform();
+}
+
+
 void cCube::SetColor( DWORD color )
 {
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();

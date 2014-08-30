@@ -21,7 +21,8 @@ protected:
 	void UpdateAnimationTree(bool showDetails=false);
 
 	void InsertAnimationInfo(HTREEITEM hItem, const graphic::sRawAni &ani);
-	void InsertAnimationDetailInfo(HTREEITEM hItem, const graphic::sRawAni &ani, const graphic::sRawBone &bone);
+	void InsertAnimationDetailInfoBone(HTREEITEM hItem, const graphic::sRawBone &bone);
+	void InsertAnimationDetailInfoAni(HTREEITEM hItem, const graphic::sRawAni &ani);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

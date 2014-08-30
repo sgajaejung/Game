@@ -134,21 +134,6 @@ bool cBoneNode::Move(const float elapseTime)
 	m_track->Move( m_curPlayFrame, m_aniTM );
 
 	m_accTM = GetCalculateAniTM();
-	//m_accTM = m_localTM * m_aniTM * m_TM;
-
-	//// 만약 pos키값이 없으면 local TM의 좌표를 사용한다
-	//if( m_aniTM._41 == 0.0f && m_aniTM._42 == 0.0f && m_aniTM._43 == 0.0f )
-	//{
-	//	m_accTM._41 = m_localTM._41;
-	//	m_accTM._42 = m_localTM._42;
-	//	m_accTM._43 = m_localTM._43;
-	//}
-	//else	// pos키값을 좌표값으로 적용한다(이렇게 하지 않으면 TM의 pos성분이 두번적용된다)
-	//{
-	//	m_accTM._41 = m_aniTM._41;
-	//	m_accTM._42 = m_aniTM._42;
-	//	m_accTM._43 = m_aniTM._43;
-	//}
 
 	if (m_parent)
 		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
@@ -174,20 +159,6 @@ void cBoneNode::Render(const Matrix44 &parentTm)
 	BOOST_FOREACH (auto p, m_children)
 		p->Render( parentTm );
 }
-
-
-//void cBoneNode::RenderShader(cShader &shader, const Matrix44 &parentTm)
-//{
-//	RET(!m_mesh);
-//
-//	if (m_track)
-//		m_mesh->RenderShader( shader, m_offset * m_accTM * parentTm);
-//	else
-//		m_mesh->RenderShader(shader, parentTm);
-//
-//	BOOST_FOREACH (auto p, m_children)
-//		p->RenderShader( shader, parentTm );
-//}
 
 
 void cBoneNode::SetCurrentFrame(const int curFrame) 

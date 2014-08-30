@@ -6,9 +6,7 @@
 namespace graphic
 {
 
-	DECLARE_TYPE_NAME_SCOPE(graphic, cCharacter)
 	class cCharacter : public cModel
-								, public memmonitor::Monitor<cCharacter, TYPE_NAME(cCharacter)>
 	{
 	public:
 		cCharacter(const int id);

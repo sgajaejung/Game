@@ -46,4 +46,5 @@ public:
 	CString m_FileName;
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnPanelSearch();
+	afx_msg void OnSelchangedTreeBone(NMHDR *pNMHDR, LRESULT *pResult);
 };

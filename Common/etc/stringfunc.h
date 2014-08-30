@@ -8,6 +8,8 @@ namespace common
 
 	string& lowerCase(string &str);
 	string& upperCase(string &str);
+	wstring& lowerCasew(wstring &str);
+	wstring& upperCasew(wstring &str);
 
 	string wstr2str(const wstring &wstr);
 	wstring str2wstr(const string &str);

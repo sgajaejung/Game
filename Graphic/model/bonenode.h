@@ -25,11 +25,7 @@ namespace graphic
 		void SetCurrentFrame(const int curFrame);
 		void UpdateAccTM();
 		void SetAnimationOption(DWORD option);
-
-
-	protected:
-		//virtual void RenderShader(const Matrix44 &parentTm);
-		//virtual void RenderShader(cShader &shader, const Matrix44 &parentTm);
+		cMesh* GetMesh();
 
 
 	private:
@@ -60,4 +56,5 @@ namespace graphic
 	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
 	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
 	inline void cBoneNode::SetAnimationOption(DWORD option) { m_option = option; }
+	inline cMesh* cBoneNode::GetMesh() { return m_mesh; }
 }

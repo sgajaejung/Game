@@ -19,7 +19,7 @@ namespace graphic
 
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);
-		const cCube& GetBoundingBox() const;
+		cCube& GetBoundingBox();
 		
 
 	protected:
@@ -48,5 +48,5 @@ namespace graphic
 	};
 
 
-	inline const cCube& cMesh::GetBoundingBox() const { return m_boundingBox; }
+	inline cCube& cMesh::GetBoundingBox() { return m_boundingBox; }
 }

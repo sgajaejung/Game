@@ -113,6 +113,19 @@ string& common::upperCase(string &str)
 }
 
 
+wstring& common::lowerCasew(wstring &str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), tolower);
+	return str;
+}
+
+wstring& common::upperCasew(wstring &str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), toupper);
+	return str;
+}
+
+
 // 원본 문자열 str에서 구분자 delimeter 로 분해해서 out 에 저장해서 리턴한다.
 // delimeter 는 저장되지 않는다.
 void common::tokenizer(const string &str, const string &delimeter, const string &ignoreStr, OUT vector<string> &out)

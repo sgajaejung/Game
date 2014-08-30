@@ -11,11 +11,13 @@ namespace graphic
 		cCube(const Vector3 &vMin, const Vector3 &vMax );
 
 		void SetCube(const Vector3 &vMin, const Vector3 &vMax );
+		void SetCube(const cCube &cube);
 		void SetTransform( const Matrix44 &tm );
 		void SetColor( DWORD color);
 		const Matrix44& GetTransform() const;
 		const Vector3& GetMin() const;
 		const Vector3& GetMax() const;
+		const float Length() const; // length(min - max)
 
 		void Render(const Matrix44 &tm);
 
@@ -37,4 +39,5 @@ namespace graphic
 	inline const Matrix44& cCube::GetTransform() const { return m_tm; }
 	inline const Vector3& cCube::GetMin() const { return m_min; }
 	inline const Vector3& cCube::GetMax() const { return m_max; }
+	inline const float cCube::Length() const { return (m_min - m_max).Length(); }
 }

@@ -43,6 +43,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_WM_SIZE()
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_PANEL_SEARCH, &CModelPanel::OnPanelSearch)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_BONE, &CModelPanel::OnSelchangedTreeBone)
 END_MESSAGE_MAP()
 
 
@@ -225,7 +226,8 @@ void CModelPanel::UpdateBoneInfo()
 // 본트리를 생성한다.
 void CModelPanel::MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node)
 {
-	const wstring nodeStr = formatw( "%s [%d]", node->GetName().c_str(), node->GetId() );
+	//const wstring nodeStr = formatw( "%s [%d]", node->GetName().c_str(), node->GetId() );
+	const wstring nodeStr = formatw( "%s", node->GetName().c_str() );
 	const HTREEITEM hItem = m_BoneTree.InsertItem(nodeStr.c_str(), hParent);
 
 	BOOST_FOREACH (auto &child, node->GetChildren())
@@ -290,4 +292,17 @@ void CModelPanel::OnPanelSearch()
 			AfxMessageBox(L"Not Found");
 		}
 	}
+}
+
+
+
+void CModelPanel::OnSelchangedTreeBone(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	CString str = m_BoneTree.GetItemText(pNMTreeView->itemNew.hItem);
+
+	cController::Get()->GetCharacter()->HighlightBone( wstr2str((wstring)str) );
+
 }
