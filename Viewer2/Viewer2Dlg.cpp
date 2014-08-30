@@ -20,10 +20,10 @@
 #endif
 
 
-//const int WINDOW_WIDTH = 1024;
-//const int WINDOW_HEIGHT = 768;
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 768;
+//const int WINDOW_WIDTH = 800;
+//const int WINDOW_HEIGHT = 600;
 
 const int REAL_WINDOW_WIDTH = WINDOW_WIDTH+18;
 const int REAL_WINDOW_HEIGHT = WINDOW_HEIGHT+115;
@@ -59,6 +59,7 @@ void CViewer2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_MESH, m_RenderMesh);
 	DDX_Check(pDX, IDC_CHECK_BOUNDINGBOX, m_RenderBoundingBox);
 	DDX_Check(pDX, IDC_CHECK_SKYBOX, m_ShowSkyBox);
+	DDX_Control(pDX, IDC_COMBO_DISPLAY, m_dispCombo);
 }
 
 BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
@@ -73,6 +74,7 @@ BEGIN_MESSAGE_MAP(CViewer2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_MESH, &CViewer2Dlg::OnBnClickedCheckMesh)
 	ON_BN_CLICKED(IDC_CHECK_BOUNDINGBOX, &CViewer2Dlg::OnBnClickedCheckBoundingbox)
 	ON_BN_CLICKED(IDC_CHECK_SKYBOX, &CViewer2Dlg::OnBnClickedCheckSkybox)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAY, &CViewer2Dlg::OnCbnSelchangeComboDisplay)
 END_MESSAGE_MAP()
 
 
@@ -146,14 +148,24 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 		// Main Panel Positioning
 		{
-			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
-			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
-			const int x = screenCX/2 - REAL_WINDOW_WIDTH/2 + REAL_WINDOW_WIDTH - 100;
-			const int y = screenCY/2 - REAL_WINDOW_HEIGHT/2;
-
 			CRect panelR;
 			dlg->GetWindowRect(panelR);
+
+			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
+			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
+			int x = screenCX/2 - REAL_WINDOW_WIDTH/2 + REAL_WINDOW_WIDTH - panelR.Width()/2;
+			const int y = screenCY/2 - REAL_WINDOW_HEIGHT/2;
+
+			if ((x+panelR.Width()) > screenCX)
+				x = screenCX - panelR.Width();
+
 			dlg->MoveWindow(x, y, panelR.Width(), panelR.Height());
+
+
+			// Main Dialog RePositioning
+			int px = screenCX/2 - REAL_WINDOW_WIDTH/2 - panelR.Width()/2;			
+			px = max(0, px);
+			MoveWindow(px, y, REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT);
 		}
 
 		dlg->ShowWindow(SW_SHOW);
@@ -174,6 +186,16 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 
 	cController::Get()->AddObserver(this);
+
+
+	// 해상도 콤보박스 초기화.
+	m_dispCombo.InsertString(0, L"800 X 600");
+	m_dispCombo.InsertString(1, L"1024 X 768");
+	switch (WINDOW_WIDTH)
+	{
+	case 800: m_dispCombo.SetCurSel(0); break;
+	case 1024: m_dispCombo.SetCurSel(1); break;
+	}
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -353,4 +375,34 @@ void CViewer2Dlg::Update()
 			MoveWindow(wr.left,wr.top,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT+60);
 		}
 	}
+}
+
+
+void CViewer2Dlg::OnCbnSelchangeComboDisplay()
+{
+	int width, height;
+	switch (m_dispCombo.GetCurSel())
+	{
+	case 0: width = 800; height = 600; break; // 800X600
+	case 1: width = 1024; height = 768; break; // 1024X768
+	default: return;
+	}
+
+	CRect curR;
+	GetWindowRect(curR);
+
+	CRect wr(0,0,width+18, height+115);
+
+	const int screenCX = GetSystemMetrics(SM_CXSCREEN);
+	const int screenCY = GetSystemMetrics(SM_CYSCREEN);
+
+	wr.OffsetRect(curR.left, curR.top);
+	MoveWindow(wr);
+
+	CRect modelViewR(0, 25, width, height+25);
+	m_modelView->MoveWindow(modelViewR);
+
+	// Animation Controller Positioning
+	CRect animationCtrlR(0, height+20, width, height+300);
+	m_aniController->MoveWindow(animationCtrlR);
 }

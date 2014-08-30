@@ -1,5 +1,6 @@
 
 #pragma once
+#include "afxwin.h"
 
 
 class CModelView;
@@ -49,4 +50,6 @@ public:
 	BOOL m_RenderBoundingBox;
 	afx_msg void OnBnClickedCheckSkybox();
 	BOOL m_ShowSkyBox;
+	afx_msg void OnCbnSelchangeComboDisplay();
+	CComboBox m_dispCombo;
 };
