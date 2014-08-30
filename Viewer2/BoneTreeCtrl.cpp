@@ -32,6 +32,8 @@ bool CBoneTreeCtrl::Update(graphic::cBoneMgr *boneMgr)
 {
 	RETV(!boneMgr, false);
 
+	DeleteAllItems();
+
 	const wstring rootStr = formatw( "Bones Tree");
 	const HTREEITEM hRoot = InsertItem(rootStr.c_str());
 	MakeBoneTree(hRoot, boneMgr->GetRoot());
