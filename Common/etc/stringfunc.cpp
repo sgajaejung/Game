@@ -111,3 +111,34 @@ string& common::upperCase(string &str)
 	std::transform(str.begin(), str.end(), str.begin(), toupper);
 	return str;
 }
+
+
+// 원본 문자열 str에서 구분자 delimeter 로 분해해서 out 에 저장해서 리턴한다.
+// delimeter 는 저장되지 않는다.
+void common::tokenizer(const string &str, const string &delimeter, const string &ignoreStr, OUT vector<string> &out)
+{
+	string tmp = str;
+	int offset = 0;
+	int first = 0;
+
+	while (!tmp.empty())
+	{
+		const int pos = tmp.find(delimeter, offset);
+		if (string::npos == pos)
+		{
+			out.push_back(tmp.substr(first));
+			break;
+		}
+		else
+		{
+			const string tok = tmp.substr(offset, pos-offset);
+			offset += tok.length() + delimeter.length();
+			if (tok != ignoreStr)
+			{
+				out.push_back(tmp.substr(first, pos-first));
+				first = offset;
+			}
+
+		}
+	}
+}

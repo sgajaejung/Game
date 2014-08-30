@@ -15,4 +15,6 @@ namespace common
 	string format(const char* fmt, ...);
 	wstring formatw(const char* fmt, ...);
 
+	void tokenizer(const string &str, const string &delimeter, const string &ignoreStr, OUT vector<string> &out);
+
 }
