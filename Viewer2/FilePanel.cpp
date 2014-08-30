@@ -123,7 +123,6 @@ void CFilePanel::OnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult)
 
 	ShowLoadingDialog();
 	cController::Get()->LoadFile(fileName);
-
 }
 
 

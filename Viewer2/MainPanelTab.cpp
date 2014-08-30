@@ -8,6 +8,7 @@
 #include "ModelPanel.h"
 #include "AnimationPanel.h"
 #include "FilePanel.h"
+#include "ArchebladePanel.h"
 
 
 
@@ -18,6 +19,7 @@ CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 ,	m_modelPanel(NULL)
 ,	m_aniPanel(NULL)
 ,	m_filePanel(NULL)
+,	m_archePanel(NULL)
 {
 
 }
@@ -27,6 +29,7 @@ CMainPanelTab::~CMainPanelTab()
 	SAFE_DELETE(m_modelPanel);
 	SAFE_DELETE(m_aniPanel);
 	SAFE_DELETE(m_filePanel);
+	SAFE_DELETE(m_archePanel);
 }
 
 void CMainPanelTab::DoDataExchange(CDataExchange* pDX)
@@ -66,6 +69,7 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_Tab.InsertItem(0, L"Model File");
 	m_Tab.InsertItem(1, L"Model");
 	m_Tab.InsertItem(2, L"Animation");
+	m_Tab.InsertItem(3, L"ArcheBlade");
 
 	CRect cr;
 	GetClientRect(cr);
@@ -85,9 +89,16 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_filePanel->ShowWindow(SW_SHOW);
 
+	m_archePanel = new CArchebladePanel(this);
+	m_archePanel->Create(CArchebladePanel::IDD, this);
+	m_archePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_archePanel->ShowWindow(SW_HIDE);
+
+
 	cController::Get()->AddObserver(m_modelPanel);
 	cController::Get()->AddObserver(m_aniPanel);
 	cController::Get()->AddObserver(m_filePanel);
+	cController::Get()->AddObserver(m_archePanel);
 
 	return TRUE;
 }
@@ -101,16 +112,26 @@ void CMainPanelTab::OnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_aniPanel->ShowWindow(SW_HIDE);
 		m_modelPanel->ShowWindow(SW_HIDE);
 		m_filePanel->ShowWindow(SW_SHOW);
+		m_archePanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 1:
 		m_modelPanel->ShowWindow(SW_SHOW);
 		m_aniPanel->ShowWindow(SW_HIDE);
 		m_filePanel->ShowWindow(SW_HIDE);
+		m_archePanel->ShowWindow(SW_HIDE);
 		break;
 
 	case 2:
 		m_aniPanel->ShowWindow(SW_SHOW);
+		m_modelPanel->ShowWindow(SW_HIDE);
+		m_filePanel->ShowWindow(SW_HIDE);
+		m_archePanel->ShowWindow(SW_HIDE);
+		break;
+
+	case 3:
+		m_archePanel->ShowWindow(SW_SHOW);
+		m_aniPanel->ShowWindow(SW_HIDE);
 		m_modelPanel->ShowWindow(SW_HIDE);
 		m_filePanel->ShowWindow(SW_HIDE);
 		break;
@@ -130,5 +151,6 @@ void CMainPanelTab::OnSize(UINT nType, int cx, int cy)
 		m_modelPanel->MoveWindow(CRect(0, 25, cx, cy));
 		m_aniPanel->MoveWindow(CRect(0, 25, cx, cy));
 		m_filePanel->MoveWindow(CRect(0, 25, cx, cy));
+		m_archePanel->MoveWindow(CRect(0, 25, cx, cy));
 	}
 }

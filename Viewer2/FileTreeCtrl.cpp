@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "FileTreeCtrl.h"
+#include "UIUtiltity.h"
 
 
 CImageList *CFileTreeCtrl::m_imageList = NULL;
@@ -137,4 +138,11 @@ string CFileTreeCtrl::GetSelectFilePath(HTREEITEM item)
 	}
 
 	return wstr2str(path);
+}
+
+
+// 모든 트리 노드들을 펼친다.
+void CFileTreeCtrl::ExpandAll()
+{
+	::ExpandAll(*this);
 }

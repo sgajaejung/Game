@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../Graphic/character/character.h"
+#include "../Graphic/character/archebladecharacter.h"
+#include "../Graphic/character/teracharacter.h"
 #include "../Graphic/character/characteranalyzer.h"
 
 
@@ -12,7 +14,8 @@ public:
 	virtual ~cController();
 
 	bool LoadFile( const string &fileName );
-	graphic::cCharacterAnalyzer* GetCharacter();
+	graphic::cCharacter* GetCharacter();
+	graphic::cCharacterAnalyzer *GetCharacterAnalyzer();
 	const string& GetCurrentMeshFileName();
 	const string& GetCurrentAnimationFileName();
 
@@ -25,7 +28,10 @@ public:
 
 
 private:
-	graphic::cCharacterAnalyzer *m_character;
+	graphic::cCharacterAnalyzer *m_analyzer;
+	//graphic::cCharacter m_normalCharacter;
+	graphic::cArchebladeCharacter m_archeCharacter; // 아키블래이드 캐릭터.
+	graphic::cTeraCharacter m_teraCharacter; // 테라 캐릭터.
 
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;
@@ -34,7 +40,8 @@ private:
 };
 
 
-inline graphic::cCharacterAnalyzer* cController::GetCharacter() { return m_character; }
+inline graphic::cCharacter* cController::GetCharacter() { return m_analyzer->GetCharacter(); }
+inline graphic::cCharacterAnalyzer* cController::GetCharacterAnalyzer() { return m_analyzer; }
 inline const string& cController::GetCurrentMeshFileName() { return m_currentMeshFileName; }
 inline const string& cController::GetCurrentAnimationFileName() { return m_currentAnimationFileName; }
 inline void cController::SetAnimationPlay(const bool isPlay) { m_isPlay = isPlay; }

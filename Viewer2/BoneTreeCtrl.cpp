@@ -5,6 +5,7 @@
 #include "Viewer2.h"
 #include "BoneTreeCtrl.h"
 #include "inputdlg.h"
+#include "UIUtiltity.h"
 
 
 // CBoneTreeCtrl
@@ -59,32 +60,7 @@ void CBoneTreeCtrl::MakeBoneTree(const HTREEITEM hParent,  graphic::cBoneNode *n
 // 모든 트리 노드를 확장한다.
 void CBoneTreeCtrl::ExpandAll()
 {
-	HTREEITEM hRoot = GetRootItem();
-	vector<HTREEITEM> items;
-	items.reserve(GetCount());
-
-	items.push_back(hRoot);
-
-	while (!items.empty())
-	{
-		HTREEITEM hItem = items.back();
-		items.pop_back();
-		Expand(hItem, TVE_EXPAND);
-
-		HTREEITEM hfirstChild = GetChildItem(hItem);
-		if (hfirstChild)
-		{
-			items.push_back(hfirstChild);
-
-			while (HTREEITEM hNextItem = GetNextSiblingItem(hfirstChild))
-			{
-				items.push_back(hNextItem);
-				hfirstChild = hNextItem;
-			}
-		}
-	}
-
-	SelectSetFirstVisible(hRoot);
+	::ExpandAll(*this);
 }
 
 
@@ -172,5 +148,5 @@ void CBoneTreeCtrl::OnTvnItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 
 	// 선택한 노드의 본을 강조시킨다.
 	CString str = GetItemText(pNMTVItemChange->hItem);
-	cController::Get()->GetCharacter()->HighlightBone( wstr2str((wstring)str) );
+	cController::Get()->GetCharacterAnalyzer()->HighlightBone( wstr2str((wstring)str) );
 }

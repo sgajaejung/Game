@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationController2.h" />
     <ClInclude Include="AnimationPanel.h" />
+    <ClInclude Include="ArchebladePanel.h" />
     <ClInclude Include="BoneDialog.h" />
     <ClInclude Include="BoneTreeCtrl.h" />
     <ClInclude Include="FilePanel.h" />
@@ -123,6 +124,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationController2.cpp" />
     <ClCompile Include="AnimationPanel.cpp" />
+    <ClCompile Include="ArchebladePanel.cpp" />
     <ClCompile Include="BoneDialog.cpp" />
     <ClCompile Include="BoneTreeCtrl.cpp" />
     <ClCompile Include="FilePanel.cpp" />

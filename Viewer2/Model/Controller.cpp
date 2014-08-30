@@ -2,37 +2,43 @@
 #include "stdafx.h"
 #include "Controller.h"
 
+using namespace graphic;
 
 
 cController::cController() : 
-	m_character(NULL)
+	m_analyzer(NULL)
 ,	m_isPlay(true)
+,	m_archeCharacter(common::GenerateId())
 {
-	m_character = new graphic::cCharacterAnalyzer(0);
+	m_analyzer = new cCharacterAnalyzer();
+	m_analyzer->SetCharacter(&m_archeCharacter);
 }
 
 cController::~cController()
 {
-	SAFE_DELETE(m_character);
+	SAFE_DELETE(m_analyzer);
 }
 
 
 bool cController::LoadFile( const string &fileName )
 {
+	cCharacter *character = GetCharacter();
+	RETV(!character, false);
+
 	ShowLoadingDialog();
 
 	bool result = false;
-	const graphic::RESOURCE_TYPE::TYPE type = graphic::cResourceManager::Get()->GetFileKind(fileName);
+	const RESOURCE_TYPE::TYPE type = cResourceManager::Get()->GetFileKind(fileName);
 	switch (type)
 	{
-	case graphic::RESOURCE_TYPE::MESH:
+	case RESOURCE_TYPE::MESH:
 		m_currentMeshFileName = fileName;
-		result = m_character->Create(fileName);
+		result = character->Create(fileName);
 		break;
 
-	case graphic::RESOURCE_TYPE::ANIMATION:
+	case RESOURCE_TYPE::ANIMATION:
 		m_currentAnimationFileName = fileName;
-		m_character->SetAnimation(fileName);
+		character->SetAnimation(fileName);
 		result = true;
 		break;
 
@@ -49,8 +55,8 @@ bool cController::LoadFile( const string &fileName )
 
 void cController::Render()
 {
-	RET(!m_character);
-	m_character->Render(Matrix44::Identity);
+	RET(!m_analyzer);
+	m_analyzer->Render(Matrix44::Identity);
 }
 
 
@@ -63,19 +69,21 @@ void cController::Render()
 
 void cController::Update(const float elapseT)
 {
-	RET(!m_character);
+	RET(!m_analyzer);
 
 	if (m_isPlay)
-		m_character->Move(elapseT);
+		m_analyzer->Move(elapseT);
 	else
-		m_character->Move(0);
+		m_analyzer->Move(0);
 }
 
 
 void cController::SetCurrentAnimationFrame(const int curFrame)
 {
-	RET(!m_character);
-	graphic::cBoneMgr *boneMgr = m_character->GetBoneMgr();
+	cCharacter *character = GetCharacter();
+	RET(!character);
+
+	cBoneMgr *boneMgr = character->GetBoneMgr();
 	RET(!boneMgr);
 	boneMgr->SetCurrentAnimationFrame(curFrame);
 }

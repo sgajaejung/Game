@@ -6,6 +6,7 @@
 class CModelPanel;
 class CAnimationPanel;
 class CFilePanel;
+class CArchebladePanel;
 class CMainPanelTab : public CDialogEx
 {
 public:
@@ -18,6 +19,7 @@ protected:
 	CModelPanel *m_modelPanel;
 	CAnimationPanel *m_aniPanel;
 	CFilePanel *m_filePanel;
+	CArchebladePanel *m_archePanel;
 
 
 protected:

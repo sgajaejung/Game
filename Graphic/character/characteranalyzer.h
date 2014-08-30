@@ -6,23 +6,29 @@
 namespace graphic
 {
 
-	class cCharacterAnalyzer : public cCharacter
+	class cCharacterAnalyzer
 	{
 	public:
-		cCharacterAnalyzer(const int id);
+		cCharacterAnalyzer();
 		virtual ~cCharacterAnalyzer();
 
-		bool Create(const string &modelName);
+		//bool Create(const string &modelName);
+		cCharacter* GetCharacter();
+		void SetCharacter(cCharacter *character);
 
-		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &tm) override;
+		bool Move(const float elapseTime);
+		void Render(const Matrix44 &tm);
 
 		void HighlightBone(const string &boneName);
 
 
 	private:
+		cCharacter *m_character; // reference
 		cCube m_selectBoneCube;
 		cBoneNode *m_selectBone;
 	};
 
+
+	inline cCharacter* cCharacterAnalyzer::GetCharacter() { return m_character; }
+	inline void cCharacterAnalyzer::SetCharacter(cCharacter *character) { m_character = character; }
 }

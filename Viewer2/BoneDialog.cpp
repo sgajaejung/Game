@@ -53,6 +53,12 @@ void CBoneDialog::OnBnClickedCancel()
 }
 
 
+void CBoneDialog::Update()
+{
+	UpdateTree();
+}
+
+
 bool CBoneDialog::UpdateTree()
 {
 	graphic::cCharacter *character = cController::Get()->GetCharacter();
@@ -158,6 +164,8 @@ void InitBoneDialog(CWnd *parent)
 {
 	g_boneDlg = new CBoneDialog(parent);
 	g_boneDlg->Create(CBoneDialog::IDD, parent);
+
+	cController::Get()->AddObserver(g_boneDlg);
 }
 
 

@@ -13,7 +13,8 @@ public:
 	void Update(const string &directoryPath, const list<string> &extList);
 	string GetSelectFilePath(HTREEITEM item);
 	int GetFileCount() const;
-	
+	void ExpandAll();
+
 
 protected:
 	struct sTreeNode 

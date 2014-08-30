@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="panel">
+      <UniqueIdentifier>{96e78267-b016-4af4-be32-4010b45924a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -42,31 +45,16 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MainPanel.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ModelView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Model\Controller.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ModelPanel.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationPanel.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PanelBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationController2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="InputDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FilePanel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="LoadingDialog.h">
@@ -83,6 +71,24 @@
     </ClInclude>
     <ClInclude Include="UIUtiltity.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePanel.h">
+      <Filter>panel</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelPanel.h">
+      <Filter>panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelBase.h">
+      <Filter>panel</Filter>
+    </ClInclude>
+    <ClInclude Include="MainPanel.h">
+      <Filter>panel</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationPanel.h">
+      <Filter>panel</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchebladePanel.h">
+      <Filter>panel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,18 +107,6 @@
     <ClCompile Include="Model\Controller.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MainPanel.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MainPanelTab.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelPanel.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationPanel.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="PanelBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -120,9 +114,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="InputDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FilePanel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="LoadingDialog.cpp">
@@ -139,6 +130,24 @@
     </ClCompile>
     <ClCompile Include="UIUtiltity.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainPanel.cpp">
+      <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="MainPanelTab.cpp">
+      <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelPanel.cpp">
+      <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePanel.cpp">
+      <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationPanel.cpp">
+      <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchebladePanel.cpp">
+      <Filter>panel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
