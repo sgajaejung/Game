@@ -1,6 +1,7 @@
 #pragma once
 #include "afxcmn.h"
 #include "PanelBase.h"
+#include "BoneTreeCtrl.h"
 
 
 namespace graphic  {
@@ -28,7 +29,6 @@ protected:
 	void UpdateMaterialInfo();
 	void UpdateBoneInfo();
 	void UpdateRawBoneInfo();
-	void MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -38,13 +38,11 @@ public:
 	CTreeCtrl m_MeshTree;
 	CTreeCtrl m_MaterialTree;
 	CTreeCtrl m_RawBoneTree;
-	CTreeCtrl m_BoneTree;
+	CBoneTreeCtrl m_BoneTree;
 	CString m_FilePath;
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CString m_FileName;
-	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-	afx_msg void OnPanelSearch();
-	afx_msg void OnSelchangedTreeBone(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedButtonShowBoneTree();
 };

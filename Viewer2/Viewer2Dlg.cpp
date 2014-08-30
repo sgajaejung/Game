@@ -9,6 +9,7 @@
 #include "ModelView.h"
 #include "mmsystem.h"
 #include "MainPanel.h"
+#include "BoneDialog.h"
 #include "AnimationController2.h"
 
 
@@ -47,6 +48,7 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 CViewer2Dlg::~CViewer2Dlg()
 {
 	DestroyLoadingDialog();
+	DestroyBoneDialog();
 	m_aniController->DestroyWindow();
 	delete m_aniController;
 }
@@ -183,6 +185,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 	// Loading Dialog 초기화.
 	InitLoadingDialog(this);
+	InitBoneDialog(this);
 
 
 	// 해상도 콤보박스 초기화.

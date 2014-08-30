@@ -75,6 +75,15 @@
     <ClInclude Include="FileTreeCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="BoneDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BoneTreeCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UIUtiltity.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -120,6 +129,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BoneDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BoneTreeCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UIUtiltity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

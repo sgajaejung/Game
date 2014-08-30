@@ -139,6 +139,7 @@ void cCube::Render(const Matrix44 &tm)
 	GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
 	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	GetDevice()->SetTexture(0, NULL);
 	
 	Matrix44 mat = m_tm * tm;
 	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );

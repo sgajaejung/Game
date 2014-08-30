@@ -5,7 +5,7 @@
 #include "Viewer2.h"
 #include "ModelPanel.h"
 #include "afxdialogex.h"
-#include "inputdlg.h"
+#include "BoneDialog.h"
 
 
 using namespace graphic;
@@ -41,9 +41,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CModelPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
 	ON_WM_SIZE()
-	ON_WM_CONTEXTMENU()
-	ON_COMMAND(ID_PANEL_SEARCH, &CModelPanel::OnPanelSearch)
-	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_BONE, &CModelPanel::OnSelchangedTreeBone)
+	ON_BN_CLICKED(IDC_BUTTON_SHOW_BONE_TREE, &CModelPanel::OnBnClickedButtonShowBoneTree)
 END_MESSAGE_MAP()
 
 
@@ -213,29 +211,9 @@ void CModelPanel::UpdateBoneInfo()
 	graphic::cBoneNode *root = boneMgr->GetRoot();
 	RET(!root);
 
-	const wstring rootStr = formatw( "Bones Tree");
-	const HTREEITEM hRoot = m_BoneTree.InsertItem(rootStr.c_str());
-
-	MakeBoneTree(hRoot, root);
-
-	//m_BoneTree.Expand(hRoot, TVE_EXPAND);
-	ExpandAll(m_BoneTree);
+	m_BoneTree.Update( boneMgr );
+	m_BoneTree.ExpandAll();
 }
-
-
-// 본트리를 생성한다.
-void CModelPanel::MakeBoneTree(HTREEITEM hParent,  graphic::cBoneNode *node)
-{
-	//const wstring nodeStr = formatw( "%s [%d]", node->GetName().c_str(), node->GetId() );
-	const wstring nodeStr = formatw( "%s", node->GetName().c_str() );
-	const HTREEITEM hItem = m_BoneTree.InsertItem(nodeStr.c_str(), hParent);
-
-	BOOST_FOREACH (auto &child, node->GetChildren())
-	{
-		MakeBoneTree(hItem, (graphic::cBoneNode*)child);
-	}
-}
-
 
 void CModelPanel::OnBnClickedOk()
 {
@@ -258,51 +236,7 @@ void CModelPanel::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void CModelPanel::OnContextMenu(CWnd *pWnd, CPoint )
+void CModelPanel::OnBnClickedButtonShowBoneTree()
 {
-	if (&m_BoneTree == pWnd)
-	{
-		CPoint p;
-		GetCursorPos(&p);
-
-		CMenu menu;
-		menu.CreatePopupMenu();
-		menu.AppendMenu(MF_STRING, ID_PANEL_SEARCH, _T("Search"));
-		menu.TrackPopupMenu(TPM_LEFTALIGN, p.x, p.y, this);
-	}
-}
-
-
-void CModelPanel::OnPanelSearch()
-{
-	CInputDlg dialog;
-	dialog.m_label = TEXT("Enter a name:");
-	if (dialog.DoModal() == IDOK) 
-	{
-		const wstring str = dialog.m_value;
-		const HTREEITEM hItem = FindTree(m_BoneTree, str);
-		if (hItem)
-		{
-			m_BoneTree.SelectSetFirstVisible(hItem);
-			m_BoneTree.SelectItem(hItem);
-			m_BoneTree.SetFocus();
-		}
-		else
-		{
-			AfxMessageBox(L"Not Found");
-		}
-	}
-}
-
-
-
-void CModelPanel::OnSelchangedTreeBone(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
-	*pResult = 0;
-
-	CString str = m_BoneTree.GetItemText(pNMTreeView->itemNew.hItem);
-
-	cController::Get()->GetCharacter()->HighlightBone( wstr2str((wstring)str) );
-
+	ShowBoneDialog();	
 }

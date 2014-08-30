@@ -102,6 +102,8 @@
   <ItemGroup>
     <ClInclude Include="AnimationController2.h" />
     <ClInclude Include="AnimationPanel.h" />
+    <ClInclude Include="BoneDialog.h" />
+    <ClInclude Include="BoneTreeCtrl.h" />
     <ClInclude Include="FilePanel.h" />
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="InputDlg.h" />
@@ -114,12 +116,15 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UIUtiltity.h" />
     <ClInclude Include="Viewer2.h" />
     <ClInclude Include="Viewer2Dlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationController2.cpp" />
     <ClCompile Include="AnimationPanel.cpp" />
+    <ClCompile Include="BoneDialog.cpp" />
+    <ClCompile Include="BoneTreeCtrl.cpp" />
     <ClCompile Include="FilePanel.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="InputDlg.cpp" />
@@ -134,6 +139,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UIUtiltity.cpp" />
     <ClCompile Include="Viewer2.cpp" />
     <ClCompile Include="Viewer2Dlg.cpp" />
   </ItemGroup>
