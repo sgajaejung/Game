@@ -4,11 +4,9 @@
     <ClCompile Include="Viewer.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TestScene.cpp" />
-    <ClCompile Include="teracharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="teracharacter.h" />
   </ItemGroup>
 </Project>

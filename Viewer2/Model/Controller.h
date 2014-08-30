@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Graphic/model/character.h"
+#include "../Graphic/character/character.h"
 
 
 class cController : public common::cObservable

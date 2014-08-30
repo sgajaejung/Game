@@ -90,6 +90,10 @@
     <ClInclude Include="base\texture.h" />
     <ClInclude Include="base\vertexbuffer.h" />
     <ClInclude Include="base\vertexformat.h" />
+    <ClInclude Include="character\archebladecharacter.h" />
+    <ClInclude Include="character\character.h" />
+    <ClInclude Include="character\characteranalyzer.h" />
+    <ClInclude Include="character\teracharacter.h" />
     <ClInclude Include="collision\boundingbox.h" />
     <ClInclude Include="collision\collision.h" />
     <ClInclude Include="collision\collisionmanager.h" />
@@ -100,8 +104,6 @@
     <ClInclude Include="manager\resourcemanager.h" />
     <ClInclude Include="model\bonemgr.h" />
     <ClInclude Include="model\bonenode.h" />
-    <ClInclude Include="Model\character.h" />
-    <ClInclude Include="model\characteranalyzer.h" />
     <ClInclude Include="model\mesh.h" />
     <ClInclude Include="model\model.h" />
     <ClInclude Include="model\node.h" />
@@ -140,6 +142,10 @@
     <ClCompile Include="base\surface.cpp" />
     <ClCompile Include="base\texture.cpp" />
     <ClCompile Include="base\vertexbuffer.cpp" />
+    <ClCompile Include="character\archebladecharacter.cpp" />
+    <ClCompile Include="character\character.cpp" />
+    <ClCompile Include="character\characteranalyzer.cpp" />
+    <ClCompile Include="character\teracharacter.cpp" />
     <ClCompile Include="collision\boundingbox.cpp" />
     <ClCompile Include="collision\collisionmanager.cpp" />
     <ClCompile Include="importer\modelimporter.cpp" />
@@ -148,8 +154,6 @@
     <ClCompile Include="manager\resourcemanager.cpp" />
     <ClCompile Include="model\bonemgr.cpp" />
     <ClCompile Include="model\bonenode.cpp" />
-    <ClCompile Include="Model\character.cpp" />
-    <ClCompile Include="model\characteranalyzer.cpp" />
     <ClCompile Include="model\mesh.cpp" />
     <ClCompile Include="model\model.cpp" />
     <ClCompile Include="model\node.cpp" />

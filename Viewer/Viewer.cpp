@@ -2,14 +2,14 @@
 #include "stdafx.h"
 #include "../wxMemMonitorLib/wxMemMonitor.h"
 #include "TestScene.h"
-#include "../Graphic/model/character.h"
+#include "../Graphic/character/character.h"
 
 #include <objidl.h>
 #include <gdiplus.h> 
 #pragma comment( lib, "gdiplus.lib" ) 
 using namespace Gdiplus;
 
-#include "teracharacter.h"
+#include "../Graphic/character/teracharacter.h"
 
 
 DECLARE_TYPE_NAME(cViewer)
@@ -34,7 +34,7 @@ private:
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cCharacter m_character;
-	cTeraCharacter m_teraCharacter;
+	graphic::cTeraCharacter m_teraCharacter;
 
 	graphic::cSprite *m_image;
 	graphic::cTerrain m_terrain;
@@ -131,7 +131,7 @@ bool cViewer::OnInit()
 	//m_teraCharacter.Create( "popori_face2.dat", "popori_hair2.dat",
 	//	"popori_body3.dat", "popori_hand3.dat", "popori_leg0.dat", "" );
 
-	m_teraCharacter.SetAnimation( "../media/maxscript/popori_idle.ani");
+	m_teraCharacter.SetAnimation( "../media/maxscript/popori_idle3.ani");
 
 
 	//m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );

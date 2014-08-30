@@ -73,12 +73,6 @@
     <ClInclude Include="base\graphicdef.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="Model\character.h">
-      <Filter>model</Filter>
-    </ClInclude>
-    <ClInclude Include="model\characteranalyzer.h">
-      <Filter>model</Filter>
-    </ClInclude>
     <ClInclude Include="sprite\sprite.h">
       <Filter>sprite</Filter>
     </ClInclude>
@@ -145,6 +139,18 @@
     <ClInclude Include="action\action.h">
       <Filter>action</Filter>
     </ClInclude>
+    <ClInclude Include="character\character.h">
+      <Filter>character</Filter>
+    </ClInclude>
+    <ClInclude Include="character\characteranalyzer.h">
+      <Filter>character</Filter>
+    </ClInclude>
+    <ClInclude Include="character\teracharacter.h">
+      <Filter>character</Filter>
+    </ClInclude>
+    <ClInclude Include="character\archebladecharacter.h">
+      <Filter>character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -208,12 +214,6 @@
     <ClCompile Include="base\dxinit.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="Model\character.cpp">
-      <Filter>model</Filter>
-    </ClCompile>
-    <ClCompile Include="model\characteranalyzer.cpp">
-      <Filter>model</Filter>
-    </ClCompile>
     <ClCompile Include="sprite\sprite.cpp">
       <Filter>sprite</Filter>
     </ClCompile>
@@ -274,6 +274,18 @@
     <ClCompile Include="action\action.cpp">
       <Filter>action</Filter>
     </ClCompile>
+    <ClCompile Include="character\character.cpp">
+      <Filter>character</Filter>
+    </ClCompile>
+    <ClCompile Include="character\characteranalyzer.cpp">
+      <Filter>character</Filter>
+    </ClCompile>
+    <ClCompile Include="character\teracharacter.cpp">
+      <Filter>character</Filter>
+    </ClCompile>
+    <ClCompile Include="character\archebladecharacter.cpp">
+      <Filter>character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="model">
@@ -299,6 +311,9 @@
     </Filter>
     <Filter Include="action">
       <UniqueIdentifier>{3988de06-3223-45da-bf9a-eabd68ea2673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="character">
+      <UniqueIdentifier>{fb7a0270-e7e9-4950-965e-67d8deb6088b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
