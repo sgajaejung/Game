@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "InputDlg.h"
-#include "afxdialogex.h"
 
 
 // CInputDlg 대화 상자입니다.

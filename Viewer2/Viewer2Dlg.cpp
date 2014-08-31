@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "Viewer2Dlg.h"
-#include "afxdialogex.h"
 #include "ModelView.h"
 #include "mmsystem.h"
 #include "MainPanel.h"

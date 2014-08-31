@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "PanelBase.h"
-#include "afxdialogex.h"
 
 
 // CPanelBase 대화 상자입니다.

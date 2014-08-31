@@ -207,13 +207,12 @@ void cViewer::OnRender(const float elapseT)
 		//graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
-		Matrix44 matIdentity;
 		if (m_scene)
-			m_scene->Render(matIdentity);
+			m_scene->Render(Matrix44::Identity);
 
 		//m_character.SetTM(m_cube.GetTransform());
 		//m_character.Render(Matrix44::Identity);
-		m_teraCharacter.Render();
+		m_teraCharacter.Render(Matrix44::Identity);
 
 		//m_terrain.Render();
 		//m_cube.Render(matIdentity);

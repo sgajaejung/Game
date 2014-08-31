@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "AnimationPanel.h"
-#include "afxdialogex.h"
 
 using namespace graphic;
 

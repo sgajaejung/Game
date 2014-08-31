@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "BoneDialog.h"
-#include "afxdialogex.h"
-#include "UIUtiltity.h"
 
 
 CBoneDialog *g_boneDlg = NULL;

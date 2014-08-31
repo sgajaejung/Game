@@ -26,10 +26,12 @@ public:
 	bool IsAnimationPlay() const;
 	void SetCurrentAnimationFrame(const int curFrame);
 
+	void ChangePanel(const int panelIdx);
+	void SendUpdate(const int type=0);
+
 
 private:
 	graphic::cCharacterAnalyzer *m_analyzer;
-	//graphic::cCharacter m_normalCharacter;
 	graphic::cArchebladeCharacter m_archeCharacter; // 아키블래이드 캐릭터.
 	graphic::cTeraCharacter m_teraCharacter; // 테라 캐릭터.
 

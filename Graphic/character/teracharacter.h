@@ -2,6 +2,8 @@
 //
 #pragma once
 
+#include "character.h"
+
 
 namespace graphic
 {
@@ -21,7 +23,7 @@ namespace graphic
 	}
 
 
-	class cTeraCharacter
+	class cTeraCharacter : public cCharacter
 	{
 	public:
 		cTeraCharacter();
@@ -35,11 +37,16 @@ namespace graphic
 			const string &legModelFileName,
 			const string &tailModelFileName );
 
-		bool SetAnimation( const string &aniFileName );
+		virtual bool SetAnimation( const string &aniFileName ) override;
+		void SetBodyModel( const string &fileName );
+		void SetHandModel( const string &fileName );
+		void SetLegModel( const string &fileName );
+		void SetFaceModel( const string &fileName );
+		void SetHairModel( const string &fileName );
+		void SetTailModel( const string &fileName );
 
-		void Render();
-		void Move(const float elapseTime);
-
+		virtual bool Move(const float elapseTime) override;
+		virtual void Render(const Matrix44 &tm) override;
 
 
 	private:

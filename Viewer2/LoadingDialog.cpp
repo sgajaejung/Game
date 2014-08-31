@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "LoadingDialog.h"
-#include "afxdialogex.h"
 
 
 

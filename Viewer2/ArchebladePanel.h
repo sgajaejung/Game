@@ -43,4 +43,5 @@ public:
 	afx_msg void OnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSelchangedTreeAnimation(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSelchangedTreeWeapone(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

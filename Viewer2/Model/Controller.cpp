@@ -87,3 +87,37 @@ void cController::SetCurrentAnimationFrame(const int curFrame)
 	RET(!boneMgr);
 	boneMgr->SetCurrentAnimationFrame(curFrame);
 }
+
+
+// 패널이 전환 될 때 호출된다.
+void cController::ChangePanel(const int panelIdx)
+{
+	switch (panelIdx)
+	{
+	case 0: // file panel
+		m_analyzer->SetCharacter(&m_archeCharacter);
+		break;
+
+	case 1: // model panel
+		break;
+
+	case 2: // animation panel
+		break;
+
+	case 3: // archeblade panel
+		m_analyzer->SetCharacter(&m_archeCharacter);
+		break;
+
+	case 4: // tera panel
+		m_analyzer->SetCharacter(&m_teraCharacter);
+		break;
+	}
+
+}
+
+
+// observer 에게 업데이트 메세지를 보낸다.
+void cController::SendUpdate(const int type) //type=0
+{
+	NotifyObserver();
+}

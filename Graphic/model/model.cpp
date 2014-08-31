@@ -89,7 +89,7 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 
 
 // 애니메이션 시작.
-void cModel::SetAnimation( const string &aniFileName)
+bool cModel::SetAnimation( const string &aniFileName)
 {
 	if (sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName))
 	{
@@ -107,6 +107,8 @@ void cModel::SetAnimation( const string &aniFileName)
 			}
 		}
 	}
+
+	return true;
 }
 
 

@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "ArchebladePanel.h"
-#include "afxdialogex.h"
 #include "../Graphic/character/archebladecharacter.h"
+
 
 
 // CArchebladePanel 대화 상자입니다.
@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CArchebladePanel, CDialogEx)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MODEL, &CArchebladePanel::OnSelchangedTreeModel)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_ANIMATION, &CArchebladePanel::OnSelchangedTreeAnimation)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_WEAPONE, &CArchebladePanel::OnSelchangedTreeWeapone)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -195,4 +196,17 @@ void CArchebladePanel::OnSelchangedTreeAnimation(NMHDR *pNMHDR, LRESULT *pResult
 
 	ShowLoadingDialog();
 	cController::Get()->LoadFile(fileName);
+}
+
+
+void CArchebladePanel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(*this, m_modelTree, cx, cy);
+	MoveChildCtrlWindow(*this, m_weaponTree, cx, cy);
+	MoveChildCtrlWindow(*this, m_animationTree, cx, cy);
+	MoveChildCtrlWindow(*this, m_modelBrowser, cx-100, cy);
+	MoveChildCtrlWindow(*this, m_weaponBrowser, cx-100, cy);
+	MoveChildCtrlWindow(*this, m_animationBrowser, cx-110, cy);
 }

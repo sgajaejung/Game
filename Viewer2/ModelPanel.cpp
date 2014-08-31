@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "ModelPanel.h"
-#include "afxdialogex.h"
 #include "BoneDialog.h"
 
 

@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "FilePanel.h"
-#include "afxdialogex.h"
 
 
 // CFilePanel 대화 상자입니다.

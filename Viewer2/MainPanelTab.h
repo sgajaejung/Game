@@ -7,6 +7,7 @@ class CModelPanel;
 class CAnimationPanel;
 class CFilePanel;
 class CArchebladePanel;
+class CTeraPanel;
 class CMainPanelTab : public CDialogEx
 {
 public:
@@ -16,13 +17,16 @@ public:
 
 
 protected:
+	void ShowPanel(int idx);
+
+
 	CModelPanel *m_modelPanel;
 	CAnimationPanel *m_aniPanel;
 	CFilePanel *m_filePanel;
 	CArchebladePanel *m_archePanel;
+	CTeraPanel *m_teraPanel;
+	vector<CWnd*> m_panels;
 
-
-protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()

@@ -63,4 +63,7 @@ using namespace common;
 #include "model/Controller.h"
 #include "LoadingDialog.h"
 #include <afxcview.h>
+#include "afxdialogex.h"
 
+#include "FileTreeCtrl.h"
+#include "UIUtiltity.h"

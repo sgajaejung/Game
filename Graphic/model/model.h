@@ -28,7 +28,7 @@ namespace graphic
 		void SetRenderShadow(const bool show);
 
 		// Animation
-		void SetAnimation(const string &aniFileName);
+		virtual bool SetAnimation(const string &aniFileName);
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
 		sRawAniGroup* GetCurrentAnimation();

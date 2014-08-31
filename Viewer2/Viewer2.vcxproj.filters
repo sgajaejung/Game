@@ -90,6 +90,9 @@
     <ClInclude Include="ArchebladePanel.h">
       <Filter>panel</Filter>
     </ClInclude>
+    <ClInclude Include="TeraPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="ArchebladePanel.cpp">
       <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="TeraPanel.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

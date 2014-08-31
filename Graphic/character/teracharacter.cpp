@@ -5,7 +5,13 @@
 using namespace graphic;
 
 
-cTeraCharacter::cTeraCharacter()
+cTeraCharacter::cTeraCharacter() : 
+	cCharacter(common::GenerateId())
+,	m_bodyNeckNode(NULL)
+,	m_bodyFaceNode(NULL)
+,	m_faceFaceNode(NULL)
+,	m_faceNeckNode(NULL)
+,	m_hairHairNode(NULL)
 {
 	ZeroMemory(m_models, sizeof(m_models));
 
@@ -28,52 +34,27 @@ bool cTeraCharacter::Create(
 {
 	if (!faceModelFileName.empty())
 	{
-		if (!m_models[TERA_MODEL::FACE])
-			m_models[TERA_MODEL::FACE] = new cModel(common::GenerateId());
-
-		m_models[ TERA_MODEL::FACE]->Create(faceModelFileName);
-
-		m_faceNeckNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Neck" );
-		m_faceFaceNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Face" );
+		SetFaceModel(faceModelFileName);
 	}
 
 	if (!hairModelFileName.empty())
 	{
-		if (!m_models[TERA_MODEL::HAIR])
-			m_models[TERA_MODEL::HAIR] = new cModel(common::GenerateId());
-
-		m_models[ TERA_MODEL::HAIR]->Create(hairModelFileName);
-		m_hairHairNode = m_models[ TERA_MODEL::HAIR]->GetBoneMgr()->FindBone( "Dummy_Hair" );
+		SetHairModel(hairModelFileName);
 	}
 
 	if (!bodyModelFileName.empty())
 	{
-		if (!m_models[TERA_MODEL::BODY])
-			m_models[TERA_MODEL::BODY] = new cModel(common::GenerateId());
-
-		m_models[ TERA_MODEL::BODY]->Create(bodyModelFileName);
-		//m_models[ TERA_MODEL::BODY]->SetRenderBone(true);
-
-		m_bodyNeckNode = m_models[ TERA_MODEL::BODY]->GetBoneMgr()->FindBone( "Bip01-Neck" );
-		m_bodyFaceNode = m_models[ TERA_MODEL::BODY]->GetBoneMgr()->FindBone( "Bip01-Head" );
+		SetBodyModel(bodyModelFileName);
 	}
 
 	if (!handModelFileName.empty())
 	{
-		if (!m_models[TERA_MODEL::HAND])
-			m_models[TERA_MODEL::HAND] = new cModel(common::GenerateId());
-
-		m_models[ TERA_MODEL::HAND]->Create(handModelFileName);
-		m_models[ TERA_MODEL::HAND]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
+		SetHandModel(handModelFileName);
 	}
 
 	if (!legModelFileName.empty())
 	{
-		if (!m_models[TERA_MODEL::LEG])
-			m_models[TERA_MODEL::LEG] = new cModel(common::GenerateId());
-
-		m_models[ TERA_MODEL::LEG]->Create(legModelFileName);
-		m_models[ TERA_MODEL::LEG]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
+		SetLegModel(legModelFileName);
 	}
 
 	return true;
@@ -100,29 +81,29 @@ bool cTeraCharacter::SetAnimation( const string &aniFileName )
 }
 
 
-void cTeraCharacter::Render()
+void cTeraCharacter::Render(const Matrix44 &tm)
 {
 	if (m_models[ TERA_MODEL::BODY])
-		m_models[ TERA_MODEL::BODY]->Render(Matrix44::Identity);
+		m_models[ TERA_MODEL::BODY]->Render(m_TM*tm);
 	if (m_models[ TERA_MODEL::HAND])
-		m_models[ TERA_MODEL::HAND]->Render(Matrix44::Identity);
+		m_models[ TERA_MODEL::HAND]->Render(m_TM*tm);
 	if (m_models[ TERA_MODEL::LEG])
-		m_models[ TERA_MODEL::LEG]->Render(Matrix44::Identity);
+		m_models[ TERA_MODEL::LEG]->Render(m_TM*tm);
 
 	if (m_models[ TERA_MODEL::FACE])
 	{
-		m_models[ TERA_MODEL::FACE]->Render(Matrix44::Identity);
+		m_models[ TERA_MODEL::FACE]->Render(m_TM*tm);
 	}
 
 	if (m_models[ TERA_MODEL::HAIR])
 	{
-		m_models[ TERA_MODEL::HAIR]->Render(Matrix44::Identity);
+		m_models[ TERA_MODEL::HAIR]->Render(m_TM*tm);
 	}
 
 }
 
 
-void cTeraCharacter::Move(const float elapseTime)
+bool cTeraCharacter::Move(const float elapseTime)
 {
 	if (m_models[ TERA_MODEL::BODY])
 		m_models[ TERA_MODEL::BODY]->Move(elapseTime);
@@ -140,4 +121,67 @@ void cTeraCharacter::Move(const float elapseTime)
 
 	if (m_models[ TERA_MODEL::HAIR])
 		m_models[ TERA_MODEL::HAIR]->Move(elapseTime);
+
+	return true;
+}
+
+
+void cTeraCharacter::SetBodyModel( const string &fileName )
+{
+	if (!m_models[TERA_MODEL::BODY])
+		m_models[TERA_MODEL::BODY] = new cModel(common::GenerateId());
+
+	m_models[ TERA_MODEL::BODY]->Create(fileName);
+	//m_models[ TERA_MODEL::BODY]->SetRenderBone(true);
+
+	m_bodyNeckNode = m_models[ TERA_MODEL::BODY]->GetBoneMgr()->FindBone( "Bip01-Neck" );
+	m_bodyFaceNode = m_models[ TERA_MODEL::BODY]->GetBoneMgr()->FindBone( "Bip01-Head" );
+}
+
+
+void cTeraCharacter::SetHandModel( const string &fileName )
+{
+	if (!m_models[TERA_MODEL::HAND])
+		m_models[TERA_MODEL::HAND] = new cModel(common::GenerateId());
+
+	m_models[ TERA_MODEL::HAND]->Create(fileName);
+	m_models[ TERA_MODEL::HAND]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
+}
+
+
+void cTeraCharacter::SetLegModel( const string &fileName )
+{
+	if (!m_models[TERA_MODEL::LEG])
+		m_models[TERA_MODEL::LEG] = new cModel(common::GenerateId());
+
+	m_models[ TERA_MODEL::LEG]->Create(fileName);
+	m_models[ TERA_MODEL::LEG]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
+}
+
+
+void cTeraCharacter::SetFaceModel( const string &fileName )
+{
+	if (!m_models[TERA_MODEL::FACE])
+		m_models[TERA_MODEL::FACE] = new cModel(common::GenerateId());
+
+	m_models[ TERA_MODEL::FACE]->Create(fileName);
+
+	m_faceNeckNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Neck" );
+	m_faceFaceNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Face" );
+}
+
+
+void cTeraCharacter::SetHairModel( const string &fileName )
+{
+	if (!m_models[TERA_MODEL::HAIR])
+		m_models[TERA_MODEL::HAIR] = new cModel(common::GenerateId());
+
+	m_models[ TERA_MODEL::HAIR]->Create(fileName);
+	m_hairHairNode = m_models[ TERA_MODEL::HAIR]->GetBoneMgr()->FindBone( "Dummy_Hair" );
+}
+
+
+void cTeraCharacter::SetTailModel( const string &fileName )
+{
+
 }

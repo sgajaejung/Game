@@ -4,11 +4,11 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "MainPanelTab.h"
-#include "afxdialogex.h"
 #include "ModelPanel.h"
 #include "AnimationPanel.h"
 #include "FilePanel.h"
 #include "ArchebladePanel.h"
+#include "TeraPanel.h"
 
 
 
@@ -20,6 +20,7 @@ CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 ,	m_aniPanel(NULL)
 ,	m_filePanel(NULL)
 ,	m_archePanel(NULL)
+,	m_teraPanel(NULL)
 {
 
 }
@@ -30,6 +31,7 @@ CMainPanelTab::~CMainPanelTab()
 	SAFE_DELETE(m_aniPanel);
 	SAFE_DELETE(m_filePanel);
 	SAFE_DELETE(m_archePanel);
+	SAFE_DELETE(m_teraPanel);
 }
 
 void CMainPanelTab::DoDataExchange(CDataExchange* pDX)
@@ -70,35 +72,43 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_Tab.InsertItem(1, L"Model");
 	m_Tab.InsertItem(2, L"Animation");
 	m_Tab.InsertItem(3, L"ArcheBlade");
+	m_Tab.InsertItem(4, L"Tera");
 
 	CRect cr;
 	GetClientRect(cr);
 
+	m_filePanel = new CFilePanel(this);
+	m_filePanel->Create(CFilePanel::IDD, this);
+	m_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(m_filePanel);
+
 	m_modelPanel = new CModelPanel(this);
 	m_modelPanel->Create(CModelPanel::IDD, this);
 	m_modelPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_modelPanel->ShowWindow(SW_HIDE);
+	m_panels.push_back(m_modelPanel);
 
 	m_aniPanel = new CAnimationPanel(this);
 	m_aniPanel->Create(CAnimationPanel::IDD, this);
 	m_aniPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_aniPanel->ShowWindow(SW_HIDE);
-
-	m_filePanel = new CFilePanel(this);
-	m_filePanel->Create(CFilePanel::IDD, this);
-	m_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_filePanel->ShowWindow(SW_SHOW);
+	m_panels.push_back(m_aniPanel);
 
 	m_archePanel = new CArchebladePanel(this);
 	m_archePanel->Create(CArchebladePanel::IDD, this);
 	m_archePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_archePanel->ShowWindow(SW_HIDE);
+	m_panels.push_back(m_archePanel);
 
+	m_teraPanel = new CTeraPanel(this);
+	m_teraPanel->Create(CTeraPanel::IDD, this);
+	m_teraPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(m_teraPanel);
 
-	cController::Get()->AddObserver(m_modelPanel);
-	cController::Get()->AddObserver(m_aniPanel);
-	cController::Get()->AddObserver(m_filePanel);
-	cController::Get()->AddObserver(m_archePanel);
+	BOOST_FOREACH (auto &panel, m_panels)
+	{
+		if (iObserver *observer = dynamic_cast<iObserver*>(panel))
+			cController::Get()->AddObserver(observer);
+	}
+
+	ShowPanel(0);
 
 	return TRUE;
 }
@@ -106,37 +116,8 @@ BOOL CMainPanelTab::OnInitDialog()
 
 void CMainPanelTab::OnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	switch (m_Tab.GetCurSel())
-	{
-	case 0:
-		m_aniPanel->ShowWindow(SW_HIDE);
-		m_modelPanel->ShowWindow(SW_HIDE);
-		m_filePanel->ShowWindow(SW_SHOW);
-		m_archePanel->ShowWindow(SW_HIDE);
-		break;
-
-	case 1:
-		m_modelPanel->ShowWindow(SW_SHOW);
-		m_aniPanel->ShowWindow(SW_HIDE);
-		m_filePanel->ShowWindow(SW_HIDE);
-		m_archePanel->ShowWindow(SW_HIDE);
-		break;
-
-	case 2:
-		m_aniPanel->ShowWindow(SW_SHOW);
-		m_modelPanel->ShowWindow(SW_HIDE);
-		m_filePanel->ShowWindow(SW_HIDE);
-		m_archePanel->ShowWindow(SW_HIDE);
-		break;
-
-	case 3:
-		m_archePanel->ShowWindow(SW_SHOW);
-		m_aniPanel->ShowWindow(SW_HIDE);
-		m_modelPanel->ShowWindow(SW_HIDE);
-		m_filePanel->ShowWindow(SW_HIDE);
-		break;
-	}
-
+	ShowPanel(m_Tab.GetCurSel());
+	cController::Get()->ChangePanel(m_Tab.GetCurSel());
 	*pResult = 0;
 }
 
@@ -148,9 +129,18 @@ void CMainPanelTab::OnSize(UINT nType, int cx, int cy)
 	if (m_Tab.GetSafeHwnd())
 	{
 		m_Tab.MoveWindow(0, 0, cx, cy);
-		m_modelPanel->MoveWindow(CRect(0, 25, cx, cy));
-		m_aniPanel->MoveWindow(CRect(0, 25, cx, cy));
-		m_filePanel->MoveWindow(CRect(0, 25, cx, cy));
-		m_archePanel->MoveWindow(CRect(0, 25, cx, cy));
+
+		BOOST_FOREACH (auto &panel, m_panels)
+			panel->MoveWindow(CRect(0, 25, cx, cy));
 	}
+}
+
+
+void CMainPanelTab::ShowPanel(int idx)
+{
+	BOOST_FOREACH (auto &panel, m_panels)
+		panel->ShowWindow(SW_HIDE);
+
+	if ((int)m_panels.size() > idx)
+		m_panels[ idx]->ShowWindow(SW_SHOW);
 }
