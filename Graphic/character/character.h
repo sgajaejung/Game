@@ -9,7 +9,7 @@ namespace graphic
 	class cCharacter : public cModel
 	{
 	public:
-		cCharacter(const int id);
+		cCharacter(const int id=-1);
 		virtual ~cCharacter();
 
 		void SetActionData(const vector<sActionData> &actions);

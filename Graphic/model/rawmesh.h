@@ -22,6 +22,7 @@ namespace graphic
 	};
 
 
+	// 속성버퍼 정보를 표현함.
 	struct sAttribute
 	{
 		int attribId;

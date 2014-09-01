@@ -82,6 +82,7 @@
     <ClInclude Include="base\light.h" />
     <ClInclude Include="base\line.h" />
     <ClInclude Include="base\material.h" />
+    <ClInclude Include="base\meshbuffer.h" />
     <ClInclude Include="base\shader.h" />
     <ClInclude Include="base\shadow1.h" />
     <ClInclude Include="base\skybox.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="base\light.cpp" />
     <ClCompile Include="base\line.cpp" />
     <ClCompile Include="base\material.cpp" />
+    <ClCompile Include="base\meshbuffer.cpp" />
     <ClCompile Include="base\shader.cpp" />
     <ClCompile Include="base\shadow1.cpp" />
     <ClCompile Include="base\skybox.cpp" />

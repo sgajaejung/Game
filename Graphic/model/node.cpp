@@ -10,6 +10,7 @@ cNode::cNode( const int id, const string &name) :
 ,	m_name(name)
 ,	m_parent(NULL)
 ,	m_shader(NULL)
+,	m_isRender(true)
 {
 
 }
@@ -89,6 +90,8 @@ bool cNode::RemoveNode(const int id)
 // 자식노드의 Render 를 호출한다.
 void cNode::Render(const Matrix44 &parentTm)
 {
+	RET(!m_isRender);
+	
 	BOOST_FOREACH (auto node, m_children)
 	{
 		node->Render(parentTm);

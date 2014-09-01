@@ -22,6 +22,8 @@ namespace graphic
 		void SetLocalTM(const Matrix44 &tm);
 		void SetShader(cShader *shader);
 		cShader* GetShader();
+		void SetRender(const bool isRender);
+		bool IsRender() const;
 
 		bool InsertChild(cNode *node);
 		const cNode* FindNode(const int id) const;
@@ -49,6 +51,7 @@ namespace graphic
 		Matrix44 m_localTM;
 		Matrix44 m_aniTM;
 		Matrix44 m_TM;
+		bool m_isRender;
 
 		cShader *m_shader; // reference
 	};
@@ -65,5 +68,6 @@ namespace graphic
 	inline vector<cNode*>& cNode::GetChildren() { return m_children; }
 	inline void cNode::SetShader(cShader *shader) { m_shader = shader; }
 	inline cShader* cNode::GetShader() { return m_shader; }
-
+	inline void cNode::SetRender(const bool isRender) { m_isRender = isRender; }
+	inline bool cNode::IsRender() const { return m_isRender; }
 }

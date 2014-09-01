@@ -120,10 +120,9 @@ bool cTrack::GetRotKey( const int curFrame, OUT Quaternion &out )
 // curFrame 일 때의 스케일 값을 얻어온다.
 bool cTrack::GetScaleKey( const int curFrame, OUT Vector3 &out )
 {
-	RETV(!m_curKeyScale[ 0], false);
+	return false;
 
-	out = Vector3(1,1,1);
-	return true;
+	//RETV(!m_curKeyScale[ 0], false);
 
 	// 일단 당분간 스케일링하는 에니메이션은 제외한다.
 	//if (!m_curKeyScale[ 1])

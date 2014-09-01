@@ -45,9 +45,11 @@ sRawMeshGroup* cResourceManager::LoadModel( const string &fileName )
 		}
 	}
 
+	// 메쉬 이름 설정 fileName + meshName
 	// 메터리얼 설정.
 	BOOST_FOREACH (auto &mesh, meshes->meshes)
 	{
+		mesh.name = fileName + "::" + mesh.name;
 		if (mesh.mtrlId >= 0)
 		{
 			mesh.mtrl = meshes->mtrls[ mesh.mtrlId];
@@ -94,6 +96,43 @@ sRawAniGroup* cResourceManager::LoadAnimation( const string &fileName )
 error:
 	delete anies;
 	return NULL;
+}
+
+
+// meshName에 해당하는 메쉬버퍼를 리턴한다.
+cMeshBuffer* cResourceManager::LoadMeshBuffer( const string &meshName )
+{
+	if (cMeshBuffer *data = FindMeshBuffer(meshName))
+		return data;
+
+	string fileName = meshName;
+	fileName.erase(meshName.find("::"));
+
+	if (sRawMeshGroup *meshes = LoadModel(fileName))
+	{
+		BOOST_FOREACH (auto &rawMesh, meshes->meshes)
+		{
+			if (meshName == rawMesh.name)
+			{
+				cMeshBuffer *buffer = new cMeshBuffer(rawMesh);
+				m_mesheBuffers[ meshName] = buffer;
+				return buffer;
+			}
+		}
+	}
+	
+	return NULL;
+}
+
+
+// meshName으로 메쉬버퍼를 찾아 리턴한다.
+cMeshBuffer* cResourceManager::FindMeshBuffer( const string &meshName )
+{
+	auto it = m_mesheBuffers.find(meshName);
+	if (m_mesheBuffers.end() == it)
+		return NULL; // not exist
+
+	return it->second;
 }
 
 
@@ -264,6 +303,13 @@ void cResourceManager::Clear()
 		delete kv.second;
 	}
 	m_shaders.clear();
+
+	// remove mesh buffer
+	BOOST_FOREACH (auto kv, m_mesheBuffers)
+	{
+		delete kv.second;
+	}
+	m_mesheBuffers.clear();
 }
 
 

@@ -39,9 +39,10 @@ namespace graphic
 		bool m_isSkinned;
 		vector<cMaterial> m_mtrls;
 		vector<cTexture*>m_textures;  // reference
-		vector<sAttribute> m_attributes;
-		cVertexBuffer m_vtxBuff;
-		cIndexBuffer m_idxBuff;
+		//vector<sAttribute> m_attributes;
+		//cVertexBuffer m_vtxBuff;
+		//cIndexBuffer m_idxBuff;
+		cMeshBuffer *m_buffers; // reference
 
 		// 경계박스
 		cCube m_boundingBox;

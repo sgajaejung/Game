@@ -298,3 +298,23 @@ bool cModel::Pick(const Vector3 &orig, const Vector3 &dir)
 	m_boundingBox.SetTransform(m_TM);
 	return m_boundingBox.Pick(orig, dir);
 }
+
+
+cMesh* cModel::GetMesh(const string &name)
+{
+	BOOST_FOREACH (auto &mesh, m_meshes)
+	{
+		if (mesh->GetName() == name)
+			return mesh;
+	}
+	return NULL;	
+}
+
+
+cMesh* cModel::GetMesh(const int idx)
+{
+	if ((int)m_meshes.size() > idx)
+		return m_meshes[ idx];
+	return NULL;
+}
+

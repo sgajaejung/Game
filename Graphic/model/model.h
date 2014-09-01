@@ -26,6 +26,8 @@ namespace graphic
 		cShadow1& GetShadow();
 		bool IsRenderShadow() const;
 		void SetRenderShadow(const bool show);
+		cMesh* GetMesh(const string &name);
+		cMesh* GetMesh(const int idx);
 
 		// Animation
 		virtual bool SetAnimation(const string &aniFileName);

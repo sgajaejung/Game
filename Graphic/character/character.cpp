@@ -6,7 +6,7 @@ using namespace graphic;
 
 
 cCharacter::cCharacter(const int id) :
-	cModel(id)
+	cModel((id==-1)? common::GenerateId() : id)
 ,	m_action(CHARACTER_ACTION::NONE)
 {
 

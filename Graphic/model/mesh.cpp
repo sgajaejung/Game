@@ -6,18 +6,20 @@ using namespace graphic;
 
 
 cMesh::cMesh(const int id, const sRawMesh &rawMesh) : 
-	cNode(id)
+	cNode(id, rawMesh.name)
 {
-	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
-	CreateBoneWeight(rawMesh.weights);
+	//CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
+	//CreateBoneWeight(rawMesh.weights);
 	CreateMaterials(rawMesh);
-	CreateAttributes(rawMesh);
+	//CreateAttributes(rawMesh);
+
+	m_buffers = cResourceManager::Get()->LoadMeshBuffer(rawMesh.name);
 }
 
 cMesh::cMesh(const int id, const sRawBone &rawBone) : 
 	cNode(id)
 {
-	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
+	//CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
 }
 
 cMesh::~cMesh()
@@ -25,81 +27,81 @@ cMesh::~cMesh()
 }
 
 
-void cMesh::CreateMesh( const vector<Vector3> &vertices, 
-	const vector<Vector3> &normals, 
-	const vector<Vector3> &tex,
-	const vector<int> &indices )
-{
-	const bool isTexture = !tex.empty();
-
-	// 버텍스 버퍼 생성.
-	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
-	{
-		sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
-		for (u_int i = 0; i < vertices.size(); i++)
-		{
-			pv[ i].p = vertices[ i];
-			pv[ i].n = normals[ i];
-			if (isTexture)
-			{
-				pv[ i].u = tex[ i].x;
-				pv[ i].v = tex[ i].y;
-			}
-		}
-		m_vtxBuff.Unlock();
-	}
-
-	// 인덱스 버퍼 생성.
-	if (m_idxBuff.Create(indices.size()))
-	{
-		WORD *pi = (WORD*)m_idxBuff.Lock();
-		for (u_int i = 0; i < indices.size(); ++i)
-			pi[ i] = indices[ i];
-		m_idxBuff.Unlock();
-	}
-
-	CreateBoundingBox(m_boundingBox);
-}
-
-
-// 본 인덱스, 가중치를 설정한다.s
-void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
-{
-
-	if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
-	{
-		for (u_int i=0; i <weights.size(); ++i)
-		{
-			const sVertexWeight &weight = weights[ i];
-			const int vtxIdx = weight.vtxIdx;
-
-			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
-			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
-			//pv[ vtxIdx].matrixIndices = 0;
-
-			for (int k=0; (k < weight.size) && (k < 4); ++k)
-			{
-				const sWeight *w = &weight.w[ k];
-				if (k < 3)
-				{
-					pv[ vtxIdx].weights[ k] = w->weight;
-				}
-				else // k == 3 (마지막 가중치)
-				{
-					pv[ vtxIdx].weights[ k] = 
-						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
-				}
-
-				pv[ vtxIdx].matrixIndices[ k] = w->bone;
-				//const int boneIdx = (w->bone << (8*(3-k)));
-				//pv[ vtxIdx].matrixIndices |= boneIdx;
-			}
-		}
-
-		m_vtxBuff.Unlock();
-	}
-
-}
+//void cMesh::CreateMesh( const vector<Vector3> &vertices, 
+//	const vector<Vector3> &normals, 
+//	const vector<Vector3> &tex,
+//	const vector<int> &indices )
+//{
+//	const bool isTexture = !tex.empty();
+//
+//	// 버텍스 버퍼 생성.
+//	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
+//	{
+//		sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
+//		for (u_int i = 0; i < vertices.size(); i++)
+//		{
+//			pv[ i].p = vertices[ i];
+//			pv[ i].n = normals[ i];
+//			if (isTexture)
+//			{
+//				pv[ i].u = tex[ i].x;
+//				pv[ i].v = tex[ i].y;
+//			}
+//		}
+//		m_vtxBuff.Unlock();
+//	}
+//
+//	// 인덱스 버퍼 생성.
+//	if (m_idxBuff.Create(indices.size()))
+//	{
+//		WORD *pi = (WORD*)m_idxBuff.Lock();
+//		for (u_int i = 0; i < indices.size(); ++i)
+//			pi[ i] = indices[ i];
+//		m_idxBuff.Unlock();
+//	}
+//
+//	CreateBoundingBox(m_boundingBox);
+//}
+//
+//
+//// 본 인덱스, 가중치를 설정한다.s
+//void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
+//{
+//
+//	if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
+//	{
+//		for (u_int i=0; i <weights.size(); ++i)
+//		{
+//			const sVertexWeight &weight = weights[ i];
+//			const int vtxIdx = weight.vtxIdx;
+//
+//			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
+//			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
+//			//pv[ vtxIdx].matrixIndices = 0;
+//
+//			for (int k=0; (k < weight.size) && (k < 4); ++k)
+//			{
+//				const sWeight *w = &weight.w[ k];
+//				if (k < 3)
+//				{
+//					pv[ vtxIdx].weights[ k] = w->weight;
+//				}
+//				else // k == 3 (마지막 가중치)
+//				{
+//					pv[ vtxIdx].weights[ k] = 
+//						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
+//				}
+//
+//				pv[ vtxIdx].matrixIndices[ k] = w->bone;
+//				//const int boneIdx = (w->bone << (8*(3-k)));
+//				//pv[ vtxIdx].matrixIndices |= boneIdx;
+//			}
+//		}
+//
+//		m_vtxBuff.Unlock();
+//	}
+//
+//}
 
 
 // 매터리얼 생성.
@@ -119,11 +121,11 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 
 
 // 속성버퍼 초기화.
-void cMesh::CreateAttributes(const sRawMesh &rawMesh)
-{
-	m_attributes = rawMesh.attributes;
-
-}
+//void cMesh::CreateAttributes(const sRawMesh &rawMesh)
+//{
+//	m_attributes = rawMesh.attributes;
+//
+//}
 
 
 // Animation
@@ -136,6 +138,9 @@ bool cMesh::Move(const float elapseTime)
 // Render
 void cMesh::Render(const Matrix44 &parentTm)
 {
+	RET(!IsRender());
+	RET(!m_buffers);
+
 	//if (m_shader)
 	//{
 	//	RenderShader(*m_shader, parentTm);
@@ -143,33 +148,36 @@ void cMesh::Render(const Matrix44 &parentTm)
 	//}
 
 
-	if (m_attributes.empty())
+	if (m_buffers->GetAttributes().empty())
 	{
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind();
 		if (!m_textures.empty())
 			m_textures[ 0]->Bind(0);
 
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
 
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
 		GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
-			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
+			m_buffers->GetIndexBuffer().GetFaceCount());
 	}
 	else
 	{
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
+		m_buffers->Bind();
 
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
 
-		for (u_int i=0; i < m_attributes.size(); ++i)
+		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
-			const int mtrlId = m_attributes[ i].attribId;
+			const int mtrlId = m_buffers->GetAttributes()[ i].attribId;
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 			
@@ -178,8 +186,9 @@ void cMesh::Render(const Matrix44 &parentTm)
 				m_textures[ mtrlId]->Bind(0);
 
 			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
-				m_vtxBuff.GetVertexCount(), 
-				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+				m_buffers->GetVertexBuffer().GetVertexCount(), 
+				m_buffers->GetAttributes()[ i].faceStart*3, 
+				m_buffers->GetAttributes()[ i].faceCount);
 		}
 	}
 
@@ -190,11 +199,14 @@ void cMesh::Render(const Matrix44 &parentTm)
 // 셰이더를 통해 화면을 그린다.
 void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 {
+	RET(!IsRender());
+	RET(!m_buffers);
+
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
 	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 
-	if (m_attributes.empty())
+	if (m_buffers->GetAttributes().empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		shader.SetMatrix("mWorld", tm);
@@ -208,15 +220,17 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 		if (!m_textures.empty())
 			m_textures[ 0]->Bind(shader, "Tex");
 
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
 
 		shader.Begin();
 		shader.BeginPass();
 
 		GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
-			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
+			m_buffers->GetIndexBuffer().GetFaceCount());
 
 		shader.End();
 		shader.EndPass();
@@ -232,12 +246,13 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 		shader.Begin();
 
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
+		m_buffers->Bind();
 
-		for (u_int i=0; i < m_attributes.size(); ++i)
+		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
-			const int mtrlId = m_attributes[ i].attribId;
+			const int mtrlId = m_buffers->GetAttributes()[ i].attribId;
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 
@@ -248,8 +263,9 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 			shader.BeginPass();
 
 			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
-				m_vtxBuff.GetVertexCount(), 
-				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+				m_buffers->GetVertexBuffer().GetVertexCount(), 
+				m_buffers->GetAttributes()[ i].faceStart*3, 
+				m_buffers->GetAttributes()[ i].faceCount);
 
 			shader.EndPass();
 		}
@@ -263,13 +279,15 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 void cMesh::RenderShadow(const Matrix44 &viewProj, 
 	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
 {
+	RET(!IsRender());
 	RET(!m_shader);
+	RET(!m_buffers);
 
 	m_shader->SetMatrix( "mVP", viewProj);
 	m_shader->SetVector( "vLightDir", lightDir );
 	m_shader->SetVector( "vEyePos", lightPos);
 
-	if (m_attributes.empty())
+	if (m_buffers->GetAttributes().empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		m_shader->SetMatrix("mWorld", tm);
@@ -278,15 +296,17 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 		wit.Transpose();
 		m_shader->SetMatrix("mWIT", wit);
 
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
 
 		m_shader->Begin();
 		m_shader->BeginPass(1);
 
 		GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
-			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
+			m_buffers->GetIndexBuffer().GetFaceCount());
 
 		m_shader->End();
 		m_shader->EndPass();
@@ -301,20 +321,23 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 		m_shader->SetMatrix("mWIT", wit);
 
 		m_shader->Begin();
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
 
-		for (u_int i=0; i < m_attributes.size(); ++i)
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
+
+		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
-			const int mtrlId = m_attributes[ i].attribId;
+			const int mtrlId = m_buffers->GetAttributes()[ i].attribId;
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 
 			m_shader->BeginPass(1);
 
 			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
-				m_vtxBuff.GetVertexCount(), 
-				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+				m_buffers->GetVertexBuffer().GetVertexCount(), 
+				m_buffers->GetAttributes()[ i].faceStart*3, 
+				m_buffers->GetAttributes()[ i].faceCount);
 
 			m_shader->EndPass();
 		}
@@ -327,8 +350,10 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 
 void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 {
+	RET(!IsRender());
+	RET(!m_buffers);
 
-	if (m_attributes.empty())
+	if (m_buffers->GetAttributes().empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		shader.SetMatrix("mWorld", tm);
@@ -347,15 +372,17 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//if (!m_textures.empty())
 		//	m_textures[ 0]->Bind(shader, "Tex");
 
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
 
 		shader.Begin();
 		shader.BeginPass();
 
 		GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
-			m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
+			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
+			m_buffers->GetIndexBuffer().GetFaceCount());
 
 		shader.End();
 		shader.EndPass();
@@ -376,12 +403,13 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//shader.SetMatrix("mWIT", wit);
 
 		shader.Begin();
-		m_vtxBuff.Bind();
-		m_idxBuff.Bind();
+		m_buffers->Bind();
+		//m_vtxBuff.Bind();
+		//m_idxBuff.Bind();
 
-		for (u_int i=0; i < m_attributes.size(); ++i)
+		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
-			const int mtrlId = m_attributes[ i].attribId;
+			const int mtrlId = m_buffers->GetAttributes()[ i].attribId;
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 
@@ -392,8 +420,9 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 			shader.BeginPass();
 
 			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
-				m_vtxBuff.GetVertexCount(), 
-				m_attributes[ i].faceStart*3, m_attributes[ i].faceCount);
+				m_buffers->GetVertexBuffer().GetVertexCount(), 
+				m_buffers->GetAttributes()[ i].faceStart*3, 
+				m_buffers->GetAttributes()[ i].faceCount);
 
 			shader.EndPass();
 		}
@@ -406,6 +435,8 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 // Render Bounding Box
 void cMesh::RenderBoundingBox(const Matrix44 &tm)
 {
+	RET(!IsRender());
+
 	m_boundingBox.Render(m_localTM * m_aniTM * m_TM * tm);
 }
 
@@ -415,13 +446,13 @@ void cMesh::CreateBoundingBox(OUT cCube &out)
 {
 	sMinMax mm;
 
-	sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
-	for (int i = 0; i < m_vtxBuff.GetVertexCount(); i++)
+	sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_buffers->GetVertexBuffer().Lock();
+	for (int i = 0; i < m_buffers->GetVertexBuffer().GetVertexCount(); i++)
 	{
 		const Vector3 pos = pv[ i].p;
 		mm.Update(pos);
 	}
-	m_vtxBuff.Unlock();
+	m_buffers->GetVertexBuffer().Unlock();
 
 	out.SetCube(mm.Min, mm.Max);
 }

@@ -15,10 +15,14 @@ using namespace common;
 
 
 #include "base/graphicdef.h"
+#include "model/rawmesh.h"
+#include "model/rawani.h"
+
 #include "base/material.h"
 #include "base/light.h"
 #include "base/vertexbuffer.h"
 #include "base/indexbuffer.h"
+#include "base/meshbuffer.h"
 #include "base/texture.h"
 #include "base/vertexformat.h"
 #include "base/grid.h"
@@ -42,8 +46,6 @@ using namespace common;
 #include "collision/collision.h"
 #include "collision/collisionmanager.h"
 
-#include "model/rawmesh.h"
-#include "model/rawani.h"
 #include "model/track.h"
 #include "model/mesh.h"
 #include "model/rigidmesh.h"

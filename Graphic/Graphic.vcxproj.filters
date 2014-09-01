@@ -151,6 +151,9 @@
     <ClInclude Include="character\archebladecharacter.h">
       <Filter>character</Filter>
     </ClInclude>
+    <ClInclude Include="base\meshbuffer.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -285,6 +288,9 @@
     </ClCompile>
     <ClCompile Include="character\archebladecharacter.cpp">
       <Filter>character</Filter>
+    </ClCompile>
+    <ClCompile Include="base\meshbuffer.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

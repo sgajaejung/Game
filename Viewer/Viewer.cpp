@@ -35,6 +35,7 @@ private:
 	graphic::cTexture m_texture;
 	graphic::cCharacter m_character;
 	graphic::cTeraCharacter m_teraCharacter;
+	vector<graphic::cCharacter> m_chars;
 
 	graphic::cSprite *m_image;
 	graphic::cTerrain m_terrain;
@@ -110,28 +111,87 @@ bool cViewer::OnInit()
 	//m_character.SetRenderBoundingBox(true);
 	//m_character.SetRenderWeaponBoundingBox(true);
 
-	using namespace graphic;
+	// start craft 2
+	// zealot
+	{
+		m_character.Create( "zealot.dat" );
+		if (graphic::cMesh* mesh = m_character.GetMesh("Sphere001"))
+			mesh->SetRender(false);
+		m_character.SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_using_texcoord.fx") );
 
-	vector<sActionData> actions;
-	actions.reserve(16);
-	actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
-	actions.push_back( sActionData(CHARACTER_ACTION::RUN, "tiac_forward.ani") );
-	actions.push_back( sActionData(CHARACTER_ACTION::DASH, "tiac_dash.ani") );
-	actions.push_back( sActionData(CHARACTER_ACTION::GUARD, "tiac_guard.ani") );
-	actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_la.ani") );
-	m_character.SetActionData(actions);
+		using namespace graphic;
 
-	m_character.Action( CHARACTER_ACTION::NORMAL );
+		vector<sActionData> actions;
+		actions.reserve(16);
+		//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zealot_walk.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_attack.ani") );
+		m_character.SetActionData(actions);
+
+		m_character.Action( CHARACTER_ACTION::RUN );
+	}
+
+	{
+		using namespace graphic;
+		vector<sActionData> actions;
+		actions.reserve(16);
+		//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
+		//actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zealot_walk.ani") );
+		//actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_attack.ani") );
+		//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "zergling_stand.ani") );
+		//actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zergling_walk.ani") );
+		//actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "zergling_attack.ani") );
+
+		//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "zergling_stand.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zealot_walk.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "zealot_attack.ani") );
+
+		int idx = 0;
+		m_chars.resize(100);
+		BOOST_FOREACH (auto &character, m_chars)
+		{
+			character.Create( "zealot.dat" );
+			if (graphic::cMesh* mesh = character.GetMesh("Sphere001"))
+				mesh->SetRender(false);
+
+			character.SetShader( graphic::cResourceManager::Get()->LoadShader(
+				"hlsl_skinning_using_texcoord.fx") );
+
+			character.SetActionData(actions);
+			character.Action( CHARACTER_ACTION::RUN );
+
+			Matrix44 matT;
+			matT.SetTranslate( Vector3(idx%10, 0, (idx/10)) );
+			character.SetTM(matT);
+			++idx;
+		}
+	}
 
 
-	m_teraCharacter.Create( "popori_face00.dat", "popori_hair00.dat",
-		"popori_body00.dat", "popori_hand00.dat", "popori_leg00.dat", "" );
+	//using namespace graphic;
+
+	//vector<sActionData> actions;
+	//actions.reserve(16);
+	//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
+	//actions.push_back( sActionData(CHARACTER_ACTION::RUN, "tiac_forward.ani") );
+	//actions.push_back( sActionData(CHARACTER_ACTION::DASH, "tiac_dash.ani") );
+	//actions.push_back( sActionData(CHARACTER_ACTION::GUARD, "tiac_guard.ani") );
+	//actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_la.ani") );
+	//m_character.SetActionData(actions);
+
+	//m_character.Action( CHARACTER_ACTION::NORMAL );
+
+
+	//m_teraCharacter.Create( "popori_face00.dat", "popori_hair00.dat",
+	//	"popori_body00.dat", "popori_hand00.dat", "popori_leg00.dat", "" );
 	//m_teraCharacter.Create( "popori_face0.dat", "popori_hair1.dat",
 	//	"popori_body0.dat", "popori_hand0.dat", "popori_leg0.dat", "" );
 	//m_teraCharacter.Create( "popori_face2.dat", "popori_hair2.dat",
 	//	"popori_body3.dat", "popori_hand3.dat", "popori_leg0.dat", "" );
 
-	m_teraCharacter.SetAnimation( "../media/maxscript/popori_idle3.ani");
+	//m_teraCharacter.SetAnimation( "../media/maxscript/popori_idle3.ani");
+
 
 
 	//m_terrain.CreateFromTRNFile( "../media/terrain/terrain9.trn" );
@@ -166,8 +226,12 @@ bool cViewer::OnInit()
 void cViewer::OnUpdate(const float elapseT)
 {
 	//m_model.Move(elapseT);
-	m_character.Move(elapseT);
-	m_teraCharacter.Move(elapseT);
+	//m_character.Move(elapseT);
+	//m_teraCharacter.Move(elapseT);
+
+	BOOST_FOREACH (auto &character, m_chars)
+		character.Move(elapseT);
+
 
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
@@ -212,7 +276,12 @@ void cViewer::OnRender(const float elapseT)
 
 		//m_character.SetTM(m_cube.GetTransform());
 		//m_character.Render(Matrix44::Identity);
-		m_teraCharacter.Render(Matrix44::Identity);
+		//m_teraCharacter.Render(Matrix44::Identity);
+
+		BOOST_FOREACH (auto &character, m_chars)
+			character.Render(Matrix44::Identity);
+	
+	
 
 		//m_terrain.Render();
 		//m_cube.Render(matIdentity);
