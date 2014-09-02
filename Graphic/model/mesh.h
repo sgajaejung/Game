@@ -20,6 +20,8 @@ namespace graphic
 		void CreateBoundingBox(OUT cCube &out);
 		void RenderBoundingBox(const Matrix44 &tm);
 		cCube& GetBoundingBox();
+		cMeshBuffer* GetMeshBuffer();
+		void SetMeshBuffer(cMeshBuffer *buffer);
 		
 
 	protected:
@@ -39,9 +41,6 @@ namespace graphic
 		bool m_isSkinned;
 		vector<cMaterial> m_mtrls;
 		vector<cTexture*>m_textures;  // reference
-		//vector<sAttribute> m_attributes;
-		//cVertexBuffer m_vtxBuff;
-		//cIndexBuffer m_idxBuff;
 		cMeshBuffer *m_buffers; // reference
 
 		// 경계박스
@@ -50,4 +49,6 @@ namespace graphic
 
 
 	inline cCube& cMesh::GetBoundingBox() { return m_boundingBox; }
+	inline cMeshBuffer* cMesh::GetMeshBuffer() { return m_buffers; }
+	inline void cMesh::SetMeshBuffer(cMeshBuffer *buffer) { m_buffers = buffer; }
 }

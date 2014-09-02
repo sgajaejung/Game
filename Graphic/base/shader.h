@@ -33,6 +33,7 @@ namespace graphic
 		LPD3DXEFFECT m_effect;
 		D3DXHANDLE m_hTechnique;
 		int m_renderPass; // default = 0;
+		string m_fileName;
 	};
 
 

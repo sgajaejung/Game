@@ -25,7 +25,8 @@ namespace graphic
 
 	private:
 		const sRawMesh &m_rawMesh;
-		vector<Matrix44> *m_palette;
+		vector<Matrix44> *m_palette; // reference
+		cMeshBuffer *m_skinnMeshBuffer;
 	};
 
 

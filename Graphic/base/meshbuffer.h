@@ -13,11 +13,13 @@ namespace graphic
 	class cMeshBuffer
 	{
 	public:
+		cMeshBuffer();
 		cMeshBuffer(const sRawMesh &rawMesh);
 		cMeshBuffer(const sRawBone &rawBone);
 
 		void Bind();
 
+		cMeshBuffer* Clone();
 		vector<sAttribute>& GetAttributes();
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();

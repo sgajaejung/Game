@@ -22,6 +22,8 @@ cVertexBuffer::~cVertexBuffer()
 
 bool cVertexBuffer::Create(int vertexCount, int sizeofVertex, DWORD fvf)
 {
+	SAFE_RELEASE(m_pVtxBuff);
+
 	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
 		D3DUSAGE_WRITEONLY, 
 		fvf,
@@ -91,3 +93,27 @@ void cVertexBuffer::Clear()
 	SAFE_RELEASE(m_pVtxBuff);	
 }
 
+
+cVertexBuffer& cVertexBuffer::operator=(cVertexBuffer &rhs)
+{
+	if (this != &rhs)
+	{
+		m_fvf = rhs.m_fvf;
+		m_sizeOfVertex = rhs.m_sizeOfVertex;
+		m_vertexCount = rhs.m_vertexCount;
+		
+		if (Create(rhs.m_vertexCount, rhs.m_sizeOfVertex, rhs.m_fvf))
+		{
+			if (BYTE* dest = (BYTE*)Lock())
+			{
+				if (BYTE *src = (BYTE*)rhs.Lock())
+				{
+					memcpy(dest, src, rhs.m_vertexCount*m_sizeOfVertex);
+					rhs.Unlock();
+				}
+				Unlock();
+			}
+		}
+	}
+	return *this;
+}

@@ -86,7 +86,11 @@ void cArchebladeCharacter::LoadWeapon(const string &fileName)
 	//RET(!m_weaponNode2);
 
 	if (!m_weapon)
+	{
 		m_weapon = new cModel(common::GenerateId());
+		m_weapon->SetShader( 
+			cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+	}
 
 	if (!m_weapon->Create(fileName))
 		return;

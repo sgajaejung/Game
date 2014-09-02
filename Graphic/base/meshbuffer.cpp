@@ -5,6 +5,9 @@
 
 using namespace graphic;
 
+cMeshBuffer::cMeshBuffer()
+{
+}
 
 cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
 {
@@ -107,4 +110,15 @@ void cMeshBuffer::CreateBoneWeight( const vector<sVertexWeight> &weights )
 void cMeshBuffer::CreateAttributes(const sRawMesh &rawMesh)
 {
 	m_attributes = rawMesh.attributes;
+}
+
+
+// 인스턴스를 깊이복사해서 리턴한다.
+cMeshBuffer* cMeshBuffer::Clone()
+{
+	cMeshBuffer *mesh = new cMeshBuffer();
+	mesh->m_attributes = m_attributes;
+	mesh->m_vtxBuff = m_vtxBuff;
+	mesh->m_idxBuff = m_idxBuff;
+	return mesh;
 }

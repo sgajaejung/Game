@@ -100,7 +100,7 @@ error:
 
 
 // meshName에 해당하는 메쉬버퍼를 리턴한다.
-cMeshBuffer* cResourceManager::LoadMeshBuffer( const string &meshName )
+cMeshBuffer* cResourceManager::LoadMeshBuffer( const string &meshName)
 {
 	if (cMeshBuffer *data = FindMeshBuffer(meshName))
 		return data;

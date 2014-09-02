@@ -51,6 +51,7 @@ bool cShader::Create(const string &fileName, const string &technique, const bool
 		return false;
 	}
 
+	m_fileName = fileName;
 	m_hTechnique = m_effect->GetTechniqueByName( technique.c_str() );
 
 	return true;

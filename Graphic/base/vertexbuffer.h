@@ -22,6 +22,8 @@ namespace graphic
 
 		void RenderLineStrip();
 
+		cVertexBuffer& operator=(cVertexBuffer &rhs);
+
 
 	private:
 		LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;

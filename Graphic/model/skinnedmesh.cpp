@@ -9,12 +9,22 @@ cSkinnedMesh::cSkinnedMesh(const int id, vector<Matrix44> *palette, const sRawMe
 	cMesh(id, raw)
 ,	m_rawMesh(raw)
 ,	m_palette(palette)
+,	m_skinnMeshBuffer(NULL)
 {
+
+	// 셰이더스키닝을 못하는 상황일 때는 소프트웨어 스키닝을 
+	// 하기 위해서 버퍼를 동적으로 생성한다.
+	if (m_palette && (64 < m_palette->size()))
+	{
+		m_skinnMeshBuffer = new cMeshBuffer(raw);
+		SetMeshBuffer(m_skinnMeshBuffer);
+	}
+
 }
 
 cSkinnedMesh::~cSkinnedMesh()
 {
-
+	SAFE_DELETE(m_skinnMeshBuffer);
 }
 
 
@@ -51,26 +61,35 @@ void cSkinnedMesh::ApplyPalette()
 {
 	RET(!m_palette);
 
-	//if (sVertexNormTexSkin *vertices = (sVertexNormTexSkin*)m_vtxBuff.Lock())
-	//{
-	//	BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
-	//	{
-	//		const int vtxIdx = weight.vtxIdx;
-	//		vertices[ vtxIdx].p = Vector3(0,0,0);
-	//		vertices[ vtxIdx].n = Vector3(0,0,0);
+	// 소프트웨어 스키닝일 때 동적으로 할당된 버퍼가 없다면 새로 생성한다.
+	if (!m_skinnMeshBuffer)
+	{
+		m_skinnMeshBuffer = new cMeshBuffer(m_rawMesh);
+		SetMeshBuffer(m_skinnMeshBuffer);
+	}
 
-	//		for( int k=0; k < weight.size; ++k )
-	//		{
-	//			const sWeight *w = &weight.w[ k];
-	//			Vector3 v = m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ w->bone];
-	//			Vector3 n = m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ w->bone] );
-	//			vertices[ vtxIdx].p += v * w->weight;
-	//			vertices[ vtxIdx].n += n * w->weight;
-	//		}
-	//	}
-	//}
 
-	//m_vtxBuff.Unlock();
+	cVertexBuffer &vtxBuffer = m_skinnMeshBuffer->GetVertexBuffer();
+	if (sVertexNormTexSkin *vertices = (sVertexNormTexSkin*)vtxBuffer.Lock())
+	{
+		BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
+		{
+			const int vtxIdx = weight.vtxIdx;
+			vertices[ vtxIdx].p = Vector3(0,0,0);
+			vertices[ vtxIdx].n = Vector3(0,0,0);
+
+			for( int k=0; k < weight.size; ++k )
+			{
+				const sWeight *w = &weight.w[ k];
+				Vector3 v = m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ w->bone];
+				Vector3 n = m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ w->bone] );
+				vertices[ vtxIdx].p += v * w->weight;
+				vertices[ vtxIdx].n += n * w->weight;
+			}
+		}
+	}
+
+	vtxBuffer.Unlock();
 }
 
 

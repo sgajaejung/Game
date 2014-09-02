@@ -8,10 +8,7 @@ using namespace graphic;
 cMesh::cMesh(const int id, const sRawMesh &rawMesh) : 
 	cNode(id, rawMesh.name)
 {
-	//CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
-	//CreateBoneWeight(rawMesh.weights);
 	CreateMaterials(rawMesh);
-	//CreateAttributes(rawMesh);
 
 	m_buffers = cResourceManager::Get()->LoadMeshBuffer(rawMesh.name);
 }
@@ -25,83 +22,6 @@ cMesh::cMesh(const int id, const sRawBone &rawBone) :
 cMesh::~cMesh()
 {
 }
-
-
-//void cMesh::CreateMesh( const vector<Vector3> &vertices, 
-//	const vector<Vector3> &normals, 
-//	const vector<Vector3> &tex,
-//	const vector<int> &indices )
-//{
-//	const bool isTexture = !tex.empty();
-//
-//	// 버텍스 버퍼 생성.
-//	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
-//	{
-//		sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
-//		for (u_int i = 0; i < vertices.size(); i++)
-//		{
-//			pv[ i].p = vertices[ i];
-//			pv[ i].n = normals[ i];
-//			if (isTexture)
-//			{
-//				pv[ i].u = tex[ i].x;
-//				pv[ i].v = tex[ i].y;
-//			}
-//		}
-//		m_vtxBuff.Unlock();
-//	}
-//
-//	// 인덱스 버퍼 생성.
-//	if (m_idxBuff.Create(indices.size()))
-//	{
-//		WORD *pi = (WORD*)m_idxBuff.Lock();
-//		for (u_int i = 0; i < indices.size(); ++i)
-//			pi[ i] = indices[ i];
-//		m_idxBuff.Unlock();
-//	}
-//
-//	CreateBoundingBox(m_boundingBox);
-//}
-//
-//
-//// 본 인덱스, 가중치를 설정한다.s
-//void cMesh::CreateBoneWeight( const vector<sVertexWeight> &weights )
-//{
-//
-//	if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
-//	{
-//		for (u_int i=0; i <weights.size(); ++i)
-//		{
-//			const sVertexWeight &weight = weights[ i];
-//			const int vtxIdx = weight.vtxIdx;
-//
-//			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
-//			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
-//			//pv[ vtxIdx].matrixIndices = 0;
-//
-//			for (int k=0; (k < weight.size) && (k < 4); ++k)
-//			{
-//				const sWeight *w = &weight.w[ k];
-//				if (k < 3)
-//				{
-//					pv[ vtxIdx].weights[ k] = w->weight;
-//				}
-//				else // k == 3 (마지막 가중치)
-//				{
-//					pv[ vtxIdx].weights[ k] = 
-//						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
-//				}
-//
-//				pv[ vtxIdx].matrixIndices[ k] = w->bone;
-//				//const int boneIdx = (w->bone << (8*(3-k)));
-//				//pv[ vtxIdx].matrixIndices |= boneIdx;
-//			}
-//		}
-//
-//		m_vtxBuff.Unlock();
-//	}
-//
-//}
 
 
 // 매터리얼 생성.
@@ -118,14 +38,6 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 		m_textures.push_back( cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.texture) );
 	}
 }
-
-
-// 속성버퍼 초기화.
-//void cMesh::CreateAttributes(const sRawMesh &rawMesh)
-//{
-//	m_attributes = rawMesh.attributes;
-//
-//}
 
 
 // Animation
@@ -156,8 +68,6 @@ void cMesh::Render(const Matrix44 &parentTm)
 			m_textures[ 0]->Bind(0);
 
 		m_buffers->Bind();
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
 		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
@@ -168,8 +78,6 @@ void cMesh::Render(const Matrix44 &parentTm)
 	}
 	else
 	{
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 		m_buffers->Bind();
 
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
@@ -221,8 +129,6 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 			m_textures[ 0]->Bind(shader, "Tex");
 
 		m_buffers->Bind();
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 
 		shader.Begin();
 		shader.BeginPass();
@@ -246,8 +152,6 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 		shader.Begin();
 
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 		m_buffers->Bind();
 
 		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
@@ -297,8 +201,6 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 		m_shader->SetMatrix("mWIT", wit);
 
 		m_buffers->Bind();
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 
 		m_shader->Begin();
 		m_shader->BeginPass(1);
@@ -323,8 +225,6 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 		m_shader->Begin();
 
 		m_buffers->Bind();
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 
 		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
@@ -373,8 +273,6 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//	m_textures[ 0]->Bind(shader, "Tex");
 
 		m_buffers->Bind();
-		//m_vtxBuff.Bind();
-		//m_idxBuff.Bind();
 
 		shader.Begin();
 		shader.BeginPass();

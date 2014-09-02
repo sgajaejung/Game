@@ -129,7 +129,11 @@ bool cTeraCharacter::Move(const float elapseTime)
 void cTeraCharacter::SetBodyModel( const string &fileName )
 {
 	if (!m_models[TERA_MODEL::BODY])
+	{
 		m_models[TERA_MODEL::BODY] = new cModel(common::GenerateId());
+		m_models[TERA_MODEL::BODY]->SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_no_light.fx") );
+	}
 
 	m_models[ TERA_MODEL::BODY]->Create(fileName);
 	//m_models[ TERA_MODEL::BODY]->SetRenderBone(true);
@@ -142,7 +146,11 @@ void cTeraCharacter::SetBodyModel( const string &fileName )
 void cTeraCharacter::SetHandModel( const string &fileName )
 {
 	if (!m_models[TERA_MODEL::HAND])
+	{
 		m_models[TERA_MODEL::HAND] = new cModel(common::GenerateId());
+		m_models[TERA_MODEL::HAND]->SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_no_light.fx") );
+	}
 
 	m_models[ TERA_MODEL::HAND]->Create(fileName);
 	m_models[ TERA_MODEL::HAND]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
@@ -152,7 +160,11 @@ void cTeraCharacter::SetHandModel( const string &fileName )
 void cTeraCharacter::SetLegModel( const string &fileName )
 {
 	if (!m_models[TERA_MODEL::LEG])
+	{
 		m_models[TERA_MODEL::LEG] = new cModel(common::GenerateId());
+		m_models[TERA_MODEL::LEG]->SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_no_light.fx") );
+	}
 
 	m_models[ TERA_MODEL::LEG]->Create(fileName);
 	m_models[ TERA_MODEL::LEG]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
@@ -162,7 +174,11 @@ void cTeraCharacter::SetLegModel( const string &fileName )
 void cTeraCharacter::SetFaceModel( const string &fileName )
 {
 	if (!m_models[TERA_MODEL::FACE])
+	{
 		m_models[TERA_MODEL::FACE] = new cModel(common::GenerateId());
+		m_models[TERA_MODEL::FACE]->SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_no_light.fx") );
+	}
 
 	m_models[ TERA_MODEL::FACE]->Create(fileName);
 
@@ -174,7 +190,11 @@ void cTeraCharacter::SetFaceModel( const string &fileName )
 void cTeraCharacter::SetHairModel( const string &fileName )
 {
 	if (!m_models[TERA_MODEL::HAIR])
+	{
 		m_models[TERA_MODEL::HAIR] = new cModel(common::GenerateId());
+		m_models[TERA_MODEL::HAIR]->SetShader( graphic::cResourceManager::Get()->LoadShader(
+			"hlsl_skinning_no_light.fx") );
+	}
 
 	m_models[ TERA_MODEL::HAIR]->Create(fileName);
 	m_hairHairNode = m_models[ TERA_MODEL::HAIR]->GetBoneMgr()->FindBone( "Dummy_Hair" );

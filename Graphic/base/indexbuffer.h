@@ -16,6 +16,8 @@ namespace graphic
 		int GetFaceCount() const;
 		void Clear();
 
+		cIndexBuffer& operator=(cIndexBuffer &rhs);
+
 
 	private:
 		LPDIRECT3DINDEXBUFFER9 m_pIdxBuff; // 인덱스 버퍼
