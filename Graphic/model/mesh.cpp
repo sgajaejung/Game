@@ -7,6 +7,8 @@ using namespace graphic;
 
 cMesh::cMesh(const int id, const sRawMesh &rawMesh) : 
 	cNode(id, rawMesh.name)
+,	m_buffers(NULL)
+,	m_isBoneMesh(false)
 {
 	CreateMaterials(rawMesh);
 
@@ -15,12 +17,18 @@ cMesh::cMesh(const int id, const sRawMesh &rawMesh) :
 
 cMesh::cMesh(const int id, const sRawBone &rawBone) : 
 	cNode(id)
+,	m_buffers(NULL)
+,	m_isBoneMesh(true)
 {
-	//CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
+	// debug 용.
+	// 뼈 메쉬는 동적으로 메쉬버퍼를 생성한다. (디버깅용)
+	m_buffers = new cMeshBuffer(rawBone);
 }
 
 cMesh::~cMesh()
 {
+	if (m_isBoneMesh)
+		SAFE_DELETE(m_buffers);
 }
 
 

@@ -14,6 +14,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	m_bones.resize(rawMeshes.bones.size(), NULL);
 	
 	sRawBone rootBone;
+	rootBone.name = "root bone";
 	m_root = new cBoneNode(-1, m_palette, rootBone);
 
 	for (u_int i=0; i < rawMeshes.bones.size(); ++i)

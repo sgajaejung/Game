@@ -124,7 +124,7 @@ bool cTrack::GetScaleKey( const int curFrame, OUT Vector3 &out )
 
 	//RETV(!m_curKeyScale[ 0], false);
 
-	// 일단 당분간 스케일링하는 에니메이션은 제외한다.
+	// //일단 당분간 스케일링하는 에니메이션은 제외한다.
 	//if (!m_curKeyScale[ 1])
 	//{
 	//	out = m_curKeyScale[ 0]->s;

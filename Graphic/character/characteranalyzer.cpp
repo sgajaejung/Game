@@ -75,7 +75,7 @@ void cCharacterAnalyzer::HighlightBone(const string &boneName)
 			m_selectBoneCube.SetCube( boneMgr->GetBoundingBoxes()[ node->GetId()] );
 			if (m_selectBoneCube.Length() < 0.001f)
 			{
-				const float len = m_character->GetCollisionBox()->Length() / 100.f;
+				const float len = max(m_character->GetCollisionBox()->Length() / 100.f, 1);
 				m_selectBoneCube.SetCube(Vector3(-1,-1,-1)*len, Vector3(1,1,1)*len);
 			}
 		}

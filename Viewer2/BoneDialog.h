@@ -34,6 +34,7 @@ public:
 	afx_msg void OnSelchangedTreeBone(NMHDR *pNMHDR, LRESULT *pResult);
 	CTreeCtrl m_nodeInfoTree;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	int m_boneCount;
 };
 
 

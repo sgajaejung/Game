@@ -25,6 +25,7 @@ cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &ra
 	m_offset = rawBone.worldTm.Inverse();
 	m_localTM = rawBone.localTm;
 
+	// debug ¿ë
 	m_mesh = new cMesh(id, rawBone);
 
 }

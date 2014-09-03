@@ -17,6 +17,7 @@ namespace graphic
 		sRawMeshGroup* LoadModel( const string &fileName );
 		sRawAniGroup* LoadAnimation( const string &fileName );
 		cMeshBuffer* LoadMeshBuffer( const string &meshName );
+		cMeshBuffer* LoadMeshBuffer( const sRawMesh &rawMesh );
 		cTexture* LoadTexture( const string &fileName, const bool isSizePow2=true );
 		cTexture* LoadTexture( const string &dirPath, const string &fileName, const bool isSizePow2=true );
 		cShader* LoadShader( const string &fileName );

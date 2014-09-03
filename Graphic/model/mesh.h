@@ -45,6 +45,9 @@ namespace graphic
 
 		// 경계박스
 		cCube m_boundingBox;
+
+		// debug 용.
+		bool m_isBoneMesh;
 	};
 
 

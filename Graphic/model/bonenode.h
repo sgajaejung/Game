@@ -30,7 +30,6 @@ namespace graphic
 
 	private:
 		cTrack *m_track;
-		cMesh *m_mesh;
 		vector<Matrix44> &m_palette;
 		Matrix44 m_accTM;	// 누적된 TM
 		Matrix44 m_offset;	// inverse( m_matWorld )
@@ -46,6 +45,9 @@ namespace graphic
 		bool m_isAni; // TRUE일경우만 에니메이션이 된다.
 		bool m_isLoop; // 에니메이션 반복 여부
 		DWORD m_option; // 0x01 = 애니메이션에서 이동 정보는 무시한다.
+
+		// debug 용.
+		cMesh *m_mesh;
 	};
 
 

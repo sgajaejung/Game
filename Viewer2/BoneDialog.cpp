@@ -11,6 +11,7 @@ CBoneDialog *g_boneDlg = NULL;
 // CBoneDialog 대화 상자입니다.
 CBoneDialog::CBoneDialog(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBoneDialog::IDD, pParent)
+	, m_boneCount(0)
 {
 
 }
@@ -24,6 +25,7 @@ void CBoneDialog::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_BONE, m_boneTree);
 	DDX_Control(pDX, IDC_TREE_BONENODE, m_nodeInfoTree);
+	DDX_Text(pDX, IDC_STATIC_BONECOUNT, m_boneCount);
 }
 
 
@@ -70,6 +72,10 @@ bool CBoneDialog::UpdateTree()
 
 	m_boneTree.Update( boneMgr );
 	m_boneTree.ExpandAll();
+
+	// Bones Tree, bone root 제외한 아이템 개수가 본 개수이다.
+	m_boneCount = max(m_boneTree.GetCount()-2, 0);
+	UpdateData(FALSE);
 
 	return true;
 }
