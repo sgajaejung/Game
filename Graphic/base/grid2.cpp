@@ -252,6 +252,15 @@ void cGrid2::Render(const int stage)
 }
 
 
+void cGrid2::RenderLinelist()
+{
+	m_vtxBuff.Bind();
+	m_idxBuff.Bind();
+	GetDevice()->DrawIndexedPrimitive( D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+		0, m_idxBuff.GetFaceCount()*3/2);
+}
+
+
 void cGrid2::RenderShader(cShader &shader)
 {
 	Matrix44 matIdentity;

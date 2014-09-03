@@ -11,6 +11,7 @@ namespace graphic
 
 		void Create( const int rowCellCount, const int colCellCount, const float cellSize );
 		void Render();
+		void RenderLinelist();
 
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();

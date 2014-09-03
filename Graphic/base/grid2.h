@@ -18,6 +18,7 @@ namespace graphic
 		bool WriteFile(const string &fileName);
 
 		void Render(const int stage=0);
+		void RenderLinelist();
 		void RenderShader(cShader &shader);
 
 		void SetTextureUVFactor(const float textureUVFactor);

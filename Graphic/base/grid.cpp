@@ -11,7 +11,6 @@ cGrid::cGrid()
 
 cGrid::~cGrid()
 {
-
 }
 
 
@@ -46,7 +45,7 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 			for (float x=startx; x <= endx; x += cellSize, ++k )
 			{
 				int index = (i * colVtxCnt) + k;
-				vertices[ index].p = Vector3(x, 0.1f, y);
+				vertices[ index].p = Vector3(x, 0.0f, y);
 				vertices[ index].c = 0xffcccccc;
 			}
 		}
@@ -86,4 +85,13 @@ void cGrid::Render()
 	m_idxBuff.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
 		0, m_idxBuff.GetFaceCount());
+}
+
+
+void cGrid::RenderLinelist()
+{
+	m_vtxBuff.Bind();
+	m_idxBuff.Bind();
+	GetDevice()->DrawIndexedPrimitive( D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+		0, m_idxBuff.GetFaceCount()*3/2);
 }
