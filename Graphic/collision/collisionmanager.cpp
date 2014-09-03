@@ -137,7 +137,7 @@ void cCollisionManager::CollisionTestRec(
 	if (node1->GetChildren().empty() && node2->GetChildren().empty())
 	{
 		// 루트 그룹은 testnum 값이 0이다. 
-		// 루트 그룹은 충돌에 포함하지 않는다.
+		// 루트 그룹은 충돌 검사에 포함하지 않는다.
 		if ((node1->testnum != 0) && (node2->testnum != 0))
 		{
 			m_checkTable[ m_collisionCount][ 0] = node1->pobj;
