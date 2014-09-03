@@ -20,7 +20,7 @@ cVertexBuffer::~cVertexBuffer()
 }
 
 
-bool cVertexBuffer::Create(int vertexCount, int sizeofVertex, DWORD fvf)
+bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD fvf)
 {
 	SAFE_RELEASE(m_pVtxBuff);
 
@@ -37,6 +37,30 @@ bool cVertexBuffer::Create(int vertexCount, int sizeofVertex, DWORD fvf)
 	m_sizeOfVertex = sizeofVertex;
 	return true;
 }
+
+
+// 파티클 전용 버텍스 버퍼를 생성한다.
+//bool cVertexBuffer::CreateParticle(const int particleCount)
+//{
+//	SAFE_RELEASE(m_pVtxBuff);
+//
+//	HRESULT hr;
+//	if (FAILED( hr = GetDevice()->CreateVertexBuffer( 
+//		particleCount * sizeof(sVertexDiffuse), 
+//		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY | D3DUSAGE_POINTS, 
+//		sVertexDiffuse::FVF,
+//		D3DPOOL_DEFAULT, 
+//		&m_pVtxBuff, NULL )))
+//	{
+//		return false;
+//	}
+//
+//	m_vertexCount = particleCount;
+//	m_sizeOfVertex = sizeof(sVertexDiffuse);
+//	m_fvf = sVertexDiffuse::FVF;
+//
+//	return true;
+//}
 
 
 void* cVertexBuffer::Lock()

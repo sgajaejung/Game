@@ -5,6 +5,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif

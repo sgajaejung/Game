@@ -12,6 +12,15 @@ namespace graphic
 	};
 
 
+	struct sVertexPoint
+	{
+		Vector3 p;
+		DWORD c;
+		float size;
+		enum {FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_PSIZE};
+	};
+
+
 	struct sVertexTex
 	{
 		Vector3 p;

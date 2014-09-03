@@ -36,6 +36,7 @@ private:
 	graphic::cCharacter m_character;
 	graphic::cTeraCharacter m_teraCharacter;
 	vector<graphic::cCharacter> m_chars;
+	graphic::cGrid m_grid;
 
 	graphic::cSprite *m_image;
 	graphic::cTerrain m_terrain;
@@ -132,6 +133,7 @@ bool cViewer::OnInit()
 		m_character.Action( CHARACTER_ACTION::RUN );
 	}
 
+	if (0)
 	{
 		using namespace graphic;
 		vector<sActionData> actions;
@@ -167,6 +169,8 @@ bool cViewer::OnInit()
 			++idx;
 		}
 	}
+
+	m_grid.Create(100, 100, 50);
 
 
 	//using namespace graphic;
@@ -274,8 +278,10 @@ void cViewer::OnRender(const float elapseT)
 		if (m_scene)
 			m_scene->Render(Matrix44::Identity);
 
+		m_grid.RenderLinelist();
+
 		//m_character.SetTM(m_cube.GetTransform());
-		//m_character.Render(Matrix44::Identity);
+		m_character.Render(Matrix44::Identity);
 		//m_teraCharacter.Render(Matrix44::Identity);
 
 		BOOST_FOREACH (auto &character, m_chars)

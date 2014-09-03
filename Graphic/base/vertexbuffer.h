@@ -10,17 +10,18 @@ namespace graphic
 		cVertexBuffer();
 		virtual ~cVertexBuffer();
 
-		bool Create(int vertexCount, int sizeofVertex, DWORD fvf);
+		bool Create(const int vertexCount, const int sizeofVertex, DWORD fvf);
+		//bool CreateParticle(const int particleCount);
 		void* Lock();
 		void Unlock();
 		void Bind() const;
 		void Clear();
 
+		void RenderLineStrip();
+
 		DWORD GetFVF() const;
 		int GetSizeOfVertex() const;
 		int GetVertexCount() const;
-
-		void RenderLineStrip();
 
 		cVertexBuffer& operator=(cVertexBuffer &rhs);
 
