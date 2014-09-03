@@ -20,15 +20,6 @@
 #endif
 
 
-const int WINDOW_WIDTH = 1024;
-const int WINDOW_HEIGHT = 768;
-//const int WINDOW_WIDTH = 800;
-//const int WINDOW_HEIGHT = 600;
-
-const int REAL_WINDOW_WIDTH = WINDOW_WIDTH+18;
-const int REAL_WINDOW_HEIGHT = WINDOW_HEIGHT+115;
-
-
 CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CViewer2Dlg::IDD, pParent)
 ,	m_modelView(NULL)
@@ -137,20 +128,20 @@ BOOL CViewer2Dlg::OnInitDialog()
 		const int PANEL_WIDTH = 400;
 		const int PANEL_HEIGHT = 800;
 
-		CMainPanel *dlg = new CMainPanel();
+		m_mainPanel = new CMainPanel();
 		const CString StrClassName = AfxRegisterWndClass( CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
 			LoadCursor(NULL, IDC_ARROW), (HBRUSH)GetStockObject(COLOR_BTNFACE+1), 
 			LoadIcon(NULL, IDI_APPLICATION) );
 
-		dlg->CreateEx(0, StrClassName, L"Panel", 
+		m_mainPanel->CreateEx(0, StrClassName, L"Panel", 
 			WS_POPUP | WS_CAPTION | WS_SYSMENU | MFS_THICKFRAME, CRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT), this );
 
-		dlg->Init();
+		m_mainPanel->Init();
 
 		// Main Panel Positioning
 		{
 			CRect panelR;
-			dlg->GetWindowRect(panelR);
+			m_mainPanel->GetWindowRect(panelR);
 
 			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
 			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
@@ -160,7 +151,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 			if ((x+panelR.Width()) > screenCX)
 				x = screenCX - panelR.Width();
 
-			dlg->MoveWindow(x, y, panelR.Width(), panelR.Height());
+			m_mainPanel->MoveWindow(x, y, panelR.Width(), panelR.Height());
 
 
 			// Main Dialog RePositioning
@@ -169,7 +160,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 			MoveWindow(px, y, REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT);
 		}
 
-		dlg->ShowWindow(SW_SHOW);
+		m_mainPanel->ShowWindow(SW_SHOW);
 	}
 
 
@@ -188,8 +179,10 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 
 	// 해상도 콤보박스 초기화.
-	m_dispCombo.InsertString(0, L"800 X 600");
-	m_dispCombo.InsertString(1, L"1024 X 768");
+	m_dispCombo.InsertString(0, L"800 X 600 Right Align");
+	m_dispCombo.InsertString(1, L"1024 X 768 Right Align");
+	m_dispCombo.InsertString(2, L"800 X 600 Left Align");
+	m_dispCombo.InsertString(3, L"1024 X 768 Left Align");
 	switch (WINDOW_WIDTH)
 	{
 	case 800: m_dispCombo.SetCurSel(0); break;
@@ -198,6 +191,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 
 	cController::Get()->AddObserver(this);
+	cController::Get()->SetViewerDlg(this);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -367,6 +361,18 @@ void CViewer2Dlg::OnBnClickedCheckSkybox()
 // Observer Update
 void CViewer2Dlg::Update()
 {
+	int width, height;
+	DISP_MODE::TYPE dispMode = (DISP_MODE::TYPE)m_dispCombo.GetCurSel();
+	switch (dispMode)
+	{
+	case DISP_MODE::DISP_800X600_RIGHT: width = 800; height = 600; break; // 800X600 right align
+	case DISP_MODE::DISP_1024X768_RIGHT: width = 1024; height = 768; break; // 1024X768 right align
+	case DISP_MODE::DISP_800X600_LEFT: width = 800; height = 600; break; // 800X600 left align
+	case DISP_MODE::DISP_1024X768_LEFT: width = 1024; height = 768; break; // 1024X768 left align
+	default: return;
+	}
+	CRect mainR(0, 0,width+18, height+115);
+
 	// 업데이트 된 모델이 애니메이션 상태라면 AnimationController 를 출력시킨다.
 	if (graphic::cCharacter *character = cController::Get()->GetCharacter())
 	{
@@ -374,7 +380,7 @@ void CViewer2Dlg::Update()
 		{
 			CRect wr;
 			GetWindowRect(wr);
-			MoveWindow(wr.left,wr.top,REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT+60);
+			MoveWindow(wr.left,wr.top, mainR.Width(), mainR.Height()+60);
 		}
 	}
 }
@@ -383,28 +389,66 @@ void CViewer2Dlg::Update()
 void CViewer2Dlg::OnCbnSelchangeComboDisplay()
 {
 	int width, height;
-	switch (m_dispCombo.GetCurSel())
+	DISP_MODE::TYPE dispMode = (DISP_MODE::TYPE)m_dispCombo.GetCurSel();
+	switch (dispMode)
 	{
-	case 0: width = 800; height = 600; break; // 800X600
-	case 1: width = 1024; height = 768; break; // 1024X768
+	case DISP_MODE::DISP_800X600_RIGHT: width = 800; height = 600; break; // 800X600 right align
+	case DISP_MODE::DISP_1024X768_RIGHT: width = 1024; height = 768; break; // 1024X768 right align
+	case DISP_MODE::DISP_800X600_LEFT: width = 800; height = 600; break; // 800X600 left align
+	case DISP_MODE::DISP_1024X768_LEFT: width = 1024; height = 768; break; // 1024X768 left align
 	default: return;
 	}
 
 	CRect curR;
 	GetWindowRect(curR);
 
-	CRect wr(0,0,width+18, height+115);
+	CRect mainR(0, 0,width+18, height+115);
+	CRect panelR;
+	m_mainPanel->GetWindowRect(panelR);
+	CRect animationCtrlR(0, height+20, width, height+300);
 
-	const int screenCX = GetSystemMetrics(SM_CXSCREEN);
-	const int screenCY = GetSystemMetrics(SM_CYSCREEN);
+	const CRect edgeR( 
+		max(0, min(curR.left, panelR.left)),
+		max(0, min(curR.top, panelR.top)),
+		max(curR.right, panelR.right),
+		max(curR.bottom, panelR.bottom));
 
-	wr.OffsetRect(curR.left, curR.top);
-	MoveWindow(wr);
+	switch (dispMode)
+	{
+	case DISP_MODE::DISP_800X600_RIGHT:
+	case DISP_MODE::DISP_1024X768_RIGHT:
+		mainR.OffsetRect(edgeR.left, edgeR.top);
+		panelR = CRect(0, 0, panelR.Width(), panelR.Height());
+		panelR.OffsetRect(mainR.left+mainR.Width(), mainR.top);
+		break;
+
+	case DISP_MODE::DISP_800X600_LEFT:
+	case DISP_MODE::DISP_1024X768_LEFT:
+		panelR = CRect(0, 0, panelR.Width(), panelR.Height());
+		panelR.OffsetRect(edgeR.left, edgeR.top);
+		mainR.OffsetRect(panelR.left+panelR.Width(), panelR.top);
+		break;
+	}
+
+	MoveWindow(mainR);
 
 	CRect modelViewR(0, 25, width, height+25);
 	m_modelView->MoveWindow(modelViewR);
 
+	// main panel
+	// 매인 윈도우 옆에 위치하게 한다.
+	m_mainPanel->MoveWindow(panelR);
+
 	// Animation Controller Positioning
-	CRect animationCtrlR(0, height+20, width, height+300);
 	m_aniController->MoveWindow(animationCtrlR);
+
+	// 모델이 애니메이션 상태라면 AnimationController 를 출력시킨다.
+	if (graphic::cCharacter *character = cController::Get()->GetCharacter())
+	{
+		if (character->GetCurrentAnimation())
+		{
+			mainR.bottom += 60;
+			MoveWindow(mainR);
+		}
+	}
 }

@@ -5,6 +5,7 @@
 
 class CModelView;
 class CAnimationController2;
+class CMainPanel;
 class CViewer2Dlg : public CDialogEx
 							, public common::iObserver
 {
@@ -17,6 +18,8 @@ public:
 	void MainLoop();
 	virtual void Update() override; // Observer Update
 
+	CMainPanel* GetMainPanel();
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 지원입니다.
@@ -27,6 +30,7 @@ protected:
 	HICON m_hIcon;
 	CModelView *m_modelView;
 	CAnimationController2 *m_aniController;
+	CMainPanel *m_mainPanel;
 	bool m_loop;
 	bool m_dxInit;
 
@@ -53,3 +57,6 @@ public:
 	afx_msg void OnCbnSelchangeComboDisplay();
 	CComboBox m_dispCombo;
 };
+
+
+inline CMainPanel* CViewer2Dlg::GetMainPanel() { return m_mainPanel; }

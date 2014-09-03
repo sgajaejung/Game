@@ -120,6 +120,7 @@
     <ClInclude Include="TeraPanel.h" />
     <ClInclude Include="UIUtiltity.h" />
     <ClInclude Include="Viewer2.h" />
+    <ClInclude Include="viewer2def.h" />
     <ClInclude Include="Viewer2Dlg.h" />
   </ItemGroup>
   <ItemGroup>

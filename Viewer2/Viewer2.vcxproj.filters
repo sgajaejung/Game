@@ -93,6 +93,9 @@
     <ClInclude Include="TeraPanel.h">
       <Filter>panel</Filter>
     </ClInclude>
+    <ClInclude Include="viewer2def.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">

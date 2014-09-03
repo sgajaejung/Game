@@ -60,10 +60,16 @@
 #include "../Common/common.h"
 using namespace common;
 #include "../Graphic/graphic.h"
-#include "model/Controller.h"
-#include "LoadingDialog.h"
+
+
+
 #include <afxcview.h>
 #include "afxdialogex.h"
+
+
+#include "viewer2def.h"
+#include "model/Controller.h"
+#include "LoadingDialog.h"
 
 #include "FileTreeCtrl.h"
 #include "UIUtiltity.h"

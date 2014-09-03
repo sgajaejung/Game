@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "BoneDialog.h"
+#include "Viewer2Dlg.h"
+#include "MainPanel.h"
 
 
 CBoneDialog *g_boneDlg = NULL;
@@ -181,11 +183,12 @@ void ShowBoneDialog()
 
 		// 부모 윈도우의 옆에 출력하게 한다.
 		CRect pr, wr;
-		g_boneDlg->GetParent()->GetWindowRect(pr);
+		CMainPanel *dlg = cController::Get()->GetViewerDlg()->GetMainPanel();
+		dlg->GetWindowRect(pr);
 		g_boneDlg->GetWindowRect(wr);
 
-		const int x = pr.left + pr.Width();
-		const int y = pr.top + pr.Height()/2 - wr.Height()/2;
+		const int x = pr.left;
+		const int y = pr.top;
 		g_boneDlg->MoveWindow(x, y, wr.Width(), wr.Height());
 
 		g_boneDlg->ShowWindow(SW_SHOW);

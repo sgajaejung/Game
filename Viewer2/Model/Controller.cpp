@@ -9,6 +9,7 @@ cController::cController() :
 	m_analyzer(NULL)
 ,	m_isPlay(true)
 ,	m_archeCharacter(common::GenerateId())
+,	m_viewerDlg(NULL)
 {
 	m_analyzer = new cCharacterAnalyzer();
 	m_analyzer->SetCharacter(&m_archeCharacter);
