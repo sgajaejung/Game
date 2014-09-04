@@ -29,8 +29,7 @@ namespace graphic
 		void CreateMesh( const vector<Vector3> &vertices, 
 			const vector<Vector3> &normals, 
 			const vector<Vector3> &tex,
-			const vector<int> &indices,
-			const bool isSkinning);
+			const vector<int> &indices);
 		void CreateBoneWeight( const vector<sVertexWeight> &weights );
 		void CreateAttributes(const sRawMesh &rawMesh);
 

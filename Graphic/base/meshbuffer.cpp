@@ -13,8 +13,7 @@ cMeshBuffer::cMeshBuffer()
 cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
 :	m_offset(0)
 {
-	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices, 
-		!rawMesh.weights.empty());
+	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
 	CreateBoneWeight(rawMesh.weights);
 	CreateAttributes(rawMesh);
 }
@@ -22,7 +21,7 @@ cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
 cMeshBuffer::cMeshBuffer(const sRawBone &rawBone)
 :	m_offset(0)
 {
-	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices, false);
+	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
 }
 
 
@@ -36,8 +35,7 @@ void cMeshBuffer::Bind()
 void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices, 
 	const vector<Vector3> &normals, 
 	const vector<Vector3> &tex,
-	const vector<int> &indices,
-	const bool isSkinning )
+	const vector<int> &indices)
 {
 	const bool isTexture = !tex.empty();
 
