@@ -23,6 +23,8 @@ cResourceManager::~cResourceManager()
 // load model file
 sRawMeshGroup* cResourceManager::LoadModel( const string &fileName )
 {
+	RETV(fileName.empty(), NULL);
+
 	if (sRawMeshGroup *data = FindModel(fileName))
 		return data;
 
@@ -68,6 +70,8 @@ error:
 // 애니메이션 파일 로딩.
 sRawAniGroup* cResourceManager::LoadAnimation( const string &fileName )
 {
+	RETV(fileName.empty(), NULL);
+
 	if (sRawAniGroup *data = FindAnimation(fileName))
 		return data;
 
@@ -143,13 +147,13 @@ sRawMeshGroup* cResourceManager::FindModel( const string &fileName )
 	if (m_meshes.end() == it)
 		return NULL; // not exist
 
-	if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
-	{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
-		delete it->second;
-		m_meshes.erase(fileName);
-		m_reLoadFile.erase(fileName);
-		return NULL;
-	}
+	//if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
+	//{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
+	//	delete it->second;
+	//	m_meshes.erase(fileName);
+	//	m_reLoadFile.erase(fileName);
+	//	return NULL;
+	//}
 
 	return it->second;
 }
@@ -162,13 +166,13 @@ sRawAniGroup* cResourceManager::FindAnimation( const string &fileName )
 	if (m_anies.end() == it)
 		return NULL; // not exist
 
-	if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
-	{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
-		delete it->second;
-		m_meshes.erase(fileName);
-		m_reLoadFile.erase(fileName);
-		return NULL;
-	}
+	//if (m_reLoadFile.end() != m_reLoadFile.find(fileName))
+	//{ // 리로드할 파일이라면 제거하고 없는 것 처럼 처리한다.
+	//	delete it->second;
+	//	m_meshes.erase(fileName);
+	//	m_reLoadFile.erase(fileName);
+	//	return NULL;
+	//}
 
 	return it->second;
 }
@@ -338,8 +342,12 @@ string cResourceManager::GetRelativePathToMedia( const string &fileName )
 // 메쉬, 애니메이션만 해당된다.
 void cResourceManager::ReloadFile()
 {
-	BOOST_FOREACH (auto kv, m_meshes)
-		m_reLoadFile.insert(kv.first);
-	BOOST_FOREACH (auto kv, m_anies)
-		m_reLoadFile.insert(kv.first);
+	// 일단 기능 끔.
+	// 이 기능이 제대로 동작하려면, 전체 리셋이 필요하다.
+	// 지워지 메모리를 참조하는 경우가 발생한다.
+
+	//BOOST_FOREACH (auto kv, m_meshes)
+	//	m_reLoadFile.insert(kv.first);
+	//BOOST_FOREACH (auto kv, m_anies)
+	//	m_reLoadFile.insert(kv.first);
 }
