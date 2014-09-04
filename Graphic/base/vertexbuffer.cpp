@@ -42,6 +42,7 @@ bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD 
 
 
 // Video Memory 에 버텍스 버퍼를 생성한다.
+// 웬만하면 사용하지 말자. 잘쓰려면 복잡해지고, 잘 쓰더라도 효과가 거의 없다.
 bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf)
 {
 	SAFE_RELEASE(m_pVtxBuff);
@@ -60,31 +61,6 @@ bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DW
 	m_isManagedPool = false;
 	return true;
 }
-
-
-
-// 파티클 전용 버텍스 버퍼를 생성한다.
-//bool cVertexBuffer::CreateParticle(const int particleCount)
-//{
-//	SAFE_RELEASE(m_pVtxBuff);
-//
-//	HRESULT hr;
-//	if (FAILED( hr = GetDevice()->CreateVertexBuffer( 
-//		particleCount * sizeof(sVertexDiffuse), 
-//		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY | D3DUSAGE_POINTS, 
-//		sVertexDiffuse::FVF,
-//		D3DPOOL_DEFAULT, 
-//		&m_pVtxBuff, NULL )))
-//	{
-//		return false;
-//	}
-//
-//	m_vertexCount = particleCount;
-//	m_sizeOfVertex = sizeof(sVertexDiffuse);
-//	m_fvf = sVertexDiffuse::FVF;
-//
-//	return true;
-//}
 
 
 void* cVertexBuffer::Lock()
@@ -149,8 +125,9 @@ void cVertexBuffer::Bind() const
 
 void cVertexBuffer::RenderLineStrip()
 {
-	Matrix44 matIdentity;
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&matIdentity );
+	RET(!m_pVtxBuff);
+
+	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity );
 
 	DWORD lighting;
 	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
@@ -162,6 +139,16 @@ void cVertexBuffer::RenderLineStrip()
 	GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
+
+void cVertexBuffer::RenderPointList(const int count) // count=0
+{
+	RET(!m_pVtxBuff);
+
+	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity );
+
+	Bind();
+	GetDevice()->DrawPrimitive( D3DPT_POINTLIST, 0, (count==0)? m_vertexCount : count );
+}
 
 
 void cVertexBuffer::Clear()

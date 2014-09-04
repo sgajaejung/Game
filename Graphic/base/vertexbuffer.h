@@ -12,7 +12,6 @@ namespace graphic
 
 		bool Create(const int vertexCount, const int sizeofVertex, DWORD fvf);
 		bool CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf);
-		//bool CreateParticle(const int particleCount);
 
 		void* Lock();
 		void* LockDiscard(const int idx=0, const int size=0);
@@ -22,6 +21,7 @@ namespace graphic
 		void Clear();
 
 		void RenderLineStrip();
+		void RenderPointList(const int count=0);
 
 		DWORD GetFVF() const;
 		int GetSizeOfVertex() const;

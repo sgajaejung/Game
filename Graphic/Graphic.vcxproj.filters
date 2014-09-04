@@ -154,7 +154,7 @@
     <ClInclude Include="base\meshbuffer.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="particles.h">
+    <ClInclude Include="particle\particles.h">
       <Filter>particle</Filter>
     </ClInclude>
   </ItemGroup>
@@ -295,7 +295,7 @@
     <ClCompile Include="base\meshbuffer.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="particles.cpp">
+    <ClCompile Include="particle\particles.cpp">
       <Filter>particle</Filter>
     </ClCompile>
   </ItemGroup>

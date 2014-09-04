@@ -141,13 +141,16 @@ void CBoneTreeCtrl::OnBonetreeTreesearch()
 }
 
 
+
 BOOL CBoneTreeCtrl::OnTvnSelchanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
-	//*pResult = 0;
+	*pResult = 0;
 
 	// 선택한 노드의 본을 강조시킨다.
 	CString str = GetItemText(pNMTreeView->itemNew.hItem);
 	cController::Get()->GetCharacterAnalyzer()->HighlightBone( wstr2str((wstring)str) );
-	return FALSE;
+
+	// http://stackoverflow.com/questions/627143/how-to-handle-notify-messages-in-child-parent-classes
+	return FALSE; // 부모에게 이벤트를 보내려면 false를 리턴해야 한다.
 }

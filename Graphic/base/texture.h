@@ -12,8 +12,9 @@ namespace graphic
 		bool Create(const int width, const int height, const D3DFORMAT format);
 		bool WritePNGFile( const string &fileName );
 
-		void Bind(int stage);
+		void Bind(const int stage);
 		void Bind(cShader &shader, const string &key);
+		void Unbind(const int stage);
 		void Lock(D3DLOCKED_RECT &out);
 		void Unlock();
 		IDirect3DTexture9* GetTexture();

@@ -10,6 +10,7 @@
 using namespace Gdiplus;
 
 #include "../Graphic/character/teracharacter.h"
+#include "../Graphic/particle/particles.h"
 
 
 DECLARE_TYPE_NAME(cViewer)
@@ -42,6 +43,8 @@ private:
 	graphic::cTerrain m_terrain;
 	graphic::cCube m_cube;
 	graphic::cSphere m_sphere;
+
+	graphic::cParticles m_particles;
 
 	Vector3 m_light2;
 	Vector3 m_pos;
@@ -111,6 +114,11 @@ bool cViewer::OnInit()
 	//m_character.LoadWeapon( "tiac_weapon.dat" );
 	//m_character.SetRenderBoundingBox(true);
 	//m_character.SetRenderWeaponBoundingBox(true);
+
+
+	//m_particles.Create( "°­¼Ò¶ó.jpg", 512 );
+	m_particles.Create( "particle.bmp", 512 );
+	m_particles.Emit(1, 1, 10, 1);
 
 	// start craft 2
 	// zealot
@@ -233,6 +241,8 @@ void cViewer::OnUpdate(const float elapseT)
 	//m_character.Move(elapseT);
 	//m_teraCharacter.Move(elapseT);
 
+	m_particles.Move(elapseT);
+
 	BOOST_FOREACH (auto &character, m_chars)
 		character.Move(elapseT);
 
@@ -272,15 +282,17 @@ void cViewer::OnRender(const float elapseT)
 		graphic::GetDevice()->BeginScene();
 
 		graphic::GetRenderer()->RenderFPS();
-		//graphic::GetRenderer()->RenderGrid();
+		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
 		if (m_scene)
 			m_scene->Render(Matrix44::Identity);
 
-		m_grid.RenderLinelist();
+		//m_grid.RenderLinelist();
 
-		//m_character.SetTM(m_cube.GetTransform());
+		m_particles.Render();
+
+		m_character.SetTM(m_cube.GetTransform());
 		m_character.Render(Matrix44::Identity);
 		//m_teraCharacter.Render(Matrix44::Identity);
 

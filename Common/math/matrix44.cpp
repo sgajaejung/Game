@@ -530,3 +530,4 @@ void Matrix44::Transpose()
 	m._44 = _44;
 	*this = m;
 }
+

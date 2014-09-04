@@ -81,6 +81,8 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 
 void cGrid::Render()
 {
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE);
+
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
@@ -90,6 +92,8 @@ void cGrid::Render()
 
 void cGrid::RenderLinelist()
 {
+	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE);
+
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(), 

@@ -48,4 +48,9 @@ namespace graphic
 	};
 
 
+	// Matrix44* -> D3DXMATRIX*
+	inline D3DXMATRIX* ToDxM(Matrix44 &mat) {
+		return (D3DXMATRIX*)&mat;
+	}
+
 }

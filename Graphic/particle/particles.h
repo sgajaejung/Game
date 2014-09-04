@@ -13,8 +13,10 @@ namespace graphic
 	{
 		struct sParticle
 		{
+			bool enable;
 			Vector3 pos;
 			Vector3 velocity;
+			float initTime;
 		};
 
 
@@ -24,14 +26,17 @@ namespace graphic
 
 		bool Create( const string &textureFileName, const int maxParticle );
 		void Emit( const int count, const float interval, const float life, const float size );
-		void Move( const float elapseTime);
-		void Render();
+		
+		virtual void Move( const float elapseTime);
+		virtual void Render();
 
 
 	private:
-		float m_size;
-		DWORD m_dwFlush;
-		DWORD m_dwDiscard;
+		int m_particleCount;
+		float m_pointSize;
+		Vector3 m_gravity;
+		Vector3 m_wind;
+		bool m_bAirResistence;
 
 		vector<sParticle> m_particles;
 		cVertexBuffer m_vtxBuffer;
