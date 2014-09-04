@@ -23,7 +23,7 @@ BEGIN_MESSAGE_MAP(CBoneTreeCtrl, CTreeCtrl)
 	ON_WM_CONTEXTMENU()
 	ON_NOTIFY_REFLECT(NM_RCLICK, &CBoneTreeCtrl::OnNMRClick)
 	ON_COMMAND(ID_BONETREE_TREESEARCH, &CBoneTreeCtrl::OnBonetreeTreesearch)
-	ON_NOTIFY_REFLECT(TVN_SELCHANGED, &CBoneTreeCtrl::OnTvnSelchanged)
+	ON_NOTIFY_REFLECT_EX(TVN_SELCHANGED, &CBoneTreeCtrl::OnTvnSelchanged)
 END_MESSAGE_MAP()
 
 
@@ -141,12 +141,13 @@ void CBoneTreeCtrl::OnBonetreeTreesearch()
 }
 
 
-void CBoneTreeCtrl::OnTvnSelchanged(NMHDR *pNMHDR, LRESULT *pResult)
+BOOL CBoneTreeCtrl::OnTvnSelchanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
-	*pResult = 0;
+	//*pResult = 0;
 
 	// 선택한 노드의 본을 강조시킨다.
 	CString str = GetItemText(pNMTreeView->itemNew.hItem);
 	cController::Get()->GetCharacterAnalyzer()->HighlightBone( wstr2str((wstring)str) );
+	return FALSE;
 }
