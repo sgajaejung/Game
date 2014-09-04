@@ -86,8 +86,12 @@ void CAnimationController2::Update(const float elapseT)
 	graphic::cBoneNode *rootNode = boneMgr->GetRoot();
 	RET(!rootNode);
 	
-	m_CurrentFrame = rootNode->GetCurrentFrame();
-	m_Slider.SetPos(m_CurrentFrame);
+	if (!rootNode->GetChildren().empty())
+	{ // 루트 노드는 애니메이션을 하지 않기 때문에 자식 노드중에 하나를 가져와야
+		// 제대로된 프레임을 가져올 수 있다.
+		m_CurrentFrame = ((cBoneNode*)rootNode->GetChildren().front())->GetCurrentFrame();
+		m_Slider.SetPos(m_CurrentFrame);
+	}
 
 	UpdateData(FALSE);
 }
