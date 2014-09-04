@@ -11,8 +11,12 @@ namespace graphic
 		virtual ~cVertexBuffer();
 
 		bool Create(const int vertexCount, const int sizeofVertex, DWORD fvf);
+		bool CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf);
 		//bool CreateParticle(const int particleCount);
+
 		void* Lock();
+		void* LockDiscard(const int idx=0, const int size=0);
+		void* LockNooverwrite(const int idx=0, const int size=0);
 		void Unlock();
 		void Bind() const;
 		void Clear();
@@ -31,6 +35,7 @@ namespace graphic
 		DWORD m_fvf;
 		int m_sizeOfVertex; // stride
 		int m_vertexCount;
+		bool m_isManagedPool;
 	};
 
 	

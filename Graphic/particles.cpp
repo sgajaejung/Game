@@ -23,7 +23,7 @@ cParticles::~cParticles()
 // 파티클 초기화.
 bool cParticles::Create( const string &textureFileName, const int maxParticle )
 {
-	m_vtxBuffer.CreateParticle(maxParticle);
+	//m_vtxBuffer.CreateParticle(maxParticle);
 
 	return true;
 }

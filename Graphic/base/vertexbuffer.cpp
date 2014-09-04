@@ -5,11 +5,12 @@
 using namespace graphic;
 
 
-cVertexBuffer::cVertexBuffer() : 
-	m_fvf(0),
-	m_sizeOfVertex(0),
-	m_vertexCount(0),
-	m_pVtxBuff(NULL)
+cVertexBuffer::cVertexBuffer() 
+:  m_fvf(0)
+,	m_sizeOfVertex(0)
+,	m_vertexCount(0)
+,	m_pVtxBuff(NULL)
+,	m_isManagedPool(true)
 {
 
 }
@@ -35,8 +36,31 @@ bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD 
 	m_fvf = fvf;
 	m_vertexCount = vertexCount;
 	m_sizeOfVertex = sizeofVertex;
+	m_isManagedPool = true;
 	return true;
 }
+
+
+// Video Memory 에 버텍스 버퍼를 생성한다.
+bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf)
+{
+	SAFE_RELEASE(m_pVtxBuff);
+
+	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
+		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 
+		fvf,
+		D3DPOOL_DEFAULT, &m_pVtxBuff, NULL)))
+	{
+		return false;
+	}
+
+	m_fvf = fvf;
+	m_vertexCount = vertexCount;
+	m_sizeOfVertex = sizeofVertex;
+	m_isManagedPool = false;
+	return true;
+}
+
 
 
 // 파티클 전용 버텍스 버퍼를 생성한다.
@@ -65,11 +89,42 @@ bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD 
 
 void* cVertexBuffer::Lock()
 {
-	if (!m_pVtxBuff)
-		return NULL;
+	RETV(!m_pVtxBuff, NULL);
 
 	void *vertices = NULL;
 	if (FAILED(m_pVtxBuff->Lock( 0, 0, (void**)&vertices, 0)))
+		return NULL;
+
+	return vertices;
+}
+
+
+// idx : 몇 번째 버텍스 부터 Lock 할지를 가르킨다.
+// size: 몇 개의 버텍스를 Lock 할지를 가르킨다.
+void* cVertexBuffer::LockDiscard(const int idx, const int size) // idx=0, size=0
+{
+	RETV(!m_pVtxBuff, NULL);
+	RETV(m_isManagedPool, NULL);
+
+	void *vertices = NULL;
+	if (FAILED(m_pVtxBuff->Lock(idx*m_sizeOfVertex, size*m_sizeOfVertex, 
+		(void**)&vertices, D3DLOCK_DISCARD)))
+		return NULL;
+
+	return vertices;
+}
+
+
+// idx : 몇 번째 버텍스 부터 Lock 할지를 가르킨다.
+// size: 몇 개의 버텍스를 Lock 할지를 가르킨다.
+void* cVertexBuffer::LockNooverwrite(const int idx, const int size) // idx=0, size=0
+{
+	RETV(!m_pVtxBuff, NULL);
+	RETV(m_isManagedPool, NULL);
+
+	void *vertices = NULL;
+	if (FAILED(m_pVtxBuff->Lock(idx*m_sizeOfVertex, size*m_sizeOfVertex, 
+		(void**)&vertices, D3DLOCK_NOOVERWRITE)))
 		return NULL;
 
 	return vertices;
@@ -114,6 +169,7 @@ void cVertexBuffer::Clear()
 	m_fvf = 0;
 	m_vertexCount = 0;
 	m_sizeOfVertex = 0;
+	m_isManagedPool = true;
 	SAFE_RELEASE(m_pVtxBuff);	
 }
 

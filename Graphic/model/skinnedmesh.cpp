@@ -75,17 +75,32 @@ void cSkinnedMesh::ApplyPalette()
 		BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
 		{
 			const int vtxIdx = weight.vtxIdx;
-			vertices[ vtxIdx].p = Vector3(0,0,0);
-			vertices[ vtxIdx].n = Vector3(0,0,0);
+			Vector3 p(0,0,0);
+			Vector3 n(0,0,0);
 
-			for( int k=0; k < weight.size; ++k )
+			switch (weight.size)
 			{
-				const sWeight *w = &weight.w[ k];
-				Vector3 v = m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ w->bone];
-				Vector3 n = m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ w->bone] );
-				vertices[ vtxIdx].p += v * w->weight;
-				vertices[ vtxIdx].n += n * w->weight;
+			case 5:
+				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 4].bone]) * weight.w[ 4].weight;
+				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 4].bone]) * weight.w[ 4].weight;
+			case 4:
+				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 3].bone]) * weight.w[ 3].weight;
+				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 3].bone]) * weight.w[ 3].weight;
+			case 3:
+				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 2].bone]) * weight.w[ 2].weight;
+				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 2].bone]) * weight.w[ 2].weight;
+			case 2: 
+				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 1].bone]) * weight.w[ 1].weight;
+				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 1].bone]) * weight.w[ 1].weight;
+			case 1: 
+				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 0].bone]) * weight.w[ 0].weight;
+				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 0].bone]) * weight.w[ 0].weight;
+			case 0:
+				break;
 			}
+
+			vertices[ vtxIdx].p = p;
+			vertices[ vtxIdx].n = n;
 		}
 	}
 

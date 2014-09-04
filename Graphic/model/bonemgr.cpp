@@ -64,7 +64,7 @@ void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, i
 	RET(!node);
 	RET(node->GetId() >= (int)rawAnies.anies.size());
 
-	if (node->GetId() >= 0)
+	if ((node->GetId() >= 0) && ((int)rawAnies.anies.size() > node->GetId()))
 		node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, true );
 
 	// animation exporter V17 이후부터 적용됨.

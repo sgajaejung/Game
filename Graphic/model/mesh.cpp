@@ -70,19 +70,16 @@ void cMesh::Render(const Matrix44 &parentTm)
 
 	if (m_buffers->GetAttributes().empty())
 	{
+		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
+		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
+
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind();
 		if (!m_textures.empty())
 			m_textures[ 0]->Bind(0);
 
 		m_buffers->Bind();
-
-		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
-		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
-		GetDevice()->DrawIndexedPrimitive( 
-			D3DPT_TRIANGLELIST, 0, 0, 
-			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
-			m_buffers->GetIndexBuffer().GetFaceCount());
+		m_buffers->Render();
 	}
 	else
 	{
@@ -101,8 +98,7 @@ void cMesh::Render(const Matrix44 &parentTm)
 			if (m_textures[ mtrlId])
 				m_textures[ mtrlId]->Bind(0);
 
-			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
-				m_buffers->GetVertexBuffer().GetVertexCount(), 
+			m_buffers->Render( 
 				m_buffers->GetAttributes()[ i].faceStart*3, 
 				m_buffers->GetAttributes()[ i].faceCount);
 		}

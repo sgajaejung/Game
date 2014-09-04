@@ -65,19 +65,19 @@ void cCharacterAnalyzer::HighlightBone(const string &boneName)
 	cBoneMgr *boneMgr = m_character->GetBoneMgr();
 	RET(!boneMgr);
 	
-
-	if (cBoneNode *node = boneMgr->FindBone(boneName))
+	cBoneNode *node = boneMgr->FindBone(boneName);
+	if ((!node) || (node->GetId() < 0) || (node->GetId() >= (int)boneMgr->GetBoundingBoxes().size()))
 	{
-		if ((node->GetId()>=0) && (node->GetId() < (int)boneMgr->GetBoundingBoxes().size()))
-		{
-			m_selectBone = node;
-			m_selectBoneCube.SetColor(0x00FF00);
-			m_selectBoneCube.SetCube( boneMgr->GetBoundingBoxes()[ node->GetId()] );
-			if (m_selectBoneCube.Length() < 0.001f)
-			{
-				const float len = max(m_character->GetCollisionBox()->Length() / 100.f, 1);
-				m_selectBoneCube.SetCube(Vector3(-1,-1,-1)*len, Vector3(1,1,1)*len);
-			}
-		}
+		m_selectBoneCube.SetCube(Vector3(0,0,0), Vector3(0,0,0));
+		return;
+	}
+
+	m_selectBone = node;
+	m_selectBoneCube.SetColor(0x00FF00);
+	m_selectBoneCube.SetCube( boneMgr->GetBoundingBoxes()[ node->GetId()] );
+	if (m_selectBoneCube.Length() < 0.001f)
+	{
+		const float len = max(m_character->GetCollisionBox()->Length() / 100.f, 1);
+		m_selectBoneCube.SetCube(Vector3(-1,-1,-1)*len, Vector3(1,1,1)*len);
 	}
 }

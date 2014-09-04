@@ -25,13 +25,7 @@ namespace graphic
 		
 
 	protected:
-		void CreateMesh( const vector<Vector3> &vertices, 
-			const vector<Vector3> &normals, 
-			const vector<Vector3> &tex,
-			const vector<int> &indices );
-		void CreateBoneWeight( const vector<sVertexWeight> &weights );
 		void CreateMaterials(const sRawMesh &rawMesh);
-		void CreateAttributes(const sRawMesh &rawMesh);
 
 		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
 		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);

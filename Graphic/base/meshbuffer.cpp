@@ -6,19 +6,23 @@
 using namespace graphic;
 
 cMeshBuffer::cMeshBuffer()
+:	m_offset(0)
 {
 }
 
 cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
+:	m_offset(0)
 {
-	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
+	CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices, 
+		!rawMesh.weights.empty());
 	CreateBoneWeight(rawMesh.weights);
 	CreateAttributes(rawMesh);
 }
 
 cMeshBuffer::cMeshBuffer(const sRawBone &rawBone)
+:	m_offset(0)
 {
-	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
+	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices, false);
 }
 
 
@@ -32,26 +36,30 @@ void cMeshBuffer::Bind()
 void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices, 
 	const vector<Vector3> &normals, 
 	const vector<Vector3> &tex,
-	const vector<int> &indices )
+	const vector<int> &indices,
+	const bool isSkinning )
 {
 	const bool isTexture = !tex.empty();
 
 	// 버텍스 버퍼 생성.
 	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
 	{
-		sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock();
-		for (u_int i = 0; i < vertices.size(); i++)
+		if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
 		{
-			pv[ i].p = vertices[ i];
-			pv[ i].n = normals[ i];
-			if (isTexture)
+			for (u_int i = 0; i < vertices.size(); i++)
 			{
-				pv[ i].u = tex[ i].x;
-				pv[ i].v = tex[ i].y;
+				pv[ i].p = vertices[ i];
+				pv[ i].n = normals[ i];
+				if (isTexture)
+				{
+					pv[ i].u = tex[ i].x;
+					pv[ i].v = tex[ i].y;
+				}
 			}
+			m_vtxBuff.Unlock();
 		}
-		m_vtxBuff.Unlock();
 	}
+
 
 	// 인덱스 버퍼 생성.
 	if (m_idxBuff.Create(indices.size()))
@@ -61,8 +69,6 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 			pi[ i] = indices[ i];
 		m_idxBuff.Unlock();
 	}
-
-	//CreateBoundingBox(m_boundingBox);
 }
 
 
@@ -121,4 +127,18 @@ cMeshBuffer* cMeshBuffer::Clone()
 	mesh->m_vtxBuff = m_vtxBuff;
 	mesh->m_idxBuff = m_idxBuff;
 	return mesh;
+}
+
+
+// 출력. 
+void cMeshBuffer::Render(const int faceStart, const int faceCount)
+	//faceStart=0, faceCount=0
+{
+	GetDevice()->DrawIndexedPrimitive( 
+		D3DPT_TRIANGLELIST, 
+		m_offset, 
+		0, 
+		m_vtxBuff.GetVertexCount(), 
+		faceStart, 
+		(faceCount==0)? m_idxBuff.GetFaceCount() : faceCount );
 }
