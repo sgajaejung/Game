@@ -58,6 +58,9 @@
     <ClInclude Include="etc\genid.h">
       <Filter>Etc</Filter>
     </ClInclude>
+    <ClInclude Include="math\mathutility.h">
+      <Filter>math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />

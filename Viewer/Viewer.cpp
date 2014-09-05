@@ -117,8 +117,38 @@ bool cViewer::OnInit()
 
 
 	//m_particles.Create( "°­¼Ò¶ó.jpg", 512 );
-	m_particles.Create( "particle.bmp", 512 );
-	m_particles.Emit(1, 1, 10, 1);
+
+	// 1
+	//m_particles.Create( "particle.bmp", 512 );
+	//m_particles.m_numToRelease = 5;
+	//m_particles.m_releaseInterval = 0.05f;
+	//m_particles.m_lifeCycle = 4.f;
+	//m_particles.m_pointSize = 0.5;
+	//m_particles.m_velocity = Vector3(0,5,0);
+	//m_particles.m_wind = Vector3(2,0,0);
+	//m_particles.m_velocityVar = 1.5f;
+
+	// 2
+	//m_particles.Create( "particle.bmp", 2048 );
+	//m_particles.m_numToRelease = 10;
+	//m_particles.m_releaseInterval = 0.05f;
+	//m_particles.m_lifeCycle = 5.f;
+	//m_particles.m_pointSize = 0.5;
+	//m_particles.m_bAirResistence = false;
+	//m_particles.m_gravity = Vector3(0,0,0);
+	//m_particles.m_velocityVar = 2.f;
+
+	// 3
+	m_particles.Create( "particle.bmp", 256 );
+	m_particles.m_numToRelease = 10;
+	m_particles.m_releaseInterval = 0.05f;
+	m_particles.m_lifeCycle = 5.f;
+	m_particles.m_pointSize = 1.5f;
+	m_particles.m_gravity = Vector3(0,-9.8f,0);
+	m_particles.m_emitPos = Vector3(0,0.1f,0);
+	m_particles.m_velocityVar = 20.f;
+	m_particles.AddCollisionPlane( Plane(Vector3(0,1,0), Vector3(0,0,0)) );
+
 
 	// start craft 2
 	// zealot
@@ -238,7 +268,7 @@ bool cViewer::OnInit()
 void cViewer::OnUpdate(const float elapseT)
 {
 	//m_model.Move(elapseT);
-	//m_character.Move(elapseT);
+	m_character.Move(elapseT);
 	//m_teraCharacter.Move(elapseT);
 
 	m_particles.Move(elapseT);

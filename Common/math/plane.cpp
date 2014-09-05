@@ -29,6 +29,13 @@ Plane::Plane( Vector3& vN, float d )
 }
 
 
+Plane::Plane( const Vector3& vN, const Vector3& vPos )
+{
+	N = vN.Normal();
+	D = -N.DotProduct( vPos );
+}
+
+
 Plane::Plane( const Vector3& vA, const Vector3& vB, const Vector3& vC )
 {
 	v0 = vC - vA;

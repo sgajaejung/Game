@@ -80,6 +80,7 @@
     <ClInclude Include="etc\singleton.h" />
     <ClInclude Include="etc\stringfunc.h" />
     <ClInclude Include="math\Math.h" />
+    <ClInclude Include="math\mathutility.h" />
     <ClInclude Include="math\matrix44.h" />
     <ClInclude Include="math\plane.h" />
     <ClInclude Include="math\quaternion.h" />

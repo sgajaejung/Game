@@ -1,7 +1,7 @@
 #pragma once
 
 
-const float MATH_PI = 3.1415f;
+const float MATH_PI = 3.141592654f;
 const float MATH_EPSILON = 0.0005f;//1.0e-5f;
 #define SQR(x)		( (x) * (x) )
 #define LIMIT_RANGE(low, value, high)	{	if (value < low)	value = low;	else if(value > high)	value = high;	}
@@ -24,3 +24,4 @@ using std::vector;
 #include "plane.h"
 #include "ray.h"
 
+#include "mathutility.h"
