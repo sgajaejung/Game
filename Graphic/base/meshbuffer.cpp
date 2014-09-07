@@ -39,11 +39,12 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 {
 	const bool isTexture = !tex.empty();
 
-	// 버텍스 버퍼 생성.
+	// 버텍스 버퍼 생성
 	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTexSkin), sVertexNormTexSkin::FVF))
 	{
 		if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
 		{
+			sMinMax minMax;
 			for (u_int i = 0; i < vertices.size(); i++)
 			{
 				pv[ i].p = vertices[ i];
@@ -53,10 +54,15 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 					pv[ i].u = tex[ i].x;
 					pv[ i].v = tex[ i].y;
 				}
+
+				minMax.Update(pv[ i].p);
 			}
 			m_vtxBuff.Unlock();
+
+			// 경계박스 초기화.
+			m_boundingBox.SetBoundingBox(minMax._min, minMax._max);
 		}
-	}
+	}	
 
 
 	// 인덱스 버퍼 생성.
@@ -70,7 +76,7 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 }
 
 
-// 본 인덱스, 가중치를 설정한다.s
+// 본 인덱스, 가중치를 설정한다.
 void cMeshBuffer::CreateBoneWeight( const vector<sVertexWeight> &weights )
 {
 

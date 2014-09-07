@@ -21,6 +21,7 @@ namespace graphic
 		vector<sAttribute>& GetAttributes();
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();
+		const cBoundingBox& GetBoundingBox() const;
 		void SetOffset(const int offset);
 		int GetOffset() const;
 
@@ -39,12 +40,14 @@ namespace graphic
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;
 		int m_offset;
+		cBoundingBox m_boundingBox;
 	};
 
 
 	inline vector<sAttribute>& cMeshBuffer::GetAttributes() { return m_attributes; }
 	inline cVertexBuffer& cMeshBuffer::GetVertexBuffer() { return m_vtxBuff; }
 	inline cIndexBuffer& cMeshBuffer::GetIndexBuffer() { return m_idxBuff; }
+	inline const cBoundingBox& cMeshBuffer::GetBoundingBox() const { return m_boundingBox; }
 	inline void cMeshBuffer::SetOffset(const int offset) { m_offset = offset; }
 	inline int cMeshBuffer::GetOffset() const { return m_offset; }
 }

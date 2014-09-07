@@ -104,7 +104,6 @@ void cMesh::Render(const Matrix44 &parentTm)
 		}
 	}
 
-	//RenderBoundingBox(parentTm);
 }
 
 
@@ -334,27 +333,9 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 }
 
 
-// Render Bounding Box
-void cMesh::RenderBoundingBox(const Matrix44 &tm)
+// 경계박스 리턴.
+const cBoundingBox* cMesh::GetBoundingBox()
 {
-	RET(!IsRender());
-
-	m_boundingBox.Render(m_localTM * m_aniTM * m_TM * tm);
-}
-
-
-// 경계박스 생성.
-void cMesh::CreateBoundingBox(OUT cCube &out)
-{
-	sMinMax mm;
-
-	sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_buffers->GetVertexBuffer().Lock();
-	for (int i = 0; i < m_buffers->GetVertexBuffer().GetVertexCount(); i++)
-	{
-		const Vector3 pos = pv[ i].p;
-		mm.Update(pos);
-	}
-	m_buffers->GetVertexBuffer().Unlock();
-
-	out.SetCube(mm.Min, mm.Max);
+	RETV (!m_buffers, NULL);
+	return &m_buffers->GetBoundingBox();
 }

@@ -56,6 +56,12 @@ namespace common
 			return *this;
 		}
 
+
+		static Vector3 Min;
+		static Vector3 Max;
+		static Vector3 Up;
+		static Vector3 Right;
+		static Vector3 Forward;
 	};
 
 }

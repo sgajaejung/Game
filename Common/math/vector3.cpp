@@ -5,6 +5,13 @@
 using namespace common;
 
 
+Vector3 Vector3::Min(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+Vector3 Vector3::Max(FLT_MAX, FLT_MAX, FLT_MAX);
+Vector3 Vector3::Up(0, 1, 0);
+Vector3 Vector3::Right(1,0,0);
+Vector3 Vector3::Forward(0,0,1);
+
+
 Vector3::Vector3(const Vector4 &rhs) :
 	x(rhs.x), y(rhs.y), z(rhs.z)
 {

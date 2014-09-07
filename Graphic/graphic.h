@@ -17,6 +17,7 @@ using namespace common;
 #include "base/graphicdef.h"
 #include "model/rawmesh.h"
 #include "model/rawani.h"
+#include "collision/boundingbox.h"
 
 #include "base/material.h"
 #include "base/light.h"
@@ -42,7 +43,7 @@ using namespace common;
 #include "base/shadow1.h"
 
 
-#include "collision/boundingbox.h"
+
 #include "collision/collision.h"
 #include "collision/collisionmanager.h"
 

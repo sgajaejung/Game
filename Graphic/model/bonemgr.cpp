@@ -161,7 +161,7 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 	for (int i=0; i < boneCount; ++i)
 	{
 		boneInvers[ i] = rawMeshes.bones[ i].worldTm.Inverse();
-		boundingBox[ i] = sMinMax();
+		//boundingBox[ i] = sMinMax();
 	}
 
 
@@ -183,19 +183,7 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 
 				const int boneIdx = boneIndices[ w->bone];
 
-				if (boundingBox[ boneIdx].Min.x > pos.x)
-					boundingBox[ boneIdx].Min.x = pos.x;
-				if (boundingBox[ boneIdx].Min.y > pos.y)
-					boundingBox[ boneIdx].Min.y = pos.y;
-				if (boundingBox[ boneIdx].Min.z > pos.z)
-					boundingBox[ boneIdx].Min.z = pos.z;
-
-				if (boundingBox[ boneIdx].Max.x < pos.x)
-					boundingBox[ boneIdx].Max.x = pos.x;
-				if (boundingBox[ boneIdx].Max.y < pos.y)
-					boundingBox[ boneIdx].Max.y = pos.y;
-				if (boundingBox[ boneIdx].Max.z < pos.z)
-					boundingBox[ boneIdx].Max.z = pos.z;
+				boundingBox[ boneIdx].Update(pos);
 			}
 		}
 	}
@@ -204,13 +192,9 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 	m_boundingBox.resize(boneCount);
 	for (int i=0; i < boneCount; ++i)
 	{
-		const Vector3 Min = boundingBox[ i].Min;
-		const Vector3 Max = boundingBox[ i].Max;
-
-		if (Min.IsEmpty() && Max.IsEmpty())
+		if (!boundingBox[ i].IsOk())
 			continue;
-
-		m_boundingBox[ i].SetCube( Min, Max );
+		m_boundingBox[ i].SetCube(  boundingBox[ i]._min,  boundingBox[ i]._max );
 	}
 }
 

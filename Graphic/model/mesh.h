@@ -17,9 +17,7 @@ namespace graphic
 		virtual void RenderShadow(const Matrix44 &viewProj, 
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
-		void CreateBoundingBox(OUT cCube &out);
-		void RenderBoundingBox(const Matrix44 &tm);
-		cCube& GetBoundingBox();
+		const cBoundingBox* GetBoundingBox();
 		cMeshBuffer* GetMeshBuffer();
 		void SetMeshBuffer(cMeshBuffer *buffer);
 		
@@ -37,15 +35,11 @@ namespace graphic
 		vector<cTexture*>m_textures;  // reference
 		cMeshBuffer *m_buffers; // reference
 
-		// 경계박스
-		cCube m_boundingBox;
-
 		// debug 용.
 		bool m_isBoneMesh;
 	};
 
 
-	inline cCube& cMesh::GetBoundingBox() { return m_boundingBox; }
 	inline cMeshBuffer* cMesh::GetMeshBuffer() { return m_buffers; }
 	inline void cMesh::SetMeshBuffer(cMeshBuffer *buffer) { m_buffers = buffer; }
 }

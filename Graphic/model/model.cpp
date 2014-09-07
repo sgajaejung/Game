@@ -260,12 +260,14 @@ cBoundingBox* cModel::GetCollisionBox()
 	sMinMax mm;
 	BOOST_FOREACH (auto &mesh, m_meshes)
 	{
-		const cCube &cube = mesh->GetBoundingBox();
-		mm.Update(cube.GetMin());
-		mm.Update(cube.GetMax());
+		if (const cBoundingBox *box = mesh->GetBoundingBox())
+		{
+			mm.Update(box->m_min);
+			mm.Update(box->m_max);
+		}
 	}
 
-	m_boundingBox.SetBoundingBox(mm.Min, mm.Max);
+	m_boundingBox.SetBoundingBox(mm._min, mm._max);
 	return &m_boundingBox;
 }
 

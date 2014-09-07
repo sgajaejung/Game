@@ -3,6 +3,8 @@
 
 namespace graphic
 {
+	class cCube;
+
 
 	// OBB 충돌박스.
 	class cBoundingBox
@@ -14,7 +16,8 @@ namespace graphic
 		void SetTransform( const Matrix44 &tm );
 		bool Collision( cBoundingBox &box );
 		bool Pick(const Vector3 &orig, const Vector3 &dir);
-		float Length() const; // length(m_min, m_max)
+		float Length() const;
+		Vector3 Center() const;
 
 		cBoundingBox& operator=(const cCube &cube);
 
@@ -25,5 +28,6 @@ namespace graphic
 	};
 
 
+	// length(m_min, m_max)
 	inline float cBoundingBox::Length() const { return (m_min - m_max).Length(); }
 }

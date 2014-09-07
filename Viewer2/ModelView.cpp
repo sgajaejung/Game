@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CModelView, CView)
 	ON_WM_RBUTTONUP()
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -229,10 +230,27 @@ void CModelView::OnMButtonUp(UINT nFlags, CPoint point)
 
 void CModelView::Update()
 {
-	m_rotateTm.SetIdentity();
+}
 
-	//// 무기 재 로딩.
-	//graphic::cCharacter *character = cController::Get()->GetCharacter();
-	//if (character)
-	//	character->LoadWeapon( "../media/max script/valle_weapon4.dat");
+
+void CModelView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == 'F')
+	{ // focus model
+		// 모델이 화면에 잘 보이게 자동으로 조절한다.
+		if (graphic::cCharacter *character = cController::Get()->GetCharacter())
+		{
+			if (graphic::cBoundingBox *box = character->GetCollisionBox())
+			{
+				const float len = box->Length();
+				
+				Vector3 eyePos = graphic::GetMainCamera()->GetEyePos().Normal() * len*2;
+				graphic::GetMainCamera()->SetLookAt(box->Center());
+				graphic::GetMainCamera()->SetEyePos(eyePos);
+			}
+		}
+		
+	}
+
+	__super::OnKeyDown(nChar, nRepCnt, nFlags);
 }
