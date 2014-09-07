@@ -30,17 +30,14 @@ void graphic::ReleaseRenderer()
 
 cRenderer::cRenderer() :
 	m_pDevice(NULL)
-,	m_font(NULL)
 ,	m_elapseTime(0)
 ,	m_fps(0)
 {
-	m_fpsText = "fps : 0";
 
 }
 
 cRenderer::~cRenderer()
 {
-	SAFE_RELEASE(m_font);
 	SAFE_RELEASE(m_pDevice);
 }
 
@@ -51,10 +48,9 @@ bool cRenderer::CreateDirectX(HWND hWnd, const int width, const int height)
 	if (!InitDirectX(hWnd, width, height, m_pDevice))
 		return false;
 
-	HRESULT hr = D3DXCreateFontA( m_pDevice, 18, 0, FW_BOLD, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "±¼¸²", &m_font );
-	if (FAILED(hr))
-		return false;
+	m_textFps.Create();
+	m_textFps.SetPos(10, 10);
+	m_textFps.SetColor(D3DXCOLOR(1,1,1,1));
 
 	m_hWnd = hWnd;
 	return true;
@@ -91,11 +87,11 @@ void cRenderer::RenderAxis()
 // FPS Ãâ·Â.
 void cRenderer::RenderFPS()
 {
-	RET(!m_font);
-
-	RECT rc = {10,10,200,200};
-	m_font->DrawTextA( NULL, m_fpsText.c_str(), -1, &rc,
-		DT_NOCLIP, D3DXCOLOR( 1.0f, 1.0f, 1.0f, 1.0f ) );
+	//RET(!m_font);
+	m_textFps.Render();
+	//RECT rc = {10,10,200,200};
+	//m_font->DrawTextA( NULL, m_fpsText.c_str(), -1, &rc,
+	//	DT_NOCLIP, D3DXCOLOR( 1.0f, 1.0f, 1.0f, 1.0f ) );
 }
 
 
@@ -132,7 +128,7 @@ void cRenderer::Update(const float elapseT)
 	m_elapseTime += elapseT;
 	if( 1.f <= m_elapseTime )
 	{
-		m_fpsText = format("fps: %d", m_fps );
+		m_textFps.SetText(format("fps: %d", m_fps));
 		m_fps = 0;
 		m_elapseTime = 0;
 	}

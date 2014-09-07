@@ -14,7 +14,7 @@ namespace graphic
 			const int fontSize=18, const bool isBold=true, const string &fontName="±¼¸²");
 		virtual ~cText();
 
-		bool Create(const int fontSize, const bool isBold, const string &fontName);
+		bool Create(const int fontSize=18, const bool isBold=true, const string &fontName="±¼¸²");
 		void SetText(const string &text);
 		void SetText(const int x, const int y, const string &text);
 		const string& GetText() const;
@@ -24,6 +24,8 @@ namespace graphic
 		DWORD GetColor() const;
 
 		void Render();
+
+		void Clear();
 
 
 	private:

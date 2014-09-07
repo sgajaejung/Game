@@ -27,12 +27,13 @@ cText::cText(const string &text, const int x, const int y,
 
 cText::~cText()
 {
-	SAFE_RELEASE(m_font);
+	Clear();
 }
 
 
 // 텍스트 생성.
 bool cText::Create(const int fontSize, const bool isBold, const string &fontName)
+	// fontSize=18, isBold=true, fontName=굴림
 {
 	const HRESULT hr = D3DXCreateFontA(GetDevice(), fontSize, 0, 
 		isBold?  FW_BOLD : FW_NORMAL, 1, FALSE, 
@@ -53,4 +54,10 @@ void cText::Render()
 	RET(!m_font);
 
 	m_font->DrawTextA( NULL, m_text.c_str(), -1, &m_rect, DT_NOCLIP, m_color);
+}
+
+
+void cText::Clear()
+{
+	SAFE_RELEASE(m_font);
 }
