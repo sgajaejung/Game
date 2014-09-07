@@ -37,6 +37,7 @@ using namespace common;
 #include "base/sphere.h"
 #include "base/surface.h"
 #include "base/circle.h"
+#include "base/text.h"
 
 #include "model/node.h"
 

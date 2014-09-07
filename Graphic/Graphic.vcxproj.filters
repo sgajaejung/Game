@@ -157,6 +157,9 @@
     <ClInclude Include="particle\particles.h">
       <Filter>particle</Filter>
     </ClInclude>
+    <ClInclude Include="base\text.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -297,6 +300,9 @@
     </ClCompile>
     <ClCompile Include="particle\particles.cpp">
       <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="base\text.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

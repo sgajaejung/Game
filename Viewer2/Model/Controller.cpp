@@ -10,6 +10,8 @@ cController::cController() :
 ,	m_isPlay(true)
 ,	m_archeCharacter(common::GenerateId())
 ,	m_viewerDlg(NULL)
+,	m_modelName("modelName: ", 10, 27)
+,	m_animationName("animationName: ", 10, 44)
 {
 	m_analyzer = new cCharacterAnalyzer();
 	m_analyzer->SetCharacter(&m_archeCharacter);
@@ -34,13 +36,17 @@ bool cController::LoadFile( const string &fileName )
 	{
 	case RESOURCE_TYPE::MESH:
 		m_currentMeshFileName = fileName;
-		result = character->Create(fileName);
+		if (result = character->Create(fileName))
+		{
+			m_modelName.SetText("model: " + common::GetFileName(fileName));
+			m_animationName.SetText("");
+		}
 		break;
 
 	case RESOURCE_TYPE::ANIMATION:
 		m_currentAnimationFileName = fileName;
-		character->SetAnimation(fileName);
-		result = true;
+		if (result = character->SetAnimation(fileName))
+			m_animationName.SetText("animation: " + common::GetFileName(fileName));
 		break;
 
 	default:
@@ -58,6 +64,8 @@ void cController::Render()
 {
 	RET(!m_analyzer);
 	m_analyzer->Render(Matrix44::Identity);
+	m_modelName.Render();
+	m_animationName.Render();
 }
 
 

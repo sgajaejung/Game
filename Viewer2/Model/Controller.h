@@ -39,6 +39,8 @@ private:
 	graphic::cCharacterAnalyzer *m_analyzer;
 	graphic::cArchebladeCharacter m_archeCharacter; // 아키블래이드 캐릭터.
 	graphic::cTeraCharacter m_teraCharacter; // 테라 캐릭터.
+	graphic::cText m_modelName;
+	graphic::cText m_animationName;
 
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;
