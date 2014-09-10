@@ -160,6 +160,12 @@
     <ClInclude Include="base\text.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="particle\snow.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="collision\frustum.h">
+      <Filter>collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -303,6 +309,12 @@
     </ClCompile>
     <ClCompile Include="base\text.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="particle\snow.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="collision\frustum.cpp">
+      <Filter>collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

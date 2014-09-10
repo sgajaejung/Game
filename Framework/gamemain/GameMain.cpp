@@ -35,6 +35,8 @@ int framework::FrameWorkWinMain(HINSTANCE hInstance,
 	if (hWnd == NULL)
 		return 0;
 
+	srand((int)timeGetTime());
+
 	if (!cGameMain::Get()->Init(hWnd))
 		return 0;
 

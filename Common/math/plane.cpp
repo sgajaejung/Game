@@ -48,7 +48,7 @@ Plane::Plane( const Vector3& vA, const Vector3& vB, const Vector3& vC )
 }
 
 //
-void Plane::Init( Vector3& vA, Vector3& vB, Vector3& vC )
+void Plane::Init( const Vector3& vA, const Vector3& vB, const Vector3& vC )
 {
 	v0 = vC - vA;
 	v1 = vC - vB;
@@ -60,14 +60,14 @@ void Plane::Init( Vector3& vA, Vector3& vB, Vector3& vC )
 }
 
 
-float Plane::Distance( Vector3& vP ) const
+float Plane::Distance( const Vector3& vP ) const
 {
 	float fDot = N.DotProduct( vP );
 	return fDot + (D);
 }
 
 
-Vector3 Plane::Pick( Vector3& vOrig, Vector3& vDir ) const
+Vector3 Plane::Pick( const Vector3& vOrig, const Vector3& vDir ) const
 {
 	return vOrig + vDir * Distance( vOrig ) / vDir.DotProduct( -N );
 }
@@ -97,7 +97,7 @@ float Plane::Collision( Vector3& vP )
 }
 
 
-BOOL Plane::CollisionSphere( Vector3& vP, const float fRadius )
+BOOL Plane::CollisionSphere( const Vector3& vP, const float fRadius )
 {
 	/*
 		평면의 방정식 : N * P + D = 0
@@ -108,7 +108,7 @@ BOOL Plane::CollisionSphere( Vector3& vP, const float fRadius )
 
 
 //	LineCross
-int Plane::LineCross( Vector3& v0, Vector3& v1, Vector3* pvOut ) const
+int Plane::LineCross( const Vector3& v0, const Vector3& v1, Vector3* pvOut ) const
 {
 	float fSign[2]; 
  

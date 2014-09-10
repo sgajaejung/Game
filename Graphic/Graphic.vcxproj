@@ -99,6 +99,7 @@
     <ClInclude Include="collision\boundingbox.h" />
     <ClInclude Include="collision\collision.h" />
     <ClInclude Include="collision\collisionmanager.h" />
+    <ClInclude Include="collision\frustum.h" />
     <ClInclude Include="graphic.h" />
     <ClInclude Include="importer\modelimporter.h" />
     <ClInclude Include="manager\maincamera.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="model\skinnedmesh.h" />
     <ClInclude Include="model\track.h" />
     <ClInclude Include="particle\particles.h" />
+    <ClInclude Include="particle\snow.h" />
     <ClInclude Include="sprite\sprite.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -153,6 +155,7 @@
     <ClCompile Include="character\teracharacter.cpp" />
     <ClCompile Include="collision\boundingbox.cpp" />
     <ClCompile Include="collision\collisionmanager.cpp" />
+    <ClCompile Include="collision\frustum.cpp" />
     <ClCompile Include="importer\modelimporter.cpp" />
     <ClCompile Include="manager\maincamera.cpp" />
     <ClCompile Include="manager\Renderer.cpp" />
@@ -167,6 +170,7 @@
     <ClCompile Include="model\skinnedmesh.cpp" />
     <ClCompile Include="model\track.cpp" />
     <ClCompile Include="particle\particles.cpp" />
+    <ClCompile Include="particle\snow.cpp" />
     <ClCompile Include="sprite\sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
