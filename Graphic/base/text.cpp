@@ -35,6 +35,8 @@ cText::~cText()
 bool cText::Create(const int fontSize, const bool isBold, const string &fontName)
 	// fontSize=18, isBold=true, fontName=±¼¸²
 {
+	Clear();
+
 	const HRESULT hr = D3DXCreateFontA(GetDevice(), fontSize, 0, 
 		isBold?  FW_BOLD : FW_NORMAL, 1, FALSE, 
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
