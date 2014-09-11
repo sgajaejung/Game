@@ -41,6 +41,8 @@ namespace graphic
 		vector<cBoneNode*> m_bones;
 		vector<Matrix44> m_palette;
 		vector<cCube> m_boundingBox;
+
+		float m_deltaTime;
 	};
 
 

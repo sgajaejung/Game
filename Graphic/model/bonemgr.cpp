@@ -9,6 +9,7 @@ using namespace  graphic;
 cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	m_root(NULL)
 ,	m_id(id)
+,	m_deltaTime(0)
 {
 	m_palette.resize(rawMeshes.bones.size(), Matrix44());
 	m_bones.resize(rawMeshes.bones.size(), NULL);
@@ -54,6 +55,7 @@ cBoneMgr::~cBoneMgr()
 // 에니메이션 설정.
 void cBoneMgr::SetAnimation( const sRawAniGroup &rawAnies, int nAniFrame )
 {
+	m_deltaTime = 0;
 	SetAnimationRec( m_root, rawAnies, nAniFrame );
 }
 
@@ -96,7 +98,13 @@ void cBoneMgr::SetCurrentAnimationFrame(const int curFrame)
 bool cBoneMgr::Move(const float elapseTime)
 {
 	RETV(!m_root, false);
-	return m_root->Move(elapseTime);
+	m_deltaTime += elapseTime;
+	// 시간의 거의 지나가지 않았다면 애니메이션 계산을 하지 않는다.
+	RETV(m_deltaTime < 0.02f, false);
+
+	const bool result =m_root->Move(m_deltaTime);
+	m_deltaTime = 0;
+	return result;
 }
 
 
