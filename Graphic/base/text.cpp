@@ -18,6 +18,7 @@ cText::cText(const string &text, const int x, const int y,
 	const DWORD color, const int fontSize, const bool isBold, const string &fontName)
 	// fontSize=18, isBold=true, fontName=±¼¸²
 	: m_text(text)
+,	m_font(NULL)
 ,	m_rect(x, y, 100, 100)
 ,	m_color(color)
 {
