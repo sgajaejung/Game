@@ -20,11 +20,11 @@ namespace graphic
 
 
 	private:
-		Vector3 m_Vtx[ 8]; // frustum 정점 좌표
-		Plane m_Plane[ 6];	// frustum의 6개 평면
-		Vector3 m_vPos; // 절두체 위치
+		Vector3 m_vtx[ 8]; // frustum 정점 좌표
+		Plane m_plane[ 6];	// frustum의 6개 평면
+		Vector3 m_pos; // 절두체 위치
 	};
 
 
-	const Vector3& cFrustum::GetPos() const { return m_vPos; }
+	const Vector3& cFrustum::GetPos() const { return m_pos; }
 }

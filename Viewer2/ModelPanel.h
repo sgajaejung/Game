@@ -29,6 +29,7 @@ protected:
 	void UpdateMaterialInfo();
 	void UpdateBoneInfo();
 	void UpdateRawBoneInfo();
+	string GetMeshTokenizeName(const string &name);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -45,4 +46,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CString m_FileName;
 	afx_msg void OnBnClickedButtonShowBoneTree();
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnPanelShowhideMesh();
 };

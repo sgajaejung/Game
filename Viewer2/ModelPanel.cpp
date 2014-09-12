@@ -41,6 +41,8 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON_SHOW_BONE_TREE, &CModelPanel::OnBnClickedButtonShowBoneTree)
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_PANEL_SHOWHIDE_MESH, &CModelPanel::OnPanelShowhideMesh)
 END_MESSAGE_MAP()
 
 
@@ -81,8 +83,11 @@ void CModelPanel::UpdateMeshInfo()
 	for (u_int i=0; i < rawMeshses->meshes.size(); ++i)
 	{
 		const sRawMesh &mesh = rawMeshses->meshes[ i];
-		const wstring str = formatw("%s", mesh.name.c_str());		
+
+		const string meshName = GetMeshTokenizeName(mesh.name);
+		const wstring str = formatw("%s", meshName.c_str());
 		const HTREEITEM hItem = m_MeshTree.InsertItem( str.c_str(), hRoot);
+		m_MeshTree.SetItemData(hItem, i+1); // 메쉬 인덱스+1 값을 저장한다.
 
 		const wstring name = formatw("Name = %s", mesh.name.c_str());
 		const wstring materialId = formatw("MaterialIds [%d]", mesh.mtrlIds.size());
@@ -238,4 +243,90 @@ void CModelPanel::OnSize(UINT nType, int cx, int cy)
 void CModelPanel::OnBnClickedButtonShowBoneTree()
 {
 	ShowBoneDialog();	
+}
+
+
+void CModelPanel::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	// 메쉬트리에서 메뉴를 열었을 때.
+	if (pWnd == &m_MeshTree)
+	{
+		// 루트를 가르키면 메뉴를 띄우지 않는다.
+		HTREEITEM hItem = m_MeshTree.GetSelectedItem();
+		if (m_MeshTree.GetRootItem() == hItem)
+			return;
+
+		CPoint p;
+		GetCursorPos(&p);
+
+		CMenu menu;
+		menu.CreatePopupMenu();
+		menu.AppendMenu(MF_STRING, ID_PANEL_SHOWHIDE_MESH, _T("Show/Hide Mesh"));
+		menu.TrackPopupMenu(TPM_LEFTALIGN, p.x, p.y, this);	
+	}	
+}
+
+
+void CModelPanel::OnPanelShowhideMesh()
+{
+	HTREEITEM hItem = m_MeshTree.GetSelectedItem();
+	
+	// 선택된 트리노드가 몇 번째 메쉬인지 검색한다.
+	// 노드 데이타에 메쉬 인덱스 + 1 값이 저장되어 있다.
+	// 0은 인덱스가 설정되지 않은 노드다. 찾을 때까지 부모로 올라간다.
+	int meshIndex = -1;
+	while (hItem != m_MeshTree.GetRootItem())
+	{
+		const DWORD data = m_MeshTree.GetItemData(hItem);
+		if (data == 0)
+		{
+			hItem = m_MeshTree.GetParentItem(hItem);
+		}
+		else
+		{
+			meshIndex = data-1;
+			break;
+		}
+	}
+
+	if (meshIndex >= 0)
+	{
+		if (cMesh *mesh = cController::Get()->GetCharacter()->GetMesh(meshIndex))
+		{
+			const sRawMeshGroup *rawMeshses = cResourceManager::Get()->LoadModel( 
+				cController::Get()->GetCurrentMeshFileName() );
+			RET (!rawMeshses);
+
+			const sRawMesh &rawMesh = rawMeshses->meshes[ meshIndex];
+			const string meshName = GetMeshTokenizeName(rawMesh.name);
+			wstring str = formatw("%s", meshName.c_str());
+			if (mesh->IsRender())
+				str += L" (Hide)";
+			else
+				str += L" (Show)";
+			
+			m_MeshTree.SetItemText(hItem, str.c_str());
+			mesh->SetRender( !mesh->IsRender() );
+		}
+	}
+}
+
+
+// 메쉬 이름은 파일이름 + 메쉬 이름으로 구성되어 있다.
+// 파일이름을 제외한 메쉬이름을 출력하는 코드다.
+string CModelPanel::GetMeshTokenizeName(const string &name)
+{
+	vector<string> nameTokens;
+	common::tokenizer(name, "::", "", nameTokens);
+	string meshName;
+	if (nameTokens.size() < 2)
+	{
+		meshName = name;
+	}
+	else
+	{
+		meshName = nameTokens[1];
+	}
+
+	return meshName.c_str();
 }
