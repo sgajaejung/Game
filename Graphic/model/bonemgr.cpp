@@ -91,6 +91,9 @@ void cBoneMgr::SetCurrentAnimationFrame(const int curFrame)
 		if (p)
 			p->SetCurrentFrame(curFrame);
 	}
+
+	// 교정된 프래임 위치로 애니메이션 시킨다.
+	m_root->Move(0);
 }
 
 
