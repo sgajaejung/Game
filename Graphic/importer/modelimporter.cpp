@@ -120,6 +120,7 @@ bool importer::ReadRawAnimationFile( const string &fileName, OUT sRawAniGroup &r
 	else
 	{
 		::MessageBoxA(GetRenderer()->GetHwnd(), "지원하지 않는 포맷 입니다.", "Error", MB_OK);
+		return false;
 	}
 
 	return true;

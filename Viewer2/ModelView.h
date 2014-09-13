@@ -24,6 +24,7 @@ protected:
 	graphic::cSkyBox m_skybox;
 	graphic::cShader m_shader;
 	graphic::cGrid2 m_grid;
+	graphic::cText m_msg;
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;

@@ -101,20 +101,20 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 // 애니메이션 시작.
 bool cModel::SetAnimation( const string &aniFileName)
 {
-	if (sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName))
-	{
-		m_curAni = rawAnies;
+	sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName);
+	RETV(!rawAnies, false);
 
-		if (MODEL_TYPE::SKIN == m_type)
+	m_curAni = rawAnies;
+
+	if (MODEL_TYPE::SKIN == m_type)
+	{
+		m_bone->SetAnimation(*rawAnies, 0);
+	}
+	else
+	{
+		for (u_int i=0; i < m_meshes.size(); ++i)
 		{
-			m_bone->SetAnimation(*rawAnies, 0);
-		}
-		else
-		{
-			for (u_int i=0; i < m_meshes.size(); ++i)
-			{
-				((cRigidMesh*)m_meshes[ i])->LoadAnimation(rawAnies->anies[0]);
-			}
+			((cRigidMesh*)m_meshes[ i])->LoadAnimation(rawAnies->anies[0]);
 		}
 	}
 
@@ -277,6 +277,9 @@ cBoundingBox* cModel::GetCollisionBox()
 	}
 
 	m_boundingBox.SetBoundingBox(mm._min, mm._max);
+	if (m_boundingBox.Length() >= FLT_MAX)
+		m_boundingBox.SetBoundingBox(Vector3(0,0,0), Vector3(0,0,0));
+
 	return &m_boundingBox;
 }
 

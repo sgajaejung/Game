@@ -46,12 +46,22 @@ bool cController::LoadFile( const string &fileName )
 			const Vector3 lightPos = Vector3(1,1,-1) * character->GetCollisionBox()->Length() * 4;
 			cLightManager::Get()->GetMainLight().SetPosition(lightPos);
 		}
+		else
+		{
+			goto error;
+		}
 		break;
 
 	case RESOURCE_TYPE::ANIMATION:
 		m_currentAnimationFileName = fileName;
 		if (result = character->SetAnimation(fileName))
+		{
 			m_animationName.SetText("animation: " + common::GetFileName(fileName));
+		}
+		else
+		{
+			goto error;
+		}
 		break;
 
 	default:
@@ -62,6 +72,10 @@ bool cController::LoadFile( const string &fileName )
 
 	HideLoadingDialog();
 	return result;
+
+error:
+	HideLoadingDialog();
+	return false;
 }
 
 

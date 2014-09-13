@@ -78,8 +78,11 @@ void CModelView::Init()
 	m_skybox.Create( "../media/skybox" );
 	
 	m_grid.Create(64, 64, 50, 1);
-	//m_grid.GetTexture().Create( "../media/texture/transparent.png" );
 	m_grid.GetTexture().Create( "../media/texture/emptyTexture2.png" );
+
+	m_msg.Create();
+	m_msg.SetText(10, 740, "press 'F' to focus model" );
+
 
 	cController::Get()->AddObserver(this);
 
@@ -149,6 +152,7 @@ void CModelView::Render()
 		GetRenderer()->RenderFPS();
 		GetRenderer()->RenderGrid();
 		GetRenderer()->RenderAxis();
+		m_msg.Render();
 
 
 		// 캐릭터 출력.
@@ -281,6 +285,8 @@ void CModelView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (cBoundingBox *box = character->GetCollisionBox())
 			{
 				const float len = box->Length();
+				if (len <= 0)
+					return;
 				
 				Vector3 eyePos = GetMainCamera()->GetEyePos().Normal() * len*2;
 				GetMainCamera()->SetLookAt(box->Center());
