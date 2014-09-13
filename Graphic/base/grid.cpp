@@ -45,7 +45,7 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 			for (float x=startx; x <= endx; x += cellSize, ++k )
 			{
 				int index = (i * colVtxCnt) + k;
-				vertices[ index].p = Vector3(x, 0.0f, y);
+				vertices[ index].p = Vector3(x, 0, y);
 				vertices[ index].c = 0xffcccccc;
 			}
 		}

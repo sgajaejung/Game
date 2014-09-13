@@ -75,7 +75,7 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 			for (float x=startx; x <= endx; x += cellSize, ++k )
 			{
 				int index = (i * colVtxCnt) + k;
-				vertices[ index].p = Vector3(x, 0.1f, y);
+				vertices[ index].p = Vector3(x, 0, y);
 				vertices[ index].n = Vector3(0,1,0);
 				vertices[ index].u = (float)k*uCoordIncrementSize;
 				vertices[ index].v = (float)i*vCoordIncrementSize;
