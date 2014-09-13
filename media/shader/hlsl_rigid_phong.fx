@@ -114,10 +114,43 @@ float4 PS_pass0(VS_OUTPUT In) : COLOR
 }
 
 
+
 // -------------------------------------------------------------
-// 1패스:정점셰이더, 포그 출력
+// 정점셰이더에서 픽셀셰이더로 넘기는 데이터
+// 그림자 맵 생성.
 // -------------------------------------------------------------
-VS_OUTPUT VS_pass1(
+struct VS_SHADOW_OUTPUT
+{
+	float4 Pos : POSITION;
+	float4 Diffuse : COLOR0;
+};
+
+
+// -------------------------------------------------------------
+// 2패스:정점셰이더, 그림자 맵 생성.
+// -------------------------------------------------------------
+VS_SHADOW_OUTPUT VS_pass1(
+      float4 Pos : POSITION,          // 모델정점
+	  float3 Normal : NORMAL,		// 법선벡터
+	  float2 Tex : TEXCOORD0
+)
+{
+    VS_SHADOW_OUTPUT Out = (VS_SHADOW_OUTPUT)0;  // 출력데이터
+    
+    // 좌표변환
+	float4x4 mWVP = mul(mWorld, mVP);
+	Out.Pos = mul( Pos, mWVP );
+	Out.Diffuse = float4(1,1,1,1);
+
+    return Out;
+}
+
+
+
+// -------------------------------------------------------------
+// 3패스:정점셰이더, 포그 출력
+// -------------------------------------------------------------
+VS_OUTPUT VS_pass2(
       float4 Pos : POSITION,          // 모델정점
 	  float3 Normal : NORMAL,		// 법선벡터
 	  float2 Tex : TEXCOORD0
@@ -140,9 +173,9 @@ VS_OUTPUT VS_pass1(
 }
 
 // -------------------------------------------------------------
-// 1패스:픽셀셰이더, 포그 출력.
+// 3패스:픽셀셰이더, 포그 출력.
 // -------------------------------------------------------------
-float4 PS_pass1(VS_OUTPUT In) : COLOR
+float4 PS_pass2(VS_OUTPUT In) : COLOR
 {
 	float4 Out;
 
@@ -181,9 +214,9 @@ struct VS_OUTPUT_SHADOW
 
 
 // -------------------------------------------------------------
-// 2패스:정점셰이더, 포그 출력, 그림자 출력.
+// 4패스:정점셰이더, 포그 출력, 그림자 출력.
 // -------------------------------------------------------------
-VS_OUTPUT_SHADOW VS_pass2(
+VS_OUTPUT_SHADOW VS_pass3(
       float4 Pos : POSITION,          // 모델정점
 	  float3 Normal : NORMAL,		// 법선벡터
 	  float2 Tex : TEXCOORD0
@@ -207,9 +240,9 @@ VS_OUTPUT_SHADOW VS_pass2(
 }
 
 // -------------------------------------------------------------
-// 2패스:픽셀셰이더, 포그 출력.
+// 4패스:픽셀셰이더, 포그 출력.
 // -------------------------------------------------------------
-float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
+float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 {
 	float4 Out;
 
@@ -235,40 +268,6 @@ float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 }
 
 
-
-
-
-// -------------------------------------------------------------
-// 정점셰이더에서 픽셀셰이더로 넘기는 데이터
-// 그림자 맵 생성.
-// -------------------------------------------------------------
-struct VS_SHADOW_OUTPUT
-{
-	float4 Pos : POSITION;
-	float4 Diffuse : COLOR0;
-};
-
-
-// -------------------------------------------------------------
-// 4패스:정점셰이더, 그림자 맵 생성.
-// -------------------------------------------------------------
-VS_SHADOW_OUTPUT VS_pass3(
-      float4 Pos : POSITION,          // 모델정점
-	  float3 Normal : NORMAL,		// 법선벡터
-	  float2 Tex : TEXCOORD0
-)
-{
-    VS_SHADOW_OUTPUT Out = (VS_SHADOW_OUTPUT)0;  // 출력데이터
-    
-    // 좌표변환
-	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
-	Out.Diffuse = float4(1,1,1,1);
-
-    return Out;
-}
-
-
 	
 // -------------------------------------------------------------
 // 테크닉
@@ -283,16 +282,14 @@ technique TShader
 		PixelShader  = compile ps_3_0 PS_pass0();
     }
 
+	// 그림자 맵 생성 셰이더
+	Pass P1
+	{
+		VertexShader = compile vs_3_0 VS_pass1();
+	}
+
 
 	// 포그 셰이딩.
-    pass P1
-    {
-        VertexShader = compile vs_3_0 VS_pass1();
-		PixelShader  = compile ps_3_0 PS_pass1();
-    }
-
-
-    // 모델 + 그림자 출력 셰이더
     pass P2
     {
         VertexShader = compile vs_3_0 VS_pass2();
@@ -300,10 +297,13 @@ technique TShader
     }
 
 
-	// 그림자 맵 출력 셰이더
-	Pass P3
-	{
-		VertexShader = compile vs_3_0 VS_pass3();
-	}
+    // 모델 + 그림자 출력 셰이더
+    pass P3
+    {
+        VertexShader = compile vs_3_0 VS_pass3();
+		PixelShader  = compile ps_3_0 PS_pass3();
+    }
+
+
 
 }

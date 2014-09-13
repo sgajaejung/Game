@@ -40,6 +40,11 @@ bool cController::LoadFile( const string &fileName )
 		{
 			m_modelName.SetText("model: " + common::GetFileName(fileName));
 			m_animationName.SetText("");
+
+			// 모델 크기에 따라 조명의 위치를 조절한다.
+			// 그림자 크기를 조정하기 위해서.
+			const Vector3 lightPos = Vector3(1,1,-1) * character->GetCollisionBox()->Length() * 4;
+			cLightManager::Get()->GetMainLight().SetPosition(lightPos);
 		}
 		break;
 

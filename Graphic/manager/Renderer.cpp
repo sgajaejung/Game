@@ -101,7 +101,7 @@ void cRenderer::RenderGrid()
 	static int gridSize = 0;
 	if (m_grid.empty())
 	{
-		MakeGrid(50, 20, D3DXCOLOR(0.8f,0.8f,0.8f,1), m_grid);
+		MakeGrid(50, 64, D3DXCOLOR(0.8f,0.8f,0.8f,1), m_grid);
 		gridSize = m_grid.size() / 2;
 	}
 
@@ -138,7 +138,7 @@ void cRenderer::Update(const float elapseT)
 
 // 격자무늬 버텍스를 만든다. 
 // width = 격자 하나의 폭 크기 (정 사각형이므로 인자값은 하나만 받는다)
-// count = 격자 가로 세로 갯수
+// count = 격자 가로 세로 개수
 void cRenderer::MakeGrid( const float width, const int count, DWORD color, vector<sVertexDiffuse> &out )
 {
 	if (out.empty())

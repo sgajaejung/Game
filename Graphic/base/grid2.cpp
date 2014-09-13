@@ -243,12 +243,18 @@ bool cGrid2::CreateFromFile(const string &fileName)
 
 void cGrid2::Render(const int stage)
 {
+	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
+	GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
 	m_mtrl.Bind();
 	m_tex.Bind(stage);
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
 		0, m_idxBuff.GetFaceCount());
+
+	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 
@@ -263,9 +269,8 @@ void cGrid2::RenderLinelist()
 
 void cGrid2::RenderShader(cShader &shader)
 {
-	Matrix44 matIdentity;
-	shader.SetMatrix( "mWorld", matIdentity);
-	shader.SetMatrix( "mWIT", matIdentity);
+	shader.SetMatrix( "mWorld", Matrix44::Identity);
+	shader.SetMatrix( "mWIT", Matrix44::Identity);
 
 	m_mtrl.Bind(shader);
 	m_tex.Bind(shader, "Tex");

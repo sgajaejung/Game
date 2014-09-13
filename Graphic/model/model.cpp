@@ -81,6 +81,16 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 			m_meshes.push_back(p);
 	}
 	
+	if (MODEL_TYPE::RIGID == m_type)
+	{
+		SetShader( cResourceManager::Get()->LoadShader("hlsl_rigid_phong.fx") );
+	}
+	else
+	{
+		SetShader( cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+	}
+
+
 	// 모델 충돌 박스를 생성한다.
 	GetCollisionBox();
 

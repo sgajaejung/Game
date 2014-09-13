@@ -26,8 +26,13 @@ void cShadow1::UpdateShadow( cNode &node )
 {
 	RET(!m_surface.IsLoaded());
 
-	Vector3 lightPos(500,1000,0);
-	Vector3 pos = node.GetTM().GetPosition();
+	const Vector3 pos = node.GetTM().GetPosition();
+
+	// 전역 광원으로 부터 그림자 생성에 필요한 정보를 얻어온다.
+	Vector3 lightPos;
+	Matrix44 view, proj, tt;
+	cLightManager::Get()->GetMainLight().GetShadowMatrix(
+		pos, lightPos, view, proj, tt );
 
 	m_surface.Begin();
 
@@ -35,13 +40,7 @@ void cShadow1::UpdateShadow( cNode &node )
 		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
 		, 0x00000000, 1.0f, 0L);
 
-	Matrix44 matView;// 뷰 행렬
-	matView.SetView2( lightPos, pos, Vector3(0,1,0));
-
-	Matrix44 matProj;// 투영 행렬
-	matProj.SetProjection( D3DX_PI/2.5f, 1, 0.1f, 10000);
-
-	node.RenderShadow(matView*matProj, lightPos, Vector3(0,-1,0), Matrix44::Identity);
+	node.RenderShadow(view*proj, lightPos, Vector3(0,-1,0), Matrix44::Identity);
 
 	m_surface.End();
 }

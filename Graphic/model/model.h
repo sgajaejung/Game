@@ -22,6 +22,7 @@ namespace graphic
 		void Clear();
 
 		// Model Infomations
+		MODEL_TYPE::TYPE GetModelType() const;
 		const string& GetFileName() const;
 		cShadow1& GetShadow();
 		bool IsRenderShadow() const;
@@ -69,6 +70,7 @@ namespace graphic
 	};
 
 
+	inline MODEL_TYPE::TYPE cModel::GetModelType() const { return m_type; }
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
 	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 	inline const string& cModel::GetFileName() const { return m_fileName; }

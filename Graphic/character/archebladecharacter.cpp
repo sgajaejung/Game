@@ -37,10 +37,18 @@ bool cArchebladeCharacter::Create(const string &modelName, MODEL_TYPE::TYPE type
 
 	SAFE_DELETE(m_weapon);
 
-	SetShader( 
-		cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+	if (cModel::Create(modelName))
+	{
+		if (GetModelType() == MODEL_TYPE::SKIN)
+		{
+			SetShader( 
+				cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+		}
 
-	return cModel::Create(modelName);
+		return true;
+	}
+
+	return false;
 }
 
 

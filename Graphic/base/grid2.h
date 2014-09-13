@@ -1,7 +1,7 @@
-#pragma once
-
 // grid format
 // vertex + normal + texture
+#pragma once
+
 
 namespace graphic
 {
