@@ -18,13 +18,19 @@ namespace graphic
 		};
 
 		void Init(TYPE type, 
-			const Vector4 &ambient,
-			const Vector4 &diffuse,
-			const Vector4 &specular,
-			const Vector3 &direction);
+			const Vector4 &ambient = Vector4(0.3f, 0.3f, 0.3f, 1),
+			const Vector4 &diffuse = Vector4(0.7f, 0.7f, 0.7f, 1),
+			const Vector4 &specular = Vector4(0,0,0,1),
+			const Vector3 &direction = Vector3(0,-1,0));
 
 		void SetDirection( const Vector3 &direction );
+		void SetPosition( const Vector3 &pos );
 		void Bind(int lightIndex);
+
+		void GetShadowMatrix( const Vector3 &modelPos, 
+			OUT Vector3 &lightPos, OUT Matrix44 &view, OUT Matrix44 &proj, 
+			OUT Matrix44 &tt );
+
 
 		D3DLIGHT9 m_light;
 	};

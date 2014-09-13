@@ -57,8 +57,14 @@ namespace graphic
 
 
 	// Matrix44* -> D3DXMATRIX*
-	inline D3DXMATRIX* ToDxM(Matrix44 &mat) {
-		return (D3DXMATRIX*)&mat;
+	inline const D3DXMATRIX* ToDxM(const Matrix44 &mat) {
+		return (const D3DXMATRIX*)&mat;
 	}
+
+	// Vector3* -> D3DVECTOR3*
+	inline const D3DXVECTOR3* ToDxV3(const Vector3 &v) {
+		return (const D3DXVECTOR3*)&v;
+	}
+
 
 }

@@ -70,6 +70,7 @@ using namespace common;
 #include "manager/Renderer.h"
 #include "manager/resourcemanager.h"
 #include "manager/maincamera.h"
+#include "manager/lightmanager.h"
 
 
 #pragma comment( lib, "d3d9.lib" )
