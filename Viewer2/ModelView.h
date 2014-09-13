@@ -23,7 +23,6 @@ protected:
 	Matrix44 m_rotateTm;
 	graphic::cSkyBox m_skybox;
 	graphic::cShader m_shader;
-	graphic::cLight m_light;
 	graphic::cGrid2 m_grid;
 
 	bool m_LButtonDown;

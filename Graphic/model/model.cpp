@@ -169,7 +169,6 @@ void cModel::Render(const Matrix44 &tm)
 			m_shadow.Create(256, 256);
 
 		m_shadow.UpdateShadow(*this);
-		//m_shadow.RenderShadowMap();
 	}
 }
 

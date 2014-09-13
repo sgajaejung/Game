@@ -17,9 +17,9 @@ cLight::~cLight()
 
 
 void cLight::Init(TYPE type, 
-	const Vector4 &ambient, // Vector4(0.3, 0.3, 0.3, 1),
-	const Vector4 &diffuse, // Vector4(0.7, 0.7, 0.7, 1)
-	const Vector4 &specular, // Vector4(0,0,0,1)
+	const Vector4 &ambient, // Vector4(1, 1,13, 1),
+	const Vector4 &diffuse, // Vector4(0.2, 0.2, 0.2, 1)
+	const Vector4 &specular, // Vector4(1,1,1,1)
 	const Vector3 &direction) // Vector3(0,-1,0)
 {
 	ZeroMemory(&m_light, sizeof(m_light));

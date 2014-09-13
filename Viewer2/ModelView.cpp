@@ -68,9 +68,8 @@ void CModelView::Init()
 		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
 		true); // true = 활성화 ， false = 비활성화
 
-
-	m_light.Init(cLight::LIGHT_DIRECTIONAL);
-	m_light.Bind(0);
+	// 주 광원 초기화.
+	cLightManager::Get()->GetMainLight().Bind(0);
 
 
 	//m_shader.Create( "../media/shader/hlsl_skinning_using_color.fx", "TShader" );
@@ -109,11 +108,14 @@ void CModelView::Render()
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		GetDevice()->BeginScene();
 
+		cLightManager::Get()->GetMainLight().Bind(0);
+
+
 		GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity) );
 
 		if (m_showSkybox)
 			m_skybox.Render();
-		GetRenderer()->RenderFPS();
+		//GetRenderer()->RenderFPS();
 		//GetRenderer()->RenderGrid();
 		//GetRenderer()->RenderAxis();
 
@@ -149,6 +151,7 @@ void CModelView::Render()
 		cController::Get()->Render();
 
 		// 백그라운드 그리드, 축 출력.
+		GetRenderer()->RenderFPS();
 		GetRenderer()->RenderGrid();
 		GetRenderer()->RenderAxis();
 

@@ -13,7 +13,10 @@ cLightManager::cLightManager()
 	// 기본 방향성 조명 추가. index = 0;
 	cLight mainLight;
 	mainLight.Init(cLight::LIGHT_DIRECTIONAL);
-	mainLight.SetPosition( Vector3(300,300,0) );
+
+	const Vector3 lightPos(300,300,0);
+	mainLight.SetPosition(lightPos);
+	mainLight.SetDirection(-lightPos.Normal()); 
 	AddLight(mainLight);
 
 }
