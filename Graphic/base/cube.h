@@ -26,7 +26,7 @@ namespace graphic
 		void InitCube();
 
 
-	private:
+	protected:
 		cVertexBuffer m_vtxBuff;
 		cIndexBuffer m_idxBuff;
 		Vector3 m_min;

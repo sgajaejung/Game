@@ -10,7 +10,6 @@
 using namespace Gdiplus;
 
 #include "../Graphic/character/teracharacter.h"
-#include "../Graphic/particle/particles.h"
 
 
 DECLARE_TYPE_NAME(cViewer)
@@ -45,6 +44,7 @@ private:
 	graphic::cSphere m_sphere;
 
 	graphic::cParticles m_particles;
+	graphic::cSnow m_snow;
 
 	Vector3 m_light2;
 	Vector3 m_pos;
@@ -148,6 +148,8 @@ bool cViewer::OnInit()
 	m_particles.m_emitPos = Vector3(0,0.1f,0);
 	m_particles.m_velocityVar = 20.f;
 	m_particles.AddCollisionPlane( Plane(Vector3(0,1,0), Vector3(0,0,0)) );
+
+	m_snow.Create( Vector3(-5,-5,-5), Vector3(5,5,5), 256);
 
 
 	// start craft 2
@@ -271,7 +273,8 @@ void cViewer::OnUpdate(const float elapseT)
 	m_character.Move(elapseT);
 	//m_teraCharacter.Move(elapseT);
 
-	m_particles.Move(elapseT);
+	//m_particles.Move(elapseT);
+	m_snow.Move(elapseT);
 
 	BOOST_FOREACH (auto &character, m_chars)
 		character.Move(elapseT);
@@ -311,16 +314,16 @@ void cViewer::OnRender(const float elapseT)
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
 
-		graphic::GetRenderer()->RenderFPS();
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
+		graphic::GetRenderer()->RenderFPS();
 
 		if (m_scene)
 			m_scene->Render(Matrix44::Identity);
 
 		//m_grid.RenderLinelist();
 
-		m_particles.Render();
+		//m_particles.Render();
 
 		m_character.SetTM(m_cube.GetTransform());
 		m_character.Render(Matrix44::Identity);
@@ -329,7 +332,7 @@ void cViewer::OnRender(const float elapseT)
 		BOOST_FOREACH (auto &character, m_chars)
 			character.Render(Matrix44::Identity);
 	
-	
+		m_snow.Render();	
 
 		//m_terrain.Render();
 		//m_cube.Render(matIdentity);

@@ -6,25 +6,28 @@ namespace graphic
 {
 
 
-	class cFrustum
+	class cFrustum : public cCube
 	{
 	public:
 		cFrustum();
 		virtual ~cFrustum();
 
 		bool Create( const Matrix44 &matViewProj );
+		bool Create( const Vector3 &_min, const Vector3 &_max );
 		bool IsIn( const Vector3 &point );
 		bool IsInSphere( const Vector3 &point, float radius );
 		void Render();
 		const Vector3& GetPos() const;
-
+		vector<Plane>& GetPlanes();
+		
 
 	private:
-		Vector3 m_vtx[ 8]; // frustum 정점 좌표
-		Plane m_plane[ 6];	// frustum의 6개 평면
+		bool m_fullCheck;	// IsIn, IsInSphere 함수 호출시 체크범위 default : false
+		vector<Plane> m_plane;	// frustum의 6개 평면
 		Vector3 m_pos; // 절두체 위치
 	};
 
 
-	const Vector3& cFrustum::GetPos() const { return m_pos; }
+	inline const Vector3& cFrustum::GetPos() const { return m_pos; }
+	inline vector<Plane>& cFrustum::GetPlanes() { return m_plane; }
 }

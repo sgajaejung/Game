@@ -23,6 +23,7 @@ namespace graphic
 
 	class cParticles
 	{
+	protected:
 		struct sParticle
 		{
 			bool enable;
@@ -66,6 +67,8 @@ namespace graphic
 		float m_lifeCycle; // default: 1
 		float m_releaseInterval; // default: 1
 		Vector3 m_emitPos; // 0,0,0
+		Vector3 m_emitPosMin;
+		Vector3 m_emitPosMax;
 		int m_numToRelease; // default: 1
 
 		Vector3 m_gravity;
@@ -75,6 +78,7 @@ namespace graphic
 		float m_velocityVar; // default: 1
 
 		vector<sParticle> m_particles;
+		vector<int> m_emptyParticleIndices;
 		vector<sCollisionPlane> m_planes;
 		cVertexBuffer m_vtxBuffer;
 		cTexture *m_texture; // reference

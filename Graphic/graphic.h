@@ -44,9 +44,14 @@ using namespace common;
 #include "base/shadow1.h"
 
 
-
 #include "collision/collision.h"
 #include "collision/collisionmanager.h"
+#include "collision/frustum.h"
+
+
+#include "particle/particles.h"
+#include "particle/snow.h"
+
 
 #include "model/track.h"
 #include "model/mesh.h"

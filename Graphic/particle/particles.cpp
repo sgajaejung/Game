@@ -40,6 +40,7 @@ bool cParticles::Create( const string &textureFileName, const int maxParticle )
 {
 	m_vtxBuffer.Create(maxParticle, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
 	m_particles.resize(maxParticle);
+	m_emptyParticleIndices.resize(maxParticle);
 	m_texture = cResourceManager::Get()->LoadTexture(textureFileName);
 	m_maxParticleCount = maxParticle;
 
@@ -50,21 +51,28 @@ bool cParticles::Create( const string &textureFileName, const int maxParticle )
 void cParticles::Move( const float elapseTime )
 {
 	m_currentTime += elapseTime;
+	if (m_currentTime - m_lastUpdate < 0.05f) // interval을 길게 줄수록 fps가 높아진다.
+		return;
 
 	int count = 0;
+	int emtpyParticleCount = 0;
 
 	// 파티클 움직임 계산
 	for (u_int i=0; i < m_particles.size(); ++i)
 	{
 		sParticle &particle = m_particles[ i];
 		if (!particle.enable)
+		{
+			m_emptyParticleIndices[ emtpyParticleCount++] = i;
 			continue;
+		}
 
 		const float timePassed = m_currentTime - particle.initTime;
 			
 		if (timePassed > m_lifeCycle)
 		{
 			particle.enable = false;
+			m_emptyParticleIndices[ emtpyParticleCount++] = i;
 			continue;
 		}
 
@@ -142,9 +150,11 @@ void cParticles::Move( const float elapseTime )
 
 		for (int i=0; i < m_numToRelease; ++i)
 		{
-			for (u_int i=0; i < m_particles.size(); ++i)
+			if (emtpyParticleCount > 0)
 			{
-				sParticle &particle = m_particles[ i];
+				const int idx = m_emptyParticleIndices[ --emtpyParticleCount];
+
+				sParticle &particle = m_particles[ idx];
 				if (particle.enable) // 비어있는 파티클을 찾는다.
 					continue;
 				
@@ -159,8 +169,15 @@ void cParticles::Move( const float elapseTime )
 
 				particle.initTime = m_currentTime;
 				particle.pos = m_emitPos;
+
+				// 파티클 시작 위치 랜덤.
+				Vector3 randPos;
+				randPos.x = GetRandomMinMax(m_emitPosMin.x, m_emitPosMax.x);
+				randPos.y = GetRandomMinMax(m_emitPosMin.y, m_emitPosMax.y);
+				randPos.z = GetRandomMinMax(m_emitPosMin.z, m_emitPosMax.z);
+				particle.pos += randPos;				
+
 				++count;
-				break;
 			}
 
 			// 최대 파티클 수 를 넘었다면, 추가하는 것을 멈춘다.

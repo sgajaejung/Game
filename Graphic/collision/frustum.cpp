@@ -9,6 +9,8 @@ using namespace graphic;
 
 
 cFrustum::cFrustum()
+:	m_fullCheck(false)
+,	m_plane(6) // 절두체 평면 6개
 {
 }
 
@@ -23,15 +25,7 @@ cFrustum::~cFrustum()
 bool cFrustum::Create( const Matrix44 &matViewProj )
 {
 	// 투영행렬까지 거치면 모든 3차원 월드좌표의 점은 (-1,-1,0) ~ (1,1,1)사이의 값으로 바뀐다.
-	// m_Vtx에 이 동차공간의 경계값을 넣어둔다.
-	m_vtx[0].x = -1.0f;	m_vtx[0].y = -1.0f;	m_vtx[0].z = 0.0f; 
-	m_vtx[1].x =  1.0f;		m_vtx[1].y = -1.0f;	m_vtx[1].z = 0.0f;
-	m_vtx[2].x =  1.0f;		m_vtx[2].y = -1.0f;	m_vtx[2].z = 1.0f;
-	m_vtx[3].x = -1.0f;	m_vtx[3].y = -1.0f;	m_vtx[3].z = 1.0f;
-	m_vtx[4].x = -1.0f;	m_vtx[4].y =  1.0f;		m_vtx[4].z = 0.0f;
-	m_vtx[5].x =  1.0f;		m_vtx[5].y =  1.0f;		m_vtx[5].z = 0.0f;
-	m_vtx[6].x =  1.0f;		m_vtx[6].y =  1.0f;		m_vtx[6].z = 1.0f;
-	m_vtx[7].x = -1.0f;	m_vtx[7].y =  1.0f;		m_vtx[7].z = 1.0f;
+	SetCube(Vector3(-1,-1,0), Vector3(1,1,1) );
 
 	// view * proj의 역행렬을 구한다.
 	Matrix44 matInv = matViewProj.Inverse();
@@ -43,24 +37,56 @@ bool cFrustum::Create( const Matrix44 &matViewProj )
 	// 역행렬( Matrix_view * Matrix_Proj )^-1를 양변에 곱하면
 	// Vertex_최종 * 역행렬( Matrix_view * Matrix_Proj )^-1 = Vertex_World 가 된다.
 	// 그러므로, m_Vtx * matInv = Vertex_world가 되어, 월드좌표계의 프러스텀 좌표를 얻을 수 있다.
-	for( int i = 0; i < 8; i++ )
-		m_vtx[i] = m_vtx[ i] * matInv;
+	sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock();
+	RETV(!vertices, false);
 
-	// 0번과 5번은 프러스텀중 near평면의 좌측상단과 우측하단이므로, 둘의 좌표를 더해서 2로 나누면
+	m_fullCheck = false;
+
+	for (int i = 0; i < 8; i++)
+		vertices[ i].p *= matInv;
+
+	// 2번과 5번은 프러스텀중 near평면의 좌측상단과 우측하단이므로, 둘의 좌표를 더해서 2로 나누면
 	// 카메라의 좌표를 얻을 수 있다.(정확히 일치하는 것은 아니다.)
-	m_pos = ( m_vtx[0] + m_vtx[5] ) / 2.0f;
+	m_pos = ( vertices[2].p + vertices[5].p ) / 2.0f;
 
 	// 얻어진 월드좌표로 프러스텀 평면을 만든다
 	// 벡터가 프러스텀 안쪽에서 바깥쪽으로 나가는 평면들이다.
-	//	D3DXPlaneFromPoints(&m_plane[0], m_Vtx+4, m_Vtx+7, m_Vtx+6);	// 상 평면(top)
-	//	D3DXPlaneFromPoints(&m_plane[1], m_Vtx  , m_Vtx+1, m_Vtx+2);	// 하 평면(bottom)
-	//	D3DXPlaneFromPoints(&m_plane[2], m_Vtx  , m_Vtx+4, m_Vtx+5);	// 근 평면(near)
+	m_plane[3].Init( vertices[ 4].p, vertices[ 5].p, vertices[ 6].p );	// 원 평면(far)
+	m_plane[4].Init( vertices[ 0].p, vertices[ 2].p, vertices[ 6].p );	// 좌 평면(left)
+	m_plane[5].Init( vertices[ 1].p, vertices[ 5].p, vertices[ 7].p );	// 우 평면(right)
 
-	m_plane[3].Init( m_vtx[ 2], m_vtx[ 6], m_vtx[ 7] );	// 원 평면(far)
-	m_plane[4].Init( m_vtx[ 0], m_vtx[ 3], m_vtx[ 7] );	// 좌 평면(left)
-	m_plane[5].Init( m_vtx[ 1], m_vtx[ 5], m_vtx[ 6] );	// 우 평면(right)
+	m_vtxBuff.Unlock();
 
 	return TRUE;
+}
+
+
+//-----------------------------------------------------------------------------//
+// 정육면체의 minimum pos 와 maximum pos 로 절두체를 만든다.
+//-----------------------------------------------------------------------------//
+bool cFrustum::Create( const Vector3 &_min, const Vector3 &_max )
+{
+	SetCube(_min, _max);
+
+	sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock();
+	RETV(!vertices, false);
+
+	m_fullCheck = true;
+
+	m_pos = (_min + _max) / 2.0f;
+
+	// 얻어진 월드좌표로 프러스텀 평면을 만든다
+	// 벡터가 프러스텀 안쪽에서 바깥쪽으로 나가는 평면들이다.
+	m_plane[0].Init( vertices[ 0].p, vertices[ 1].p, vertices[ 2].p );	// 근 평면(near)
+	m_plane[1].Init( vertices[ 0].p, vertices[ 4].p, vertices[ 1].p );	// 윗 평면(top)
+	m_plane[2].Init( vertices[ 2].p, vertices[ 3].p, vertices[ 6].p );	// 아래 평면(bottom)
+
+	m_plane[3].Init( vertices[ 4].p, vertices[ 6].p, vertices[ 7].p );	// 원 평면(far)
+	m_plane[4].Init( vertices[ 0].p, vertices[ 2].p, vertices[ 6].p );	// 좌 평면(left)
+	m_plane[5].Init( vertices[ 1].p, vertices[ 5].p, vertices[ 7].p );	// 우 평면(right)
+
+	m_vtxBuff.Unlock();
+	return true;
 }
 
 
@@ -69,20 +95,16 @@ bool cFrustum::Create( const Matrix44 &matViewProj )
 //-----------------------------------------------------------------------------//
 bool cFrustum::IsIn( const Vector3 &point )
 {
-	float dist;
+	for (int i=0; i < 6; ++i)
+	{
+		// m_fullCheck 가 false 라면 near, top, bottom  평면 체크는 제외 된다.
+		if (!m_fullCheck && (i < 3))
+			continue;
 
-	dist = m_plane[ 3].Distance( point );
-	// plane의 normal벡터가 far로 향하고 있으므로 양수이면 프러스텀의 바깥쪽
-	if (dist > PLANE_EPSILON) 
-		return false;
-	dist = m_plane[ 4].Distance( point );
-	// plane의 normal벡터가 left로 향하고 있으므로 양수이면 프러스텀의 왼쪽
-	if (dist > PLANE_EPSILON) 
-		return false;
-	dist = m_plane[ 5].Distance( point );
-	// plane의 normal벡터가 right로 향하고 있으므로 양수이면 프러스텀의 오른쪽
-	if (dist > PLANE_EPSILON) 
-		return false;
+		const float dist = m_plane[ i].Distance( point );
+		if (dist > PLANE_EPSILON) 
+			return false;
+	}
 
 	return true;
 }
@@ -94,20 +116,18 @@ bool cFrustum::IsIn( const Vector3 &point )
 //-----------------------------------------------------------------------------//
 bool cFrustum::IsInSphere( const Vector3 &point, float radius )
 {
-	float dist;
 
-	dist = m_plane[ 3].Distance( point );
-	// 평면과 중심점의 거리가 반지름보다 크면 프러스텀에 없음
-	if (dist > (radius+PLANE_EPSILON)) 
-		return false;
-	dist = m_plane[ 4].Distance( point );
-	// 평면과 중심점의 거리가 반지름보다 크면 프러스텀에 없음
-	if (dist > (radius+PLANE_EPSILON)) 
-		return false;
-	dist = m_plane[ 5].Distance( point );
-	// 평면과 중심점의 거리가 반지름보다 크면 프러스텀에 없음
-	if (dist > (radius+PLANE_EPSILON)) 
-		return false;
+	for (int i=0; i < 6; ++i)
+	{
+		// m_fullCheck 가 false 라면 near, top, bottom  평면 체크는 제외 된다.
+		if (!m_fullCheck && (i < 3))
+			continue;
+
+		// 평면과 중심점의 거리가 반지름보다 크면 프러스텀에 없음
+		const float dist = m_plane[ i].Distance( point );
+		if (dist > (radius+PLANE_EPSILON)) 
+			return false;
+	}
 
 	return true;
 }
@@ -118,62 +138,64 @@ bool cFrustum::IsInSphere( const Vector3 &point, float radius )
 //-----------------------------------------------------------------------------//
 void cFrustum::Render()
 {
-	WORD	index[] = { 0, 1, 2,
-		0, 2, 3,
-		4, 7, 6,
-		4, 6, 5,
-		1, 5, 6,
-		1, 6, 2,
-		0, 3, 7,
-		0, 7, 4,
-		0, 4, 5,
-		0, 5, 1,
-		3, 7, 6,
-		3, 6, 2 };
+	cCube::Render(Matrix44::Identity);
 
-	D3DMATERIAL9 mtrl;
-	ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
+	//WORD	index[] = { 0, 1, 2,
+	//	0, 2, 3,
+	//	4, 7, 6,
+	//	4, 6, 5,
+	//	1, 5, 6,
+	//	1, 6, 2,
+	//	0, 3, 7,
+	//	0, 7, 4,
+	//	0, 4, 5,
+	//	0, 5, 1,
+	//	3, 7, 6,
+	//	3, 6, 2 };
 
-	typedef struct tagVTX
-	{
-		Vector3 p;
-	} VTX;
+	//D3DMATERIAL9 mtrl;
+	//ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
 
-	VTX vtx[8];
+	//typedef struct tagVTX
+	//{
+	//	Vector3 p;
+	//} VTX;
 
-	for( int i = 0 ; i < 8 ; i++ )
-		vtx[i].p = m_vtx[i];
+	//VTX vtx[8];
 
-	GetDevice()->SetFVF( D3DFVF_XYZ );
-	GetDevice()->SetStreamSource( 0, NULL, 0, sizeof(VTX) );
-	GetDevice()->SetTexture( 0, NULL );
-	GetDevice()->SetIndices( 0 );
-	GetDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	GetDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
-	GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-	GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ONE );
+	//for( int i = 0 ; i < 8 ; i++ )
+	//	vtx[i].p = m_vtx[i];
 
-	// 파란색으로 상,하 평면을 그린다.
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
-	ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
-	mtrl.Diffuse.b = mtrl.Ambient.b = 1.0f;
-	GetDevice()->SetMaterial( &mtrl );
-	GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
+	//GetDevice()->SetFVF( D3DFVF_XYZ );
+	//GetDevice()->SetStreamSource( 0, NULL, 0, sizeof(VTX) );
+	//GetDevice()->SetTexture( 0, NULL );
+	//GetDevice()->SetIndices( 0 );
+	//GetDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+	//GetDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+	//GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
+	//GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
+	//GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ONE );
 
-	// 녹색으로 좌,우 평면을 그린다.
-	ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
-	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-	GetDevice()->SetMaterial( &mtrl );
-	GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index+4*3, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
+	//// 파란색으로 상,하 평면을 그린다.
+	//GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+	//ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
+	//mtrl.Diffuse.b = mtrl.Ambient.b = 1.0f;
+	//GetDevice()->SetMaterial( &mtrl );
+	//GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
 
-	// 붉은색으로 원,근 평면을 그린다.
-	ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
-	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-	GetDevice()->SetMaterial( &mtrl );
-	GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index+8*3, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
+	//// 녹색으로 좌,우 평면을 그린다.
+	//ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
+	//mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
+	//GetDevice()->SetMaterial( &mtrl );
+	//GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index+4*3, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
 
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	//// 붉은색으로 원,근 평면을 그린다.
+	//ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
+	//mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
+	//GetDevice()->SetMaterial( &mtrl );
+	//GetDevice()->DrawIndexedPrimitiveUP( D3DPT_TRIANGLELIST, 0, 8, 4, index+8*3, D3DFMT_INDEX16, vtx, sizeof( vtx[0] ) );
+
+	//GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	//GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
 
 }
