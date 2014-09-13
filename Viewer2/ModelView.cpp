@@ -142,10 +142,8 @@ void CModelView::Render()
 		m_shader.SetVector( "vEyePos", GetMainCamera()->GetEyePos());
 		m_shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
-		// 바닥은 일단 z 버퍼를 쓰지않고 출력한다.
-		//GetDevice()->SetRenderState(D3DRS_ZENABLE, 0);
+		// 바닥 출력. 
 		m_grid.RenderShader(m_shader);
-		//GetDevice()->SetRenderState(D3DRS_ZENABLE, 1);
 
 		// 백그라운드 그리드, 축 출력.
 		GetRenderer()->RenderFPS();
