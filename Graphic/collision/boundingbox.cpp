@@ -27,6 +27,7 @@ void cBoundingBox::SetTransform( const Matrix44 &tm )
 	m_tm = tm;
 }
 
+
 void SATtest( const Vector3& axis, const Vector3 ptSet[8], float& minAlong, float& maxAlong )
 {
 	minAlong=HUGE, maxAlong=-HUGE;
