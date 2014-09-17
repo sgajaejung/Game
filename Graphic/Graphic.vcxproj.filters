@@ -169,6 +169,9 @@
     <ClInclude Include="manager\lightmanager.h">
       <Filter>manager</Filter>
     </ClInclude>
+    <ClInclude Include="base\cube2.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -321,6 +324,9 @@
     </ClCompile>
     <ClCompile Include="manager\lightmanager.cpp">
       <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="base\cube2.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

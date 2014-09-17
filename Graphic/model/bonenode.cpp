@@ -15,7 +15,7 @@ cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &ra
 ,	m_aniEnd(0)
 ,	m_curPlayFrame(0)
 ,	m_incPlayFrame(0)
-,	m_totalPlayTime(0)
+,	m_totalPlayFrame(0)
 ,	m_curPlayTime(0)
 ,	m_incPlayTime(0)
 ,	m_isAni(false)
@@ -38,33 +38,29 @@ cBoneNode::~cBoneNode()
 
 
 // 애니메이션 설정.
-void cBoneNode::SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop)
+void cBoneNode::SetAnimation( const sRawAni &rawAni, const int totalAniFrame, 
+	const bool isLoop )
 {
-	int aniend = 0;
-	if (0 == nAniFrame)
-	{
-		m_totalPlayTime = (int)rawAni.end;
-		aniend = (int)rawAni.end;
-	}
-	else
-	{
-		m_totalPlayTime = nAniFrame;
-		aniend = (int)rawAni.end;
-	}
+	m_aniStart = (int)rawAni.start;
+	m_aniEnd = (int)rawAni.end;
+	m_isLoop = isLoop;
+	m_isAni = true;
 
-	m_aniStart = rawAni.start;
-	m_aniEnd = aniend;
+	m_totalPlayFrame = (0 == totalAniFrame)? rawAni.end : totalAniFrame;
+	m_curPlayFrame = rawAni.start;
+	m_curPlayTime = rawAni.start * 0.03334f;
 	m_incPlayFrame = 0;
 	m_incPlayTime = 0;
 
-	m_isLoop = bLoop;
-	m_isAni = true;
-
-	m_curPlayFrame = rawAni.start;
-	m_curPlayTime = rawAni.start * 0.03334f;
-
 	SAFE_DELETE(m_track)
-	m_track = new cTrack(rawAni);
+	m_track = new cTrack(&rawAni);
+}
+
+
+// 애니메이션 설정.
+void cBoneNode::SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, int totalAniFrame, bool isLoop) //bLoop=false
+{
+	SetAnimation(rawAni, totalAniFrame, isLoop);
 }
 
 
@@ -81,6 +77,7 @@ bool cBoneNode::Move(const float elapseTime)
 
 	if (!m_isAni || !m_track)
 	{
+		// 애니메이션이 없을 때는 계층 구조를 유지하게 한다.
 		UpdateAccTM();
 
 		BOOST_FOREACH (auto p, m_children)
@@ -94,8 +91,8 @@ bool cBoneNode::Move(const float elapseTime)
 	m_curPlayFrame = (int)(m_curPlayTime * 30.f);
 	m_incPlayFrame = (int)(m_incPlayTime * 30.f);
 
-	BOOL ani_loop_end = (m_curPlayFrame > m_aniEnd);	// 에니메이션 끝까지 갔다면 TRUE
-	BOOL ani_end = (!m_isLoop) && (m_incPlayFrame > m_totalPlayTime);	// 총에니메이션 시간이 지났다면 TRUE
+	const bool ani_loop_end = (m_curPlayFrame > m_aniEnd);	// 에니메이션 끝까지 갔다면 TRUE
+	const bool ani_end = (!m_isLoop) && (m_incPlayFrame > m_totalPlayFrame);	// 총에니메이션 시간이 지났다면 TRUE
 
 	if (ani_loop_end || ani_end)
 	{
@@ -133,7 +130,6 @@ bool cBoneNode::Move(const float elapseTime)
 
 	m_aniTM.SetIdentity();
 	m_track->Move( m_curPlayFrame, m_aniTM );
-
 	m_accTM = GetCalculateAniTM();
 
 	if (m_parent)

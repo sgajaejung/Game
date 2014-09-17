@@ -10,7 +10,8 @@ namespace graphic
 		cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawMesh);
 		virtual ~cBoneNode();
 
-		void SetAnimation( const sRawAni &rawAni, int nAniFrame, bool bLoop=false );
+		void SetAnimation( const sRawAni &rawAni, const int totalAniFrame, const bool isLoop=false );
+		void SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, const int totalAniFrame, const bool isLoop=false );
 		void SetAccTM(const Matrix44 &mat);
 		const Matrix44& GetAccTM() const;
 		const Matrix44& GetOffset() const;
@@ -35,7 +36,7 @@ namespace graphic
 		Matrix44 m_offset;	// inverse( m_matWorld )
 		int m_aniStart; // 프래임 시작시간 (프레임)
 		int m_aniEnd; // 프래임 종료시간 (프레임)
-		int m_totalPlayTime; // 총 에니메이션 될 프레임
+		int m_totalPlayFrame; // 총 에니메이션 될 프레임
 
 		int m_curPlayFrame; // 현재 에니메이션 프래임 (AniEnd를 지나면 0으로 초기화된다.)
 		int m_incPlayFrame; // 에니메이션 중인 총 프레임

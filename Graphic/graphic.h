@@ -31,6 +31,7 @@ using namespace common;
 #include "base/box.h"
 #include "base/line.h"
 #include "base/cube.h"
+#include "base/cube2.h"
 #include "base/shader.h"
 #include "base/camera.h"
 #include "base/skybox.h"

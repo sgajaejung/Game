@@ -149,9 +149,9 @@ void CModelView::Render()
 		m_grid.RenderShader(m_shader);
 
 		// 백그라운드 그리드, 축 출력.
-		GetRenderer()->RenderFPS();
 		GetRenderer()->RenderGrid();
 		GetRenderer()->RenderAxis();
+		GetRenderer()->RenderFPS();
 		m_msg.Render();
 
 

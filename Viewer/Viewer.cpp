@@ -165,7 +165,7 @@ bool cViewer::OnInit()
 
 		vector<sActionData> actions;
 		actions.reserve(16);
-		//actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "tiac_normal.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "zealot_stand.ani") );
 		actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zealot_walk.ani") );
 		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_attack.ani") );
 		m_character.SetActionData(actions);

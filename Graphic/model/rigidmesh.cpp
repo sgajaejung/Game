@@ -27,7 +27,7 @@ void cRigidMesh::LoadAnimation( const sRawAni &rawAni )
 {
 	SAFE_DELETE(m_track);
 
-	m_track = new cTrack(rawAni);
+	m_track = new cTrack(&rawAni);
 	m_aniStart = (int)rawAni.start;
 	m_aniEnd = (int)rawAni.end;
 	m_aniFrame = (int)rawAni.start;

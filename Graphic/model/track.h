@@ -4,13 +4,14 @@
 namespace graphic
 {
 
-	//DECLARE_TYPE_NAME_SCOPE(graphic, cTrack)
 	class cTrack 
-		//: public memmonitor::Monitor<cTrack, TYPE_NAME(cTrack)>
 	{
 	public:
-		cTrack(const sRawAni &rawAni);
+		cTrack(const sRawAni *rawAni);
 		virtual ~cTrack();
+
+		bool Load( const sRawAni *rawAni, const bool isContinue=false, 
+			const bool isSmooth=false, const int smoothTime=0 );
 
 		void InitAnimation( const int curFrame = 0 );
 		void Move( const int curFrame, OUT Matrix44 &out );
@@ -26,7 +27,7 @@ namespace graphic
 
 
 	private:
-		const sRawAni &m_rawAni; // reference
+		const sRawAni *m_rawAni; // reference
 		Matrix44 m_matAni;
 		int m_curFrame;
 
@@ -44,7 +45,6 @@ namespace graphic
 		sKeyPos m_TempPos[ 2];
 		sKeyRot m_TempRot[ 2];
 		sKeyScale m_TempScale[ 2];
-
 	};
 
 
