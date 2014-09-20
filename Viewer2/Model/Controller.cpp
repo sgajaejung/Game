@@ -54,7 +54,7 @@ bool cController::LoadFile( const string &fileName )
 
 	case RESOURCE_TYPE::ANIMATION:
 		m_currentAnimationFileName = fileName;
-		if (result = character->SetAnimation(fileName))
+		if (result = character->SetAnimation(fileName, 0, true))
 		{
 			m_animationName.SetText("animation: " + common::GetFileName(fileName));
 		}

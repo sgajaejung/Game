@@ -99,7 +99,11 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 
 
 // 애니메이션 시작.
-bool cModel::SetAnimation( const string &aniFileName)
+bool cModel::SetAnimation( const string &aniFileName, 
+	const int nAniFrame, // = 0
+	const bool isLoop, // = false
+	const bool isBlend // = true
+	)
 {
 	sRawAniGroup *rawAnies = cResourceManager::Get()->LoadAnimation(aniFileName);
 	RETV(!rawAnies, false);
@@ -108,7 +112,7 @@ bool cModel::SetAnimation( const string &aniFileName)
 
 	if (MODEL_TYPE::SKIN == m_type)
 	{
-		m_bone->SetAnimation(*rawAnies, 0);
+		m_bone->SetAnimation(*rawAnies, nAniFrame, isLoop, isBlend);
 	}
 	else
 	{

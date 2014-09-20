@@ -18,8 +18,8 @@ namespace graphic
 		};
 
 		void Init(TYPE type, 
-			const Vector4 &ambient = Vector4(1,1,1, 1),
-			const Vector4 &diffuse = Vector4(1,1,1, 1),
+			const Vector4 &ambient = Vector4(1,1,1,1),
+			const Vector4 &diffuse = Vector4(1,1,1,1),
 			const Vector4 &specular = Vector4(1,1,1,1),
 			const Vector3 &direction = Vector3(0,-1,0));
 

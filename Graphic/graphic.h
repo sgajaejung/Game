@@ -55,6 +55,7 @@ using namespace common;
 
 
 #include "model/track.h"
+#include "model/blendtrack.h"
 #include "model/mesh.h"
 #include "model/rigidmesh.h"
 #include "model/skinnedmesh.h"

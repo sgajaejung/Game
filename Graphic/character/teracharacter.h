@@ -37,7 +37,8 @@ namespace graphic
 			const string &legModelFileName,
 			const string &tailModelFileName );
 
-		virtual bool SetAnimation( const string &aniFileName ) override;
+		virtual bool SetAnimation( const string &aniFileName, const int nAniFrame=0,  
+			const bool isLoop=false, const bool isBlend=true ) override;
 		void SetBodyModel( const string &fileName );
 		void SetHandModel( const string &fileName );
 		void SetLegModel( const string &fileName );

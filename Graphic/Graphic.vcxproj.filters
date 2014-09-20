@@ -172,6 +172,9 @@
     <ClInclude Include="base\cube2.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="model\blendtrack.h">
+      <Filter>model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -327,6 +330,9 @@
     </ClCompile>
     <ClCompile Include="base\cube2.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="model\blendtrack.cpp">
+      <Filter>model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

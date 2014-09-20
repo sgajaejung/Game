@@ -53,38 +53,40 @@ cBoneMgr::~cBoneMgr()
 
 
 // 에니메이션 설정.
-void cBoneMgr::SetAnimation( const sRawAniGroup &rawAnies, int nAniFrame )
+void cBoneMgr::SetAnimation( const sRawAniGroup &rawAnies, 
+	const int nAniFrame,  // =0
+	const bool isLoop, // = false
+	const bool isBlend  //= true
+	)
 {
 	m_deltaTime = 0;
-	SetAnimationRec( m_root, rawAnies, nAniFrame );
+	SetAnimationRec( m_root, rawAnies, nAniFrame, isLoop, isBlend );
 }
 
 
 // 애니메이션 설정.
-void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, int nAniFrame )
+void cBoneMgr::SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAnies, const int nAniFrame,
+	const bool isLoop, const bool isBlend)
 {
 	RET(!node);
 	RET(node->GetId() >= (int)rawAnies.anies.size());
 
-	if (!rawAnies.bones.empty() 
-		&& (node->GetId() >= 0)
-		)
+	if (node->GetId() >= 0)
 	{
-		//node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, true );
-		node->SetAnimation( rawAnies.bones[ node->GetId()], rawAnies.anies[ node->GetId()], nAniFrame, true );
-	}
-
-	// animation exporter V17 이후부터 적용됨.
-	// 애니메이션이 업데이트 될 때, bone의 localTm 을 업데이트 시킨다.
-	if (!rawAnies.bones.empty() &&  (node->GetId() >= 0))
-	{
-		if ((int)rawAnies.bones.size() > node->GetId())
-			node->SetLocalTM( rawAnies.bones[ node->GetId()].localTm );
+		if (rawAnies.bones.empty())
+		{
+			node->SetAnimation( rawAnies.anies[ node->GetId()], nAniFrame, isLoop, false);
+		}
+		else
+		{
+			node->SetAnimation( rawAnies.bones[ node->GetId()], rawAnies.anies[ node->GetId()], 
+				nAniFrame, isLoop, isBlend );
+		}
 	}
 
 	BOOST_FOREACH (auto p, node->GetChildren())
 	{
-		SetAnimationRec((cBoneNode*)p, rawAnies, nAniFrame );
+		SetAnimationRec((cBoneNode*)p, rawAnies, nAniFrame, isLoop, isBlend);
 	}
 }
 
@@ -97,7 +99,7 @@ void cBoneMgr::SetCurrentAnimationFrame(const int curFrame)
 			p->SetCurrentFrame(curFrame);
 	}
 
-	// 교정된 프래임 위치로 애니메이션 시킨다.
+	// 교정 된 프래임 위치로 애니메이션 시킨다.
 	m_root->Move(0);
 }
 
@@ -254,6 +256,14 @@ void cBoneMgr::SetBoundingBoxIndex(cBoneNode *node, OUT map<int, int> &boneIndic
 void cBoneMgr::SetAnimationOption(DWORD option)
 {
 	BOOST_FOREACH (auto &bone, m_bones)
-		bone->SetAnimationOption(option);
+		bone->GetTrack()->SetAnimationOption(option);
 }
 
+
+// BoneNode 를 업데이트해서 palette 를 업데이트 한다.
+// 애니메이션 하지 않고 행렬만 업데이트 된다.
+void cBoneMgr::UpdatePalette()
+{
+	BOOST_FOREACH (auto &bone, m_bones)
+		bone->UpdateAccTM();
+}

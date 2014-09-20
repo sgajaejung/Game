@@ -167,7 +167,7 @@ bool cViewer::OnInit()
 		actions.reserve(16);
 		actions.push_back( sActionData(CHARACTER_ACTION::NORMAL, "zealot_stand.ani") );
 		actions.push_back( sActionData(CHARACTER_ACTION::RUN, "zealot_walk.ani") );
-		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "tiac_attack.ani") );
+		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "zealot_attack.ani") );
 		m_character.SetActionData(actions);
 
 		m_character.Action( CHARACTER_ACTION::RUN );
@@ -288,14 +288,19 @@ void cViewer::OnUpdate(const float elapseT)
 		|| GetAsyncKeyState(VK_UP)
 		|| GetAsyncKeyState(VK_DOWN))
 	{
-		m_character.Action(graphic::CHARACTER_ACTION::RUN);
+		if (!GetAsyncKeyState(VK_SPACE))
+			m_character.Action(graphic::CHARACTER_ACTION::RUN);
 	}
 	else
 	{
-		m_character.Action(graphic::CHARACTER_ACTION::NORMAL);
-	}	
+		if (!GetAsyncKeyState(VK_SPACE))
+			m_character.Action(graphic::CHARACTER_ACTION::NORMAL);
+	}
 
-
+	if (GetAsyncKeyState(VK_SPACE))
+	{
+		m_character.Action(graphic::CHARACTER_ACTION::ATTACK);
+	}
 }
 
 

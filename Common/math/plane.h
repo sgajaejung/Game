@@ -1,3 +1,4 @@
+// 평면 클래스.
 #pragma once
 
 

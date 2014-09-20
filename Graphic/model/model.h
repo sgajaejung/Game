@@ -31,7 +31,8 @@ namespace graphic
 		cMesh* GetMesh(const int idx);
 
 		// Animation
-		virtual bool SetAnimation(const string &aniFileName);
+		virtual bool SetAnimation(const string &aniFileNameconst, const int nAniFrame=0,  
+			const bool isLoop=false, const bool isBlend=true);
 		cBoneMgr* GetBoneMgr();
 		cMesh* FindMesh(const string &meshName);
 		sRawAniGroup* GetCurrentAnimation();

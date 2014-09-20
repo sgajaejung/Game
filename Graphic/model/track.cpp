@@ -13,12 +13,10 @@ cTrack::cTrack(const sRawAni *rawAni) :
 ,	m_keyScaleIdx(-1)
 {
 	InitAnimation();
-
 }
 
 cTrack::~cTrack()
 {
-
 }
 
 
@@ -198,69 +196,11 @@ void cTrack::InitAnimation(const int curFrame ) // curFrame=0
 
 
 // 에니메이션 데이타 로드.
-// isContinue : TRUE이면 전 프레임에서 계속 에니메이션 된다.
-// isSmooth: 에니메이션을 새로 로드할때 이미 에니메이션 중이라면 새에니메이션과
-//			보간할지 여부를 가리킴
-// smoothTime : 보간시간
-bool cTrack::Load( const sRawAni *rawAni, 
-	const bool isContinue, // false
-	const bool isSmooth,  // false
-	const int smoothTime // 0
-	)
+// 에니메이션을 처음상태로 놓는다.
+bool cTrack::Load( const sRawAni *rawAni )
 {
-
-	if (isSmooth && m_rawAni)
-	{
-		sKeyPos pos[ 2];
-		sKeyRot rot[ 2];
-		sKeyScale scale[ 2];
-
-		// 현재 애니메이션 정보를 가져온다.
-		rot[ 0].t = 0;
-		rot[ 0].q = Quaternion(0,0,0,1);
-		GetRotKey( m_curFrame, rot[ 0].q );
-		pos[ 0].t = 0;
-		pos[ 0].p = Vector3( 0, 0, 0 );
-		GetPosKey( m_curFrame, pos[ 0].p );
-		scale[ 0].t = 0;
-		scale[ 0].s = Vector3( 1, 1, 1 );
-		GetScaleKey( m_curFrame, scale[ 0].s );
-
-		// 두번째 보간될 애니메이션 정보를 가져온다.
-		m_keyPosIdx = 1;
-		m_keyRotIdx = 1;
-		m_keyScaleIdx = 1;
-
-		pos[ 1] = rawAni->pos[ 0];
-		rot[ 1] = rawAni->rot[ 0];
-		scale[ 1] = rawAni->scale[ 0];
-		pos[ 1].t = (float)smoothTime;
-		rot[ 1].t = (float)smoothTime;
-		scale[ 1].t = (float)smoothTime;
-
-		memcpy( m_TempPos, pos, sizeof(pos) );
-		memcpy( m_TempScale, scale, sizeof(scale) );
-		memcpy( m_TempRot, rot, sizeof(rot) );
-
-		m_curKeyPos[ 0] = &m_TempPos[ 0];
-		m_curKeyRot[ 0] = &m_TempRot[ 0];
-		m_curKeyScale[ 0] = &m_TempScale[ 0];
-		m_curKeyPos[ 1] = &m_TempPos[ 1];
-		m_curKeyRot[ 1] = &m_TempRot[ 1];
-		m_curKeyScale[ 1] = &m_TempScale[ 1];
-
-		// 보간된후 0으로 초기화 된다. 
-		// 보간중 다시 보간되면 문제가 발생할수 있기때문에 초기화 된다.
-		m_curFrame = 0;
-		m_rawAni = rawAni;
-	}
-	else
-	{
-		m_rawAni = rawAni;
-		if (!isContinue)
-			InitAnimation(); // 에니메이션을 처음상태로 놓는다.
-	}
-
+	m_rawAni = rawAni;	
+	InitAnimation(); 
 	return true;
 }
 

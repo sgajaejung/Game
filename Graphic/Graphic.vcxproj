@@ -107,6 +107,7 @@
     <ClInclude Include="manager\maincamera.h" />
     <ClInclude Include="manager\Renderer.h" />
     <ClInclude Include="manager\resourcemanager.h" />
+    <ClInclude Include="model\blendtrack.h" />
     <ClInclude Include="model\bonemgr.h" />
     <ClInclude Include="model\bonenode.h" />
     <ClInclude Include="model\mesh.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="manager\maincamera.cpp" />
     <ClCompile Include="manager\Renderer.cpp" />
     <ClCompile Include="manager\resourcemanager.cpp" />
+    <ClCompile Include="model\blendtrack.cpp" />
     <ClCompile Include="model\bonemgr.cpp" />
     <ClCompile Include="model\bonenode.cpp" />
     <ClCompile Include="model\mesh.cpp" />

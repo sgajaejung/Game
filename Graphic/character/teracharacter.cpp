@@ -62,18 +62,22 @@ bool cTeraCharacter::Create(
 
 
 // 에니메이션
-bool cTeraCharacter::SetAnimation( const string &aniFileName )
+bool cTeraCharacter::SetAnimation( const string &aniFileName,
+	const int nAniFrame, // =0,  
+	const bool isLoop, // =false, 
+	const bool isBlend // =true
+	)
 {
 	if (m_models[ TERA_MODEL::BODY])
-		m_models[ TERA_MODEL::BODY]->SetAnimation(aniFileName);
+		m_models[ TERA_MODEL::BODY]->SetAnimation(aniFileName, nAniFrame, isLoop, isBlend);
 	if (m_models[ TERA_MODEL::HAND])
-		m_models[ TERA_MODEL::HAND]->SetAnimation(aniFileName);
+		m_models[ TERA_MODEL::HAND]->SetAnimation(aniFileName, nAniFrame, isLoop, isBlend);
 	if (m_models[ TERA_MODEL::LEG])
-		m_models[ TERA_MODEL::LEG]->SetAnimation(aniFileName);
+		m_models[ TERA_MODEL::LEG]->SetAnimation(aniFileName, nAniFrame, isLoop, isBlend);
 
 	if (m_models[ TERA_MODEL::FACE])
 	{
-		//m_models[ TERA_MODEL::FACE]->SetAnimation("popori_face_wait.ani");
+		//m_models[ TERA_MODEL::FACE]->SetAnimation("popori_face_wait.ani", 0, true);
 		m_models[ TERA_MODEL::FACE]->GetBoneMgr()->SetAnimationOption( 0x01 );
 	}
 
@@ -84,7 +88,10 @@ bool cTeraCharacter::SetAnimation( const string &aniFileName )
 void cTeraCharacter::Render(const Matrix44 &tm)
 {
 	if (m_models[ TERA_MODEL::BODY])
+	{
+		m_models[ TERA_MODEL::BODY]->SetRenderBone(m_isRenderBone);
 		m_models[ TERA_MODEL::BODY]->Render(m_TM*tm);
+	}
 	if (m_models[ TERA_MODEL::HAND])
 		m_models[ TERA_MODEL::HAND]->Render(m_TM*tm);
 	if (m_models[ TERA_MODEL::LEG])
@@ -109,18 +116,28 @@ bool cTeraCharacter::Move(const float elapseTime)
 		m_models[ TERA_MODEL::BODY]->Move(elapseTime);
 
 	if (m_faceNeckNode)
-		m_faceNeckNode->SetLocalTM( m_bodyNeckNode->GetAccTM() );
+	{
+		Matrix44 s; // 머리가 커서 머리와 몸이 분리되어 보인다. 일단 이렇게 처리함.
+		s.SetScale(Vector3(0.97f, 0.97f, 0.97f));
+		m_faceNeckNode->UpdateLocalTM( s * m_bodyNeckNode->GetAccTM() );
+	}
 	if (m_faceFaceNode)
-		m_faceFaceNode->SetLocalTM( m_bodyFaceNode->GetCalculateAniTM() );
+		m_faceFaceNode->UpdateLocalTM( m_bodyFaceNode->GetCalculateAniTM() );
 
 	if (m_models[ TERA_MODEL::FACE])
-		m_models[ TERA_MODEL::FACE]->Move(elapseTime);
+	{
+		m_models[ TERA_MODEL::FACE]->GetBoneMgr()->UpdatePalette();
+		//m_models[ TERA_MODEL::FACE]->Move(elapseTime);
+	}
 
 	if (m_hairHairNode)
-		m_hairHairNode->SetLocalTM( m_faceFaceNode->GetAccTM() );
+		m_hairHairNode->UpdateLocalTM( m_faceFaceNode->GetAccTM() );
 
 	if (m_models[ TERA_MODEL::HAIR])
-		m_models[ TERA_MODEL::HAIR]->Move(elapseTime);
+	{
+		//m_models[ TERA_MODEL::HAIR]->Move(elapseTime);
+		m_models[ TERA_MODEL::HAIR]->GetBoneMgr()->UpdatePalette();
+	}
 
 	return true;
 }
@@ -181,6 +198,7 @@ void cTeraCharacter::SetFaceModel( const string &fileName )
 	}
 
 	m_models[ TERA_MODEL::FACE]->Create(fileName);
+	m_models[ TERA_MODEL::FACE]->GetBoneMgr()->SetAnimationOption( 0x01 );
 
 	m_faceNeckNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Neck" );
 	m_faceFaceNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Face" );

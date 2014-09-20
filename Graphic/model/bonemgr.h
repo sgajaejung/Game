@@ -11,13 +11,14 @@ namespace graphic
 		cBoneMgr(const int id, const sRawMeshGroup &rawMeshes);
 		virtual ~cBoneMgr();
 
-		void SetAnimation( const sRawAniGroup &rawAnies, int nAniFrame );
-		void SetCurrentAnimationFrame(const int curFrame);
+		void SetAnimation( const sRawAniGroup &rawAnies, const int nAniFrame=0,  
+			const bool isLoop=false, const bool isBlend=true);
 
 		bool Move(const float elapseTime);
 		void Render(const Matrix44 &parentTm);
 		//void RenderShader(cShader &shader, const Matrix44 &parentTm);
 
+		void UpdatePalette();
 		void RenderBoundingBox(const Matrix44 &parentTm);
 		void Clear();
 		cBoneNode* GetRoot();
@@ -27,10 +28,12 @@ namespace graphic
 		vector<Matrix44>& GetPalette();
 		vector<cCube>& GetBoundingBoxes();
 		void SetAnimationOption(DWORD option);
+		void SetCurrentAnimationFrame(const int curFrame);
 
 
 	protected:
-		void SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAni, int nAniFrame );
+		void SetAnimationRec( cBoneNode *node, const sRawAniGroup &rawAni, const int nAniFrame,
+			const bool isLoop, const bool isBlend);
 		void CreateBoundingBox(const sRawMeshGroup &rawMeshes);
 		void SetBoundingBoxIndex(cBoneNode *node, OUT map<int, int> &boneIndices, const int boneIdx=-1);
 

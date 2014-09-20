@@ -54,7 +54,7 @@ void cLight::SetPosition( const Vector3 &pos )
 // lightPos : 광원의 위치가 저장되어 리턴.
 // view : 광원에서 모델을 바라보는 뷰 행렬
 // proj : 광원에서 모델을 바라보는 투영 행렬
-// tt : 투영 좌표에서 텍스쳐 좌표를 변환하는 행렬.
+// tt : 투영 좌표에서 텍스쳐 좌표로 변환하는 행렬.
 void cLight::GetShadowMatrix( const Vector3 &modelPos, 
 	OUT Vector3 &lightPos, OUT Matrix44 &view, OUT Matrix44 &proj, 
 	OUT Matrix44 &tt )

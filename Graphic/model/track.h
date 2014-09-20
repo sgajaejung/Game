@@ -10,25 +10,24 @@ namespace graphic
 		cTrack(const sRawAni *rawAni);
 		virtual ~cTrack();
 
-		bool Load( const sRawAni *rawAni, const bool isContinue=false, 
-			const bool isSmooth=false, const int smoothTime=0 );
+		bool Load( const sRawAni *rawAni );
 
 		void InitAnimation( const int curFrame = 0 );
 		void Move( const int curFrame, OUT Matrix44 &out );
 		int GetCurrentFrame() const;
 		void SetCurrentFramePos( const int curFrame );
 
-
-	protected:
 		bool GetPosKey( const int curFrame, OUT Vector3 &out );
 		bool GetRotKey( const int curFrame, OUT Quaternion &out );
 		bool GetScaleKey( const int curFrame, OUT Vector3 &out );
+
+
+	protected:
 		inline float GetAlpha( float f1, float f2, float frame ) const;
 
 
 	private:
 		const sRawAni *m_rawAni; // reference
-		Matrix44 m_matAni;
 		int m_curFrame;
 
 		// 에니메이션의 다음 Key index를 나타낸다.
@@ -40,11 +39,6 @@ namespace graphic
 		sKeyPos *m_curKeyPos[ 2];
 		sKeyRot *m_curKeyRot[ 2];
 		sKeyScale *m_curKeyScale[ 2];
-
-		// 새 에니메이션과 보간을 위해 필요함
-		sKeyPos m_TempPos[ 2];
-		sKeyRot m_TempRot[ 2];
-		sKeyScale m_TempScale[ 2];
 	};
 
 

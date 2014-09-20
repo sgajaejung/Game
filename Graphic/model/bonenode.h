@@ -10,42 +10,34 @@ namespace graphic
 		cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawMesh);
 		virtual ~cBoneNode();
 
-		void SetAnimation( const sRawAni &rawAni, const int totalAniFrame, const bool isLoop=false );
-		void SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, const int totalAniFrame, const bool isLoop=false );
-		void SetAccTM(const Matrix44 &mat);
-		const Matrix44& GetAccTM() const;
-		const Matrix44& GetOffset() const;
-		Matrix44 GetCalculateAniTM() const;
-		void SetOffset(const Matrix44 &mat);
+		void SetAnimation( const sRawAni &rawAni, const int totalAniFrame, 
+			const bool isLoop=false, const bool isBlend=true );
+
+		void SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, 
+			const int totalAniFrame, const bool isLoop=false, const bool isBlend=true );
 
 		virtual bool Move(const float elapseTime) override;
 		virtual void Render(const Matrix44 &parentTm) override;
 
+		void SetAccTM(const Matrix44 &mat);
+		const Matrix44& GetAccTM() const;
+		const Matrix44& GetOffset() const;
+		Matrix44 GetCalculateAniTM();
+		void SetOffset(const Matrix44 &mat);
+		void UpdateLocalTM(const Matrix44 &tm);
+
 		int GetCurrentFrame() const;
-		int GetPlayFrame() const;
 		void SetCurrentFrame(const int curFrame);
 		void UpdateAccTM();
-		void SetAnimationOption(DWORD option);
 		cMesh* GetMesh();
+		cBlendTrack* GetTrack();
 
 
 	private:
-		cTrack *m_track;
-		vector<Matrix44> &m_palette;
+		vector<Matrix44> &m_palette; // 원본은 cBoneMgr에 있음.
 		Matrix44 m_accTM;	// 누적된 TM
 		Matrix44 m_offset;	// inverse( m_matWorld )
-		int m_aniStart; // 프래임 시작시간 (프레임)
-		int m_aniEnd; // 프래임 종료시간 (프레임)
-		int m_totalPlayFrame; // 총 에니메이션 될 프레임
-
-		int m_curPlayFrame; // 현재 에니메이션 프래임 (AniEnd를 지나면 0으로 초기화된다.)
-		int m_incPlayFrame; // 에니메이션 중인 총 프레임
-		float m_curPlayTime; // 현재 애니메이션 시간 (m_aniEnd 에 도달하면 0 이 된다.)
-		float m_incPlayTime; // 현재 애니메이션 시간 (총 시간)
-
-		bool m_isAni; // TRUE일경우만 에니메이션이 된다.
-		bool m_isLoop; // 에니메이션 반복 여부
-		DWORD m_option; // 0x01 = 애니메이션에서 이동 정보는 무시한다.
+		cBlendTrack *m_track;
 
 		// debug 용.
 		cMesh *m_mesh;
@@ -56,8 +48,6 @@ namespace graphic
 	inline const Matrix44& cBoneNode::GetAccTM() const { return m_accTM; }
 	inline const Matrix44& cBoneNode::GetOffset() const { return m_offset; }
 	inline void cBoneNode::SetOffset(const Matrix44 &mat) { m_offset = mat; }
-	inline int cBoneNode::GetCurrentFrame() const { return m_curPlayFrame; }
-	inline int cBoneNode::GetPlayFrame() const { return m_incPlayFrame; }
-	inline void cBoneNode::SetAnimationOption(DWORD option) { m_option = option; }
 	inline cMesh* cBoneNode::GetMesh() { return m_mesh; }
+	inline cBlendTrack* cBoneNode::GetTrack() { return m_track; }
 }

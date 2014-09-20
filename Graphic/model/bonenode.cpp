@@ -11,19 +11,11 @@ cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &ra
 ,	m_track(NULL)
 ,	m_mesh(NULL)
 ,	m_palette(palette)
-,	m_aniStart(0)
-,	m_aniEnd(0)
-,	m_curPlayFrame(0)
-,	m_incPlayFrame(0)
-,	m_totalPlayFrame(0)
-,	m_curPlayTime(0)
-,	m_incPlayTime(0)
-,	m_isAni(false)
-,	m_isLoop(false)
-,	m_option(0)
 {
 	m_offset = rawBone.worldTm.Inverse();
 	m_localTM = rawBone.localTm;
+
+	m_track = new cBlendTrack();
 
 	// debug 용
 	m_mesh = new cMesh(id, rawBone);
@@ -37,30 +29,24 @@ cBoneNode::~cBoneNode()
 }
 
 
-// 애니메이션 설정.
-void cBoneNode::SetAnimation( const sRawAni &rawAni, const int totalAniFrame, 
-	const bool isLoop )
+void cBoneNode::SetAnimation( const sRawAni &rawAni, 
+	const int totalAniFrame,  //= 0;
+	const bool isLoop, //bLoop=false
+	const bool isBlend // true
+	)
 {
-	m_aniStart = (int)rawAni.start;
-	m_aniEnd = (int)rawAni.end;
-	m_isLoop = isLoop;
-	m_isAni = true;
-
-	m_totalPlayFrame = (0 == totalAniFrame)? rawAni.end : totalAniFrame;
-	m_curPlayFrame = rawAni.start;
-	m_curPlayTime = rawAni.start * 0.03334f;
-	m_incPlayFrame = 0;
-	m_incPlayTime = 0;
-
-	SAFE_DELETE(m_track)
-	m_track = new cTrack(&rawAni);
+	m_track->PlayAnimation(m_localTM, rawAni, totalAniFrame, isLoop, isBlend);
 }
 
 
 // 애니메이션 설정.
-void cBoneNode::SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, int totalAniFrame, bool isLoop) //bLoop=false
+void cBoneNode::SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, 
+	const int totalAniFrame,  //= 0;
+	const bool isLoop, //bLoop=false
+	const bool isBlend // true
+	)
 {
-	SetAnimation(rawAni, totalAniFrame, isLoop);
+	m_track->PlayAnimation(rawBone.localTm, rawAni, totalAniFrame, isLoop, isBlend);
 }
 
 
@@ -68,75 +54,25 @@ void cBoneNode::SetAnimation( const sRawBone &rawBone, const sRawAni &rawAni, in
 bool cBoneNode::Move(const float elapseTime)
 {
 	if (m_id < 0)
-	{ // 최상위 루트 노드.
+	{ // 최상위 루트 노드일 때는 애니메이션 처리를 하지 않는다.
 		BOOST_FOREACH (auto p, m_children)
 			p->Move( elapseTime );
 		return true;
 	}
 
-
-	if (!m_isAni || !m_track)
-	{
-		// 애니메이션이 없을 때는 계층 구조를 유지하게 한다.
-		UpdateAccTM();
-
-		BOOST_FOREACH (auto p, m_children)
-			p->Move( elapseTime );
-
+	// 애니메이션 중이 아니면 종료.
+	if (!m_track || (m_track && !m_track->IsAnimation()))
 		return true;
-	}
 
-	m_curPlayTime += elapseTime;
-	m_incPlayTime += elapseTime;
-	m_curPlayFrame = (int)(m_curPlayTime * 30.f);
-	m_incPlayFrame = (int)(m_incPlayTime * 30.f);
-
-	const bool ani_loop_end = (m_curPlayFrame > m_aniEnd);	// 에니메이션 끝까지 갔다면 TRUE
-	const bool ani_end = (!m_isLoop) && (m_incPlayFrame > m_totalPlayFrame);	// 총에니메이션 시간이 지났다면 TRUE
-
-	if (ani_loop_end || ani_end)
+	// 애니메이션 행렬 계산.
+	if (m_track->Move(elapseTime, m_TM, m_aniTM, m_accTM))
 	{
-		// 보간에니메이션이 종료된후 반복 에니메이션이라면
-		// 보간없이 에니메이션을 처음으로 돌린다.
-		if (m_isLoop)
-		{
-			m_curPlayFrame = m_aniStart;
-			m_curPlayTime = m_aniStart * 0.03334f;
-			m_track->InitAnimation(m_aniStart);
-		}
-		else
-		{
-			// 반복 에니메이션이 아니라면 
-			// 총 에니메이션 시간이 지나면 에니메이션을 종료하고 FALSE를 리턴한다.
-			// 그렇지 않다면 에니메이션을 처음으로 돌린다.				
-			if (ani_loop_end)
-			{
-				m_curPlayFrame = m_aniStart;
-				m_curPlayTime = m_aniStart * 0.03334f;
-
-				// 총 에니메이션이 끝나지 않았다면 에니메이션 정보를 처음으로 되돌린다.
-				// 총 에니메이션이 끝났다면 정보를 되돌리지 않고 마지막 프레임을 향하게 내버려둔다.
-				// 다음 에니메이션에서 보간되기 위해서 마지막 프레임으로 두어야 한다.
-				if (!ani_end)
-					m_track->InitAnimation(m_aniStart);
-			}
-			if (ani_end)
-			{
-				m_isAni = false;
-				return false;
-			}
-		}
+		if (m_parent)
+			m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
+		m_palette[ m_id] = m_offset * m_accTM;
 	}
 
-	m_aniTM.SetIdentity();
-	m_track->Move( m_curPlayFrame, m_aniTM );
-	m_accTM = GetCalculateAniTM();
-
-	if (m_parent)
-		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
-
-	m_palette[ m_id] = m_offset * m_accTM;
-
+	// 자식 노드 애니메이션 처리.
 	BOOST_FOREACH (auto p, m_children)
 		p->Move( elapseTime );
 
@@ -144,10 +80,12 @@ bool cBoneNode::Move(const float elapseTime)
 }
 
 
+// 뼈 노드 출력
 void cBoneNode::Render(const Matrix44 &parentTm)
 {
 	RET(!m_mesh);
 
+	// 본 노드 메쉬는 world 좌표계로 되어있기 때문에 그냥 그리면 된다.
 	if (m_track)
 		m_mesh->Render(m_offset * m_accTM * parentTm);
 	else
@@ -158,43 +96,56 @@ void cBoneNode::Render(const Matrix44 &parentTm)
 }
 
 
-void cBoneNode::SetCurrentFrame(const int curFrame) 
+void cBoneNode::SetCurrentFrame(const int curFrame)
 { 
-	m_curPlayTime = curFrame / 30.f;
-	m_curPlayFrame = curFrame; 
-	if (m_track)
-		m_track->SetCurrentFramePos(curFrame);
+	RET(!m_track);
+
+	m_track->SetCurrentFrame(curFrame, m_TM, m_aniTM, m_accTM);
+
+	// 애니메이션 행렬 업데이트. 
+	if (m_id >= 0)
+	{
+		if (m_parent)
+			m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
+		m_palette[ m_id] = m_offset * m_accTM;
+	}
 }
 
 
-// m_accTM 을 업데이트 한다.
+// m_accTM 을 업데이트 하고, 팔레트를 업데이트 한다.
 void cBoneNode::UpdateAccTM()
 {
-	m_accTM = m_localTM * m_aniTM * m_TM;
+	RET(!m_track);
+	RET(m_id < 0);
+
+	m_track->GetCalculateTM(m_localTM, m_aniTM, m_TM, m_accTM);
+
 	if (m_parent)
 		m_accTM = m_accTM * ((cBoneNode*)m_parent)->m_accTM;
 	m_palette[ m_id] = m_offset * m_accTM;
 }
 
 
-Matrix44 cBoneNode::GetCalculateAniTM() const
+Matrix44 cBoneNode::GetCalculateAniTM()
 {
-	Matrix44 tm = m_localTM * m_aniTM * m_TM;
+	RETV(!m_track, Matrix44::Identity);
+	m_track->GetCalculateTM(m_localTM, m_aniTM, m_TM, m_accTM);
+	return m_accTM;
+}
 
-	// 만약 pos키값이 없으면 local TM의 좌표를 사용한다
-	if ((m_option&0x01) || 
-		( m_aniTM._41 == 0.0f && m_aniTM._42 == 0.0f && m_aniTM._43 == 0.0f ))
-	{
-		tm._41 = m_localTM._41;
-		tm._42 = m_localTM._42;
-		tm._43 = m_localTM._43;
-	}
-	else	// pos키값을 좌표값으로 적용한다(이렇게 하지 않으면 TM의 pos성분이 두번적용된다)
-	{
-		tm._41 = m_aniTM._41;
-		tm._42 = m_aniTM._42;
-		tm._43 = m_aniTM._43;
-	}
 
-	return tm;
+int cBoneNode::GetCurrentFrame() const
+{
+	RETV(!m_track, 0);
+	return m_track->GetCurrentFrame();
+}
+
+
+// cBlendTrack 에서 localTM 을 계산하고 있기 때문에
+// cBlendTrack 값도 바꿔줘야 한다.
+void cBoneNode::UpdateLocalTM(const Matrix44 &tm)
+{
+	RET(!m_track);
+	SetLocalTM(tm);
+	m_track->UpdateLocalTM(tm);
 }
