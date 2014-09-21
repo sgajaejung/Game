@@ -86,7 +86,7 @@ void cSurface::End()
 }
 
 
-// 서피스 출력.
+// 서피스 출력. 디버깅 용 이다.
 void cSurface::Render()
 {
 	GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);

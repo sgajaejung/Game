@@ -33,7 +33,7 @@ namespace common
 		void	SetProjection( const float fov, const float aspect, const float nearPlane, const float farPlane );
 		Quaternion GetQuaternion() const;
 		Matrix44 Inverse() const;
-		void Transpose();
+		Matrix44& Transpose();
 
 		Matrix44 operator * ( const Matrix44& rhs ) const;
 		Matrix44& operator *= ( const Matrix44& rhs );

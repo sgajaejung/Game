@@ -70,6 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="action\action.h" />
+    <ClInclude Include="base\billboard.h" />
     <ClInclude Include="base\box.h" />
     <ClInclude Include="base\camera.h" />
     <ClInclude Include="base\circle.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="base\line.h" />
     <ClInclude Include="base\material.h" />
     <ClInclude Include="base\meshbuffer.h" />
+    <ClInclude Include="base\quad.h" />
     <ClInclude Include="base\shader.h" />
     <ClInclude Include="base\shadow1.h" />
     <ClInclude Include="base\skybox.h" />
@@ -132,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action\action.cpp" />
+    <ClCompile Include="base\billboard.cpp" />
     <ClCompile Include="base\box.cpp" />
     <ClCompile Include="base\camera.cpp" />
     <ClCompile Include="base\circle.cpp" />
@@ -145,6 +148,7 @@
     <ClCompile Include="base\line.cpp" />
     <ClCompile Include="base\material.cpp" />
     <ClCompile Include="base\meshbuffer.cpp" />
+    <ClCompile Include="base\quad.cpp" />
     <ClCompile Include="base\shader.cpp" />
     <ClCompile Include="base\shadow1.cpp" />
     <ClCompile Include="base\skybox.cpp" />

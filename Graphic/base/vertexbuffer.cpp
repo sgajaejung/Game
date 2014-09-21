@@ -151,6 +151,14 @@ void cVertexBuffer::RenderPointList(const int count) // count=0
 }
 
 
+void cVertexBuffer::RenderTriangleStrip() 
+{
+	RET(!m_pVtxBuff);
+	Bind();
+	GetDevice()->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, m_vertexCount-2 );
+}
+
+
 void cVertexBuffer::Clear()
 {
 	m_fvf = 0;

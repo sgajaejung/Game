@@ -1,6 +1,6 @@
+// 정육면체 메쉬로해서 라인을 그린다.
 #pragma once
 
-// 정육면체 메쉬로 라인을 그리는 클래스다.
 
 namespace graphic
 {

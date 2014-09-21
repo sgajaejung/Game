@@ -175,6 +175,12 @@
     <ClInclude Include="model\blendtrack.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="base\quad.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\billboard.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -333,6 +339,12 @@
     </ClCompile>
     <ClCompile Include="model\blendtrack.cpp">
       <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="base\quad.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\billboard.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

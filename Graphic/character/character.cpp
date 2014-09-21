@@ -29,7 +29,7 @@ void cCharacter::Action(const CHARACTER_ACTION::TYPE type, const int param1, con
 		if (action.type == type)
 		{
 			m_action = type;
-			SetAnimation(action.animationFile);
+			SetAnimation(action.animationFile, 0, true);
 			break;
 		}
 	}

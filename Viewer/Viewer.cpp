@@ -10,6 +10,7 @@
 using namespace Gdiplus;
 
 #include "../Graphic/character/teracharacter.h"
+#include "../Graphic/base/billboard.h"
 
 
 DECLARE_TYPE_NAME(cViewer)
@@ -45,6 +46,7 @@ private:
 
 	graphic::cParticles m_particles;
 	graphic::cSnow m_snow;
+	graphic::cBillboard m_billboard;
 
 	Vector3 m_light2;
 	Vector3 m_pos;
@@ -212,6 +214,8 @@ bool cViewer::OnInit()
 
 	m_grid.Create(100, 100, 50);
 
+	m_billboard.Create(graphic::BILLBOARD_TYPE::Y_AXIS, 100, 100, Vector3(100,0,100), "Pine.png" );
+
 
 	//using namespace graphic;
 
@@ -337,7 +341,9 @@ void cViewer::OnRender(const float elapseT)
 		BOOST_FOREACH (auto &character, m_chars)
 			character.Render(Matrix44::Identity);
 	
-		m_snow.Render();	
+		m_snow.Render();
+
+		m_billboard.Render();
 
 		//m_terrain.Render();
 		//m_cube.Render(matIdentity);
@@ -421,7 +427,7 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_TAB:
 			{
 				static bool flag = false;
-				graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, flag);
+				graphic::GetDevice()->SetRenderState(D3DRS_CULLMODE, flag? D3DCULL_CCW : D3DCULL_NONE);
 				graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, flag? D3DFILL_SOLID : D3DFILL_WIREFRAME);
 				flag = !flag;
 			}

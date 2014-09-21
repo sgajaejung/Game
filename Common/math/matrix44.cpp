@@ -509,7 +509,7 @@ Matrix44 Matrix44::Inverse() const
 }
 
 // 전치행렬을 만든다.
-void Matrix44::Transpose()
+Matrix44& Matrix44::Transpose()
 {
 	Matrix44 m;
 	m._11 = _11;
@@ -529,5 +529,6 @@ void Matrix44::Transpose()
 	m._43 = _34;
 	m._44 = _44;
 	*this = m;
+	return *this;
 }
 

@@ -20,6 +20,7 @@ namespace graphic
 		void Bind() const;
 		void Clear();
 
+		void RenderTriangleStrip();
 		void RenderLineStrip();
 		void RenderPointList(const int count=0);
 

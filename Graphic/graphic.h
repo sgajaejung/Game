@@ -39,6 +39,8 @@ using namespace common;
 #include "base/surface.h"
 #include "base/circle.h"
 #include "base/text.h"
+#include "base/quad.h"
+#include "base/billboard.h"
 
 #include "model/node.h"
 
