@@ -50,6 +50,20 @@ namespace graphic
 		enum {FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1 };
 	};
 
+	// 스키닝 + 범프 매핑
+	struct sVertexNTBTex
+	{
+		Vector3 p;
+		Vector3 n;
+		float u,v;
+		Vector3 t; // tangent;
+
+		enum {FVF = (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX2 |
+			D3DFVF_TEXCOORDSIZE2(0)|		// texture
+			D3DFVF_TEXCOORDSIZE3(1))};		// tangent
+	};
+
+
 
 	// vertex skinning
 	// using texcoord

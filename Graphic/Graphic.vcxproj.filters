@@ -181,6 +181,9 @@
     <ClInclude Include="base\billboard.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="base\vertexdeclaration.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -344,6 +347,9 @@
       <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="base\billboard.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\vertexdeclaration.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>

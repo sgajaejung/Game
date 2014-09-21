@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vertexdeclaration.h"
+
 
 namespace graphic
 {
@@ -12,6 +14,7 @@ namespace graphic
 
 		bool Create(const int vertexCount, const int sizeofVertex, DWORD fvf);
 		bool CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf);
+		bool Create(const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl);
 
 		void* Lock();
 		void* LockDiscard(const int idx=0, const int size=0);
@@ -27,13 +30,16 @@ namespace graphic
 		DWORD GetFVF() const;
 		int GetSizeOfVertex() const;
 		int GetVertexCount() const;
+		int GetOffset( const BYTE usage, const BYTE usageIndex=0 );
 
 		cVertexBuffer& operator=(cVertexBuffer &rhs);
 
 
 	private:
 		LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-		DWORD m_fvf;
+		LPDIRECT3DVERTEXDECLARATION9 m_pVtxDecl;
+		cVertexDeclaration m_vtxDecl;
+		DWORD m_fvf; // m_pVtxDecl 를 사용할 때는 fvf 를 사용하지 않는다.
 		int m_sizeOfVertex; // stride
 		int m_vertexCount;
 		bool m_isManagedPool;
@@ -43,4 +49,5 @@ namespace graphic
 	inline DWORD cVertexBuffer::GetFVF() const { return m_fvf; }
 	inline int cVertexBuffer::GetSizeOfVertex() const { return m_sizeOfVertex; }
 	inline int cVertexBuffer::GetVertexCount() const { return m_vertexCount; }
+	inline int cVertexBuffer::GetOffset( const BYTE usage, const BYTE usageIndex ) { return m_vtxDecl.GetOffset(usage, usageIndex); }
 }

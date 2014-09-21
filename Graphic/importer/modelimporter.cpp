@@ -11,8 +11,11 @@ namespace graphic { namespace importer {
 	bool ReadRawMeshFileV11( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	bool ReadRawMeshFileV13( const string &fileName, OUT sRawMeshGroup &rawMeshes );
 	// V14 는 V13 포맷과 같음.
-	// V15, 16, 17포맷은 같음.
+	// V15, 16, 17, 포맷은 같음.
 	bool ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+	// V18 포맷은 없음.
+	bool ReadRawMeshFileV19( const string &fileName, OUT sRawMeshGroup &rawMeshes );
+
 
 	// AnimationFile Loader
 	bool ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies );
@@ -24,6 +27,7 @@ namespace graphic { namespace importer {
 	bool ReadMeshInfoV10( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadMeshInfoV11( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh );
+	bool ReadTangentBinormal( std::ifstream &fin, OUT sRawMesh &rawMesh );
 	bool ReadVertexIndexNormalBone( std::ifstream &fin, OUT sRawBone &rawBone );
 	bool ReadTextureCoordinate( std::ifstream &fin, const string &fileName, OUT sRawMesh &rawMesh, bool flag=false );
 	bool ReadAnimation(std::ifstream &fin, OUT sRawAni &rawAni );
@@ -39,6 +43,7 @@ namespace graphic { namespace importer {
 	bool ReadTrackInfo(std::ifstream &fin, OUT sRawAni &rawAni);
 	bool ReadKeyFrame(std::ifstream &fin, OUT sRawAni &rawAni);
 
+	float ReadFloat(std::ifstream &fin);
 }}
 
 using namespace graphic;
@@ -78,6 +83,11 @@ bool importer::ReadRawMeshFile( const string &fileName, OUT sRawMeshGroup &rawMe
 				)
 	{
 		ReadRawMeshFileV15(fileName, rawMeshes);
+	}
+	else if ((version == "EXPORTER_V19")
+		)
+	{
+		ReadRawMeshFileV19(fileName, rawMeshes);
 	}
 	else 
 	{
@@ -392,6 +402,63 @@ bool importer::ReadRawMeshFileV15( const string &fileName, OUT sRawMeshGroup &ra
 }
 
 
+bool importer::ReadRawMeshFileV19( const string &fileName, OUT sRawMeshGroup &rawMeshes )
+{
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	string exporterVersion;
+	fin >> exporterVersion;
+
+	string meshExporter;
+	fin >> meshExporter;
+
+	if (meshExporter != "MESH_EXPORT")
+		return false;
+
+	string material, eq;
+	int mtrlCount;
+	fin >> material >> eq >> mtrlCount;
+
+	rawMeshes.mtrls.resize(mtrlCount);
+
+	for (int i=0; i < mtrlCount; ++i)
+	{
+		ReadMaterialV15(fin, fileName, rawMeshes.mtrls[ i]);
+	}
+
+	string geomObject;
+	int geomObjectCount;
+	fin >> geomObject >> eq >> geomObjectCount;
+
+	rawMeshes.meshes.reserve(geomObjectCount);
+
+	for (int i=0; i < geomObjectCount; ++i)
+	{
+		rawMeshes.meshes.push_back( sRawMesh() );
+		ReadMeshInfoV11(fin, rawMeshes.meshes.back());
+
+		// material id 로 material 구조체 초기화.
+		BOOST_FOREACH (auto &mtrlId, rawMeshes.meshes.back().mtrlIds)
+		{
+			rawMeshes.meshes.back().mtrls.push_back( rawMeshes.mtrls[ mtrlId] );
+		}
+
+		ReadVertexIndexNormal(fin, rawMeshes.meshes.back());
+		ReadTangentBinormal(fin, rawMeshes.meshes.back());
+		ReadTextureCoordinate(fin, fileName, rawMeshes.meshes.back(), true);
+		ReadAttributeBuffer(fin, rawMeshes.meshes.back());
+		ReadVertexWeight(fin, rawMeshes.meshes.back());
+	}
+
+	ReadBone(fin, rawMeshes.bones);
+
+	return true;
+}
+
+
 bool importer::ReadRawAnimationFileV9( const string &fileName, OUT sRawAniGroup &rawAnies )
 {
 	using namespace std;
@@ -633,6 +700,52 @@ bool importer::ReadVertexIndexNormal( std::ifstream &fin, OUT sRawMesh &rawMesh 
 
 		for (int i=0; i < vtxSize; ++i)
 			rawMesh.normals[ i].Normalize();
+	}
+
+	return true;
+}
+
+
+// Read Tangent, Binormal Vector
+bool importer::ReadTangentBinormal( std::ifstream &fin, OUT sRawMesh &rawMesh )
+{
+	string norm, eq;
+	int numTB;
+	fin >> norm >> eq >> numTB;
+
+	const int vertexSize = rawMesh.vertices.size();
+
+	// tangent, binormal 벡터 개수 얻어 옴.
+	if (numTB > 0)
+	{
+		rawMesh.tangent.resize(vertexSize);
+		rawMesh.binormal.resize(vertexSize);
+
+		for (int i = 0; i < numTB; i++)
+		{
+			Vector3 tangent, binormal;
+			tangent.x = ReadFloat(fin);
+			tangent.y = ReadFloat(fin);
+			tangent.z = ReadFloat(fin);
+
+			binormal.x = ReadFloat(fin);
+			binormal.y = ReadFloat(fin);
+			binormal.z = ReadFloat(fin);
+
+			// 평균을 구해서 할당한다.
+			for (int k=0; k < 3; ++k)
+			{
+				const int vtxIdx = rawMesh.indices[ i*3 + k];
+				rawMesh.tangent[ vtxIdx] += tangent;
+				rawMesh.binormal[ vtxIdx] += binormal;
+			}
+		}
+
+		for (int i=0; i < vertexSize; ++i)
+		{
+			rawMesh.tangent[ i].Normalize();
+			rawMesh.binormal[ i].Normalize();
+		}
 	}
 
 	return true;
@@ -1341,4 +1454,31 @@ bool importer::ReadKeyFrame(std::ifstream &fin, OUT sRawAni &rawAni)
 	}
 
 	return true;
+}
+
+
+// float 값을 읽어서 리턴한다.
+// -1.#IND : 0 (indeterminate)
+// 1.#IND : 0 (indeterminate))
+// -1.#INF : negative infinity
+// 1.#INF : positive infinity
+float importer::ReadFloat(std::ifstream &fin)
+{
+	string value;
+	fin >> value;
+	if ((value == "-1.#IND") ||
+		(value == "1.#IND"))
+	{
+		return 0;
+	}
+	else if (value == "1.#INF")
+	{
+		return FLT_MAX;
+	}
+	else if (value == "-1.#INF")
+	{
+		return FLT_MIN;
+	}
+
+	return atof(value.c_str());
 }

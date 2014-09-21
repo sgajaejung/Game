@@ -10,6 +10,7 @@ cVertexBuffer::cVertexBuffer()
 ,	m_sizeOfVertex(0)
 ,	m_vertexCount(0)
 ,	m_pVtxBuff(NULL)
+,	m_pVtxDecl(NULL)
 ,	m_isManagedPool(true)
 {
 
@@ -59,6 +60,33 @@ bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DW
 	m_vertexCount = vertexCount;
 	m_sizeOfVertex = sizeofVertex;
 	m_isManagedPool = false;
+	return true;
+}
+
+
+// 버텍스 버퍼 생성.
+bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl)
+{
+	SAFE_RELEASE(m_pVtxBuff);
+	SAFE_RELEASE(m_pVtxDecl);
+
+	if (FAILED(GetDevice()->CreateVertexDeclaration(&decl.GetDecl()[0], &m_pVtxDecl)))
+	{
+		return false; //Failed to create vertex declaration.
+	}
+
+	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
+		D3DUSAGE_WRITEONLY, 
+		0,
+		D3DPOOL_MANAGED, &m_pVtxBuff, NULL)))
+	{
+		return false;
+	}
+
+	m_vtxDecl = decl;
+	m_vertexCount = vertexCount;
+	m_sizeOfVertex = sizeofVertex;
+	m_isManagedPool = true;
 	return true;
 }
 
@@ -118,8 +146,17 @@ void cVertexBuffer::Unlock()
 
 void cVertexBuffer::Bind() const
 {
+	if (m_pVtxDecl)
+	{
+		GetDevice()->SetFVF( 0 );
+		GetDevice()->SetVertexDeclaration(m_pVtxDecl);
+	}
+	else
+	{
+		GetDevice()->SetFVF( m_fvf );
+	}
+
 	GetDevice()->SetStreamSource( 0, m_pVtxBuff, 0, m_sizeOfVertex );
-	GetDevice()->SetFVF( m_fvf );
 }
 
 
@@ -166,6 +203,7 @@ void cVertexBuffer::Clear()
 	m_sizeOfVertex = 0;
 	m_isManagedPool = true;
 	SAFE_RELEASE(m_pVtxBuff);	
+	SAFE_RELEASE(m_pVtxDecl);
 }
 
 

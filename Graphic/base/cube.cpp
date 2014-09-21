@@ -129,6 +129,8 @@ void cCube::SetColor( DWORD color )
 
 void cCube::Render(const Matrix44 &tm)
 {
+	RET(m_vtxBuff.GetVertexCount() <= 0);
+
 	DWORD cullMode;
 	DWORD fillMode;
 	DWORD lightMode;

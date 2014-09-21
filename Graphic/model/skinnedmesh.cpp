@@ -70,7 +70,10 @@ void cSkinnedMesh::ApplyPalette()
 
 
 	cVertexBuffer &vtxBuffer = m_skinnMeshBuffer->GetVertexBuffer();
-	if (sVertexNormTexSkin *vertices = (sVertexNormTexSkin*)vtxBuffer.Lock())
+	const int pos_offset = vtxBuffer.GetOffset(D3DDECLUSAGE_POSITION);
+	const int normal_offset = vtxBuffer.GetOffset(D3DDECLUSAGE_NORMAL);
+
+	if (BYTE *vertices = (BYTE*)vtxBuffer.Lock())
 	{
 		BOOST_FOREACH (const sVertexWeight &weight, m_rawMesh.weights)
 		{
@@ -99,8 +102,10 @@ void cSkinnedMesh::ApplyPalette()
 				break;
 			}
 
-			vertices[ vtxIdx].p = p;
-			vertices[ vtxIdx].n = n;
+			Vector3 *pv = (Vector3*)(vertices + (vtxBuffer.GetSizeOfVertex() * vtxIdx) + pos_offset);
+			Vector3 *pn = (Vector3*)(vertices + (vtxBuffer.GetSizeOfVertex() * vtxIdx) + normal_offset);
+			*pv = p;
+			*pn = n;
 		}
 	}
 

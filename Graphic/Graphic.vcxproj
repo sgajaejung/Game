@@ -94,6 +94,7 @@
     <ClInclude Include="base\text.h" />
     <ClInclude Include="base\texture.h" />
     <ClInclude Include="base\vertexbuffer.h" />
+    <ClInclude Include="base\vertexdeclaration.h" />
     <ClInclude Include="base\vertexformat.h" />
     <ClInclude Include="character\archebladecharacter.h" />
     <ClInclude Include="character\character.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="base\text.cpp" />
     <ClCompile Include="base\texture.cpp" />
     <ClCompile Include="base\vertexbuffer.cpp" />
+    <ClCompile Include="base\vertexdeclaration.cpp" />
     <ClCompile Include="character\archebladecharacter.cpp" />
     <ClCompile Include="character\character.cpp" />
     <ClCompile Include="character\characteranalyzer.cpp" />
