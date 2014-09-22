@@ -143,6 +143,10 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 				m_normalMap[ 0]->Bind(shader, "normalMapTexture");
 				shader.SetRenderPass(4);
 			}
+			else
+			{
+				shader.SetRenderPass(0);
+			}
 		}
 
 		m_buffers->Bind();
