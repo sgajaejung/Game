@@ -42,9 +42,16 @@ bool cVertexDeclaration::Create(const sRawMesh &rawMesh )
 
 	if (!rawMesh.tangent.empty())
 	{
-		D3DVERTEXELEMENT9 element =  {0, offset, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TANGENT,  0};
+		D3DVERTEXELEMENT9 element =  {0, offset, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TANGENT,  0};
 		m_decl.push_back( element );
-		offset += 16;
+		offset += 12;
+	}
+
+	if (!rawMesh.binormal.empty())
+	{
+		D3DVERTEXELEMENT9 element =  {0, offset, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_BINORMAL,  0};
+		m_decl.push_back( element );
+		offset += 12;
 	}
 
 	if (!rawMesh.weights.empty())

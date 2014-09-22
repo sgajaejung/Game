@@ -131,6 +131,15 @@ void cMeshBuffer::CreateMesh( const sRawMesh &rawMesh )
 				*tangent = rawMesh.tangent[ i];
 			}
 
+			// binormal
+			const int binormal_offset = decl.GetOffset(D3DDECLUSAGE_BINORMAL);
+			for (u_int i = 0; i < rawMesh.binormal.size(); i++)
+			{
+				BYTE *vertices = pv + (decl.GetElementSize() * i);
+				Vector3 *binormal = (Vector3*)(vertices + binormal_offset);
+				*binormal = rawMesh.binormal[ i];
+			}
+
 			// bone weight
 			const int blendWeight_offset = decl.GetOffset(D3DDECLUSAGE_TEXCOORD, 1);
 			const int blendIndices_offset = decl.GetOffset(D3DDECLUSAGE_TEXCOORD, 2);

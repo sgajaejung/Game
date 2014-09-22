@@ -273,7 +273,7 @@ void cGrid2::RenderShader(cShader &shader)
 	shader.SetMatrix( "mWIT", Matrix44::Identity);
 
 	m_mtrl.Bind(shader);
-	m_tex.Bind(shader, "Tex");
+	m_tex.Bind(shader, "colorMapTexture");
 
 	shader.Begin();
 	shader.BeginPass();

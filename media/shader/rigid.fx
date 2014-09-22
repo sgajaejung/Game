@@ -25,10 +25,10 @@ float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
 // ------------------------------------------------------------
 // ≈ÿΩ∫√≥
 // ------------------------------------------------------------
-texture Tex;
-sampler Samp = sampler_state
+texture colorMapTexture;
+sampler colorMap = sampler_state
 {
-    Texture = <Tex>;
+    Texture = <colorMapTexture>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = NONE;
@@ -93,7 +93,7 @@ float4 PS_pass0(VS_OUTPUT In) : COLOR
 				+ I_d * K_d * max(0, dot(N,L));
 				+ I_s * pow( max(0, dot(N,H)), 16);
 
-	Out = Out * tex2D(Samp, In.Tex);
+	Out = Out * tex2D(colorMap, In.Tex);
     return Out;
 }
 

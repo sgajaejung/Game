@@ -21,10 +21,10 @@ float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
 // ------------------------------------------------------------
 // ≈ÿΩ∫√≥
 // ------------------------------------------------------------
-texture Tex;
-sampler Samp = sampler_state
+texture colorMapTexture;
+sampler colorMap = sampler_state
 {
-    Texture = <Tex>;
+    Texture = <colorMapTexture>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = NONE;
@@ -79,7 +79,7 @@ VS_OUTPUT VS_pass0(
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
     float4 Out;
-	Out = In.Diffuse * tex2D(Samp, In.Tex);
+	Out = In.Diffuse * tex2D(colorMap, In.Tex);
     return Out;
 }
 

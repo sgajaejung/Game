@@ -98,8 +98,6 @@ void cSkinnedMesh::ApplyPalette()
 			case 1: 
 				p += (m_rawMesh.vertices[ vtxIdx] * (*m_palette)[ weight.w[ 0].bone]) * weight.w[ 0].weight;
 				n += m_rawMesh.normals[ vtxIdx].MultiplyNormal( (*m_palette)[ weight.w[ 0].bone]) * weight.w[ 0].weight;
-			case 0:
-				break;
 			}
 
 			Vector3 *pv = (Vector3*)(vertices + (vtxBuffer.GetSizeOfVertex() * vtxIdx) + pos_offset);

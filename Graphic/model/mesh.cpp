@@ -35,15 +35,21 @@ cMesh::~cMesh()
 // 매터리얼 생성.
 void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 {
-	m_textures.reserve(rawMesh.mtrls.size());
+	m_colorMap.resize(rawMesh.mtrls.size(), NULL);
+	m_normalMap.resize(rawMesh.mtrls.size(), NULL);
 	m_mtrls.reserve(rawMesh.mtrls.size());
 
-	BOOST_FOREACH (auto &mtrl, rawMesh.mtrls)
+	for (u_int i=0; i < rawMesh.mtrls.size(); ++i)
 	{
+		const sMaterial &mtrl = rawMesh.mtrls[ i];
+
 		m_mtrls.push_back(cMaterial());
 		m_mtrls.back().Init(mtrl);
 
-		m_textures.push_back( cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.texture) );
+		m_colorMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.texture);
+
+		if (!mtrl.bumpMap.empty())
+			m_normalMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.bumpMap);
 	}
 }
 
@@ -75,8 +81,8 @@ void cMesh::Render(const Matrix44 &parentTm)
 
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind();
-		if (!m_textures.empty())
-			m_textures[ 0]->Bind(0);
+		if (!m_colorMap.empty())
+			m_colorMap[ 0]->Bind(0);
 
 		m_buffers->Bind();
 		m_buffers->Render();
@@ -95,8 +101,8 @@ void cMesh::Render(const Matrix44 &parentTm)
 				continue;
 			
 			m_mtrls[ mtrlId].Bind();
-			if (m_textures[ mtrlId])
-				m_textures[ mtrlId]->Bind(0);
+			if (m_colorMap[ mtrlId])
+				m_colorMap[ mtrlId]->Bind(0);
 
 			m_buffers->Render( 
 				m_buffers->GetAttributes()[ i].faceStart*3, 
@@ -128,8 +134,16 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind(shader);
-		if (!m_textures.empty())
-			m_textures[ 0]->Bind(shader, "Tex");
+		if (!m_colorMap.empty())
+			m_colorMap[ 0]->Bind(shader, "colorMapTexture");
+		if (!m_normalMap.empty())
+		{
+			if (m_normalMap[ 0] && m_normalMap[ 0]->GetTexture())
+			{
+				m_normalMap[ 0]->Bind(shader, "normalMapTexture");
+				shader.SetRenderPass(4);
+			}
+		}
 
 		m_buffers->Bind();
 
@@ -164,8 +178,8 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 				continue;
 
 			m_mtrls[ mtrlId].Bind(shader);
-			if (m_textures[ mtrlId])
-				m_textures[ mtrlId]->Bind(shader, "Tex");
+			if (m_colorMap[ mtrlId])
+				m_colorMap[ mtrlId]->Bind(shader, "colorMapTexture");
 
 			shader.BeginPass();
 
@@ -273,7 +287,7 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//if (!m_mtrls.empty())
 		//	m_mtrls[ 0].Bind(shader);
 		//if (!m_textures.empty())
-		//	m_textures[ 0]->Bind(shader, "Tex");
+		//	m_textures[ 0]->Bind(shader, "colorMapTexture");
 
 		m_buffers->Bind();
 
@@ -316,7 +330,7 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 
 			//m_mtrls[ mtrlId].Bind(shader);
 			//if (m_textures[ mtrlId])
-			//	m_textures[ mtrlId]->Bind(shader, "Tex");
+			//	m_textures[ mtrlId]->Bind(shader, "colorMapTexture");
 
 			shader.BeginPass();
 

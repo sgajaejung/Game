@@ -32,7 +32,8 @@ namespace graphic
 	protected:
 		bool m_isSkinned;
 		vector<cMaterial> m_mtrls;
-		vector<cTexture*>m_textures;  // reference
+		vector<cTexture*>m_colorMap;  // reference
+		vector<cTexture*>m_normalMap;  // reference
 		cMeshBuffer *m_buffers; // reference
 
 		// debug ¿ë.
