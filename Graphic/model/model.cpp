@@ -83,7 +83,7 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 	
 	if (MODEL_TYPE::RIGID == m_type)
 	{
-		SetShader( cResourceManager::Get()->LoadShader("hlsl_rigid_phong_unlit.fx") );
+		SetShader( cResourceManager::Get()->LoadShader("hlsl_rigid_phong.fx") );
 	}
 	else
 	{

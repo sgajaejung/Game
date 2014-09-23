@@ -312,7 +312,7 @@ VS_BUMP_OUTPUT VS_pass4(
 	                              t.y, b.y, n.y,
 	                              t.z, b.z, n.z);
     
-	Out.Pos = mul(worldPos, mVP);
+	Out.Pos = mul(float4(worldPos,1), mVP);
 	Out.Tex = Tex;
 	Out.HalfVector = mul(halfVector, tbnMatrix);
 	Out.LightDir = mul(lightDir, tbnMatrix);
