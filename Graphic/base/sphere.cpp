@@ -52,6 +52,7 @@ void cSphere::RenderShader(cShader &shader, const Matrix44 &tm)
 }
 
 
+// 구 생성
 void cSphere::Create(const float radius, const int stacks, const int slices)
 {
 	if (m_vtxBuff.GetVertexCount() > 0)

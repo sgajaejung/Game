@@ -1,5 +1,7 @@
-
+// 재질 클래스
+// D3DMATERIAL9 데이타를 쉽게 다루기위해 만들어짐.
 #pragma once
+
 
 namespace graphic
 {

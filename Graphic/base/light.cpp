@@ -17,7 +17,7 @@ cLight::~cLight()
 
 
 void cLight::Init(TYPE type, 
-	const Vector4 &ambient, // Vector4(1, 1,13, 1),
+	const Vector4 &ambient, // Vector4(1, 1, 1, 1),
 	const Vector4 &diffuse, // Vector4(0.2, 0.2, 0.2, 1)
 	const Vector4 &specular, // Vector4(1,1,1,1)
 	const Vector3 &direction) // Vector3(0,-1,0)
@@ -28,12 +28,6 @@ void cLight::Init(TYPE type,
 	m_light.Diffuse = *(D3DCOLORVALUE*)&diffuse;
 	m_light.Specular = *(D3DCOLORVALUE*)&specular;
 	m_light.Direction = *(D3DXVECTOR3*)&direction;
-}
-
-
-void cLight::Bind(int lightIndex)
-{
-	GetDevice()->SetLight(lightIndex, &m_light); // 광원 설정.
 }
 
 
@@ -72,3 +66,44 @@ void cLight::GetShadowMatrix( const Vector3 &modelPos,
 	tt = *(Matrix44*)&mTT;
 }
 
+
+void cLight::Bind(int lightIndex)  const
+{
+	GetDevice()->SetLight(lightIndex, &m_light); // 광원 설정.
+}
+
+
+// 셰이더 변수에 라이팅에 관련된 변수를 초기화 한다.
+void cLight::Bind(cShader &shader)  const
+{
+	static cShader *oldPtr = NULL;
+	static D3DXHANDLE hDir = NULL;
+	static D3DXHANDLE hPos = NULL;
+	static D3DXHANDLE hAmbient = NULL;
+	static D3DXHANDLE hDiffuse = NULL;
+	static D3DXHANDLE hSpecular = NULL;
+	static D3DXHANDLE hTheta = NULL;
+	static D3DXHANDLE hPhi = NULL;
+
+	if (oldPtr != &shader)
+	{
+		hDir = shader.GetValueHandle("light.dir");
+		hPos = shader.GetValueHandle("light.pos");
+		hAmbient = shader.GetValueHandle("light.ambient");
+		hDiffuse = shader.GetValueHandle("light.diffuse");
+		hSpecular = shader.GetValueHandle("light.specular");
+		hTheta = shader.GetValueHandle("light.spotInnerCone");
+		hPhi = shader.GetValueHandle("light.spotOuterCone");
+
+		oldPtr = &shader;
+	}
+
+	shader.SetVector( hDir, *(Vector3*)&m_light.Direction);
+	shader.SetVector( hPos, *(Vector3*)&m_light.Position);
+	shader.SetVector( hAmbient, *(Vector4*)&m_light.Ambient);
+	shader.SetVector( hDiffuse, *(Vector4*)&m_light.Diffuse);
+	shader.SetVector( hSpecular, *(Vector4*)&m_light.Specular);
+	shader.SetFloat( hTheta, m_light.Theta);
+	shader.SetFloat( hPhi, m_light.Phi);
+	//shader.SetFloat( "light.radius", m_light.r);
+}

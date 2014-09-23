@@ -243,7 +243,12 @@ VS_BUMP_OUTPUT VS_pass4(
 // -------------------------------------------------------------
 float4 PS_pass4(VS_BUMP_OUTPUT In) : COLOR
 {
-	float3 n = normalize(tex2D(normalMap, In.Tex).rgb  * 2.0f - 1.0f);
+	// 스타2 노멀맵은 rgba 순서로 저장된게 아니라. bgxr 형태로 저장되어 있다.
+	// 그래서 노멀값을 제대로 가져오려먼 agr 값을 가져와야 rgb즉 xyz 순서대로 
+	// 가져오게 된다.
+	// http://blog.naver.com/scahp/130109083917
+	// http://forum.xentax.com/viewtopic.php?f=16&t=6119&start=15
+	float3 n = normalize(tex2D(normalMap, In.Tex).agr * 2.0f - 1.0f);
     float3 h = normalize(In.HalfVector);
     float3 l = normalize(In.LightDir);
 

@@ -9,7 +9,6 @@ cIndexBuffer::cIndexBuffer() :
 	m_pIdxBuff(NULL)
 ,	m_faceCount(0)
 {
-
 }
 
 cIndexBuffer::~cIndexBuffer()

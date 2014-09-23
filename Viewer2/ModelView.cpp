@@ -79,6 +79,8 @@ void CModelView::Init()
 	
 	m_grid.Create(64, 64, 50, 1);
 	m_grid.GetTexture().Create( "../media/texture/emptyTexture2.png" );
+	m_grid.GetMaterial().Init(Vector4(0.4f,0.4f,0.4f,1), Vector4(0.7f,0.7f,0.7f,1),
+		Vector4(1,1,1,1));
 
 	m_msg.Create();
 	m_msg.SetText(10, 740, "press 'F' to focus model" );
@@ -140,8 +142,10 @@ void CModelView::Render()
 
 		// 바닥 그림자 출력.
 		// 셰이더 변수 초기화.
+		cLightManager::Get()->GetMainLight().Bind(m_shader);
 		m_shader.SetMatrix( "mVP", GetMainCamera()->GetViewProjectionMatrix() );
-		m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+		//m_shader.SetVector( "light.dir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", GetMainCamera()->GetEyePos());
 		m_shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 

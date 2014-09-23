@@ -21,6 +21,7 @@ using namespace common;
 
 #include "base/material.h"
 #include "base/light.h"
+#include "base/vertexdeclaration.h"
 #include "base/vertexbuffer.h"
 #include "base/indexbuffer.h"
 #include "base/meshbuffer.h"

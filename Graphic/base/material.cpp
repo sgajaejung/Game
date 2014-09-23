@@ -8,12 +8,10 @@ using namespace graphic;
 cMaterial::cMaterial()
 {
 	InitRed();
-
 }
 
 cMaterial::~cMaterial()
 {
-
 }
 
 
@@ -77,5 +75,25 @@ void cMaterial::Bind()
 
 void cMaterial::Bind(cShader &shader)
 {
+	static cShader *oldPtr = NULL;
+	static D3DXHANDLE hAmbient = NULL;
+	static D3DXHANDLE hDiffuse = NULL;
+	static D3DXHANDLE hEmissive = NULL;
+	static D3DXHANDLE hSpecular = NULL;
 
+	if (oldPtr != &shader)
+	{
+		hAmbient = shader.GetValueHandle("material.ambient");
+		hDiffuse = shader.GetValueHandle("material.diffuse");
+		hEmissive = shader.GetValueHandle("material.emissive");
+		hSpecular = shader.GetValueHandle("material.specular");
+
+		oldPtr = &shader;
+	}
+
+	shader.SetVector(hAmbient, *(Vector4*)&m_mtrl.Ambient);
+	shader.SetVector( hDiffuse, *(Vector4*)&m_mtrl.Diffuse);
+	shader.SetVector( hEmissive, *(Vector4*)&m_mtrl.Emissive);
+	shader.SetVector( hSpecular, *(Vector4*)&m_mtrl.Specular);
+	//shader.SetFloat( "material.shininess", shininess);
 }

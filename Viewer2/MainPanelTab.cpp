@@ -9,7 +9,7 @@
 #include "FilePanel.h"
 #include "ArchebladePanel.h"
 #include "TeraPanel.h"
-
+#include "LightPanel.h"
 
 
 // CMainPanelTab 대화 상자입니다.
@@ -71,8 +71,9 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_Tab.InsertItem(0, L"Model File");
 	m_Tab.InsertItem(1, L"Model");
 	m_Tab.InsertItem(2, L"Animation");
-	m_Tab.InsertItem(3, L"ArcheBlade");
-	m_Tab.InsertItem(4, L"Tera");
+	m_Tab.InsertItem(3, L"Light");
+	m_Tab.InsertItem(4, L"ArcheBlade");
+	m_Tab.InsertItem(5, L"Tera");
 
 	CRect cr;
 	GetClientRect(cr);
@@ -91,6 +92,11 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_aniPanel->Create(CAnimationPanel::IDD, this);
 	m_aniPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_panels.push_back(m_aniPanel);
+
+	m_lightPanel = new CLightPanel(this);
+	m_lightPanel->Create(CLightPanel::IDD, this);
+	m_lightPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(m_lightPanel);
 
 	m_archePanel = new CArchebladePanel(this);
 	m_archePanel->Create(CArchebladePanel::IDD, this);

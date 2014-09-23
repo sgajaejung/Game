@@ -6,20 +6,36 @@ float4x4 mWorld;
 float4x4 mVP;		// 로컬에서 투영공간으로의 좌표변환
 float4x4 mWIT;
 float4x4 mWVPT;
-float3 vLightDir = {0, -1, 0};
 float3 vEyePos;
 float4 vFog;
 float4 fogColor = {0.58823f, 0.58823f, 0.58823f, 1}; // RGB(150,150,150)
 float alphaUVFactor = 8.f;
 
-// 광원 밝기.
-float4 I_a = {0.3f, 0.3f, 0.3f, 0.0f}; // ambient
-float4 I_d = {1.f, 1.f, 1.f, 0.0f}; // diffuse
-float4 I_s = {1.f, 1.f, 1.f, 0.0f}; // specular
 
-// 반사율
-float4 K_a = {1.0f, 1.0f, 1.0f, 1.0f}; // ambient 
-float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
+struct Light
+{
+	float3 dir;				// world space direction
+	float3 pos;				// world space position
+	float4 ambient;
+	float4 diffuse;
+	float4 specular;
+	float spotInnerCone;	// spot light inner cone (theta) angle
+	float spotOuterCone;	// spot light outer cone (phi) angle
+	float radius;           // applies to point and spot lights only
+};
+
+struct Material
+{
+	float4 ambient;
+	float4 diffuse;
+	float4 emissive;
+	float4 specular;
+	float shininess;
+};
+
+Light light;
+Material material;
+
 
 
 // ------------------------------------------------------------

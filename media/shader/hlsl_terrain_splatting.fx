@@ -6,20 +6,36 @@ float4x4 mWorld;
 float4x4 mVP;		// 로컬에서 투영공간으로의 좌표변환
 float4x4 mWIT;
 float4x4 mWVPT;
-float3 vLightDir = {0, -1, 0};
-float3 vEyePos;
+float3 vEyePos; // 카메라 위치.
 float4 vFog;
 float4 fogColor = {0.58823f, 0.58823f, 0.58823f, 1}; // RGB(150,150,150)
 float alphaUVFactor = 8.f;
 
-// 광원 밝기.
-float4 I_a = {0.3f, 0.3f, 0.3f, 0.0f}; // ambient
-float4 I_d = {1.f, 1.f, 1.f, 0.0f}; // diffuse
-float4 I_s = {1.f, 1.f, 1.f, 0.0f}; // specular
 
-// 반사율
-float4 K_a = {1.0f, 1.0f, 1.0f, 1.0f}; // ambient 
-float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
+struct Light
+{
+	float3 dir;				// world space direction
+	float3 pos;				// world space position
+	float4 ambient;
+	float4 diffuse;
+	float4 specular;
+	float spotInnerCone;	// spot light inner cone (theta) angle
+	float spotOuterCone;	// spot light outer cone (phi) angle
+	float radius;           // applies to point and spot lights only
+};
+
+struct Material
+{
+	float4 ambient;
+	float4 diffuse;
+	float4 emissive;
+	float4 specular;
+	float shininess;
+};
+
+Light light;
+Material material;
+
 
 
 // ------------------------------------------------------------
@@ -120,10 +136,6 @@ sampler Samp4 = sampler_state
 };
 
 
-
-// -------------------------------------------------------------
-// 정점셰이더에서 픽셀셰이더로 넘기는 데이터
-// -------------------------------------------------------------
 struct VS_OUTPUT
 {
     float4 Pos	 : POSITION;
@@ -134,107 +146,7 @@ struct VS_OUTPUT
 };
 
 
-// -------------------------------------------------------------
-// 1패스: 지형 + 조명
-// -------------------------------------------------------------
-VS_OUTPUT VS_pass0(
-      float4 Pos : POSITION,          // 모델정점
-	  float3 Normal : NORMAL,		// 법선벡터
-	  float2 Tex : TEXCOORD0
-)
-{
-    VS_OUTPUT Out = (VS_OUTPUT)0;        // 출력데이터
-    
-    // 좌표변환
-	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
-
-	// 법선 벡터 계산.
-	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
-
-	Out.N = N;
-	Out.Eye = vEyePos - Pos.xyz;
-	Out.Tex = Tex;
-    
-    return Out;
-}
-
-
-// -------------------------------------------------------------
-// 1패스:픽셀셰이더
-// -------------------------------------------------------------
-float4 PS_pass0(VS_OUTPUT In) : COLOR
-{
-	float4 Out;
-
-	float3 L = -vLightDir.xyz;
-	float3 H = normalize(L + normalize(In.Eye));
-	float3 N = normalize(In.N);
-
-	Out = 	I_a * K_a
-				+ I_d * K_d * max(0, dot(N,L));
-				+ I_s * pow( max(0, dot(N,H)), 16);
-
-	Out = Out * tex2D(colorMap, In.Tex);
-    return Out;
-}
-
-
-// -------------------------------------------------------------
-// 2패스: 지형 + 조명
-// -------------------------------------------------------------
-VS_OUTPUT VS_pass1(
-      float4 Pos : POSITION,          // 모델정점
-	  float3 Normal : NORMAL,		// 법선벡터
-	  float2 Tex : TEXCOORD0
-)
-{
-    VS_OUTPUT Out = (VS_OUTPUT)0;        // 출력데이터
-    
-    // 좌표변환
-	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
-
-	// 법선 벡터 계산.
-	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
-
-	Out.N = N;
-	Out.Eye = vEyePos - Pos.xyz;
-	Out.Tex = Tex;
-    
-    return Out;
-}
-
-// -------------------------------------------------------------
-// 2패스:픽셀셰이더, 포그 출력.
-// -------------------------------------------------------------
-float4 PS_pass1(VS_OUTPUT In) : COLOR
-{
-	float4 Out;
-
-	float3 L = -vLightDir.xyz;
-	float3 H = normalize(L + normalize(In.Eye));
-	float3 N = normalize(In.N);
-
-	Out = 	I_a * K_a
-				+ I_d * K_d * max(0, dot(N,L));
-				+ I_s * pow( max(0, dot(N,H)), 16);
-
-	Out = Out * tex2D(colorMap, In.Tex);
-
-	float distance = length(In.Eye);
-	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
-	Out = lerp(Out, fogColor, l);
-
-    return Out;
-}
-
-
-
-// -------------------------------------------------------------
-// 정점셰이더에서 픽셀셰이더로 넘기는 데이터
 // 모델 + 그림자.
-// -------------------------------------------------------------
 struct VS_OUTPUT_SHADOW
 {
     float4 Pos	 : POSITION;
@@ -246,25 +158,111 @@ struct VS_OUTPUT_SHADOW
 };
 
 
+
 // -------------------------------------------------------------
-// 3패스: 지형 + 조명 + 그림자.
+// 0패스: 지형 + 조명
 // -------------------------------------------------------------
-VS_OUTPUT_SHADOW VS_pass2(float4 Pos : POSITION,          // 모델정점
+VS_OUTPUT VS_pass0(
+      float4 Pos : POSITION,          // 모델정점
 	  float3 Normal : NORMAL,		// 법선벡터
 	  float2 Tex : TEXCOORD0
 )
 {
-    VS_OUTPUT_SHADOW Out = (VS_OUTPUT_SHADOW)0;        // 출력데이터
-    
-    // 좌표변환
-	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
+    VS_OUTPUT Out = (VS_OUTPUT)0;        // 출력데이터
 
-	// 법선 벡터 계산.
+	float4 worldPos = mul(Pos, mWorld);
 	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
 
+	Out.Pos = mul(worldPos, mVP);
 	Out.N = N;
-	Out.Eye = vEyePos - Pos.xyz;
+	Out.Eye = vEyePos - worldPos.xyz;
+	Out.Tex = Tex;
+    
+    return Out;
+}
+
+// -------------------------------------------------------------
+// 0패스:픽셀셰이더
+// -------------------------------------------------------------
+float4 PS_pass0(VS_OUTPUT In) : COLOR
+{
+	float3 L = -light.dir;
+	float3 H = normalize(L + normalize(In.Eye));
+	float3 N = normalize(In.N);
+
+	float4 color = light.ambient * material.ambient
+				+ light.diffuse * material.diffuse * max(0, dot(N,L));
+				+ light.specular * pow( max(0, dot(N,H)), 16);
+
+	float4 Out = color * tex2D(colorMap, In.Tex);
+    return Out;
+}
+
+
+
+// -------------------------------------------------------------
+// 1패스: 지형 + 조명 + 포그
+// -------------------------------------------------------------
+VS_OUTPUT VS_pass1(
+      float4 Pos : POSITION,          // 모델정점
+	  float3 Normal : NORMAL,		// 법선벡터
+	  float2 Tex : TEXCOORD0
+)
+{
+    VS_OUTPUT Out = (VS_OUTPUT)0;        // 출력데이터
+    
+	float4 worldPos = mul(Pos, mWorld);
+	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
+
+	Out.Pos = mul(worldPos, mVP);
+	Out.N = N;
+	Out.Eye = vEyePos - worldPos.xyz;
+	Out.Tex = Tex;
+    
+    return Out;
+}
+
+// -------------------------------------------------------------
+// 1패스: 픽셀셰이더, 지형 + 조명 + 포그 출력.
+// -------------------------------------------------------------
+float4 PS_pass1(VS_OUTPUT In) : COLOR
+{
+	float3 L = -light.dir;
+	float3 H = normalize(L + normalize(In.Eye));
+	float3 N = normalize(In.N);
+
+	float4 color = light.ambient * material.ambient
+				+ light.diffuse * material.diffuse * max(0, dot(N,L));
+				+ light.specular * pow( max(0, dot(N,H)), 16);
+
+	float4 Out = color * tex2D(colorMap, In.Tex);
+
+	float distance = length(In.Eye);
+	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
+	Out = lerp(Out, fogColor, l);
+
+    return Out;
+}
+
+
+
+// -------------------------------------------------------------
+// 2패스: 지형 + 조명 + 그림자.
+// -------------------------------------------------------------
+VS_OUTPUT_SHADOW VS_pass2(
+		float4 Pos : POSITION,          // 모델정점
+		float3 Normal : NORMAL,		// 법선벡터
+		float2 Tex : TEXCOORD0
+)
+{
+    VS_OUTPUT_SHADOW Out = (VS_OUTPUT_SHADOW)0;        // 출력데이터
+    
+	float4 worldPos = mul(Pos, mWorld);
+	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
+
+	Out.Pos = mul(worldPos, mVP);
+	Out.N = N;
+	Out.Eye = vEyePos - worldPos.xyz;
 	Out.Tex = Tex;
 	Out.TexShadow = mul( Pos, mWVPT );
     
@@ -273,25 +271,22 @@ VS_OUTPUT_SHADOW VS_pass2(float4 Pos : POSITION,          // 모델정점
 
 
 // -------------------------------------------------------------
-// 3패스:픽셀셰이더,		지형 + 조명 + 포그 + 그림자
+// 2패스:픽셀셰이더,		지형 + 조명 + 포그 + 그림자
 // -------------------------------------------------------------
 float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 {
-	float4 Out;
-
-	float3 L = -vLightDir.xyz;
+	float3 L = -light.dir;
 	float3 H = normalize(L + normalize(In.Eye));
 	float3 N = normalize(In.N);
 
-	float4 Color = 	I_a * K_a
-				+ I_d * K_d * max(0, dot(N,L));
-				+ I_s * pow( max(0, dot(N,H)), 16);
+	float4 color = 	light.ambient * material.ambient
+				+ light.diffuse * material.diffuse * max(0, dot(N,L));
+				+ light.specular * pow( max(0, dot(N,H)), 16);
 
-	float4 decale = tex2D(colorMap, In.Tex);
-	Out = Color * decale;
+	float4 Out = color * tex2D(colorMap, In.Tex);
 
 	float4 shadow = tex2Dproj( ShadowMapSamp, In.TexShadow );
-	Out = Out * saturate(Color - (0.8f*shadow));
+	Out = Out * saturate(color - (0.8f*shadow));
 
 	float distance = length(In.Eye);
 	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
@@ -302,7 +297,7 @@ float4 PS_pass2(VS_OUTPUT_SHADOW In) : COLOR
 
 
 // -------------------------------------------------------------
-// 4패스: 지형 + 조명
+// 3패스: 지형 + 조명
 // -------------------------------------------------------------
 VS_OUTPUT_SHADOW VS_pass3(
       float4 Pos : POSITION,          // 모델정점
@@ -312,15 +307,12 @@ VS_OUTPUT_SHADOW VS_pass3(
 {
     VS_OUTPUT_SHADOW Out = (VS_OUTPUT_SHADOW)0;        // 출력데이터
     
-    // 좌표변환
-	float4x4 mWVP = mul(mWorld, mVP);
-	Out.Pos = mul( Pos, mWVP );
-
-	// 법선 벡터 계산.
+	float4 worldPos = mul(Pos, mWorld);
 	float3 N = normalize( mul(Normal, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
 
+	Out.Pos = mul(worldPos, mVP);
 	Out.N = N;
-	Out.Eye = vEyePos - Pos.xyz;
+	Out.Eye = vEyePos - worldPos.xyz;
 	Out.Tex = Tex;
     
     return Out;
@@ -328,31 +320,25 @@ VS_OUTPUT_SHADOW VS_pass3(
 
 
 // -------------------------------------------------------------
-// 4패스:픽셀셰이더,		지형 + 조명 + 포그 + 스플래팅 출력
+// 3패스:픽셀셰이더,		지형 + 조명 + 포그 + 스플래팅 출력
 // -------------------------------------------------------------
 float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 {
-	float4 Out;
-
-	float3 L = -vLightDir.xyz;
+	float3 L = -light.dir;
 	float3 H = normalize(L + normalize(In.Eye));
 	float3 N = normalize(In.N);
 
-	float4 Color = 	I_a * K_a
-				+ I_d * K_d * max(0, dot(N,L));
-				+ I_s * pow( max(0, dot(N,H)), 16);
+	float4 color = 	light.ambient * material.ambient
+				+ light.diffuse * material.diffuse * max(0, dot(N,L));
+				+ light.specular * pow( max(0, dot(N,H)), 16);
 
-	float4 decale = tex2D(colorMap, In.Tex);
-	Out = Color * decale;
+	float4 Out = color * tex2D(colorMap, In.Tex);
 
 	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
-	Out = (alpha.a * (Color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
-	Out = (alpha.r * (Color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
-	Out = (alpha.g * (Color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
-	Out = (alpha.b * (Color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
-
-	//Out = tex2D(Samp1, In.Tex);
-	//Out = float4(alpha.a, alpha.a, alpha.a, alpha.a);
+	Out = (alpha.a * (color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
+	Out = (alpha.r * (color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
+	Out = (alpha.g * (color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
+	Out = (alpha.b * (color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
 
 	float distance = length(In.Eye);
 	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));
@@ -364,13 +350,11 @@ float4 PS_pass3(VS_OUTPUT_SHADOW In) : COLOR
 
 
 // -------------------------------------------------------------
-// 5패스:픽셀셰이더,		지형 + 스플래팅  (조명X, 포그X)
+// 4패스:픽셀셰이더,		지형 + 스플래팅  (조명X, 포그X)
 // -------------------------------------------------------------
 float4 PS_pass4(VS_OUTPUT In) : COLOR
 {
-	float4 Out;
-
-	Out = tex2D(colorMap, In.Tex);
+	float4 Out = tex2D(colorMap, In.Tex);
 
 	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
 	Out = (alpha.a * (tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
@@ -388,27 +372,24 @@ float4 PS_pass4(VS_OUTPUT In) : COLOR
 // -------------------------------------------------------------
 float4 PS_pass5(VS_OUTPUT_SHADOW In) : COLOR
 {
-	float4 Out;
-
-	float3 L = -vLightDir.xyz;
+	float3 L = -light.dir;
 	float3 H = normalize(L + normalize(In.Eye));
 	float3 N = normalize(In.N);
 
-	float4 Color = 	I_a * K_a
-				+ I_d * K_d * max(0, dot(N,L));
-				+ I_s * pow( max(0, dot(N,H)), 16);
+	float4 color = 	light.ambient * material.ambient
+				+ light.diffuse * material.diffuse * max(0, dot(N,L));
+				+ light.specular * pow( max(0, dot(N,H)), 16);
 
-	float4 decale = tex2D(colorMap, In.Tex);
-	Out = Color * decale;
+	float4 Out = color * tex2D(colorMap, In.Tex);
 
 	float4 alpha = tex2D(SplattingMapSamp, (In.Tex / alphaUVFactor));
-	Out = (alpha.a * (Color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
-	Out = (alpha.r * (Color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
-	Out = (alpha.g * (Color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
-	Out = (alpha.b * (Color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
+	Out = (alpha.a * (color * tex2D(Samp1, In.Tex))) + ((1 - alpha.a) * Out);
+	Out = (alpha.r * (color * tex2D(Samp2, In.Tex))) + ((1 - alpha.r) * Out);
+	Out = (alpha.g * (color * tex2D(Samp3, In.Tex))) + ((1 - alpha.g) * Out);
+	Out = (alpha.b * (color * tex2D(Samp4, In.Tex))) + ((1 - alpha.b) * Out);
 
 	float4 shadow = tex2Dproj( ShadowMapSamp, In.TexShadow );
-	Out = Out * saturate(Color - (0.8f*shadow));
+	Out = Out * saturate(color - (0.8f*shadow));
 
 	float distance = length(In.Eye);
 	float l = saturate((distance-vFog.x) / (vFog.y - vFog.x));

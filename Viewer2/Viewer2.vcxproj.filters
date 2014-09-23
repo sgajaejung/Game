@@ -96,6 +96,9 @@
     <ClInclude Include="viewer2def.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="LightPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="TeraPanel.cpp">
       <Filter>panel</Filter>
+    </ClCompile>
+    <ClCompile Include="LightPanel.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

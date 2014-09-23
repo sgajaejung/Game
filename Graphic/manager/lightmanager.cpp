@@ -14,7 +14,7 @@ cLightManager::cLightManager()
 	cLight mainLight;
 	mainLight.Init(cLight::LIGHT_DIRECTIONAL);
 
-	const Vector3 lightPos(300,300,0);
+	const Vector3 lightPos(300,300,-300);
 	mainLight.SetPosition(lightPos);
 	mainLight.SetDirection(-lightPos.Normal()); 
 	AddLight(mainLight);
@@ -23,7 +23,6 @@ cLightManager::cLightManager()
 
 cLightManager::~cLightManager()
 {
-
 }
 
 

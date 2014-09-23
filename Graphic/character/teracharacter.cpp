@@ -149,7 +149,7 @@ void cTeraCharacter::SetBodyModel( const string &fileName )
 	{
 		m_models[TERA_MODEL::BODY] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::BODY]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_no_light.fx") );
+			"hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	m_models[ TERA_MODEL::BODY]->Create(fileName);
@@ -166,7 +166,7 @@ void cTeraCharacter::SetHandModel( const string &fileName )
 	{
 		m_models[TERA_MODEL::HAND] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::HAND]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_no_light.fx") );
+			"hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	m_models[ TERA_MODEL::HAND]->Create(fileName);
@@ -180,7 +180,7 @@ void cTeraCharacter::SetLegModel( const string &fileName )
 	{
 		m_models[TERA_MODEL::LEG] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::LEG]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_no_light.fx") );
+			"hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	m_models[ TERA_MODEL::LEG]->Create(fileName);
@@ -194,7 +194,7 @@ void cTeraCharacter::SetFaceModel( const string &fileName )
 	{
 		m_models[TERA_MODEL::FACE] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::FACE]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_no_light.fx") );
+			"hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	m_models[ TERA_MODEL::FACE]->Create(fileName);
@@ -211,7 +211,7 @@ void cTeraCharacter::SetHairModel( const string &fileName )
 	{
 		m_models[TERA_MODEL::HAIR] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::HAIR]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_no_light.fx") );
+			"hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	m_models[ TERA_MODEL::HAIR]->Create(fileName);

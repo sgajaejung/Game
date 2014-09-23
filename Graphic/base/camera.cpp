@@ -25,7 +25,6 @@ cCamera::cCamera(const Vector3 &eyePos, const Vector3 &lookAt, const Vector3 &up
 
 cCamera::~cCamera()
 {
-
 }
 
 

@@ -127,7 +127,6 @@ bool cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 
 	Matrix44 matIdentity;
 	shader.SetMatrix( "mVP", camera.GetViewProjectionMatrix());
-	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", camera.GetEyePos());
 	shader.SetMatrix( "mWIT", matIdentity);
 	shader.SetMatrix( "mWorld", matIdentity);

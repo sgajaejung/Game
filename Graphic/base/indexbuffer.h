@@ -1,4 +1,7 @@
+// 인덱스 버퍼 클래스
+// LPDIRECT3DINDEXBUFFER9 인터페이스를 쉽게 쓰기 위해 만들어짐.
 #pragma once
+
 
 namespace graphic
 {

@@ -5,21 +5,39 @@
 float4x4 mWorld;
 float4x4 mVP;		// 로컬에서 투영공간으로의 좌표변환
 float4x4 mWIT;
-float3 vLightDir = {0, -1, 0};
 float3 vEyePos;
+float shininess = 90;
 float4 globalAmbient = {0.2f, 0.2f, 0.2f, 1.0f};
-
-// 광원 밝기.
-float4 I_a = {0.3f, 0.3f, 0.3f, 0.0f}; // ambient
-float4 I_d = {1.f, 1.f, 1.f, 0.0f}; // diffuse
-float4 I_s = {1.f, 1.f, 1.f, 0.0f}; // diffuse
-
-// 반사율
-float4 K_a = {1.0f, 1.0f, 1.0f, 1.0f}; // ambient 
-float4 K_d = {1.0f, 1.0f, 1.0f, 1.0f}; // diffuse
 
 // 팔레트
 float4x3 mPalette[ 64];
+
+// 이 셰이더에서는 라이팅을 사용하지 않지만, 코드의 일반화를 위해서
+// 변수가 선언 되었다. 
+// light, material 변수는 선언되었지만 사용되지는 않는다.
+struct Light
+{
+	float3 dir;				// world space direction
+	float3 pos;				// world space position
+	float4 ambient;
+	float4 diffuse;
+	float4 specular;
+	float spotInnerCone;	// spot light inner cone (theta) angle
+	float spotOuterCone;	// spot light outer cone (phi) angle
+	float radius;           // applies to point and spot lights only
+};
+
+struct Material
+{
+	float4 ambient;
+	float4 diffuse;
+	float4 emissive;
+	float4 specular;
+	float shininess;
+};
+
+Light light;
+Material material;
 
 
 // ------------------------------------------------------------
@@ -52,10 +70,7 @@ sampler2D normalMap = sampler_state
 struct VS_OUTPUT
 {
 	float4 Pos : POSITION;
-	float4 Diffuse : COLOR0;
 	float2 Tex : TEXCOORD0;
-	float3 Eye : TEXCOORD1;
-	float3 N : TEXCOORD2;
 };
 
 
@@ -71,6 +86,8 @@ struct VS_BUMP_OUTPUT
 {
     float4 Pos	 : POSITION;
 	float2 Tex : TEXCOORD0;
+	float4 Diffuse : COLOR0;
+	float4 Specular : COLOR1;
 	float3 HalfVector : TEXCOORD1;
 	float3 LightDir : TEXCOORD2;
 };
@@ -78,7 +95,7 @@ struct VS_BUMP_OUTPUT
 
 
 // -------------------------------------------------------------
-// 0패스:정점셰이더
+// 1패스:정점셰이더
 // -------------------------------------------------------------
 VS_OUTPUT VS_pass0(
 	float4 Pos : POSITION,          // 모델정점
@@ -94,46 +111,30 @@ VS_OUTPUT VS_pass0(
 	float4x4 mWVP = mul(mWorld, mVP);
 
 	float3 p = {0,0,0};
-	float3 n = {0,0,0};
 
 	p += mul(Pos, mPalette[ BoneIndices.x]).xyz * Weights.x;
 	p += mul(Pos, mPalette[ BoneIndices.y]).xyz * Weights.y;
 	p += mul(Pos, mPalette[ BoneIndices.z]).xyz * Weights.z;
 	p += mul(Pos, mPalette[ BoneIndices.w]).xyz * Weights.w;
 
-	n += mul(float4(Normal,0), mPalette[ BoneIndices.x]).xyz * Weights.x;
-	n += mul(float4(Normal,0), mPalette[ BoneIndices.y]).xyz * Weights.y;
-	n += mul(float4(Normal,0), mPalette[ BoneIndices.z]).xyz * Weights.z;
-	n += mul(float4(Normal,0), mPalette[ BoneIndices.w]).xyz * Weights.w;
-
 	Out.Pos = mul( float4(p,1), mWVP );
-	n = normalize(n);
-
-	// 법선 벡터 계산.
-	float3 N = normalize( mul(n, (float3x3)mWIT) ); // 월드 좌표계에서의 법선.
-	
-	Out.N = N;
-	Out.Eye = vEyePos - Pos.xyz;
 	Out.Tex = Tex;
-    
+	    
     return Out;
 }
 
 
 // -------------------------------------------------------------
-// 0패스:픽셀셰이더
+// 1패스:픽셀셰이더
 // -------------------------------------------------------------
 float4 PS_pass0(VS_OUTPUT In) : COLOR
 {
-	float4 Out;
-	Out = tex2D(colorMap, In.Tex);
-    return Out;
+	return tex2D(colorMap, In.Tex);;
 }
 
 
-
 // -------------------------------------------------------------
-// 1패스:정점셰이더, 그림자 맵 출력.
+// 2패스:정점셰이더, 그림자 맵 출력.
 // -------------------------------------------------------------
 VS_SHADOW_OUTPUT VS_pass1(
 	float4 Pos : POSITION,          // 모델정점
@@ -160,7 +161,6 @@ VS_SHADOW_OUTPUT VS_pass1(
     
     return Out;
 }
-
 
 
 // -------------------------------------------------------------
@@ -197,7 +197,7 @@ VS_BUMP_OUTPUT VS_pass4(
 	//n = normalize(n);
 
 	float3 worldPos = mul(float4(p,1), mWorld).xyz;
-	float3 lightDir = -vLightDir;
+	float3 lightDir = -light.dir;
 	float3 viewDir = vEyePos - worldPos;
 	float3 halfVector = normalize(normalize(lightDir) + normalize(viewDir));
 
@@ -212,6 +212,8 @@ VS_BUMP_OUTPUT VS_pass4(
 	Out.Tex = Tex;
 	Out.HalfVector = mul(halfVector, tbnMatrix);
 	Out.LightDir = mul(lightDir, tbnMatrix);    
+	Out.Diffuse = material.diffuse * light.diffuse;
+	Out.Specular = material.specular * light.specular;
 
     return Out;
 }
@@ -222,34 +224,22 @@ VS_BUMP_OUTPUT VS_pass4(
 // -------------------------------------------------------------
 float4 PS_pass4(VS_BUMP_OUTPUT In) : COLOR
 {
-	// 스타2 노멀맵은 rgba 순서로 저장된게 아니라. bgxr 형태로 저장되어 있다.
-	// 그래서 노멀값을 제대로 가져오려먼 agr 값을 가져와야 rgb즉 xyz 순서대로 
-	// 가져오게 된다.
-	// http://blog.naver.com/scahp/130109083917
-	// http://forum.xentax.com/viewtopic.php?f=16&t=6119&start=15
-	float4 nt = tex2D(normalMap, In.Tex);
-	float3 n = normalize(float3(nt.a, nt.g, nt.r)  * 2.0f - 1.0f);
-
-	// 일반 노멀맵용. 아직 쓰이지 않음.
-   //float3 n = normalize(tex2D(normalMap, In.Tex).rgb * 2.0f - 1.0f);
-
+	float3 n = normalize(tex2D(normalMap, In.Tex).rbg  * 2.0f - 1.0f);
     float3 h = normalize(In.HalfVector);
     float3 l = normalize(In.LightDir);
 
-	float shininess = 90;
     float nDotL = saturate(dot(n, l));
     float nDotH = saturate(dot(n, h));
     float power = (nDotL == 0.0f) ? 0.0f : pow(nDotH, shininess);
 
-    float4 color = (globalAmbient + I_a) 
-						+ (I_d * nDotL) 
-						+ (I_s * power);
+    float4 color = material.ambient * (globalAmbient + light.ambient) 
+						+ (In.Diffuse * nDotL) 
+						+ (In.Specular * power);
 
 	return  color * tex2D(colorMap, In.Tex);
 }
 
 
-	
 // -------------------------------------------------------------
 // 테크닉
 // -------------------------------------------------------------

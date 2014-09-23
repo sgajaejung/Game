@@ -21,6 +21,7 @@ void graphic::ReleaseRenderer()
 	cRenderer::Release();
 	cResourceManager::Release();
 	cMainCamera::Release();
+	cLightManager::Release();
 }
 
 

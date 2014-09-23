@@ -1,4 +1,11 @@
+// 메쉬 기본 클래스
+//
+// cMesh 확장
+// cMesh -> cRigidMesh
+//			  -> cSkinnedMesh
+// 
 #pragma once
+
 
 #include "node.h"
 
@@ -34,7 +41,7 @@ namespace graphic
 		vector<cMaterial> m_mtrls;
 		vector<cTexture*>m_colorMap;  // reference
 		vector<cTexture*>m_normalMap;  // reference
-		cMeshBuffer *m_buffers; // reference
+		cMeshBuffer *m_buffers; // reference (뼈대 메쉬일 경우 예외)
 
 		// debug 용.
 		bool m_isBoneMesh;

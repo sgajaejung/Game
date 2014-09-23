@@ -1,3 +1,5 @@
+// 버텍스 구조체 구조를 표현하는 클래스
+// D3DVERTEXELEMENT9 데이타를 쉽게 사용하기위해 만들어짐.
 #pragma once
 
 

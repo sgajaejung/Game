@@ -1,6 +1,6 @@
+// 버텍스 버퍼 클래스.
+// LPDIRECT3DVERTEXBUFFER9 인터페이스를 쉽게 쓰기위해 만들어짐.
 #pragma once
-
-#include "vertexdeclaration.h"
 
 
 namespace graphic

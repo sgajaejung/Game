@@ -42,7 +42,7 @@ bool cArchebladeCharacter::Create(const string &modelName, MODEL_TYPE::TYPE type
 		if (GetModelType() == MODEL_TYPE::SKIN)
 		{
 			SetShader( 
-				cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+				cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord.fx") );
 		}
 
 		return true;
@@ -97,7 +97,7 @@ void cArchebladeCharacter::LoadWeapon(const string &fileName)
 	{
 		m_weapon = new cModel(common::GenerateId());
 		m_weapon->SetShader( 
-			cResourceManager::Get()->LoadShader("hlsl_skinning_no_light.fx") );
+			cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
 	if (!m_weapon->Create(fileName))

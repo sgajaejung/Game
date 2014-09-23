@@ -108,6 +108,7 @@
     <ClInclude Include="FilePanel.h" />
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="InputDlg.h" />
+    <ClInclude Include="LightPanel.h" />
     <ClInclude Include="LoadingDialog.h" />
     <ClInclude Include="MainPanel.h" />
     <ClInclude Include="ModelPanel.h" />
@@ -132,6 +133,7 @@
     <ClCompile Include="FilePanel.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="InputDlg.cpp" />
+    <ClCompile Include="LightPanel.cpp" />
     <ClCompile Include="LoadingDialog.cpp" />
     <ClCompile Include="MainPanel.cpp" />
     <ClCompile Include="MainPanelTab.cpp" />

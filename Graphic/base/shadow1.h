@@ -15,9 +15,11 @@ namespace graphic
 
 		bool Create(const int textureWidth, const int textureHeight);
 		void UpdateShadow( cNode &node );
-		void RenderShadowMap();
 		IDirect3DTexture9* GetTexture();
 		bool IsLoaded() const;
+
+		// 디버깅용 함수.
+		void RenderShadowMap();
 
 
 	private:

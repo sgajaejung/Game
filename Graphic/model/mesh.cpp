@@ -20,7 +20,6 @@ cMesh::cMesh(const int id, const sRawBone &rawBone) :
 ,	m_buffers(NULL)
 ,	m_isBoneMesh(true)
 {
-	// debug 용.
 	// 뼈 메쉬는 동적으로 메쉬버퍼를 생성한다. (디버깅용)
 	m_buffers = new cMeshBuffer(rawBone);
 }
@@ -119,8 +118,10 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 	RET(!IsRender());
 	RET(!m_buffers);
 
+	const cLight &mainLight = cLightManager::Get()->GetMainLight();
+	mainLight.Bind(shader);
+
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
-	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 
 	if (m_buffers->GetAttributes().empty())
@@ -132,22 +133,17 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 		wit.Transpose();
 		shader.SetMatrix("mWIT", wit);
 
+		const bool isNormalMapping = (!m_normalMap.empty()) && 
+			(m_normalMap[ 0] && m_normalMap[ 0]->GetTexture());
+
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind(shader);
 		if (!m_colorMap.empty())
 			m_colorMap[ 0]->Bind(shader, "colorMapTexture");
-		if (!m_normalMap.empty())
-		{
-			if (m_normalMap[ 0] && m_normalMap[ 0]->GetTexture())
-			{
-				m_normalMap[ 0]->Bind(shader, "normalMapTexture");
-				shader.SetRenderPass(4);
-			}
-			else
-			{
-				shader.SetRenderPass(0);
-			}
-		}
+		if (isNormalMapping)
+			m_normalMap[ 0]->Bind(shader, "normalMapTexture");
+
+		shader.SetRenderPass(isNormalMapping? 4 : 0);
 
 		m_buffers->Bind();
 
@@ -181,9 +177,16 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 
+			const bool isNormalMapping = m_normalMap[ mtrlId] && 
+				m_normalMap[ mtrlId]->GetTexture();
+
 			m_mtrls[ mtrlId].Bind(shader);
 			if (m_colorMap[ mtrlId])
 				m_colorMap[ mtrlId]->Bind(shader, "colorMapTexture");
+			if (isNormalMapping)
+				m_normalMap[ mtrlId]->Bind(shader, "normalMapTexture");
+
+			shader.SetRenderPass(isNormalMapping? 4 : 0);
 
 			shader.BeginPass();
 
@@ -208,8 +211,10 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 	RET(!m_shader);
 	RET(!m_buffers);
 
+	const cLight &mainLight = cLightManager::Get()->GetMainLight();
+	mainLight.Bind(*m_shader);
+
 	m_shader->SetMatrix( "mVP", viewProj);
-	m_shader->SetVector( "vLightDir", lightDir );
 	m_shader->SetVector( "vEyePos", lightPos);
 
 	if (m_buffers->GetAttributes().empty())

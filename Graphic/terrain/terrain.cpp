@@ -79,7 +79,7 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 
 
 	// 모델 생성.
-	cShader *modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_no_light.fx" );
+	cShader *modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_using_texcoord_unlit.fx" );
 
 	for (u_int i=0; i < rawTerrain.models.size(); ++i)
 	{
@@ -223,8 +223,10 @@ void cTerrain::Render()
 // 셰이더로 지형을 출력한다.
 void cTerrain::RenderShader(cShader &shader)
 {
+
+	cLightManager::Get()->GetMainLight().Bind(shader);
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
-	shader.SetVector( "vLightDir", Vector3(0,-1,0) );
+	//shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 	shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 

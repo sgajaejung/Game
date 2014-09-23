@@ -1,7 +1,11 @@
+// 텍스쳐 클래스
+// IDirect3DTexture9 인터페이스를 쉽게 사용하기위해 만들어짐.
 #pragma once
+
 
 namespace graphic
 {
+
 	class cTexture
 	{
 	public:

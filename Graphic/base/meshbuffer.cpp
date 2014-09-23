@@ -14,8 +14,6 @@ cMeshBuffer::cMeshBuffer()
 cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
 :	m_offset(0)
 {
-	//CreateMesh(rawMesh.vertices, rawMesh.normals, rawMesh.tex, rawMesh.indices);
-	//CreateBoneWeight(rawMesh.weights);
 	CreateMesh(rawMesh);
 	CreateAttributes(rawMesh);
 }
@@ -188,46 +186,6 @@ void cMeshBuffer::CreateMesh( const sRawMesh &rawMesh )
 		m_idxBuff.Unlock();
 	}
 }
-
-
-// 본 인덱스, 가중치를 설정한다.
-//void cMeshBuffer::CreateBoneWeight( const vector<sVertexWeight> &weights )
-//{
-//
-//	if (sVertexNormTexSkin* pv = (sVertexNormTexSkin*)m_vtxBuff.Lock())
-//	{
-//		for (u_int i=0; i <weights.size(); ++i)
-//		{
-//			const sVertexWeight &weight = weights[ i];
-//			const int vtxIdx = weight.vtxIdx;
-//
-//			ZeroMemory(pv[ vtxIdx].weights, sizeof(float)*4);
-//			ZeroMemory(pv[ vtxIdx].matrixIndices, sizeof(float)*4);
-//			//pv[ vtxIdx].matrixIndices = 0;
-//
-//			for (int k=0; (k < weight.size) && (k < 4); ++k)
-//			{
-//				const sWeight *w = &weight.w[ k];
-//				if (k < 3)
-//				{
-//					pv[ vtxIdx].weights[ k] = w->weight;
-//				}
-//				else // k == 3 (마지막 가중치)
-//				{
-//					pv[ vtxIdx].weights[ k] = 
-//						1.f - (pv[ vtxIdx].weights[ 0] + pv[ vtxIdx].weights[ 1] + pv[ vtxIdx].weights[ 2]);
-//				}
-//
-//				pv[ vtxIdx].matrixIndices[ k] = w->bone;
-//				//const int boneIdx = (w->bone << (8*(3-k)));
-//				//pv[ vtxIdx].matrixIndices |= boneIdx;
-//			}
-//		}
-//
-//		m_vtxBuff.Unlock();
-//	}
-//
-//}
 
 
 // 속성버퍼 초기화.

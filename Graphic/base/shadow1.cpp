@@ -46,7 +46,7 @@ void cShadow1::UpdateShadow( cNode &node )
 }
 
 
-// 그림자 맵 출력.
+// 그림자 맵 출력. (디버깅용)
 void cShadow1::RenderShadowMap()
 {
 	m_surface.Render();
