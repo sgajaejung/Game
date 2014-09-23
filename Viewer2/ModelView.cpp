@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Viewer2.h"
 #include "ModelView.h"
+#include "LightPanel.h"
 
 
 using namespace graphic;
@@ -85,6 +86,12 @@ void CModelView::Init()
 	m_msg.Create();
 	m_msg.SetText(10, 740, "press 'F' to focus model" );
 
+	m_lineMtrl.InitBlack();
+	m_lineMtrl.GetMtrl().Emissive = *(D3DXCOLOR*)&Vector4(1,1,0,1);
+
+	m_lightSphere.Create(5, 10, 10);
+	m_lightSphere.GetMaterial().InitBlack();
+	m_lightSphere.GetMaterial().GetMtrl().Emissive = *(D3DCOLORVALUE*)&Vector4(1,1,0,1);
 
 	cController::Get()->AddObserver(this);
 
@@ -162,6 +169,23 @@ void CModelView::Render()
 		// 캐릭터 출력.
 		cController::Get()->Render();
 
+		// 조명 방향 선 출력.
+		if (cController::Get()->GetCurrentPanel() == EDIT_MODE::LIGHT)
+		{
+			// 광원 위치 조정 후 출력.
+			const Vector3 lightPos = cLightManager::Get()->GetMainLight().GetPosition();
+			Matrix44 lightTm;
+			lightTm.SetTranslate( lightPos );
+			m_lightSphere.SetTransform(lightTm);
+			m_lightSphere.Render(Matrix44::Identity);
+
+			if (m_LButtonDown 
+				&& g_lightPanel->m_EditDirection)
+			{
+				m_lineMtrl.Bind();
+				m_lightLine.Render();
+			}
+		}
 
 		//랜더링 끝
 		GetDevice()->EndScene();
@@ -195,11 +219,45 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		const CPoint pos = point  - m_curPos;
 		m_curPos = point;
+		
+		bool isEditLightDirection = false;
+		if (cController::Get()->GetCurrentPanel() == EDIT_MODE::LIGHT)
+		{
+			isEditLightDirection = g_lightPanel->m_EditDirection? true : false;
+		}
 
-		Quaternion q1(GetMainCamera()->GetRight(), -pos.y * 0.01f);
-		Quaternion q2(GetMainCamera()->GetUpVector(), -pos.x * 0.01f);
+		if (isEditLightDirection)
+		{
+			Ray ray(point.x, point.y, 1024, 768, GetMainCamera()->GetProjectionMatrix(), 
+				GetMainCamera()->GetViewMatrix());
+			Vector3 pickPos;
+			if (m_grid.Pick( ray.orig, ray.dir, pickPos ))
+			{
+				// 광원 방향 구하기.
+				const Vector3 lightPos = cLightManager::Get()->GetMainLight().GetPosition();
+				Vector3 dir = pickPos - lightPos;
+				dir.Normalize();
+				m_lightLine.SetLine(lightPos, pickPos, 1);
 
-		m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
+				// 광원 위치 조정
+				Matrix44 lightTm;
+				lightTm.SetTranslate( lightPos );
+				m_lightSphere.SetTransform(lightTm);
+
+				// 광원 방향 업데이트
+				cLightManager::Get()->GetMainLight().SetDirection(dir);
+
+				// 모든 리스너에게 전달한다.
+				cController::Get()->SendUpdate(NOTIFY_MSG::UPDATE_LIGHT_DIRECTION);
+			}
+		}
+		else
+		{
+			Quaternion q1(GetMainCamera()->GetRight(), -pos.y * 0.01f);
+			Quaternion q2(GetMainCamera()->GetUpVector(), -pos.x * 0.01f);
+			m_rotateTm *= (q2.GetMatrix() * q1.GetMatrix());
+		}
+
 	}	
 	else if (m_RButtonDown)
 	{
@@ -274,8 +332,19 @@ void CModelView::OnMButtonUp(UINT nFlags, CPoint point)
 }
 
 
-void CModelView::Update()
+void CModelView::Update(int type)
 {
+	if (NOTIFY_MSG::CHANGE_PANEL == type)
+	{
+		if (cController::Get()->GetCurrentPanel() == EDIT_MODE::LIGHT)
+		{
+			// 광원 위치 조정
+			const Vector3 lightPos = cLightManager::Get()->GetMainLight().GetPosition();
+			Matrix44 lightTm;
+			lightTm.SetTranslate( lightPos );
+			m_lightSphere.SetTransform(lightTm);
+		}
+	}
 }
 
 

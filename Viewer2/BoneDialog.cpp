@@ -55,9 +55,12 @@ void CBoneDialog::OnBnClickedCancel()
 }
 
 
-void CBoneDialog::Update()
+void CBoneDialog::Update(int type)
 {
-	UpdateTree();
+	if (NOTIFY_MSG::UPDATE_MODEL == type)
+	{
+		UpdateTree();
+	}
 }
 
 

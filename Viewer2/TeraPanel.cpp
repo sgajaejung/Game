@@ -77,7 +77,7 @@ BOOL CTeraPanel::OnInitDialog()
 }
 
 
-void CTeraPanel::Update()
+void CTeraPanel::Update(int type)
 {
 	
 }

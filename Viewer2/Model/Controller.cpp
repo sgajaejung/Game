@@ -12,6 +12,7 @@ cController::cController() :
 ,	m_viewerDlg(NULL)
 ,	m_modelName("modelName: ", 10, 27)
 ,	m_animationName("animationName: ", 10, 44)
+,	m_currentMode(EDIT_MODE::FILE)
 {
 	m_analyzer = new cCharacterAnalyzer();
 	m_analyzer->SetCharacter(&m_archeCharacter);
@@ -68,7 +69,7 @@ bool cController::LoadFile( const string &fileName )
 		break;
 	}
 
-	NotifyObserver();
+	NotifyObserver(NOTIFY_MSG::UPDATE_MODEL);
 
 	HideLoadingDialog();
 	return result;
@@ -120,32 +121,39 @@ void cController::SetCurrentAnimationFrame(const int curFrame)
 // 패널이 전환 될 때 호출된다.
 void cController::ChangePanel(const int panelIdx)
 {
-	switch (panelIdx)
+	EDIT_MODE::TYPE type = (EDIT_MODE::TYPE)panelIdx;
+	m_currentMode = type;
+
+	switch (type)
 	{
-	case 0: // file panel
+	case EDIT_MODE::FILE: // file panel
 		m_analyzer->SetCharacter(&m_archeCharacter);
 		break;
 
-	case 1: // model panel
+	case EDIT_MODE::MODEL: // model panel
 		break;
 
-	case 2: // animation panel
+	case EDIT_MODE::ANIMATION: // animation panel
 		break;
 
-	case 3: // archeblade panel
+	case EDIT_MODE::LIGHT:
+		break;
+
+	case EDIT_MODE::ARCHEBLADE: // archeblade panel
 		m_analyzer->SetCharacter(&m_archeCharacter);
 		break;
 
-	case 4: // tera panel
+	case EDIT_MODE::TERA: // tera panel
 		m_analyzer->SetCharacter(&m_teraCharacter);
 		break;
 	}
 
+	NotifyObserver(NOTIFY_MSG::CHANGE_PANEL);
 }
 
 
 // observer 에게 업데이트 메세지를 보낸다.
 void cController::SendUpdate(const int type) //type=0
 {
-	NotifyObserver();
+	NotifyObserver(type);
 }

@@ -24,3 +24,27 @@ namespace DISP_MODE
 	};
 }
 
+
+namespace EDIT_MODE
+{
+	enum TYPE
+	{
+		FILE,
+		MODEL,
+		ANIMATION,
+		LIGHT,
+		ARCHEBLADE,
+		TERA,
+	};
+}
+
+
+namespace NOTIFY_MSG
+{
+	enum TYPE
+	{
+		UPDATE_MODEL,
+		CHANGE_PANEL,
+		UPDATE_LIGHT_DIRECTION,
+	};
+}

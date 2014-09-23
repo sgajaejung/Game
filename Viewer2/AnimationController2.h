@@ -5,14 +5,14 @@
 // CAnimationController 대화 상자입니다.
 
 class CAnimationController2 : public CDialogEx
-												, public common::iObserver
+												, public common::iObserver2
 {
 public:
 	CAnimationController2(CWnd* pParent = NULL);   // 표준 생성자입니다.
 	virtual ~CAnimationController2();
 	enum { IDD = IDD_DIALOG_ANICONTROLLER };
 
-	virtual void Update() override;
+	virtual void Update(int type) override;
 	void Update(const float elapseT);
 
 

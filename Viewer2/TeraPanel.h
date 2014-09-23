@@ -6,7 +6,7 @@
 // CTeraPanel 대화 상자입니다.
 
 class CTeraPanel : public CDialogEx
-							, public common::iObserver
+							, public common::iObserver2
 {
 public:
 	CTeraPanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -15,7 +15,7 @@ public:
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_DIALOG_TERA };
 
-	virtual void Update() override;
+	virtual void Update(int type) override;
 
 
 protected:

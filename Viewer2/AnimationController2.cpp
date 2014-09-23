@@ -67,11 +67,13 @@ BOOL CAnimationController2::OnInitDialog()
 }
 
 
-void CAnimationController2::Update() 
+void CAnimationController2::Update(int type)
 {
-	UpdateController();
-
-	UpdateData(FALSE);
+	if (NOTIFY_MSG::UPDATE_MODEL == type)
+	{
+		UpdateController();
+		UpdateData(FALSE);
+	}
 }
 
 

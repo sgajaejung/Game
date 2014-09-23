@@ -56,12 +56,14 @@ void CAnimationPanel::OnBnClickedCancel()
 }
 
 
-void CAnimationPanel::Update() 
+void CAnimationPanel::Update(int type)
 {
-	UpdateAnimationInfo();
-	UpdateAnimationTree();
-
-	UpdateData(FALSE);
+	if (NOTIFY_MSG::UPDATE_MODEL == type)
+	{
+		UpdateAnimationInfo();
+		UpdateAnimationTree();
+		UpdateData(FALSE);
+	}
 }
 
 

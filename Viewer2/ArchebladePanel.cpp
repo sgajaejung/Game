@@ -76,7 +76,7 @@ void CArchebladePanel::OnBnClickedCancel()
 }
 
 
-void CArchebladePanel::Update()
+void CArchebladePanel::Update(int type)
 {
 
 }

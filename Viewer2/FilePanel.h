@@ -11,7 +11,7 @@ namespace graphic  {
 
 
 class CFilePanel : public CPanelBase
-	, public common::iObserver
+	, public common::iObserver2
 {
 public:
 	CFilePanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -20,7 +20,7 @@ public:
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_DIALOG_FILE };
 
-	virtual void Update() override;
+	virtual void Update(int type) override;
 	
 	void UpdateModelFiles();
 	void UpdateAnimationFiles();

@@ -51,7 +51,7 @@ BOOL CFilePanel::OnInitDialog()
 }
 
 
-void CFilePanel::Update()
+void CFilePanel::Update(int type)
 {
 	// 아직 하는 일 없음.
 }

@@ -75,3 +75,17 @@ using namespace common;
 
 #include "FileTreeCtrl.h"
 #include "UIUtiltity.h"
+
+
+class CModelPanel;
+class CAnimationPanel;
+class CFilePanel;
+class CArchebladePanel;
+class CTeraPanel;
+class CLightPanel;
+extern CModelPanel *g_modelPanel;
+extern CAnimationPanel *g_aniPanel;
+extern CFilePanel *g_filePanel;
+extern CArchebladePanel *g_archePanel;
+extern CTeraPanel *g_teraPanel;
+extern CLightPanel *g_lightPanel;

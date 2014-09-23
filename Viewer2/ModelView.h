@@ -3,7 +3,7 @@
 
 // CModelView ∫‰¿‘¥œ¥Ÿ.
 class CModelView : public CView
-							, public common::iObserver
+							, public common::iObserver2
 {
 public:
 	CModelView();
@@ -15,7 +15,7 @@ public:
 	void Update(const float elapseT);
 	void ShowSkybox(bool show);
 	void Render();
-	virtual void Update() override;
+	virtual void Update(int type) override;
 	virtual void OnDraw(CDC* pDC) { }
 
 
@@ -25,6 +25,9 @@ protected:
 	graphic::cShader m_shader;
 	graphic::cGrid2 m_grid;
 	graphic::cText m_msg;
+	graphic::cSphere m_lightSphere;
+	graphic::cLine m_lightLine;
+	graphic::cMaterial m_lineMtrl;
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;

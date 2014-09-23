@@ -6,14 +6,14 @@
 // CAnimationPanel 대화 상자입니다.
 
 class CAnimationPanel : public CPanelBase
-									   , public common::iObserver
+									   , public common::iObserver2
 {
 public:
 	CAnimationPanel(CWnd* pParent = NULL);   // 표준 생성자입니다.
 	virtual ~CAnimationPanel();
 	enum { IDD = IDD_DIALOG_ANIMATION };
 
-	virtual void Update() override;
+	virtual void Update(int type) override;
 
 
 protected:

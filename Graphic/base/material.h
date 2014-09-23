@@ -33,7 +33,6 @@ namespace graphic
 		void Bind(cShader &shader);
 
 
-	private:
 		D3DMATERIAL9 m_mtrl;
 	};
 

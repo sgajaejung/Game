@@ -20,7 +20,6 @@ public:
 protected:
 	void ShowPanel(int idx);
 
-
 	CModelPanel *m_modelPanel;
 	CAnimationPanel *m_aniPanel;
 	CFilePanel *m_filePanel;

@@ -53,7 +53,17 @@ void cLight::GetShadowMatrix( const Vector3 &modelPos,
 	OUT Vector3 &lightPos, OUT Matrix44 &view, OUT Matrix44 &proj, 
 	OUT Matrix44 &tt )
 {
-	lightPos = *(Vector3*)&m_light.Position;
+	if (D3DLIGHT_DIRECTIONAL == m_light.Type)
+	{
+		// 방향성 조명이면 Direction 벡터를 통해 위치를 계산하게 한다.
+		Vector3 pos = *(Vector3*)&m_light.Position;
+		Vector3 dir = *(Vector3*)&m_light.Direction;
+		lightPos = -dir * pos.Length();
+	}
+	else
+	{
+		lightPos = *(Vector3*)&m_light.Position;
+	}
 
 	view.SetView2( lightPos, modelPos, Vector3(0,1,0));
 

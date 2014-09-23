@@ -359,7 +359,7 @@ void CViewer2Dlg::OnBnClickedCheckSkybox()
 
 
 // Observer Update
-void CViewer2Dlg::Update()
+void CViewer2Dlg::Update(int type)
 {
 	int width, height;
 	DISP_MODE::TYPE dispMode = (DISP_MODE::TYPE)m_dispCombo.GetCurSel();

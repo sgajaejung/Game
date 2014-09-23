@@ -8,8 +8,8 @@
 
 class CViewer2Dlg;
 
-class cController : public common::cObservable
-							, public common::cSingleton<cController>							
+class cController : public common::cObservable2
+							, public common::cSingleton<cController>
 {
 public:
 	cController();
@@ -29,6 +29,7 @@ public:
 	void SetCurrentAnimationFrame(const int curFrame);
 
 	void ChangePanel(const int panelIdx);
+	EDIT_MODE::TYPE GetCurrentPanel() const;
 	void SendUpdate(const int type=0);
 
 	void SetViewerDlg(CViewer2Dlg *dlg);
@@ -46,6 +47,7 @@ private:
 	string m_currentAnimationFileName;
 	bool m_isPlay;
 
+	EDIT_MODE::TYPE m_currentMode;
 	CViewer2Dlg *m_viewerDlg;
 };
 
@@ -58,3 +60,4 @@ inline void cController::SetAnimationPlay(const bool isPlay) { m_isPlay = isPlay
 inline bool cController::IsAnimationPlay() const { return m_isPlay; }
 inline void cController::SetViewerDlg(CViewer2Dlg *dlg) { m_viewerDlg = dlg; }
 inline CViewer2Dlg* cController::GetViewerDlg() { return m_viewerDlg; }
+inline EDIT_MODE::TYPE cController::GetCurrentPanel() const { return m_currentMode; }

@@ -13,6 +13,7 @@ cSphere::cSphere()
 cSphere::cSphere(const float radius, const int stacks, const int slices)
 {
 	Create(radius, stacks, slices);
+	m_mtrl.InitWhite();
 }
 
 cSphere::~cSphere()
@@ -29,6 +30,7 @@ void cSphere::Render(const Matrix44 &tm)
 	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
+	m_mtrl.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 		m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
 

@@ -6,7 +6,7 @@
 // CBoneDialog 대화 상자입니다.
 
 class CBoneDialog : public CDialogEx
-										, public common::iObserver
+										, public common::iObserver2
 {
 public:
 	CBoneDialog(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -17,7 +17,7 @@ public:
 
 
 public:
-	virtual void Update() override;
+	virtual void Update(int type) override;
 	bool UpdateTree();
 
 

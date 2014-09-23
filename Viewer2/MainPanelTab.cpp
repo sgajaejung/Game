@@ -11,6 +11,13 @@
 #include "TeraPanel.h"
 #include "LightPanel.h"
 
+CModelPanel *g_modelPanel;
+CAnimationPanel *g_aniPanel;
+CFilePanel *g_filePanel;
+CArchebladePanel *g_archePanel;
+CTeraPanel *g_teraPanel;
+CLightPanel *g_lightPanel;
+
 
 // CMainPanelTab 대화 상자입니다.
 
@@ -108,9 +115,16 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_teraPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_panels.push_back(m_teraPanel);
 
+	g_modelPanel = m_modelPanel;
+	g_aniPanel = m_aniPanel;
+	g_filePanel = m_filePanel;
+	g_archePanel = m_archePanel;
+	g_teraPanel = m_teraPanel;
+	g_lightPanel = m_lightPanel;
+
 	BOOST_FOREACH (auto &panel, m_panels)
 	{
-		if (iObserver *observer = dynamic_cast<iObserver*>(panel))
+		if (iObserver2 *observer = dynamic_cast<iObserver2*>(panel))
 			cController::Get()->AddObserver(observer);
 	}
 

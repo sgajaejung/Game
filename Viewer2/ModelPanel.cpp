@@ -48,15 +48,18 @@ END_MESSAGE_MAP()
 
 // CModelPanel 메시지 처리기입니다.
 
-void CModelPanel::Update()
+void CModelPanel::Update(int type)
 {
-	UpdateModelInfo();
-	UpdateMaterialInfo();
-	UpdateMeshInfo();	
-	UpdateBoneInfo();
-	UpdateRawBoneInfo();
+	if (NOTIFY_MSG::UPDATE_MODEL == type)
+	{
+		UpdateModelInfo();
+		UpdateMaterialInfo();
+		UpdateMeshInfo();	
+		UpdateBoneInfo();
+		UpdateRawBoneInfo();
 
-	UpdateData(FALSE);
+		UpdateData(FALSE);
+	}
 }
 
 
