@@ -19,13 +19,6 @@ public:
 
 protected:
 	void ShowPanel(int idx);
-
-	CModelPanel *m_modelPanel;
-	CAnimationPanel *m_aniPanel;
-	CFilePanel *m_filePanel;
-	CArchebladePanel *m_archePanel;
-	CTeraPanel *m_teraPanel;
-	CLightPanel *m_lightPanel;
 	vector<CWnd*> m_panels;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

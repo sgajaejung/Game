@@ -336,3 +336,11 @@ cMesh* cModel::GetMesh(const int idx)
 	return NULL;
 }
 
+
+void cModel::SetShader(cShader *shader)
+{
+	__super::SetShader(shader);
+
+	BOOST_FOREACH (auto node, m_meshes)
+		node->SetShader(shader);
+}

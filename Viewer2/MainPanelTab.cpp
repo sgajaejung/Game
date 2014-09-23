@@ -10,6 +10,8 @@
 #include "ArchebladePanel.h"
 #include "TeraPanel.h"
 #include "LightPanel.h"
+#include "RendererPanel.h"
+
 
 CModelPanel *g_modelPanel;
 CAnimationPanel *g_aniPanel;
@@ -17,28 +19,23 @@ CFilePanel *g_filePanel;
 CArchebladePanel *g_archePanel;
 CTeraPanel *g_teraPanel;
 CLightPanel *g_lightPanel;
-
+CRendererPanel *g_rendererPanel;
 
 // CMainPanelTab 대화 상자입니다.
 
 CMainPanelTab::CMainPanelTab(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMainPanelTab::IDD, pParent)
-,	m_modelPanel(NULL)
-,	m_aniPanel(NULL)
-,	m_filePanel(NULL)
-,	m_archePanel(NULL)
-,	m_teraPanel(NULL)
 {
 
 }
 
 CMainPanelTab::~CMainPanelTab()
 {
-	SAFE_DELETE(m_modelPanel);
-	SAFE_DELETE(m_aniPanel);
-	SAFE_DELETE(m_filePanel);
-	SAFE_DELETE(m_archePanel);
-	SAFE_DELETE(m_teraPanel);
+	BOOST_FOREACH (auto &panel, m_panels)
+	{
+		SAFE_DELETE(panel);
+	}
+	m_panels.clear();
 }
 
 void CMainPanelTab::DoDataExchange(CDataExchange* pDX)
@@ -78,49 +75,55 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_Tab.InsertItem(0, L"Model File");
 	m_Tab.InsertItem(1, L"Model");
 	m_Tab.InsertItem(2, L"Animation");
-	m_Tab.InsertItem(3, L"Light");
-	m_Tab.InsertItem(4, L"ArcheBlade");
-	m_Tab.InsertItem(5, L"Tera");
+	m_Tab.InsertItem(3, L"Renderer");
+	m_Tab.InsertItem(4, L"Light");
+	m_Tab.InsertItem(5, L"ArcheBlade");
+	m_Tab.InsertItem(6, L"Tera");
 
 	CRect cr;
 	GetClientRect(cr);
 
-	m_filePanel = new CFilePanel(this);
-	m_filePanel->Create(CFilePanel::IDD, this);
-	m_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_filePanel);
+	g_filePanel = new CFilePanel(this);
+	g_filePanel->Create(CFilePanel::IDD, this);
+	g_filePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_filePanel);
 
-	m_modelPanel = new CModelPanel(this);
-	m_modelPanel->Create(CModelPanel::IDD, this);
-	m_modelPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_modelPanel);
+	g_modelPanel = new CModelPanel(this);
+	g_modelPanel->Create(CModelPanel::IDD, this);
+	g_modelPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_modelPanel);
 
-	m_aniPanel = new CAnimationPanel(this);
-	m_aniPanel->Create(CAnimationPanel::IDD, this);
-	m_aniPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_aniPanel);
+	g_aniPanel = new CAnimationPanel(this);
+	g_aniPanel->Create(CAnimationPanel::IDD, this);
+	g_aniPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_aniPanel);
 
-	m_lightPanel = new CLightPanel(this);
-	m_lightPanel->Create(CLightPanel::IDD, this);
-	m_lightPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_lightPanel);
+	g_rendererPanel = new CRendererPanel(this);
+	g_rendererPanel->Create(CRendererPanel::IDD, this);
+	g_rendererPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_rendererPanel);
 
-	m_archePanel = new CArchebladePanel(this);
-	m_archePanel->Create(CArchebladePanel::IDD, this);
-	m_archePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_archePanel);
+	g_lightPanel = new CLightPanel(this);
+	g_lightPanel->Create(CLightPanel::IDD, this);
+	g_lightPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_lightPanel);
 
-	m_teraPanel = new CTeraPanel(this);
-	m_teraPanel->Create(CTeraPanel::IDD, this);
-	m_teraPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
-	m_panels.push_back(m_teraPanel);
+	g_archePanel = new CArchebladePanel(this);
+	g_archePanel->Create(CArchebladePanel::IDD, this);
+	g_archePanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_archePanel);
 
-	g_modelPanel = m_modelPanel;
-	g_aniPanel = m_aniPanel;
-	g_filePanel = m_filePanel;
-	g_archePanel = m_archePanel;
-	g_teraPanel = m_teraPanel;
-	g_lightPanel = m_lightPanel;
+	g_teraPanel = new CTeraPanel(this);
+	g_teraPanel->Create(CTeraPanel::IDD, this);
+	g_teraPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_teraPanel);
+
+	g_modelPanel = g_modelPanel;
+	g_aniPanel = g_aniPanel;
+	g_filePanel = g_filePanel;
+	g_archePanel = g_archePanel;
+	g_teraPanel = g_teraPanel;
+	g_lightPanel = g_lightPanel;
 
 	BOOST_FOREACH (auto &panel, m_panels)
 	{

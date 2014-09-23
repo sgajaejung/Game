@@ -41,6 +41,7 @@ namespace graphic
 		void SetRenderPass(int pass);
 		int GetRenderPass() const;
 		D3DXHANDLE GetValueHandle(const string &key);
+		const string& GetFileName() const;
 
 
 	private:
@@ -53,4 +54,5 @@ namespace graphic
 
 	inline void cShader::SetRenderPass(int pass) { m_renderPass = pass; }
 	inline int cShader::GetRenderPass() const { return m_renderPass; }
+	inline const string& cShader::GetFileName() const { return m_fileName; }
 }

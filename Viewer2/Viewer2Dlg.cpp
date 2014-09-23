@@ -14,6 +14,8 @@
 
 #pragma comment( lib, "winmm.lib" )
 
+CViewer2Dlg *g_viewerDlg;
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,8 +33,10 @@ CViewer2Dlg::CViewer2Dlg(CWnd* pParent /*=NULL*/)
 , m_RenderMesh(TRUE)
 , m_RenderBoundingBox(FALSE)
 , m_ShowSkyBox(FALSE)
+,	m_dispMode(DISP_MODE::DISP_1024X768_LEFT)
 {
 //	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	g_viewerDlg = this;
 }
 
 CViewer2Dlg::~CViewer2Dlg()
@@ -390,6 +394,8 @@ void CViewer2Dlg::OnCbnSelchangeComboDisplay()
 {
 	int width, height;
 	DISP_MODE::TYPE dispMode = (DISP_MODE::TYPE)m_dispCombo.GetCurSel();
+	m_dispMode = dispMode;
+
 	switch (dispMode)
 	{
 	case DISP_MODE::DISP_800X600_RIGHT: width = 800; height = 600; break; // 800X600 right align

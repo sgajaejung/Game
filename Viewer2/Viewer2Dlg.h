@@ -19,6 +19,7 @@ public:
 	virtual void Update(int type) override;
 
 	CMainPanel* GetMainPanel();
+	DISP_MODE::TYPE GetDisplayMode() const;
 
 
 protected:
@@ -33,6 +34,7 @@ protected:
 	CMainPanel *m_mainPanel;
 	bool m_loop;
 	bool m_dxInit;
+	DISP_MODE::TYPE m_dispMode;
 
 	// 생성된 메시지 맵 함수
 	virtual BOOL OnInitDialog();
@@ -60,3 +62,4 @@ public:
 
 
 inline CMainPanel* CViewer2Dlg::GetMainPanel() { return m_mainPanel; }
+inline DISP_MODE::TYPE CViewer2Dlg::GetDisplayMode() const { return m_dispMode; }

@@ -11,7 +11,7 @@ namespace graphic  {
 
 
 class CFilePanel : public CPanelBase
-	, public common::iObserver2
+				, public common::iObserver2
 {
 public:
 	CFilePanel(CWnd* pParent = NULL);   // 표준 생성자입니다.

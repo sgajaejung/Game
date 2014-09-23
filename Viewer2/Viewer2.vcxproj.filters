@@ -102,6 +102,9 @@
     <ClInclude Include="PropGridSlider.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="RendererPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer2.cpp">
@@ -168,6 +171,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="PropGridSlider.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RendererPanel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

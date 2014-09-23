@@ -5,6 +5,7 @@
 #include "Viewer2.h"
 #include "ModelView.h"
 #include "LightPanel.h"
+#include "Viewer2Dlg.h"
 
 
 using namespace graphic;
@@ -228,7 +229,17 @@ void CModelView::OnMouseMove(UINT nFlags, CPoint point)
 
 		if (isEditLightDirection)
 		{
-			Ray ray(point.x, point.y, 1024, 768, GetMainCamera()->GetProjectionMatrix(), 
+			int width, height;
+			switch (g_viewerDlg->GetDisplayMode())
+			{
+			case DISP_MODE::DISP_800X600_RIGHT: width = 800; height = 600; break; // 800X600 right align
+			case DISP_MODE::DISP_1024X768_RIGHT: width = 1024; height = 768; break; // 1024X768 right align
+			case DISP_MODE::DISP_800X600_LEFT: width = 800; height = 600; break; // 800X600 left align
+			case DISP_MODE::DISP_1024X768_LEFT: width = 1024; height = 768; break; // 1024X768 left align
+			default: return;
+			}
+
+			Ray ray(point.x, point.y, width, height, GetMainCamera()->GetProjectionMatrix(), 
 				GetMainCamera()->GetViewMatrix());
 			Vector3 pickPos;
 			if (m_grid.Pick( ray.orig, ray.dir, pickPos ))

@@ -37,6 +37,7 @@ namespace graphic
 		cMesh* FindMesh(const string &meshName);
 		sRawAniGroup* GetCurrentAnimation();
 		bool SharePalette(vector<Matrix44> *palette);
+		virtual void SetShader(cShader *shader) override;
 
 		bool Pick(const Vector3 &orig, const Vector3 &dir);
 		cModel* Clone() const;

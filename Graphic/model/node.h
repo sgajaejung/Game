@@ -20,7 +20,6 @@ namespace graphic
 		void SetTM(const Matrix44 &tm);
 		void MultiplyTM(const Matrix44 &tm);
 		void SetLocalTM(const Matrix44 &tm);
-		void SetShader(cShader *shader);
 		cShader* GetShader();
 		void SetRender(const bool isRender);
 		bool IsRender() const;
@@ -36,6 +35,7 @@ namespace graphic
 		virtual void Render(const Matrix44 &parentTm);
 		virtual void RenderShadow(const Matrix44 &viewProj, 
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm);
+		virtual void SetShader(cShader *shader);
 
 		//virtual void RenderShader( const Matrix44 &parentTm );
 		//virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );

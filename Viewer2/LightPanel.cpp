@@ -503,4 +503,6 @@ void CLightPanel::Update(int type)
 void CLightPanel::OnBnClickedCheckDirection()
 {
 	UpdateData();
+	if (m_EditDirection)
+		::AfxMessageBox(L"화면에 마우스 왼쪽 버튼을 눌러서 조명의 방향을 조정할 수 있습니다.");
 }

@@ -32,6 +32,7 @@ namespace EDIT_MODE
 		FILE,
 		MODEL,
 		ANIMATION,
+		RENDERER,
 		LIGHT,
 		ARCHEBLADE,
 		TERA,
