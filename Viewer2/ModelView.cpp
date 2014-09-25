@@ -10,9 +10,10 @@
 
 using namespace graphic;
 
-// CModelView
 
+// CModelView
 CModelView::CModelView()
+	: m_sprite(NULL)
 {
 	m_LButtonDown = false;
 	m_RButtonDown = false;
@@ -22,6 +23,8 @@ CModelView::CModelView()
 
 CModelView::~CModelView()
 {
+	SAFE_DELETE(m_sprite);
+	SAFE_RELEASE(m_dxSprite);
 }
 
 BEGIN_MESSAGE_MAP(CModelView, CView)
@@ -87,15 +90,19 @@ void CModelView::Init()
 	m_msg.Create();
 	m_msg.SetText(10, 740, "press 'F' to focus model" );
 
-	m_lineMtrl.InitBlack();
-	m_lineMtrl.GetMtrl().Emissive = *(D3DXCOLOR*)&Vector4(1,1,0,1);
+	m_lightLine.GetMaterial().InitBlack();
+	m_lightLine.GetMaterial().GetMtrl().Emissive = *(D3DXCOLOR*)&Vector4(1,1,0,1);
 
 	m_lightSphere.Create(5, 10, 10);
 	m_lightSphere.GetMaterial().InitBlack();
 	m_lightSphere.GetMaterial().GetMtrl().Emissive = *(D3DCOLORVALUE*)&Vector4(1,1,0,1);
 
-	cController::Get()->AddObserver(this);
 
+	D3DXCreateSprite(GetDevice(), &m_dxSprite);
+	m_sprite = new cSprite(m_dxSprite, 0);
+
+
+	cController::Get()->AddObserver(this);
 }
 
 
@@ -166,7 +173,6 @@ void CModelView::Render()
 		GetRenderer()->RenderFPS();
 		m_msg.Render();
 
-
 		// 캐릭터 출력.
 		cController::Get()->Render();
 
@@ -183,10 +189,12 @@ void CModelView::Render()
 			if (m_LButtonDown 
 				&& g_lightPanel->m_EditDirection)
 			{
-				m_lineMtrl.Bind();
 				m_lightLine.Render();
 			}
 		}
+
+		if (m_sprite)
+			m_sprite->Render(Matrix44::Identity);
 
 		//랜더링 끝
 		GetDevice()->EndScene();
@@ -356,6 +364,10 @@ void CModelView::Update(int type)
 			m_lightSphere.SetTransform(lightTm);
 		}
 	}
+	else if (NOTIFY_MSG::UPDATE_TEXTURE == type)
+	{
+
+	}
 }
 
 
@@ -376,10 +388,31 @@ void CModelView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				GetMainCamera()->SetLookAt(box->Center());
 				GetMainCamera()->SetEyePos(eyePos);
 			}
-		}
-		
+		}		
+	}
+	else if (nChar == VK_ESCAPE)
+	{
+		if (m_sprite)
+			m_sprite->Clear();
 	}
 
 	__super::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
+
+void CModelView::ShowTexture(const string &fileName)
+{
+	if (m_sprite)
+	{
+		m_sprite->SetTexture(fileName);
+
+		// 300 X 300 사이즈로 스캐일링한다.
+		const float w = m_sprite->GetRect().Width();
+		const float h = m_sprite->GetRect().Height();
+		m_sprite->SetScale( Vector3(300/w, 300/h, 1) );
+
+		int width, height;
+		GetViewSize(g_viewerDlg->GetDisplayMode(), width, height);
+		m_sprite->SetPos( Vector3(width-300, 0, 0) );
+	}
+}

@@ -15,6 +15,7 @@ namespace graphic
 		string texture;
 		string bumpMap;
 		string specularMap;
+		string selfIllumMap;
 
 		sMaterial() {}
 		sMaterial(const sMaterial &rhs);

@@ -280,19 +280,9 @@ float4 PS_pass4(VS_BUMP_OUTPUT In) : COLOR
     float3 h = normalize(In.HalfVector);
     float3 l = normalize(In.LightDir);
 
-	float4 albedo = tex2D(colorMap, In.Tex);
-	float4 specular = tex2D(specularMap, In.Tex);
+	float4 emissive = tex2D(selfIllumMap, In.Tex);
 
-    float nDotL = saturate(dot(n, l));
-    float nDotH = saturate(dot(n, h));
-    float power = (nDotL == 0.0f) ? 0.0f : pow(nDotH, shininess);
-
-    float3 color = (light.diffuse.rgb * albedo.rgb * nDotL) 
-						+ (light.specular.rgb * specular.rgb *  power);
-
-	float3 ambient = material.ambient.rgb * light.ambient.rgb * albedo.rgb;
-
-	return  float4(ambient + color, 1);
+	return  emissive;
 }
 
 

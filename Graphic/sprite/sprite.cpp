@@ -22,16 +22,16 @@ cSprite::~cSprite()
 }
 
 
-void cSprite::Create(const string &fileName)
+void cSprite::SetTexture(const string &fileName)
 {
 	m_texture = cResourceManager::Get()->LoadTexture(fileName, false);
 	if (m_texture)
 	{
-		if (::IsRectEmpty(&m_rect))
+		//if (::IsRectEmpty(&m_rect))
 		{
 			m_rect.SetWidth(m_texture->GetImageInfo().Width);
 			m_rect.SetHeight(m_texture->GetImageInfo().Height);
-		}
+		}		
 	}
 }
 
@@ -89,3 +89,11 @@ bool cSprite::IsContain(const Vector2 &pos)
 		(rightBottom.x >= pos.x) &&
 		(rightBottom.y >= pos.y));
 }
+
+
+void cSprite::Clear()
+{
+	m_texture = NULL;
+}
+
+

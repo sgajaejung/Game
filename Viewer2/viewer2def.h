@@ -24,6 +24,20 @@ namespace DISP_MODE
 	};
 }
 
+inline void GetViewSize(DISP_MODE::TYPE type, OUT int &width, OUT int &height)
+{
+	width = height = 0;
+	switch (type)
+	{
+	case DISP_MODE::DISP_800X600_RIGHT: width = 800; height = 600; break; // 800X600 right align
+	case DISP_MODE::DISP_1024X768_RIGHT: width = 1024; height = 768; break; // 1024X768 right align
+	case DISP_MODE::DISP_800X600_LEFT: width = 800; height = 600; break; // 800X600 left align
+	case DISP_MODE::DISP_1024X768_LEFT: width = 1024; height = 768; break; // 1024X768 left align
+	default: return;
+	}
+}
+
+
 
 namespace EDIT_MODE
 {
@@ -44,8 +58,11 @@ namespace NOTIFY_MSG
 {
 	enum TYPE
 	{
-		UPDATE_MODEL,
-		CHANGE_PANEL,
-		UPDATE_LIGHT_DIRECTION,
+		UPDATE_MODEL, // 모델 파일이 교첼 될 때 발생.
+		CHANGE_PANEL, // 패널이 이동 될 때 발생.
+		UPDATE_LIGHT_DIRECTION, // light panel 에서 조명 방향 조정을 체크하고, 마우스로 방향을 지정할 때 발생함.
+		UPDATE_TEXTURE, // model panel 에서 매터리얼 정보의 텍스쳐를 선택할 때 발생.
 	};
 }
+
+

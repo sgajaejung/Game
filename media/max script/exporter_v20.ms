@@ -1,8 +1,6 @@
 
--- version 19
--- 법선매핑 기능 추가.
--- 법프맵 파일 이름이 제대로 저장되지 않았던 문제 해결.
--- 
+-- version 20
+-- 셀프 일루미네이션 매핑 정보 추가. (starcraft 전용)
 
 
 
@@ -22,7 +20,7 @@ global g_varSetMeshes = #()
 global g_varSetBones = #()
 global g_varSetMaterials = #()
 
-global version = "EXPORTER_V19"
+global version = "EXPORTER_V20"
 
 -- UI
 global g_progBar
@@ -539,6 +537,16 @@ fn WriteMaterial =
 		(
 			format "BUMP_TEXTURE  \n"  to:Outfile
 		)
+		
+		-- Self illumination Map
+		if g_varSetMaterials[i].selfIllumMap != undefined then
+		(
+			format "SELFILLUM_TEXTURE %\n" g_varSetMaterials[i].selfIllumMap.filename to:Outfile
+		)
+		else
+		(
+			format "SELFILLUM_TEXTURE  \n"  to:Outfile
+		)				
 		
 	)
 )

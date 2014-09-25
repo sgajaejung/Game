@@ -66,6 +66,33 @@ sampler2D normalMap = sampler_state
     MaxAnisotropy = 16;
 };
 
+// ------------------------------------------------------------
+// Á¤¹Ý»ç¸Ê
+// ------------------------------------------------------------
+texture specularMapTexture;
+sampler2D specularMap = sampler_state
+{
+    Texture = <specularMapTexture>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
+
+// ------------------------------------------------------------
+// Self Illumination ¸Ê
+// ------------------------------------------------------------
+texture selfIllumMapTexture;
+sampler2D selfIllumMap = sampler_state
+{
+    Texture = <selfIllumMapTexture>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
 
 struct VS_OUTPUT
 {
@@ -271,8 +298,8 @@ technique TShader
     pass P4
     {
 		// ½ºÅ°´× ¾Ö´Ï¸ÞÀÌ¼Ç + ¹üÇÁ ¸Ê.
-        VertexShader = compile vs_3_0 VS_pass4();
-		PixelShader  = compile ps_3_0 PS_pass4();
+        VertexShader = compile vs_3_0 VS_pass0();
+		PixelShader  = compile ps_3_0 PS_pass0();
     }
 
 }

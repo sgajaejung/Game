@@ -64,6 +64,34 @@ sampler2D normalMap = sampler_state
 };
 
 
+// ------------------------------------------------------------
+// Á¤¹Ý»ç¸Ê
+// ------------------------------------------------------------
+texture specularMapTexture;
+sampler2D specularMap = sampler_state
+{
+    Texture = <specularMapTexture>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
+
+// ------------------------------------------------------------
+// Self Illumination ¸Ê
+// ------------------------------------------------------------
+texture selfIllumMapTexture;
+sampler2D selfIllumMap = sampler_state
+{
+    Texture = <selfIllumMapTexture>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
+
 struct VS_OUTPUT
 {
 	float4 Pos : POSITION;

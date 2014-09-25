@@ -48,4 +48,5 @@ public:
 	afx_msg void OnBnClickedButtonShowBoneTree();
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnPanelShowhideMesh();
+	afx_msg void OnSelchangedMaterialTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -15,6 +15,7 @@
 #pragma comment( lib, "winmm.lib" )
 
 CViewer2Dlg *g_viewerDlg;
+CModelView *g_modelView;
 
 
 #ifdef _DEBUG
@@ -125,6 +126,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 	m_dxInit = true;
 	m_modelView->Init();
 	m_modelView->ShowWindow(SW_SHOW);
+	g_modelView = m_modelView;
 
 
 	// Create Main Panel

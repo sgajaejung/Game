@@ -6,17 +6,20 @@ using namespace graphic;
 
 cLine::cLine()
 {
+	m_material.InitWhite();
 }
 
 cLine::cLine(const Vector3 &p0, const Vector3 &p1, const float width)
 {
 	SetLine(p0, p1, width);
+	m_material.InitWhite();
 }
 
 
 void cLine::Render()
 {
 	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_tm );
+	m_material.Bind();
 	m_vtxBuff.Bind();
 	m_idxBuff.Bind();
 	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 

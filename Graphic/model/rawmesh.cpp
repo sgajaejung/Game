@@ -23,6 +23,7 @@ sMaterial& sMaterial::operator=(const sMaterial &rhs)
 		texture = rhs.texture;
 		bumpMap = rhs.bumpMap;
 		specularMap = rhs.specularMap;
+		selfIllumMap = rhs.selfIllumMap;
 	}
 	return *this;
 }

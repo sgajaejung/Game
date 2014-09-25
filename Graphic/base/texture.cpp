@@ -27,6 +27,14 @@ bool cTexture::Create(const string &fileName, bool isSizePow2)//isSizePow2=true
 	{
 		if (FAILED(D3DXCreateTextureFromFileA(GetDevice(), fileName.c_str(), &m_texture)))
 			return false;
+
+		// 텍스쳐 사이즈 저장.
+		D3DSURFACE_DESC desc;
+		if (SUCCEEDED(m_texture->GetLevelDesc(0, &desc)))
+		{
+			m_imageInfo.Width = desc.Width;
+			m_imageInfo.Height = desc.Height;
+		}
 	}
 	else
 	{
@@ -49,6 +57,9 @@ bool cTexture::Create(const int width, const int height, const D3DFORMAT format)
 	m_texture->LockRect( 0, &lockrect, NULL, 0 );
 	memset( lockrect.pBits, 0x00, lockrect.Pitch*height );
 	m_texture->UnlockRect( 0 );
+
+	m_imageInfo.Width = width;
+	m_imageInfo.Height = height;
 	return true;
 }
 

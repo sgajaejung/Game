@@ -41,6 +41,8 @@ namespace graphic
 		vector<cMaterial> m_mtrls;
 		vector<cTexture*>m_colorMap;  // reference
 		vector<cTexture*>m_normalMap;  // reference
+		vector<cTexture*>m_specularMap;  // reference
+		vector<cTexture*>m_selfIllumMap;  // reference
 		cMeshBuffer *m_buffers; // reference (뼈대 메쉬일 경우 예외)
 
 		// debug 용.

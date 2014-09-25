@@ -5,6 +5,7 @@
 #include "Viewer2.h"
 #include "ModelPanel.h"
 #include "BoneDialog.h"
+#include "ModelView.h"
 
 
 using namespace graphic;
@@ -43,6 +44,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDC_BUTTON_SHOW_BONE_TREE, &CModelPanel::OnBnClickedButtonShowBoneTree)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_PANEL_SHOWHIDE_MESH, &CModelPanel::OnPanelShowhideMesh)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MATERIAL, &CModelPanel::OnSelchangedMaterialTree)
 END_MESSAGE_MAP()
 
 
@@ -97,6 +99,8 @@ void CModelPanel::UpdateMeshInfo()
 		const wstring vertexCount = formatw("Vertex Count = %d", mesh.vertices.size());
 		const wstring faceCount = formatw("Face Count = %d", mesh.indices.size()/3);
 		const wstring normalCount = formatw("Normal Count = %d", mesh.normals.size());
+		const wstring tangentCount = formatw("Tangent Count = %d", mesh.tangent.size());
+		const wstring binormalCount = formatw("Binormal Count = %d", mesh.binormal.size());
 		const wstring textureCount = formatw("Texture UV Count = %d", mesh.tex.size());
 		const wstring vertexWeightCount = formatw("Vertex Weight Count = %d", mesh.weights.size());
 
@@ -114,6 +118,8 @@ void CModelPanel::UpdateMeshInfo()
 		m_MeshTree.InsertItem( vertexCount.c_str(), hItem);
 		m_MeshTree.InsertItem( faceCount.c_str(), hItem);
 		m_MeshTree.InsertItem( normalCount.c_str(), hItem);
+		m_MeshTree.InsertItem( tangentCount.c_str(), hItem);
+		m_MeshTree.InsertItem( binormalCount.c_str(), hItem);
 		m_MeshTree.InsertItem( textureCount.c_str(), hItem);
 		m_MeshTree.InsertItem( vertexWeightCount.c_str(), hItem);
 	}
@@ -153,6 +159,7 @@ void CModelPanel::UpdateMaterialInfo()
 		const wstring texture = formatw("diffuse texture = %s", mtrl.texture.c_str());
 		const wstring specularTexture = formatw("specular texture = %s", mtrl.specularMap.c_str());
 		const wstring bumpTexture = formatw("bump texture = %s", mtrl.bumpMap.c_str());
+		const wstring selfIllumTexture = formatw("selfIllum texture = %s", mtrl.selfIllumMap.c_str());
 
 		m_MaterialTree.InsertItem( ambient.c_str(), hItem);
 		m_MaterialTree.InsertItem( diffuse.c_str(), hItem);
@@ -160,9 +167,16 @@ void CModelPanel::UpdateMaterialInfo()
 		m_MaterialTree.InsertItem( emissive.c_str(), hItem);
 		m_MaterialTree.InsertItem( power.c_str(), hItem);
 		m_MaterialTree.InsertItem( dirPath.c_str(), hItem);
-		m_MaterialTree.InsertItem( texture.c_str(), hItem);
-		m_MaterialTree.InsertItem( specularTexture.c_str(), hItem);
-		m_MaterialTree.InsertItem( bumpTexture.c_str(), hItem);
+		const HTREEITEM hTexture = m_MaterialTree.InsertItem( texture.c_str(), hItem);
+		const HTREEITEM hSpecular = m_MaterialTree.InsertItem( specularTexture.c_str(), hItem);
+		const HTREEITEM hBump = m_MaterialTree.InsertItem( bumpTexture.c_str(), hItem);
+		const HTREEITEM hSelfIllum = m_MaterialTree.InsertItem( selfIllumTexture.c_str(), hItem);
+
+		// material index 값을 저장한다.
+		m_MaterialTree.SetItemData(hTexture, i);
+		m_MaterialTree.SetItemData(hSpecular, i);
+		m_MaterialTree.SetItemData(hBump, i);
+		m_MaterialTree.SetItemData(hSelfIllum, i);
 	}
 
 	m_MaterialTree.Expand(hRoot, TVE_EXPAND);
@@ -332,4 +346,55 @@ string CModelPanel::GetMeshTokenizeName(const string &name)
 	}
 
 	return meshName.c_str();
+}
+
+
+void CModelPanel::OnSelchangedMaterialTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const CString wItemText = m_MaterialTree.GetItemText(pNMTreeView->itemNew.hItem);
+	const string itemText = wstr2str((wstring)wItemText);
+
+	{
+		const string searchToken = "diffuse texture = ";
+		int pos = itemText.find(searchToken);
+		if (pos != string::npos)
+		{
+			const string fileName = itemText.substr(pos + searchToken.length());
+			g_modelView->ShowTexture(fileName);
+		}
+	}
+
+	{
+		const string searchToken = "specular texture = ";
+		int pos = itemText.find(searchToken);
+		if (pos != string::npos)
+		{
+			const string fileName = itemText.substr(pos + searchToken.length());
+			g_modelView->ShowTexture(fileName);
+		}
+	}
+
+	{
+		const string searchToken = "bump texture = ";
+		int pos = itemText.find(searchToken);
+		if (pos != string::npos)
+		{
+			const string fileName = itemText.substr(pos + searchToken.length());
+			g_modelView->ShowTexture(fileName);
+		}
+	}
+
+	{
+		const string searchToken = "selfIllum texture = ";
+		int pos = itemText.find(searchToken);
+		if (pos != string::npos)
+		{
+			const string fileName = itemText.substr(pos + searchToken.length());
+			g_modelView->ShowTexture(fileName);
+		}
+	}
+
 }

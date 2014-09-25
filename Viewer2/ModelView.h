@@ -14,6 +14,7 @@ public:
 	void Init();
 	void Update(const float elapseT);
 	void ShowSkybox(bool show);
+	void ShowTexture(const string &fileName);
 	void Render();
 	virtual void Update(int type) override;
 	virtual void OnDraw(CDC* pDC) { }
@@ -27,7 +28,9 @@ protected:
 	graphic::cText m_msg;
 	graphic::cSphere m_lightSphere;
 	graphic::cLine m_lightLine;
-	graphic::cMaterial m_lineMtrl;
+	graphic::cSprite *m_sprite;
+
+	LPD3DXSPRITE m_dxSprite;
 
 	bool m_LButtonDown;
 	bool m_RButtonDown;

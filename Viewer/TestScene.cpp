@@ -7,20 +7,20 @@
 cTestScene::cTestScene(LPD3DXSPRITE sprite) :
 	framework::cWindow(sprite, 0, "testScene")
 {
-	Create("The-Waters-Edge.jpg");
+	SetTexture("The-Waters-Edge.jpg");
 
 	framework::cButton *btn1 = new framework::cButton(sprite, 1);
-	btn1->Create("button1.png");
+	btn1->SetTexture("button1.png");
 	InsertChild(btn1);
 
 	framework::cButton *btn2 = new framework::cButton(sprite, 2);
-	btn2->Create("button2.png");
+	btn2->SetTexture("button2.png");
 	btn2->SetScale(Vector3(2,2,0));
 	btn2->SetPos(Vector3(200,0,0));
 	InsertChild(btn2);
 
 	framework::cButton *btn3 = new framework::cButton(sprite, 3);
-	btn3->Create("button1.png");
+	btn3->SetTexture("button1.png");
 	btn3->SetPos(Vector3(200,0,0));
 	InsertChild(btn3);
 

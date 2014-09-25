@@ -36,6 +36,8 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 {
 	m_colorMap.resize(rawMesh.mtrls.size(), NULL);
 	m_normalMap.resize(rawMesh.mtrls.size(), NULL);
+	m_specularMap.resize(rawMesh.mtrls.size(), NULL);
+	m_selfIllumMap.resize(rawMesh.mtrls.size(), NULL);
 	m_mtrls.reserve(rawMesh.mtrls.size());
 
 	for (u_int i=0; i < rawMesh.mtrls.size(); ++i)
@@ -49,6 +51,12 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 
 		if (!mtrl.bumpMap.empty())
 			m_normalMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.bumpMap);
+
+		if (!mtrl.specularMap.empty())
+			m_specularMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.specularMap);
+
+		if (!mtrl.selfIllumMap.empty())
+			m_selfIllumMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.selfIllumMap);
 	}
 }
 
@@ -136,12 +144,22 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 		const bool isNormalMapping = (!m_normalMap.empty()) && 
 			(m_normalMap[ 0] && m_normalMap[ 0]->GetTexture());
 
+		const bool isSpecularMapping = (!m_specularMap.empty()) && 
+			(m_specularMap[ 0] && m_specularMap[ 0]->GetTexture());
+
+		const bool isSelfIllumMapping = (!m_selfIllumMap.empty()) && 
+			(m_selfIllumMap[ 0] && m_selfIllumMap[ 0]->GetTexture());
+
 		if (!m_mtrls.empty())
 			m_mtrls[ 0].Bind(shader);
 		if (!m_colorMap.empty())
 			m_colorMap[ 0]->Bind(shader, "colorMapTexture");
 		if (isNormalMapping)
 			m_normalMap[ 0]->Bind(shader, "normalMapTexture");
+		if (isSpecularMapping)
+			m_specularMap[ 0]->Bind(shader, "specularMapTexture");
+		if (isSelfIllumMapping)
+			m_selfIllumMap[ 0]->Bind(shader, "selfIllumMapTexture");
 
 		shader.SetRenderPass(isNormalMapping? 4 : 0);
 
@@ -180,11 +198,21 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 			const bool isNormalMapping = m_normalMap[ mtrlId] && 
 				m_normalMap[ mtrlId]->GetTexture();
 
+			const bool isSpecularMapping = m_specularMap[ mtrlId] && 
+				m_specularMap[ mtrlId]->GetTexture();
+
+			const bool isSelfIllumMapping = m_selfIllumMap[ mtrlId] && 
+				m_selfIllumMap[ mtrlId]->GetTexture();
+
 			m_mtrls[ mtrlId].Bind(shader);
 			if (m_colorMap[ mtrlId])
 				m_colorMap[ mtrlId]->Bind(shader, "colorMapTexture");
 			if (isNormalMapping)
 				m_normalMap[ mtrlId]->Bind(shader, "normalMapTexture");
+			if (isSpecularMapping)
+				m_specularMap[ mtrlId]->Bind(shader, "specularMapTexture");
+			if (isSelfIllumMapping)
+				m_selfIllumMap[ mtrlId]->Bind(shader, "selfIllumMapTexture");
 
 			shader.SetRenderPass(isNormalMapping? 4 : 0);
 
