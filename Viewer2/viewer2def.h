@@ -50,6 +50,7 @@ namespace EDIT_MODE
 		LIGHT,
 		ARCHEBLADE,
 		TERA,
+		SC2, // starcraft2
 	};
 }
 

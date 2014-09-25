@@ -11,6 +11,7 @@
 #include "TeraPanel.h"
 #include "LightPanel.h"
 #include "RendererPanel.h"
+#include "Sc2Panel.h"
 
 
 CModelPanel *g_modelPanel;
@@ -20,6 +21,7 @@ CArchebladePanel *g_archePanel;
 CTeraPanel *g_teraPanel;
 CLightPanel *g_lightPanel;
 CRendererPanel *g_rendererPanel;
+CSc2Panel *g_sc2Panel;
 
 // CMainPanelTab 대화 상자입니다.
 
@@ -79,6 +81,7 @@ BOOL CMainPanelTab::OnInitDialog()
 	m_Tab.InsertItem(4, L"Light");
 	m_Tab.InsertItem(5, L"ArcheBlade");
 	m_Tab.InsertItem(6, L"Tera");
+	m_Tab.InsertItem(7, L"Sc2");
 
 	CRect cr;
 	GetClientRect(cr);
@@ -118,12 +121,11 @@ BOOL CMainPanelTab::OnInitDialog()
 	g_teraPanel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
 	m_panels.push_back(g_teraPanel);
 
-	g_modelPanel = g_modelPanel;
-	g_aniPanel = g_aniPanel;
-	g_filePanel = g_filePanel;
-	g_archePanel = g_archePanel;
-	g_teraPanel = g_teraPanel;
-	g_lightPanel = g_lightPanel;
+	g_sc2Panel = new CSc2Panel(this);
+	g_sc2Panel->Create(CSc2Panel::IDD, this);
+	g_sc2Panel->MoveWindow(CRect(0, 25, cr.Width(), cr.Height()));
+	m_panels.push_back(g_sc2Panel);
+
 
 	BOOST_FOREACH (auto &panel, m_panels)
 	{

@@ -190,7 +190,7 @@ void CArchebladePanel::OnSelchangedTreeAnimation(NMHDR *pNMHDR, LRESULT *pResult
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 	*pResult = 0;
 
-	const string fileName = m_modelTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	const string fileName = m_animationTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
 	if (common::GetFileExt(fileName).empty() || (fileName == "../media"))
 		return;
 

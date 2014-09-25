@@ -3,6 +3,7 @@
 #include "../Graphic/character/character.h"
 #include "../Graphic/character/archebladecharacter.h"
 #include "../Graphic/character/teracharacter.h"
+#include "../Graphic/character/sc2character.h"
 #include "../Graphic/character/characteranalyzer.h"
 
 
@@ -40,6 +41,7 @@ private:
 	graphic::cCharacterAnalyzer *m_analyzer;
 	graphic::cArchebladeCharacter m_archeCharacter; // 아키블래이드 캐릭터.
 	graphic::cTeraCharacter m_teraCharacter; // 테라 캐릭터.
+	graphic::cSc2Character m_sc2Character; // 스타크래프트2 캐릭터.
 	graphic::cText m_modelName;
 	graphic::cText m_animationName;
 

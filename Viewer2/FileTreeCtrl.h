@@ -11,6 +11,7 @@ public:
 
 	void Update(const list<string> &fileList);
 	void Update(const string &directoryPath, const list<string> &extList);
+	void Update(const string &directoryPath, const list<string> &extList, const string &serchStr );
 	string GetSelectFilePath(HTREEITEM item);
 	int GetFileCount() const;
 	void ExpandAll();

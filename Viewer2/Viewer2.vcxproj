@@ -118,6 +118,7 @@
     <ClInclude Include="PropGridSlider.h" />
     <ClInclude Include="RendererPanel.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Sc2Panel.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TeraPanel.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="PanelBase.cpp" />
     <ClCompile Include="PropGridSlider.cpp" />
     <ClCompile Include="RendererPanel.cpp" />
+    <ClCompile Include="Sc2Panel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

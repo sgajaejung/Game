@@ -131,7 +131,7 @@ BOOL CViewer2Dlg::OnInitDialog()
 
 	// Create Main Panel
 	{
-		const int PANEL_WIDTH = 400;
+		const int PANEL_WIDTH = 430;
 		const int PANEL_HEIGHT = 800;
 
 		m_mainPanel = new CMainPanel();

@@ -184,6 +184,9 @@
     <ClInclude Include="base\vertexdeclaration.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="character\sc2character.h">
+      <Filter>character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -351,6 +354,9 @@
     </ClCompile>
     <ClCompile Include="base\vertexdeclaration.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="character\sc2character.cpp">
+      <Filter>character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -67,6 +67,30 @@ void CFileTreeCtrl::Update(const string &directoryPath, const list<string> &extL
 }
 
 
+// searchStr 문자열이 포함된 것만 화면에 출력한다.
+void CFileTreeCtrl::Update(const string &directoryPath, const list<string> &extList, const string &serchStr )
+{
+	list<string> files;
+	common::CollectFiles(extList, directoryPath, files);
+
+	if (serchStr.empty())
+	{
+		Update(files);
+	}
+	else
+	{
+		list<string> fileList;
+		BOOST_FOREACH (string &name, files)
+		{
+			if (string::npos != common::GetFileName(name).find(serchStr))
+				fileList.push_back(name);
+		}
+
+		Update(fileList);
+	}	
+}
+
+
 // sTreeNode 생성한다.
 CFileTreeCtrl::sTreeNode* CFileTreeCtrl::GenerateTreeNode(const list<string> &fileList)
 {

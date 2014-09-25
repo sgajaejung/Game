@@ -9,6 +9,7 @@ cController::cController() :
 	m_analyzer(NULL)
 ,	m_isPlay(true)
 ,	m_archeCharacter(common::GenerateId())
+,	m_sc2Character(common::GenerateId())
 ,	m_viewerDlg(NULL)
 ,	m_modelName("modelName: ", 10, 27)
 ,	m_animationName("animationName: ", 10, 44)
@@ -145,6 +146,10 @@ void cController::ChangePanel(const int panelIdx)
 
 	case EDIT_MODE::TERA: // tera panel
 		m_analyzer->SetCharacter(&m_teraCharacter);
+		break;
+
+	case EDIT_MODE::SC2:
+		m_analyzer->SetCharacter(&m_sc2Character);
 		break;
 	}
 
