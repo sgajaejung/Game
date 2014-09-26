@@ -24,11 +24,15 @@ namespace graphic
 		// Model Infomations
 		MODEL_TYPE::TYPE GetModelType() const;
 		const string& GetFileName() const;
+		cMesh* GetMesh(const string &name);
+		cMesh* GetMesh(const int idx);
+
+		// shadow
+		void UpdateShadow();
 		cShadow1& GetShadow();
 		bool IsRenderShadow() const;
 		void SetRenderShadow(const bool show);
-		cMesh* GetMesh(const string &name);
-		cMesh* GetMesh(const int idx);
+
 
 		// Animation
 		virtual bool SetAnimation(const string &aniFileNameconst, const int nAniFrame=0,  

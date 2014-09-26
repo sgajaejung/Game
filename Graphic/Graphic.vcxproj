@@ -91,6 +91,7 @@
     <ClInclude Include="base\skybox.h" />
     <ClInclude Include="base\sphere.h" />
     <ClInclude Include="base\surface.h" />
+    <ClInclude Include="base\surface2.h" />
     <ClInclude Include="base\text.h" />
     <ClInclude Include="base\texture.h" />
     <ClInclude Include="base\vertexbuffer.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="base\skybox.cpp" />
     <ClCompile Include="base\sphere.cpp" />
     <ClCompile Include="base\surface.cpp" />
+    <ClCompile Include="base\surface2.cpp" />
     <ClCompile Include="base\text.cpp" />
     <ClCompile Include="base\texture.cpp" />
     <ClCompile Include="base\vertexbuffer.cpp" />

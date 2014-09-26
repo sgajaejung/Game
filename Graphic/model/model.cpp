@@ -164,16 +164,6 @@ void cModel::Render(const Matrix44 &tm)
 
 	if (m_bone && m_isRenderBoundingBox)
 		m_bone->RenderBoundingBox(m_TM * tm);
-
-	// 그림자 업데이트.
-	if (m_isRenderShadow)
-	{
-		// 그림자맵 생성.
-		if (!m_shadow.IsLoaded())
-			m_shadow.Create(256, 256);
-
-		m_shadow.UpdateShadow(*this);
-	}
 }
 
 
@@ -188,6 +178,22 @@ void cModel::RenderShadow(const Matrix44 &viewProj,
 		const Matrix44 tm = m_TM * parentTm;
 		BOOST_FOREACH (auto node, m_meshes)
 			node->RenderShadow(viewProj, lightDir, lightDir, tm);
+	}
+}
+
+
+// 그림자 업데이트.
+// GetDevice()->BeginScene(); 함수가 호출되기 전에 
+// UpdateShadow() 함수를 호출해야 한다.
+void cModel::UpdateShadow()
+{	
+	if (m_isRenderShadow)
+	{
+		// 그림자맵 생성.
+		if (!m_shadow.IsLoaded())
+			m_shadow.Create(256, 256);
+
+		m_shadow.UpdateShadow(*this);
 	}
 }
 

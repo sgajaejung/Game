@@ -38,6 +38,7 @@ using namespace common;
 #include "base/skybox.h"
 #include "base/sphere.h"
 #include "base/surface.h"
+#include "base/surface2.h"
 #include "base/circle.h"
 #include "base/text.h"
 #include "base/quad.h"

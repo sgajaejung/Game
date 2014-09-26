@@ -125,6 +125,13 @@ void CModelView::Render()
 		0					//스텐실 버퍼를 채울값
 		)))
 	{
+
+		if (cCharacter *character = cController::Get()->GetCharacter())
+		{
+			character->UpdateShadow();
+		}
+
+
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		GetDevice()->BeginScene();
 
@@ -135,9 +142,6 @@ void CModelView::Render()
 
 		if (m_showSkybox)
 			m_skybox.Render();
-		//GetRenderer()->RenderFPS();
-		//GetRenderer()->RenderGrid();
-		//GetRenderer()->RenderAxis();
 
 		if (cCharacter *character = cController::Get()->GetCharacter())
 		{
@@ -159,8 +163,6 @@ void CModelView::Render()
 		// 셰이더 변수 초기화.
 		cLightManager::Get()->GetMainLight().Bind(m_shader);
 		m_shader.SetMatrix( "mVP", GetMainCamera()->GetViewProjectionMatrix() );
-		//m_shader.SetVector( "vLightDir", Vector3(0,-1,0) );
-		//m_shader.SetVector( "light.dir", Vector3(0,-1,0) );
 		m_shader.SetVector( "vEyePos", GetMainCamera()->GetEyePos());
 		m_shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 

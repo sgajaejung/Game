@@ -23,7 +23,7 @@ namespace graphic
 
 
 	private:
-		cSurface m_surface;
+		cSurface2 m_surface;
 	};
 
 
