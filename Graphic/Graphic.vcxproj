@@ -89,6 +89,7 @@
     <ClInclude Include="base\shader.h" />
     <ClInclude Include="base\shadow1.h" />
     <ClInclude Include="base\skybox.h" />
+    <ClInclude Include="base\skybox2.h" />
     <ClInclude Include="base\sphere.h" />
     <ClInclude Include="base\surface.h" />
     <ClInclude Include="base\surface2.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="terrain\terrain.h" />
     <ClInclude Include="terrain\terraincursor.h" />
     <ClInclude Include="terrain\terraineditor.h" />
+    <ClInclude Include="terrain\water.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action\action.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="base\shader.cpp" />
     <ClCompile Include="base\shadow1.cpp" />
     <ClCompile Include="base\skybox.cpp" />
+    <ClCompile Include="base\skybox2.cpp" />
     <ClCompile Include="base\sphere.cpp" />
     <ClCompile Include="base\surface.cpp" />
     <ClCompile Include="base\surface2.cpp" />
@@ -197,6 +200,7 @@
     <ClCompile Include="terrain\terrain.cpp" />
     <ClCompile Include="terrain\terraincursor.cpp" />
     <ClCompile Include="terrain\terraineditor.cpp" />
+    <ClCompile Include="terrain\water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

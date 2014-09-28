@@ -98,9 +98,11 @@ void CMapView::Render()
 		0					//스텐실 버퍼를 채울값
 		)))
 	{
+		cMapController::Get()->GetTerrain().PreRender();
+
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
-		graphic::GetRenderer()->RenderFPS();
+		//graphic::GetRenderer()->RenderFPS();
 		//graphic::GetRenderer()->RenderGrid();
 
 		cMapController::Get()->GetTerrain().Render();
@@ -119,6 +121,7 @@ void CMapView::Render()
 		}
 
 		graphic::GetRenderer()->RenderAxis();
+		graphic::GetRenderer()->RenderFPS();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -132,6 +135,7 @@ void CMapView::Render()
 void CMapView::Update(float elapseT)
 {
 	graphic::GetRenderer()->Update(elapseT);
+	cMapController::Get()->GetTerrain().Move(elapseT);
 
 	// 지형 높낮이 편집.
 	if (EDIT_MODE::MODE_TERRAIN == cMapController::Get()->GetEditMode())

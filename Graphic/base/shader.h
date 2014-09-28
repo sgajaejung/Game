@@ -22,7 +22,9 @@ namespace graphic
 		void SetMatrix(const string &key, const Matrix44 &mat);
 		void SetTexture(const string &key, cTexture &texture);
 		void SetTexture(const string &key, IDirect3DTexture9 *texture);
+		void SetTexture(const string &key, IDirect3DCubeTexture9 *texture);
 		void SetFloat(const string &key, float val);
+		void SetVector(const string &key, const Vector2 &vec );
 		void SetVector(const string &key, const Vector3 &vec );
 		void SetVector(const string &key, const Vector4 &vec );
 		void SetMatrixArray(const string &key, const Matrix44 *mat, const int count );
@@ -32,6 +34,7 @@ namespace graphic
 		void SetTexture(D3DXHANDLE handle, cTexture &texture);
 		void SetTexture(D3DXHANDLE handle, IDirect3DTexture9 *texture);
 		void SetFloat(D3DXHANDLE handle, float val);
+		void SetVector(D3DXHANDLE handle, const Vector2 &vec );
 		void SetVector(D3DXHANDLE handle, const Vector3 &vec );
 		void SetVector(D3DXHANDLE handle, const Vector4 &vec );
 		void SetMatrixArray(D3DXHANDLE handle, const Matrix44 *mat, const int count );

@@ -105,6 +105,7 @@
     <ClCompile Include="math\quaternion.cpp" />
     <ClCompile Include="math\ray.cpp" />
     <ClCompile Include="math\triangle.cpp" />
+    <ClCompile Include="math\vector2.cpp" />
     <ClCompile Include="math\vector3.cpp" />
     <ClCompile Include="math\vector4.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "plane.h"
+#include <D3dx9math.h>
 
 using namespace common;
 
@@ -155,3 +156,20 @@ int Plane::LineCross( const Vector3& v0, const Vector3& v1, Vector3* pvOut ) con
 	return 1;
 }
 
+
+const Plane Plane::operator * (const Matrix44 &rhs)
+{
+	Plane out;
+	D3DXPlaneTransform((D3DXPLANE*)&out, (D3DXPLANE*)this, (D3DXMATRIX*)&rhs);
+	D3DXPlaneNormalize((D3DXPLANE*)&out, (D3DXPLANE*)&out);
+	return out;
+}
+
+
+// 평면에 반사되는 변환 행렬을 리턴한다.
+Matrix44 Plane::GetReflectMatrix()
+{
+	Matrix44 reflect;
+	D3DXMatrixReflect((D3DXMATRIX*)&reflect, (D3DXPLANE*)this); 
+	return reflect;
+}

@@ -108,7 +108,7 @@ bool  cSkyBox::CreateVertexBuffer()
 //------------------------------------------------------------------------
 // 
 //------------------------------------------------------------------------
-void cSkyBox::Render()
+void cSkyBox::Render(const Matrix44 &tm)
 {
 	GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 	GetDevice()->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
@@ -117,8 +117,8 @@ void cSkyBox::Render()
 	GetDevice()->GetRenderState( D3DRS_FOGENABLE, &fogEnable );
 	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
 	GetDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
-	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU,  D3DTADDRESS_CLAMP );
-	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV,  D3DTADDRESS_CLAMP );
+	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU,  D3DTADDRESS_CLAMP);
+	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV,  D3DTADDRESS_CLAMP);
 
 
 	//mat matView, matViewSave, matWorld;
@@ -128,13 +128,15 @@ void cSkyBox::Render()
 	matView._41 = 0.0f; matView._42 = -0.4f; matView._43 = 0.0f;
 	GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&matView );
 	// Set a default world matrix
-	Matrix44 mat;
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat);
+	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm);
 
 	// render
 	m_vtxBuff.Bind();
 	for (int i = 0 ; i < MAX_FACE; i++)
 	{
+		//GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU,  D3DTADDRESS_WRAP);
+		//GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV,  D3DTADDRESS_WRAP);
+
 		m_textures[ i].Bind(0);
 		GetDevice()->DrawPrimitive( D3DPT_TRIANGLESTRIP, i*4, 2 );
 	}

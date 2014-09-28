@@ -12,7 +12,7 @@ namespace graphic
 		virtual ~cSkyBox();
 
 		bool Create(const string &textureFilePath);
-		void Render();
+		void Render(const Matrix44 &tm = Matrix44::Identity);
 
 
 	protected:

@@ -156,6 +156,11 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 
 	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
 
+	m_skybox2.Create(
+		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
+
+	m_water.Create();
+
 	return true;
 }
 
@@ -206,12 +211,63 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 }
 
 
+
+void cTerrain::PreRender()
+{
+	RET(!m_shader);
+
+	// Reflection plane in local space.
+	Plane waterPlaneL(0,-1,0,0);
+
+	// Reflection plane in world space.
+	Matrix44 waterWorld;
+	waterWorld.SetTranslate(Vector3(0,10,0));
+	Matrix44 WInvTrans;
+	WInvTrans = waterWorld.Inverse();
+	WInvTrans.Transpose();
+	Plane waterPlaneW = waterPlaneL * WInvTrans;
+
+	// Reflection plane in homogeneous clip space.
+	Matrix44 WVPInvTrans = (waterWorld * cMainCamera::Get()->GetViewProjectionMatrix()).Inverse();
+	WVPInvTrans.Transpose();
+	Plane waterPlaneH = waterPlaneL * WVPInvTrans;
+
+	float f[4] = {waterPlaneH.N.x, waterPlaneH.N.y, waterPlaneH.N.z, waterPlaneH.D};
+
+	GetDevice()->SetClipPlane(0, (float*)f);
+	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
+	m_water.BeginRefractScene();
+	m_skybox2.Render();
+	RenderShader(*m_shader);
+	m_water.EndRefractScene();
+
+	// Seems like we need to reset these due to a driver bug.  It works
+	// correctly without these next two lines in the REF and another 
+	//video card, however.
+	GetDevice()->SetClipPlane(0, (float*)f);
+	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
+
+	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+	m_water.BeginReflectScene();
+
+	Matrix44 reflectMatrix = waterPlaneW.GetReflectMatrix();
+	m_skybox2.Render(reflectMatrix);
+	RenderShader(*m_shader, reflectMatrix);
+	m_water.EndReflectScene();
+
+	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
+	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+}
+
+
 // 지형 출력
 void cTerrain::Render()
 {
 	if (m_shader)
 	{
+		m_skybox2.Render();
 		RenderShader(*m_shader);
+		m_water.Render();
 	}
 	else
 	{
@@ -220,13 +276,18 @@ void cTerrain::Render()
 }
 
 
-// 셰이더로 지형을 출력한다.
-void cTerrain::RenderShader(cShader &shader)
+void cTerrain::Move(const float elapseTime)
 {
+	m_water.Move(elapseTime);
+}
 
+
+// 셰이더로 지형을 출력한다.
+void cTerrain::RenderShader(cShader &shader, const Matrix44 &tm)
+	// tm = Matrix44::Identity
+{
 	cLightManager::Get()->GetMainLight().Bind(shader);
 	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
-	//shader.SetVector( "vLightDir", Vector3(0,-1,0) );
 	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 	shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
@@ -249,48 +310,22 @@ void cTerrain::RenderShader(cShader &shader)
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
 		shader.SetRenderPass(3);
-
 		//if (m_isShowModel && !m_rigids.empty())
 		//	shader.SetRenderPass(5);
 	}
 
 	if (m_isShowModel)
-		RenderRigidModels();
-
-	//D3DXMATRIX mTT= D3DXMATRIX(0.5f, 0.0f, 0.0f, 0.0f
-	//	, 0.0f,-0.5f, 0.0f, 0.0f
-	//	, 0.0f, 0.0f, 1.0f, 0.0f
-	//	, 0.5f, 0.5f, 0.0f, 1.0f);
-	//Matrix44 mT = *(Matrix44*)&mTT;
-
-	//Vector3 lightPos(500,1000,0);
-	//Vector3 pos(0,0,0);
-	//if (m_isShowModel && !m_rigids.empty())
-	//{
-	//	pos = m_rigids[ 0]->GetTM().GetPosition();
-	//}
-
-	//Matrix44 matView;// 뷰 행렬
-	//matView.SetView2( lightPos, pos, Vector3(0,1,0));
-	//Matrix44 matProj;// 투영 행렬
-	//matProj.SetProjection( D3DX_PI/2.5f, 1, 0.1f, 10000);
-	//shader.SetMatrix( "mWVPT", matView * matProj * mT );
-
-	//if (m_isShowModel && !m_rigids.empty())
-	//{
-	//	shader.SetTexture("ShadowMap", m_rigids[ 0]->GetShadow().GetTexture());
-	//}
-
-	m_grid.RenderShader(shader);
+		RenderRigidModels(tm);
+	m_grid.RenderShader(shader, tm);
 }
 
 
 // 정적 모델 출력
-void cTerrain::RenderRigidModels()
+void cTerrain::RenderRigidModels(const Matrix44 &tm)
 {
 	BOOST_FOREACH (auto model, m_rigids)
 	{
-		model->Render(Matrix44::Identity);
+		model->Render(tm);
 	}
 }
 

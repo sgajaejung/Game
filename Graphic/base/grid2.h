@@ -13,13 +13,13 @@ namespace graphic
 		virtual ~cGrid2();
 
 		void Create( const int rowCellCount, const int colCellCount, const float cellSize, 
-			const float textureUVFactor=8.f);
+			const float textureUVFactor=8.f, const float offsetY=0.f);
 		bool CreateFromFile(const string &fileName);
 		bool WriteFile(const string &fileName);
 
-		void Render(const int stage=0);
+		void Render(const Matrix44 &tm = Matrix44::Identity, const int stage=0);
 		void RenderLinelist();
-		void RenderShader(cShader &shader);
+		void RenderShader(cShader &shader, const Matrix44 &tm = Matrix44::Identity);
 
 		void SetTextureUVFactor(const float textureUVFactor);
 		float GetTextureUVFactor() const;

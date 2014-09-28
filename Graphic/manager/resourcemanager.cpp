@@ -277,6 +277,20 @@ cShader* cResourceManager::FindShader( const string &fileName )
 }
 
 
+// media 폴더내에 fileName 에 해당하는 파일이 존재한다면,
+// 전체 경로를 리턴한다. 파일을 찾을 때는 파일이름만 비교한다.
+string cResourceManager::FindFile( const string &fileName )
+{
+	string newPath;
+	if (common::FindFile(fileName, m_mediaDirectory, newPath))
+	{
+		return newPath;
+	}
+
+	return ""; //empty string
+}
+
+
 // remove all data
 void cResourceManager::Clear()
 {

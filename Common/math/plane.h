@@ -22,7 +22,9 @@ namespace common
 		float Collision( Vector3& vP );
 		BOOL CollisionSphere( const Vector3& vP, float fRadius );
 		int LineCross( const Vector3& v0, const Vector3& v1, Vector3* pvOut ) const;
+		Matrix44 GetReflectMatrix();
 
+		const Plane operator * (const Matrix44 &rhs);
 
 		Vector3 N; // Normal
 		float	D; // D

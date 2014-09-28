@@ -34,6 +34,7 @@ namespace graphic
 		cMeshBuffer* FindMeshBuffer( const string &meshName );
 		cTexture* FindTexture( const string &fileName );
 		cShader * FindShader( const string &fileName );
+		string FindFile( const string &fileName );
 
 		void SetMediaDirectory( const string &path );
 		const string& GetMediaDirectory() const;

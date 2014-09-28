@@ -43,7 +43,7 @@ cGrid2::~cGrid2()
 
 
 void cGrid2::Create( const int rowCellCount, const int colCellCount, const float cellSize,
-	const float textureUVFactor)
+	const float textureUVFactor, const float offsetY)
 {
 	// init member
 	m_rowCellCount = rowCellCount;
@@ -75,7 +75,7 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 			for (float x=startx; x <= endx; x += cellSize, ++k )
 			{
 				int index = (i * colVtxCnt) + k;
-				vertices[ index].p = Vector3(x, 0, y);
+				vertices[ index].p = Vector3(x, offsetY, y);
 				vertices[ index].n = Vector3(0,1,0);
 				vertices[ index].u = (float)k*uCoordIncrementSize;
 				vertices[ index].v = (float)i*vCoordIncrementSize;
@@ -241,11 +241,13 @@ bool cGrid2::CreateFromFile(const string &fileName)
 }
 
 
-void cGrid2::Render(const int stage)
+void cGrid2::Render(const Matrix44 &tm, const int stage)
 {
 	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
 	GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	
+	GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(tm));
 
 	m_mtrl.Bind();
 	m_tex.Bind(stage);
@@ -267,9 +269,9 @@ void cGrid2::RenderLinelist()
 }
 
 
-void cGrid2::RenderShader(cShader &shader)
+void cGrid2::RenderShader(cShader &shader, const Matrix44 &tm )
 {
-	shader.SetMatrix( "mWorld", Matrix44::Identity);
+	shader.SetMatrix( "mWorld", tm);
 	shader.SetMatrix( "mWIT", Matrix44::Identity);
 
 	m_mtrl.Bind(shader);

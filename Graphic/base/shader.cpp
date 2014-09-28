@@ -123,12 +123,31 @@ void cShader::SetTexture(const string &key, IDirect3DTexture9 *texture)
 	}
 }
 
+void cShader::SetTexture(const string &key, IDirect3DCubeTexture9 *texture)
+{
+	RET(!m_effect);
+	if (FAILED(m_effect->SetTexture( key.c_str(), texture)))
+	{
+		MessageBoxA( NULL, "cShader::SetTexture Error", "ERROR", MB_OK);
+	}
+}
+
 void cShader::SetFloat(const string &key, float val)
 {
 	RET(!m_effect);
 	if (FAILED(m_effect->SetFloat( key.c_str(), val)))
 	{
 		MessageBoxA( NULL, "cShader::SetFloat Error", "ERROR", MB_OK);
+	}	
+}
+
+
+void cShader::SetVector(const string &key, const Vector2 &vec )
+{
+	RET(!m_effect);
+	if (FAILED(m_effect->SetVector( key.c_str(), &D3DXVECTOR4(vec.x, vec.y, 0, 1.f))))
+	{
+		MessageBoxA( NULL, "cShader::SetVector Error", "ERROR", MB_OK);
 	}	
 }
 
@@ -206,6 +225,16 @@ void cShader::SetFloat(D3DXHANDLE handle, float val)
 	if (FAILED(m_effect->SetFloat(handle, val)))
 	{
 		MessageBoxA( NULL, "cShader::SetFloat Error", "ERROR", MB_OK);
+	}	
+}
+
+
+void cShader::SetVector(D3DXHANDLE handle, const Vector2 &vec )
+{
+	RET(!m_effect);
+	if (FAILED(m_effect->SetVector(handle, &D3DXVECTOR4(vec.x, vec.y, 0, 1.f))))
+	{
+		MessageBoxA( NULL, "cShader::SetVector Error", "ERROR", MB_OK);
 	}	
 }
 

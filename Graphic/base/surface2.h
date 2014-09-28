@@ -1,6 +1,6 @@
 // RenderTarget 전용 서피스.
-// 그림자를 만들 때 사용한다.
-// cSurface 클래스를 다듬은 클래스다.
+// cSurface 클래스 기능과 비슷하지만, 좀더 심플한 기능을 가졌다.
+// 그림자 전용으로 만들어진 클래스다.
 #pragma once
 
 
@@ -19,7 +19,7 @@ namespace graphic
 
 		void Begin();
 		void End();
-		void Render();
+		void Render(const int index=1);
 		void Clear();
 
 		bool IsLoaded() const;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "water.h"
+#include "../base/skybox2.h"
+
 
 namespace graphic
 {
@@ -25,19 +28,23 @@ namespace graphic
 		cTerrain();
 		virtual ~cTerrain();
 
+		//-----------------------------------------------------------------------------
+		// Create Terrain
 		bool CreateFromTRNFile(const string &fileName);
 
 		bool CreateFromRawTerrain( const sRawTerrain &rawTerrain );
 
 		bool CreateFromHeightMap( const string &heightMapFileName, 
-			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f,
-			 const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f );
+			const string &textureFileName, const float heightFactor=3.f, 
+			const float textureUVFactor=1.f, const int rowCellCount=64, 
+			const int colCellCount=64, const float cellSize=50.f );
 
 		bool CreateFromGRDFormat( const string &gridFileName, 
-			const string &textureFileName, const float heightFactor=3.f, const float textureUVFactor=1.f );
-
-		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, const float cellSize=50.f,
+			const string &textureFileName, const float heightFactor=3.f, 
 			const float textureUVFactor=1.f );
+
+		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, 
+			const float cellSize=50.f, const float textureUVFactor=1.f );
 
 		bool CreateTerrainTexture( const string &textureFileName );
 
@@ -48,6 +55,7 @@ namespace graphic
 
 		bool IsLoaded() const;
 
+		//-----------------------------------------------------------------------------
 		// model
 		bool AddRigidModel(const cModel &model);
 		cModel* AddRigidModel(const string &fileName);
@@ -56,8 +64,11 @@ namespace graphic
 		bool RemoveRigidModel(const int id, const bool destruct=true);
 		vector<cModel*>& GetRigidModels();
 
+		virtual void PreRender();
 		virtual void Render();
+		virtual void Move(const float elapseTime);
 
+		//-----------------------------------------------------------------------------
 		// terrain infomation
 		int GetRowCellCount() const;
 		int GetColCellCount() const;
@@ -79,8 +90,8 @@ namespace graphic
 
 
 	protected:
-		virtual void RenderShader(cShader &shader);
-		void RenderRigidModels();
+		virtual void RenderShader(cShader &shader, const Matrix44 &tm=Matrix44::Identity);
+		void RenderRigidModels(const Matrix44 &tm);
 
 		float GetHeightMapEntry( int row, int col );
 		bool UpdateHeightMap( const string &heightMapFileName, 
@@ -95,9 +106,13 @@ namespace graphic
 
 
 	protected:
+		cSkyBox m_skybox;
+		cSkyBox2 m_skybox2;
+		cWater m_water;
+
+		cGrid2 m_grid;
 		float m_heightFactor;
 		string m_heightMapFileName;
-		cGrid2 m_grid;
 		cShader *m_shader; // reference
 
 		// model

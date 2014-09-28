@@ -190,6 +190,12 @@
     <ClInclude Include="base\surface2.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="terrain\water.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="base\skybox2.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -362,6 +368,12 @@
       <Filter>character</Filter>
     </ClCompile>
     <ClCompile Include="base\surface2.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain\water.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="base\skybox2.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
