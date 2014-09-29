@@ -74,6 +74,7 @@ using namespace common;
 #include "LoadingDialog.h"
 
 #include "FileTreeCtrl.h"
+#include "PanelBase.h"
 #include "UIUtiltity.h"
 
 

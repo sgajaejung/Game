@@ -9,7 +9,7 @@
 
 // CSc2Panel 대화 상자입니다.
 CSc2Panel::CSc2Panel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CSc2Panel::IDD, pParent)
+	: CPanelBase(CSc2Panel::IDD, pParent)
 {
 }
 
@@ -19,7 +19,7 @@ CSc2Panel::~CSc2Panel()
 
 void CSc2Panel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_SC2_FILES, m_modelFileTree);
 	DDX_Control(pDX, IDC_TREE_SC2ANI_FILES, m_aniFileTree);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE_MODEL, m_modelBrowser);
@@ -27,11 +27,12 @@ void CSc2Panel::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CSc2Panel, CDialogEx)
+BEGIN_MESSAGE_MAP(CSc2Panel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CSc2Panel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CSc2Panel::OnBnClickedCancel)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_SC2_FILES, &CSc2Panel::OnTvnSelchangedTreeSc2Files)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_SC2ANI_FILES, &CSc2Panel::OnTvnSelchangedTreeSc2aniFiles)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -40,13 +41,13 @@ END_MESSAGE_MAP()
 
 void CSc2Panel::OnBnClickedOk()
 {
-	//CDialogEx::OnOK();
+	//CPanelBase::OnOK();
 }
 
 
 void CSc2Panel::OnBnClickedCancel()
 {
-	//CDialogEx::OnCancel();
+	//CPanelBase::OnCancel();
 }
 
 
@@ -132,4 +133,15 @@ void CSc2Panel::OnTvnSelchangedTreeSc2aniFiles(NMHDR *pNMHDR, LRESULT *pResult)
 
 	ShowLoadingDialog();
 	cController::Get()->LoadFile(fileName);
+}
+
+
+void CSc2Panel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(m_modelFileTree, cx, cy);
+	MoveChildCtrlWindow(m_aniFileTree, cx, cy);
+	MoveChildCtrlWindow(m_modelBrowser, cx-100, cy);
+	MoveChildCtrlWindow(m_animationBrowser, cx-110, cy);
 }

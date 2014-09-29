@@ -5,7 +5,7 @@
 
 // CSc2Panel 대화 상자입니다.
 
-class CSc2Panel : public CDialogEx
+class CSc2Panel : public CPanelBase
 								, public common::iObserver2
 {
 public:
@@ -35,4 +35,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTvnSelchangedTreeSc2Files(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTvnSelchangedTreeSc2aniFiles(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
