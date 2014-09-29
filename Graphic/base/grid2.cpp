@@ -272,7 +272,9 @@ void cGrid2::RenderLinelist()
 void cGrid2::RenderShader(cShader &shader, const Matrix44 &tm )
 {
 	shader.SetMatrix( "mWorld", tm);
-	shader.SetMatrix( "mWIT", Matrix44::Identity);
+	Matrix44 tmInvs = tm.Inverse();
+	tmInvs.Transpose();
+	shader.SetMatrix( "mWIT", tmInvs);
 
 	m_mtrl.Bind(shader);
 	m_tex.Bind(shader, "colorMapTexture");

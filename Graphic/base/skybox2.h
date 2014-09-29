@@ -1,6 +1,7 @@
 // 스카이박스
-// Sphere 로 하늘을 표현한다.
+// Sphere 로 하늘을 표현하고, 쉐이더로 출력한다.
 // Frank Luna 의 Sky 클래스르 바탕으로 만들었다.
+// PondWater 에서 Clipping Plane 을 쓰기위해서 쉐이더로된 스카이박스가 필요했다.
 #pragma once
 
 

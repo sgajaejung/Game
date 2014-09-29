@@ -88,6 +88,8 @@ void CMapView::Render()
 	if (!m_dxInit)
 		return;
 
+	cMapController::Get()->GetTerrain().PreRender();
+
 	//화면 청소
 	if (SUCCEEDED(graphic::GetDevice()->Clear( 
 		0,			//청소할 영역의 D3DRECT 배열 갯수		( 전체 클리어 0 )
@@ -98,8 +100,6 @@ void CMapView::Render()
 		0					//스텐실 버퍼를 채울값
 		)))
 	{
-		cMapController::Get()->GetTerrain().PreRender();
-
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
 		//graphic::GetRenderer()->RenderFPS();

@@ -7,7 +7,6 @@ using namespace Gdiplus;
 using namespace graphic;
 
 
-
 cTerrain::cTerrain() :
 	m_heightFactor(3.f)
 ,	m_isShowModel(true)
@@ -233,9 +232,9 @@ void cTerrain::PreRender()
 	Plane waterPlaneH = waterPlaneL * WVPInvTrans;
 
 	float f[4] = {waterPlaneH.N.x, waterPlaneH.N.y, waterPlaneH.N.z, waterPlaneH.D};
-
 	GetDevice()->SetClipPlane(0, (float*)f);
 	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
+
 	m_water.BeginRefractScene();
 	m_skybox2.Render();
 	RenderShader(*m_shader);
@@ -246,10 +245,9 @@ void cTerrain::PreRender()
 	//video card, however.
 	GetDevice()->SetClipPlane(0, (float*)f);
 	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
-
 	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	m_water.BeginReflectScene();
 
+	m_water.BeginReflectScene();
 	Matrix44 reflectMatrix = waterPlaneW.GetReflectMatrix();
 	m_skybox2.Render(reflectMatrix);
 	RenderShader(*m_shader, reflectMatrix);
@@ -265,6 +263,13 @@ void cTerrain::Render()
 {
 	if (m_shader)
 	{
+		// RenderShader() 함수에서 mVP 를 초기화 하면 깜빡거리는 현상이 나타나서
+		// Render() 함수에서 일괄적으로 초기화하게 했다.
+		cLightManager::Get()->GetMainLight().Bind(*m_shader);
+		m_shader->SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
+		m_shader->SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
+		m_shader->SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
+
 		m_skybox2.Render();
 		RenderShader(*m_shader);
 		m_water.Render();
@@ -286,11 +291,6 @@ void cTerrain::Move(const float elapseTime)
 void cTerrain::RenderShader(cShader &shader, const Matrix44 &tm)
 	// tm = Matrix44::Identity
 {
-	cLightManager::Get()->GetMainLight().Bind(shader);
-	shader.SetMatrix( "mVP", cMainCamera::Get()->GetViewProjectionMatrix());
-	shader.SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
-	shader.SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
-
 	if (m_layer.empty())
 	{
 		shader.SetRenderPass(1);

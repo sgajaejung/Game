@@ -136,9 +136,10 @@ void cWater::BeginRefractScene()
 {
 	m_refractMap.Begin();
 
-	GetDevice()->Clear(0L, NULL
-		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-		, 0x00000000, 1.0f, 0L);
+	//GetDevice()->Clear(0L, NULL
+	//	, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
+	//	, D3DCOLOR_XRGB(0,0,20), 
+	//	1.0f, 0L);
 }
 
 
@@ -152,9 +153,9 @@ void cWater::BeginReflectScene()
 {
 	m_reflectMap.Begin();
 
-	GetDevice()->Clear(0L, NULL
-		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-		, 0x00000000, 1.0f, 0L);
+	//GetDevice()->Clear(0L, NULL
+	//	, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
+	//	, 0x00000000, 1.0f, 0L);
 }
 
 
