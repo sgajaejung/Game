@@ -114,6 +114,8 @@ void CRendererPanel::OnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult)
 	cController::Get()->GetCharacter()->SetShader( 
 		cResourceManager::Get()->LoadShader(fileName) );
 
+	cController::Get()->SendUpdate(NOTIFY_MSG::UPDATE_SHADER);
+
 	m_currentFileName = str2wstr(fileName).c_str();
 	UpdateData(FALSE);
 }

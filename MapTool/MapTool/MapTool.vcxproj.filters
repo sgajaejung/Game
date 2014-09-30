@@ -66,6 +66,15 @@
     <ClInclude Include="ModelPanel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="LightPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PropGridSlider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapTool.cpp">
@@ -99,6 +108,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ModelPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LightPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PropGridSlider.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

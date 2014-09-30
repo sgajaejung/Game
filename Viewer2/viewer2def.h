@@ -63,6 +63,7 @@ namespace NOTIFY_MSG
 		CHANGE_PANEL, // 패널이 이동 될 때 발생.
 		UPDATE_LIGHT_DIRECTION, // light panel 에서 조명 방향 조정을 체크하고, 마우스로 방향을 지정할 때 발생함.
 		UPDATE_TEXTURE, // model panel 에서 매터리얼 정보의 텍스쳐를 선택할 때 발생.
+		UPDATE_SHADER, // renderer panel에서 셰이더를 선택했을 때 발생.
 	};
 }
 

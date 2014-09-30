@@ -69,4 +69,17 @@ using namespace Gdiplus;
 
 #include "MapToolDef.h"
 #include "MapController.h"
+#include "PanelBase.h"
 
+
+class CHeightMapPanel;
+class CTerrainPanel;
+class CBrushPanel;
+class CModelPanel;
+class CLightPanel;
+
+extern CHeightMapPanel *g_heightMapPanel;
+extern CTerrainPanel *g_terrainPanel;
+extern CBrushPanel *g_brushPanel;
+extern CModelPanel *g_modelPanel;
+extern CLightPanel *g_lightPanel;

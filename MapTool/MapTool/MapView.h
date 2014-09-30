@@ -18,12 +18,14 @@ public:
 protected:
 	bool m_dxInit;
 	string m_filePath;
-	Matrix44 m_rotateTm;
+	//Matrix44 m_rotateTm;
 
-	graphic::cGrid m_grid;
-	graphic::cCube m_cube;
-	graphic::cLine m_line;
+	//graphic::cCube m_cube;
+	//graphic::cLine m_line;
 	common::Ray m_ray;
+
+	graphic::cSphere m_lightSphere;
+	graphic::cLine m_lightLine;
 
 	CPoint m_curPos;
 	bool m_LButtonDown;

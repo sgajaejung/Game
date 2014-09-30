@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MapTool.h"
 #include "MapView.h"
+#include "LightPanel.h"
 
 
 using namespace graphic;
@@ -74,10 +75,17 @@ bool CMapView::Init()
 		true); // true = 활성화 ， false = 비활성화
 
 
-	m_grid.Create(64,64,50.f);
-	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
-	m_cube.SetColor( 0xFF0000FF );
+	//m_grid.Create(64,64,50.f);
+	//m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
+	//m_cube.SetColor( 0xFF0000FF );
 	m_dxInit = true;
+
+	m_lightLine.GetMaterial().InitBlack();
+	m_lightLine.GetMaterial().GetMtrl().Emissive = *(D3DXCOLOR*)&Vector4(1,1,0,1);
+
+	m_lightSphere.Create(5, 10, 10);
+	m_lightSphere.GetMaterial().InitBlack();
+	m_lightSphere.GetMaterial().GetMtrl().Emissive = *(D3DCOLORVALUE*)&Vector4(1,1,0,1);
 
 	return true;
 }
@@ -118,6 +126,23 @@ void CMapView::Render()
 		case EDIT_MODE::MODE_MODEL:
 			cMapController::Get()->GetTerrainCursor().RenderModel();
 			break;
+		}
+
+		// 조명 방향 선 출력.
+		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_LIGHT)
+		{
+			// 광원 위치 조정 후 출력.
+			const Vector3 lightPos = cLightManager::Get()->GetMainLight().GetPosition();
+			Matrix44 lightTm;
+			lightTm.SetTranslate( lightPos );
+			m_lightSphere.SetTransform(lightTm);
+			m_lightSphere.Render(Matrix44::Identity);
+
+			if (m_LButtonDown 
+				&& g_lightPanel->m_EditDirection)
+			{
+				m_lightLine.Render();
+			}
 		}
 
 		graphic::GetRenderer()->RenderAxis();
@@ -225,7 +250,41 @@ void CMapView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		m_curPos = point;
 
-		if (EDIT_MODE::MODE_BRUSH == cMapController::Get()->GetEditMode())
+		bool isEditLightDirection = false;
+		if (cMapController::Get()->GetEditMode() == EDIT_MODE::MODE_LIGHT)
+		{
+			isEditLightDirection = g_lightPanel->m_EditDirection? true : false;
+		}
+
+		if (isEditLightDirection)
+		{
+			const int width = 1024;
+			const int height = 768;
+
+			Ray ray(point.x, point.y, width, height, GetMainCamera()->GetProjectionMatrix(), 
+				GetMainCamera()->GetViewMatrix());
+			Vector3 pickPos;
+			if (cMapController::Get()->GetTerrain().Pick( ray.orig, ray.dir, pickPos ))
+			{
+				// 광원 방향 구하기.
+				const Vector3 lightPos = cLightManager::Get()->GetMainLight().GetPosition();
+				Vector3 dir = pickPos - lightPos;
+				dir.Normalize();
+				m_lightLine.SetLine(lightPos, pickPos, 1);
+
+				// 광원 위치 조정
+				Matrix44 lightTm;
+				lightTm.SetTranslate( lightPos );
+				m_lightSphere.SetTransform(lightTm);
+
+				// 광원 방향 업데이트
+				cLightManager::Get()->GetMainLight().SetDirection(dir);
+
+				// 모든 리스너에게 전달한다.
+				cMapController::Get()->SendNotifyMessage(NOTIFY_TYPE::NOTIFY_UPDATE_LIGHT_DIRECTION);
+			}
+		}
+		else if (EDIT_MODE::MODE_BRUSH == cMapController::Get()->GetEditMode())
 		{
 			cMapController::Get()->BrushTexture(point);
 		}

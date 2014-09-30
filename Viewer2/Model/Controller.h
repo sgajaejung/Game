@@ -44,6 +44,7 @@ private:
 	graphic::cSc2Character m_sc2Character; // 스타크래프트2 캐릭터.
 	graphic::cText m_modelName;
 	graphic::cText m_animationName;
+	graphic::cText m_shaderName;
 
 	string m_currentMeshFileName;
 	string m_currentAnimationFileName;

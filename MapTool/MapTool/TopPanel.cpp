@@ -9,6 +9,7 @@
 
 // CTopPanel
 CTopPanel::CTopPanel()
+	: m_tabPanel(NULL)
 {
 
 }
@@ -20,6 +21,7 @@ CTopPanel::~CTopPanel()
 
 
 BEGIN_MESSAGE_MAP(CTopPanel, CMiniFrameWnd)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -33,4 +35,12 @@ void CTopPanel::Init()
 	m_tabPanel->Create( CTabPanel::IDD, this );
 	m_tabPanel->MoveWindow(cr);
 	m_tabPanel->ShowWindow(SW_SHOW);
+}
+
+
+void CTopPanel::OnSize(UINT nType, int cx, int cy)
+{
+	CMiniFrameWnd::OnSize(nType, cx, cy);
+	if (m_tabPanel)
+		m_tabPanel->MoveWindow(0, 0, cx, cy);
 }

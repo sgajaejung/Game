@@ -13,6 +13,7 @@ cController::cController() :
 ,	m_viewerDlg(NULL)
 ,	m_modelName("modelName: ", 10, 27)
 ,	m_animationName("animationName: ", 10, 44)
+,	m_shaderName("shaderName: ", 10, 61)
 ,	m_currentMode(EDIT_MODE::FILE)
 {
 	m_analyzer = new cCharacterAnalyzer();
@@ -41,7 +42,9 @@ bool cController::LoadFile( const string &fileName )
 		if (result = character->Create(fileName))
 		{
 			m_modelName.SetText("model: " + common::GetFileName(fileName));
-			m_animationName.SetText("");
+			m_animationName.SetText("animation: ");
+			if (character->GetShader())
+				m_shaderName.SetText("shader: " + common::GetFileName(character->GetShader()->GetFileName()));
 
 			// 모델 크기에 따라 조명의 위치를 조절한다.
 			// 그림자 크기를 조정하기 위해서.
@@ -87,6 +90,7 @@ void cController::Render()
 	m_analyzer->Render(Matrix44::Identity);
 	m_modelName.Render();
 	m_animationName.Render();
+	m_shaderName.Render();
 }
 
 
@@ -160,5 +164,12 @@ void cController::ChangePanel(const int panelIdx)
 // observer 에게 업데이트 메세지를 보낸다.
 void cController::SendUpdate(const int type) //type=0
 {
+	if (NOTIFY_MSG::UPDATE_SHADER == type)
+	{
+		if (cCharacter *character = GetCharacter())
+			if (character->GetShader())
+				m_shaderName.SetText("shader: " + common::GetFileName(character->GetShader()->GetFileName()));
+	}
+
 	NotifyObserver(type);
 }

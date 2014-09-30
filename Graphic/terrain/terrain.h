@@ -103,8 +103,7 @@ namespace graphic
 
 
 	protected:
-		cSkyBox m_skybox;
-		cSkyBox2 m_skybox2;
+		cSkyBox2 m_skybox;
 		cWater m_water;
 
 		cGrid2 m_grid;

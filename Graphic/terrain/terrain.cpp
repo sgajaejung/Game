@@ -155,7 +155,7 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 
 	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
 
-	m_skybox2.Create(
+	m_skybox.Create(
 		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
 
 	m_water.Create();
@@ -236,7 +236,7 @@ void cTerrain::PreRender()
 	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
 
 	m_water.BeginRefractScene();
-	m_skybox2.Render();
+	m_skybox.Render();
 	RenderShader(*m_shader);
 	m_water.EndRefractScene();
 
@@ -249,7 +249,7 @@ void cTerrain::PreRender()
 
 	m_water.BeginReflectScene();
 	Matrix44 reflectMatrix = waterPlaneW.GetReflectMatrix();
-	m_skybox2.Render(reflectMatrix);
+	m_skybox.Render(reflectMatrix);
 	RenderShader(*m_shader, reflectMatrix);
 	m_water.EndReflectScene();
 
@@ -270,7 +270,7 @@ void cTerrain::Render()
 		m_shader->SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 		m_shader->SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
-		m_skybox2.Render();
+		m_skybox.Render();
 		RenderShader(*m_shader);
 		m_water.Render();
 	}

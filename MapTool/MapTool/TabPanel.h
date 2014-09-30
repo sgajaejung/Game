@@ -7,6 +7,7 @@ class CHeightMapPanel;
 class CTerrainPanel;
 class CBrushPanel;
 class CModelPanel;
+
 class CTabPanel : public CDialogEx
 {
 public:
@@ -21,11 +22,6 @@ protected:
 	void ShowPanel(int idx);
 	vector<CWnd*> m_panels;
 
-	CHeightMapPanel *m_heightMapPanel;
-	CTerrainPanel *m_terrainPanel;
-	CBrushPanel *m_brushPanel;
-	CModelPanel *m_modelPanel;
-
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
@@ -35,4 +31,5 @@ public:
 	CTabCtrl m_Tab;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

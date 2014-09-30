@@ -55,6 +55,7 @@ BOOL CMapToolApp::InitInstance()
 	}
 
 	SAFE_DELETE(dlg);
+	memmonitor::Cleanup();
 	return FALSE;
 }
 

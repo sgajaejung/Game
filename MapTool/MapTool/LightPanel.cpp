@@ -2,10 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "Viewer2.h"
+#include "MapTool.h"
+#include "PropGridSlider.h"
 #include "LightPanel.h"
 #include "afxdialogex.h"
-#include "PropGridSlider.h"
+
 
 using namespace graphic;
 
@@ -15,9 +16,8 @@ enum {
 };
 
 
-// CLightPanel 대화 상자입니다.
 CLightPanel::CLightPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CLightPanel::IDD, pParent)
+	: CPanelBase(CLightPanel::IDD, pParent)
 	, m_EditDirection(FALSE)
 {
 
@@ -29,46 +29,39 @@ CLightPanel::~CLightPanel()
 
 void CLightPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_LIGHT, m_lightCombo);
-	DDX_Check(pDX, IDC_CHECK_DIRECTION, m_EditDirection);
+	CPanelBase::DoDataExchange(pDX);
+	DDX_Check(pDX, IDC_CHECK_LIGHT_DIRECTION, m_EditDirection);
 }
 
 
-BEGIN_MESSAGE_MAP(CLightPanel, CDialogEx)
-	ON_BN_CLICKED(IDCANCEL, &CLightPanel::OnBnClickedCancel)
+BEGIN_MESSAGE_MAP(CLightPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CLightPanel::OnBnClickedOk)
-	ON_CBN_SELCHANGE(IDC_COMBO_LIGHT, &CLightPanel::OnSelchangeComboLight)
+	ON_BN_CLICKED(IDCANCEL, &CLightPanel::OnBnClickedCancel)
 	ON_REGISTERED_MESSAGE (AFX_WM_PROPERTY_CHANGED, OnPropertyChanged) 
 	ON_WM_SIZE()
-	ON_BN_CLICKED(IDC_CHECK_DIRECTION, &CLightPanel::OnBnClickedCheckDirection)
+	ON_BN_CLICKED(IDC_CHECK_LIGHT_DIRECTION, &CLightPanel::OnBnClickedCheckLightDirection)
 END_MESSAGE_MAP()
 
 
 // CLightPanel 메시지 처리기입니다.
 
 
-void CLightPanel::OnBnClickedCancel()
-{
-	//CDialogEx::OnCancel();
-}
-
-
 void CLightPanel::OnBnClickedOk()
 {
-	//CDialogEx::OnOK();
+	//CPanelBase::OnOK();
 }
 
+
+void CLightPanel::OnBnClickedCancel()
+{
+	//CPanelBase::OnCancel();
+}
 
 
 BOOL CLightPanel::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CPanelBase::OnInitDialog();
 
-	m_lightCombo.InsertString(0, L"Light 1");
-	//m_lightCombo.InsertString(1, L"Light 2");
-	//m_lightCombo.InsertString(2, L"Light 3");
-	m_lightCombo.SetCurSel(0);
 
 	//----------------------------------------------------------------------------------------------
 	// Init PropertyGrid Control
@@ -99,9 +92,9 @@ BOOL CLightPanel::OnInitDialog()
 	//UpdateModelProperty(cController::Get()->GetCube().GetMaterial());
 	UpdateLightProperty(cLightManager::Get()->GetMainLight());
 
-
 	return TRUE;
 }
+
 
 
 void CLightPanel::UpdateModelProperty(const cMaterial &mtrl)
@@ -140,11 +133,6 @@ void CLightPanel::UpdateLightProperty(const cLight &light)
 	m_lightProperty.RemoveAll();
 
 	CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Light Property"));
-
-	// construct a COleVariant object. 
-	//COleVariant var3DLook((short)VARIANT_FALSE, VT_BOOL);
-	//pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("3D Look"), var3DLook, 
-	//	_T("Specifies the dialog's font will be nonbold and controls will have a 3D border")));
 
 	CString types[] = {
 		_T("None"),
@@ -225,14 +213,6 @@ void CLightPanel::AddPropertyVector3(CMFCPropertyGridProperty *group, CString na
 	pSize->AddSubItem(pProp);
 
 	group->AddSubItem(pSize);
-}
-
-
-void CLightPanel::OnSelchangeComboLight()
-{
-	const int select = m_lightCombo.GetCurSel();
-	//UpdateLightProperty(cController::Get()->GetLight(select));
-	//cController::Get()->SelectLight(select);
 }
 
 
@@ -350,11 +330,7 @@ void CLightPanel::ChangeLightValue(CMFCPropertyGridProperty *prop)
 {
 	RET(!prop);
 
-	const int selectLight = m_lightCombo.GetCurSel();
-	if (!cLightManager::Get()->GetLight(selectLight))
-		return;
-
-	cLight &light = *cLightManager::Get()->GetLight(selectLight);
+	cLight &light = cLightManager::Get()->GetMainLight();
 
 	if (CString(L"Diffuse") == prop->GetName())
 	{
@@ -429,6 +405,7 @@ void CLightPanel::ChangeLightValue(CMFCPropertyGridProperty *prop)
 			}
 		}
 	}
+/**/
 }
 
 
@@ -464,10 +441,10 @@ Vector3 CLightPanel::GetPropertyVector3(CMFCPropertyGridProperty *group)
 
 void CLightPanel::OnSize(UINT nType, int cx, int cy)
 {
-	CDialogEx::OnSize(nType, cx, cy);
+	CPanelBase::OnSize(nType, cx, cy);
 
-	MoveChildCtrlWindow(*this, m_modelProperty, cx, cy);
-	MoveChildCtrlWindow(*this, m_lightProperty, cx, cy);	
+	MoveChildCtrlWindow(m_modelProperty, cx, cy);
+	MoveChildCtrlWindow(m_lightProperty, cx, cy);	
 }
 
 
@@ -475,11 +452,11 @@ void CLightPanel::Update(int type)
 {
 	switch (type)
 	{
-	case NOTIFY_MSG::UPDATE_MODEL:
+	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
 		UpdateLightProperty(cLightManager::Get()->GetMainLight());
 		break;
 
-	case NOTIFY_MSG::UPDATE_LIGHT_DIRECTION: // 조명 방향 수정
+	case NOTIFY_TYPE::NOTIFY_UPDATE_LIGHT_DIRECTION: // 조명 방향 수정
 		{
 			// root property
 			if (CMFCPropertyGridProperty *group = m_lightProperty.GetProperty(0)) 
@@ -500,9 +477,9 @@ void CLightPanel::Update(int type)
 }
 
 
-void CLightPanel::OnBnClickedCheckDirection()
+void CLightPanel::OnBnClickedCheckLightDirection()
 {
-	UpdateData();
+	UpdateData();	
 	if (m_EditDirection)
 		::AfxMessageBox(L"화면에 마우스 왼쪽 버튼을 눌러서 조명의 방향을 조정할 수 있습니다.");
 }

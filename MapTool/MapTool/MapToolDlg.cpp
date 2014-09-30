@@ -11,12 +11,11 @@
 #include "TopPanel.h"
 
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
+using namespace graphic;
 
 
 CMapToolDlg::CMapToolDlg(CWnd* pParent /*=NULL*/)
