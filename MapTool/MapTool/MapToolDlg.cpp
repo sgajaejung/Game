@@ -103,30 +103,39 @@ BOOL CMapToolDlg::OnInitDialog()
 		const int PANEL_WIDTH = 400;
 		const int PANEL_HEIGHT = 800;
 
-		CTopPanel *dlg = new CTopPanel();
+		m_mainPanel = new CTopPanel();
 		const CString StrClassName = AfxRegisterWndClass( CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
 			LoadCursor(NULL, IDC_ARROW), (HBRUSH)GetStockObject(COLOR_BTNFACE+1), 
 			LoadIcon(NULL, IDI_APPLICATION) );
 
-		dlg->CreateEx(0, StrClassName, L"Panel", 
+		m_mainPanel->CreateEx(0, StrClassName, L"Panel", 
 			WS_POPUP | WS_CAPTION | WS_SYSMENU | MFS_THICKFRAME, 
 			CRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT), this );
 
-		dlg->Init();
+		m_mainPanel->Init();
 
-		// TopPanel Positioning
+		// Main Panel Positioning
 		{
+			CRect panelR;
+			m_mainPanel->GetWindowRect(panelR);
+
 			const int screenCX = GetSystemMetrics(SM_CXSCREEN);
 			const int screenCY = GetSystemMetrics(SM_CYSCREEN);
-			const int x = screenCX/2 - REAL_WINDOW_WIDTH/2 + REAL_WINDOW_WIDTH - 100;
+			int x = screenCX/2 - REAL_WINDOW_WIDTH/2 + REAL_WINDOW_WIDTH - panelR.Width()/2;
 			const int y = screenCY/2 - REAL_WINDOW_HEIGHT/2;
 
-			CRect panelR;
-			dlg->GetWindowRect(panelR);
-			dlg->MoveWindow(x, y, panelR.Width(), panelR.Height());
+			if ((x+panelR.Width()) > screenCX)
+				x = screenCX - panelR.Width();
+
+			m_mainPanel->MoveWindow(x, y, panelR.Width(), panelR.Height());
+
+			// Main Dialog RePositioning
+			int px = screenCX/2 - REAL_WINDOW_WIDTH/2 - panelR.Width()/2;			
+			px = max(0, px);
+			MoveWindow(px, y, REAL_WINDOW_WIDTH,REAL_WINDOW_HEIGHT);
 		}
 
-		dlg->ShowWindow(SW_SHOW);
+		m_mainPanel->ShowWindow(SW_SHOW);
 	}
 
 

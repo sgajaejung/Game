@@ -6,6 +6,7 @@ using namespace graphic;
 
 
 cWater::cWater()
+	: m_isRenderSurface(false)
 {
 	Matrix44 mWaterWorld;
 	mWaterWorld.SetTranslate(Vector3(0,10,0));
@@ -13,10 +14,10 @@ cWater::cWater()
 	sInitInfo waterInitInfo;
 	waterInitInfo.dirLight.Init(cLight::LIGHT_DIRECTIONAL);
 	waterInitInfo.mtrl.InitWhite();
-	waterInitInfo.vertRows         = 128;
-	waterInitInfo.vertCols         = 128;
-	waterInitInfo.dx               = 1.0f;
-	waterInitInfo.dz               = 1.0f;
+	waterInitInfo.vertRows = 64;
+	waterInitInfo.vertCols = 64;
+	waterInitInfo.dx = 1.0f;
+	waterInitInfo.dz = 1.0f;
 	waterInitInfo.waveMapFilename0 = "wave0.dds";
 	waterInitInfo.waveMapFilename1 = "wave1.dds";
 	waterInitInfo.waveMapVelocity0 = Vector2(0.09f, 0.06f);
@@ -24,7 +25,8 @@ cWater::cWater()
 	waterInitInfo.texScale = 10.0f; 
 	waterInitInfo.refractBias = 0.1f;
 	waterInitInfo.refractPower = 2.0f;
-	waterInitInfo.rippleScale  = Vector2(0.06f, 0.03f); 
+	//waterInitInfo.rippleScale  = Vector2(0.06f, 0.03f); 
+	waterInitInfo.rippleScale  = Vector2(0.06f, 0.0f); 
 	waterInitInfo.toWorld = mWaterWorld;
 
 	m_initInfo = waterInitInfo;
@@ -36,7 +38,6 @@ cWater::cWater()
 
 cWater::~cWater()
 {
-
 }
 
 
@@ -49,9 +50,8 @@ bool cWater::Create()
 	m_reflectMap.Create(width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
 	m_refractMap.Create(width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
 
-	//m_shader.Create( "water.fx", "TShader" );
 	m_shader.Create( cResourceManager::Get()->FindFile("water.fx"), "WaterTech" );
-	m_grid.Create(64, 64, 64, 8.f, 0.f);
+	m_grid.Create(m_initInfo.vertRows, m_initInfo.vertCols, 64, 8.f, 0.f);
 	m_grid.GetTexture().Create( cResourceManager::Get()->FindFile("whitetex.dds") );
 
 	m_waveMap0.Create( cResourceManager::Get()->FindFile(m_initInfo.waveMapFilename0) );
@@ -108,8 +108,11 @@ void cWater::Render()
 	m_grid.RenderShader(m_shader);
 
 	// µð¹ö±ë¿ë.
-	//m_refractMap.Render(1);
-	//m_reflectMap.Render(2);
+	if (m_isRenderSurface)
+	{
+		m_refractMap.Render(1);
+		m_reflectMap.Render(2);
+	}
 }
 
 
@@ -135,11 +138,6 @@ void cWater::Move(const float elapseTime)
 void cWater::BeginRefractScene()
 {
 	m_refractMap.Begin();
-
-	//GetDevice()->Clear(0L, NULL
-	//	, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-	//	, D3DCOLOR_XRGB(0,0,20), 
-	//	1.0f, 0L);
 }
 
 
@@ -152,10 +150,6 @@ void cWater::EndRefractScene()
 void cWater::BeginReflectScene()
 {
 	m_reflectMap.Begin();
-
-	//GetDevice()->Clear(0L, NULL
-	//	, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
-	//	, 0x00000000, 1.0f, 0L);
 }
 
 

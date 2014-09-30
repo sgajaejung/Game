@@ -161,7 +161,6 @@ const Plane Plane::operator * (const Matrix44 &rhs)
 {
 	Plane out;
 	D3DXPlaneTransform((D3DXPLANE*)&out, (D3DXPLANE*)this, (D3DXMATRIX*)&rhs);
-	//D3DXPlaneNormalize((D3DXPLANE*)&out, (D3DXPLANE*)&out);
 	return out;
 }
 

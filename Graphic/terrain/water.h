@@ -33,26 +33,28 @@ namespace graphic
 		virtual ~cWater();
 
 		bool Create();
+		virtual void Render();
+		virtual void Move(const float elapseTime);
+
 		void BeginRefractScene();
 		void EndRefractScene();
 		void BeginReflectScene();
 		void EndReflectScene();
-
-		virtual void Render();
-		virtual void Move(const float elapseTime);
+		void SetRenderReflectMap(const bool enable);
+		bool IstRenderReflectMap() const;
 
 
 	private:
+		sInitInfo m_initInfo;
 		cSurface2 m_reflectMap;
 		cSurface2 m_refractMap;
 		cGrid2 m_grid;
 		cShader m_shader;
 		cTexture m_waveMap0;
 		cTexture m_waveMap1;
-		sInitInfo m_initInfo;
-
 		Vector2 m_waveMapOffset0;
 		Vector2 m_waveMapOffset1;
+		bool m_isRenderSurface;
 
 		D3DXHANDLE m_hWVP;
 		D3DXHANDLE m_hLight;
@@ -64,4 +66,7 @@ namespace graphic
 		D3DXHANDLE m_hRefractMap;
 	};
 
+	
+	inline void cWater::SetRenderReflectMap(const bool enable) { m_isRenderSurface = enable; }
+	inline bool cWater::IstRenderReflectMap() const { return m_isRenderSurface; }
 }

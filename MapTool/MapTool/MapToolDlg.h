@@ -5,6 +5,7 @@
 #pragma once
 
 class  CMapView;
+class CTopPanel;
 
 // CMapToolDlg 대화 상자
 class CMapToolDlg : public CDialogEx
@@ -29,6 +30,7 @@ protected:
 	HICON m_hIcon;
 	bool m_loop;
 	CMapView *m_mapView;
+	CTopPanel *m_mainPanel;
 	// GDI plus
 	ULONG_PTR m_gdiplusToken;
 	GdiplusStartupInput m_gdiplusStartupInput; 

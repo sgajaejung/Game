@@ -1,8 +1,5 @@
 #pragma once
 
-#include "water.h"
-#include "../base/skybox2.h"
-
 
 namespace graphic
 {

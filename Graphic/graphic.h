@@ -36,6 +36,7 @@ using namespace common;
 #include "base/shader.h"
 #include "base/camera.h"
 #include "base/skybox.h"
+#include "base/skybox2.h"
 #include "base/sphere.h"
 #include "base/surface.h"
 #include "base/surface2.h"
@@ -71,6 +72,7 @@ using namespace common;
 #include "sprite/sprite.h"
 
 #include "terrain/rawterrain.h"
+#include "terrain/water.h"
 #include "terrain/terrain.h"
 #include "terrain/terraincursor.h"
 #include "terrain/terraineditor.h"

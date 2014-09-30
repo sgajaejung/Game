@@ -12,8 +12,8 @@ namespace EDIT_MODE
 {
 	enum TYPE
 	{
-		MODE_HEIGHTMAP,
 		MODE_TERRAIN,
+		MODE_HEIGHTMAP,
 		MODE_BRUSH,
 		MODE_MODEL,
 	};

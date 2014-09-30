@@ -220,7 +220,7 @@ void cTerrain::PreRender()
 
 	// Reflection plane in world space.
 	Matrix44 waterWorld;
-	waterWorld.SetTranslate(Vector3(0,10,0));
+	waterWorld.SetTranslate(Vector3(0,20,0)); // 실제 물의 높이는 10이지만, 컬링을 위해 20으로 높임
 	Matrix44 WInvTrans;
 	WInvTrans = waterWorld.Inverse();
 	WInvTrans.Transpose();

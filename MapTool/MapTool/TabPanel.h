@@ -18,6 +18,9 @@ public:
 
 
 protected:
+	void ShowPanel(int idx);
+	vector<CWnd*> m_panels;
+
 	CHeightMapPanel *m_heightMapPanel;
 	CTerrainPanel *m_terrainPanel;
 	CBrushPanel *m_brushPanel;
