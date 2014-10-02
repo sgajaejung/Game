@@ -67,9 +67,10 @@ using namespace common;
 using namespace Gdiplus;
 
 
+#include "../../ToolCommon/ToolCommon.h"
+
 #include "MapToolDef.h"
 #include "MapController.h"
-#include "PanelBase.h"
 
 
 class CHeightMapPanel;

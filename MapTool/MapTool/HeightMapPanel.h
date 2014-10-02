@@ -1,11 +1,12 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
+#include "afxeditbrowsectrl.h"
 
 
 // CHeightMapPanel 대화 상자입니다.
 
-class CHeightMapPanel : public CDialogEx
+class CHeightMapPanel : public CPanelBase
 									, public common::iObserver2
 {
 public:
@@ -36,13 +37,7 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	virtual BOOL OnInitDialog();
-	afx_msg void OnDblclkListHeightmap();
-	afx_msg void OnSelchangeListHeightmap();
 	afx_msg void OnPaint();
-	CListBox m_HeightMapList;
-	CListBox m_TextureList;
-	afx_msg void OnSelchangeListHeightmapTex();
-	afx_msg void OnDblclkListHeightmapTex();
 	CSliderCtrl m_heightSlider;
 	float m_heightFactor;
 	afx_msg void OnNMCustomdrawSliderHeightFactor(NMHDR *pNMHDR, LRESULT *pResult);
@@ -52,4 +47,13 @@ public:
 	afx_msg void OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeEditUvFactor();
 	afx_msg void OnBnClickedButtonRefresh();
+	CFileTreeCtrl m_heightmapTree;
+	CFileTreeCtrl m_textureTree;
+	afx_msg void OnTvnSelchangedTreeHeightmap(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnTvnSelchangedTreeTexture(NMHDR *pNMHDR, LRESULT *pResult);
+	CMFCEditBrowseCtrl m_heightmapBrowser;
+	CMFCEditBrowseCtrl m_textureBrowser;
+	afx_msg void OnEnChangeMfceditbrowseHeightmap();
+	afx_msg void OnEnChangeMfceditbrowseTexture();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

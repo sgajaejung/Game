@@ -90,6 +90,10 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 	}
 
 	m_alphaTexture.Create( mediaDir+rawTerrain.alphaTexture );
+	m_water.Create();
+	m_skybox.Create(
+		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
+
 
 	return true;
 }

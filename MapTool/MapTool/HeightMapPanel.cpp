@@ -9,7 +9,7 @@
 
 // CHeightMapPanel 대화 상자입니다.
 CHeightMapPanel::CHeightMapPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CHeightMapPanel::IDD, pParent)
+	: CPanelBase(CHeightMapPanel::IDD, pParent)
 ,	m_heightMap(NULL)
 ,	m_texture(NULL)
 , m_heightFactor(0)
@@ -24,39 +24,48 @@ CHeightMapPanel::~CHeightMapPanel()
 
 void CHeightMapPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST_HEIGHTMAP, m_HeightMapList);
-	DDX_Control(pDX, IDC_LIST_HEIGHTMAP_TEX, m_TextureList);
+	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SLIDER_HEIGHT_FACTOR, m_heightSlider);
 	DDX_Text(pDX, IDC_EDIT_HEIGHT_FACTOR, m_heightFactor);
 	DDX_Control(pDX, IDC_SLIDER_UV_FACTOR, m_uvSlider);
 	DDX_Text(pDX, IDC_EDIT_UV_FACTOR, m_uvFactor);
+	DDX_Control(pDX, IDC_TREE_HEIGHTMAP, m_heightmapTree);
+	DDX_Control(pDX, IDC_TREE_TEXTURE, m_textureTree);
+	DDX_Control(pDX, IDC_MFCEDITBROWSE_HEIGHTMAP, m_heightmapBrowser);
+	DDX_Control(pDX, IDC_MFCEDITBROWSE_TEXTURE, m_textureBrowser);
 }
 
 
-BEGIN_MESSAGE_MAP(CHeightMapPanel, CDialogEx)
+BEGIN_MESSAGE_MAP(CHeightMapPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CHeightMapPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CHeightMapPanel::OnBnClickedCancel)
-	ON_LBN_DBLCLK(IDC_LIST_HEIGHTMAP, &CHeightMapPanel::OnDblclkListHeightmap)
-	ON_LBN_SELCHANGE(IDC_LIST_HEIGHTMAP, &CHeightMapPanel::OnSelchangeListHeightmap)
 	ON_WM_PAINT()
-	ON_LBN_SELCHANGE(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnSelchangeListHeightmapTex)
-	ON_LBN_DBLCLK(IDC_LIST_HEIGHTMAP_TEX, &CHeightMapPanel::OnDblclkListHeightmapTex)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_HEIGHT_FACTOR, &CHeightMapPanel::OnNMCustomdrawSliderHeightFactor)
 	ON_EN_CHANGE(IDC_EDIT_HEIGHT_FACTOR, &CHeightMapPanel::OnEnChangeEditHeightFactor)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_UV_FACTOR, &CHeightMapPanel::OnNMCustomdrawSliderUvFactor)
 	ON_EN_CHANGE(IDC_EDIT_UV_FACTOR, &CHeightMapPanel::OnEnChangeEditUvFactor)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CHeightMapPanel::OnBnClickedButtonRefresh)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_HEIGHTMAP, &CHeightMapPanel::OnTvnSelchangedTreeHeightmap)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_TEXTURE, &CHeightMapPanel::OnTvnSelchangedTreeTexture)
+	ON_EN_CHANGE(IDC_MFCEDITBROWSE_HEIGHTMAP, &CHeightMapPanel::OnEnChangeMfceditbrowseHeightmap)
+	ON_EN_CHANGE(IDC_MFCEDITBROWSE_TEXTURE, &CHeightMapPanel::OnEnChangeMfceditbrowseTexture)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
 // CHeightMapPanel 메시지 처리기입니다.
 BOOL CHeightMapPanel::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CPanelBase::OnInitDialog();
 
 	m_heightSlider.SetRange(0, 1000);
 	m_uvSlider.SetRange(0, 1000);
+
+	m_heightmapBrowser.EnableFileBrowseButton(_T("HeightMap"), 
+		_T("Image files|*.jpg;*.png;*.bmp|All files|*.*||"));
+
+	m_textureBrowser.EnableFileBrowseButton(_T("Texture"), 
+		_T("Image files|*.jpg;*.png;*.bmp|All files|*.*||"));
 
 	UpdateHeightMapList();
 	UpdateTextureList();
@@ -103,13 +112,11 @@ void CHeightMapPanel::OnPaint()
 
 void CHeightMapPanel::OnBnClickedOk()
 {
-	//CDialogEx::OnOK();
 }
 
 
 void CHeightMapPanel::OnBnClickedCancel()
 {
-	//CDialogEx::OnCancel();
 }
 
 
@@ -127,104 +134,28 @@ void CHeightMapPanel::UpdateTerrainInfo()
 
 void CHeightMapPanel::UpdateHeightMapList()
 {
-	// 리스트 박스 초기화.
-	while (0 < m_HeightMapList.GetCount())
-		m_HeightMapList.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("jpg");
 	extList.push_back("png");
 	extList.push_back("bmp");
-	list<string> heightMapFiles;
-	common::CollectFiles(extList, "../../media/terrain/", heightMapFiles);
 
-	BOOST_FOREACH(auto &fileName, heightMapFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_HeightMapList.InsertString(m_HeightMapList.GetCount(), wstr.c_str());
-	}
+	m_heightmapTree.Update( "../../media/terrain/", extList, "");
+	m_heightmapTree.ExpandAll();
 }
 
 
 // 지형 텍스쳐 리스트 출력.
 void CHeightMapPanel::UpdateTextureList()
 {
-	// 리스트 박스 초기화.
-	while (0 < m_TextureList.GetCount())
-		m_TextureList.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("jpg");
 	extList.push_back("png");
 	extList.push_back("bmp");
-	list<string> textureFiles;
-	common::CollectFiles(extList, "../../media/terrain/", textureFiles);
 
-	BOOST_FOREACH(auto &fileName, textureFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_TextureList.InsertString(m_TextureList.GetCount(), wstr.c_str());
-	}
-}
-
-
-// 지형 높이맵 설정.
-void CHeightMapPanel::OnDblclkListHeightmap()
-{
-	RET(m_HeightMapList.GetCurSel() < 0);
-
-	CString fileName;
-	m_HeightMapList.GetText(m_HeightMapList.GetCurSel(), fileName);
-	SAFE_DELETE(m_heightMap);
-	m_heightMap = Image::FromFile(fileName);
-	InvalidateRect(NULL, FALSE);
-
-	string asciiFileName = wstr2str((wstring)fileName);
-	cMapController::Get()->LoadHeightMap(asciiFileName);
-}
-
-
-// 지형 높이맵 이미지 업데이트
-void CHeightMapPanel::OnSelchangeListHeightmap()
-{
-	RET(m_HeightMapList.GetCurSel() < 0);
-
-	CString fileName;
-	m_HeightMapList.GetText(m_HeightMapList.GetCurSel(), fileName);
-	SAFE_DELETE(m_heightMap);
-	m_heightMap = Image::FromFile(fileName);
-	InvalidateRect(NULL, FALSE);
-}
-
-
-// 지형 텍스쳐 이미지 업데이트
-void CHeightMapPanel::OnSelchangeListHeightmapTex()
-{
-	RET(m_TextureList.GetCurSel() < 0);
-
-	CString fileName;
-	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
-	SAFE_DELETE(m_texture);
-	m_texture = Image::FromFile(fileName);
-	InvalidateRect(NULL, FALSE);	
-}
-
-
-// 지형 텍스쳐 설정.
-void CHeightMapPanel::OnDblclkListHeightmapTex()
-{
-	RET(m_TextureList.GetCurSel() < 0);
-
-	CString fileName;
-	m_TextureList.GetText(m_TextureList.GetCurSel(), fileName);
-	SAFE_DELETE(m_texture);
-	m_texture = Image::FromFile(fileName);
-	InvalidateRect(NULL, FALSE);
-
-	string asciiFileName = wstr2str((wstring)fileName);
-	cMapController::Get()->LoadHeightMapTexture(asciiFileName);
+	m_textureTree.Update( "../../media/terrain/", extList, "");
+	m_textureTree.ExpandAll();
 }
 
 
@@ -282,4 +213,81 @@ void CHeightMapPanel::OnBnClickedButtonRefresh()
 {
 	UpdateHeightMapList();
 	UpdateTextureList();	
+}
+
+
+void CHeightMapPanel::OnTvnSelchangedTreeHeightmap(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_heightmapTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../../media"))
+		return;
+
+	SAFE_DELETE(m_heightMap);
+	m_heightMap = Image::FromFile(str2wstr(fileName).c_str());
+	InvalidateRect(NULL, FALSE);
+
+	cMapController::Get()->LoadHeightMap(fileName);
+	m_heightmapBrowser.SetWindowText(str2wstr(fileName).c_str());
+}
+
+
+void CHeightMapPanel::OnTvnSelchangedTreeTexture(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_textureTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../../media"))
+		return;
+
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(str2wstr(fileName).c_str());
+	InvalidateRect(NULL, FALSE);
+
+	cMapController::Get()->LoadHeightMapTexture(fileName);
+	m_textureBrowser.SetWindowText(str2wstr(fileName).c_str());
+}
+
+
+void CHeightMapPanel::OnEnChangeMfceditbrowseHeightmap()
+{
+	CString wFileName;
+	m_heightmapBrowser.GetWindowText(wFileName);
+
+	const string fileName = wstr2str((wstring)wFileName);
+
+	SAFE_DELETE(m_heightMap);
+	m_heightMap = Image::FromFile(str2wstr(fileName).c_str());
+	InvalidateRect(NULL, FALSE);
+
+	cMapController::Get()->LoadHeightMap(fileName);
+}
+
+
+void CHeightMapPanel::OnEnChangeMfceditbrowseTexture()
+{
+	CString wFileName;
+	m_textureBrowser.GetWindowText(wFileName);
+
+	const string fileName = wstr2str((wstring)wFileName);
+
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(str2wstr(fileName).c_str());
+	InvalidateRect(NULL, FALSE);
+
+	cMapController::Get()->LoadHeightMapTexture(fileName);
+}
+
+
+void CHeightMapPanel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(m_heightmapTree, cx, cy);
+	MoveChildCtrlWindow(m_textureTree, cx, cy);
+	MoveChildCtrlWindow(m_heightmapBrowser, cx-90, cy);
+	MoveChildCtrlWindow(m_textureBrowser, cx-90, cy);
 }

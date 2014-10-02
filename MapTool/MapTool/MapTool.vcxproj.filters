@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ToolCommon">
+      <UniqueIdentifier>{3261dd98-6b76-4b8f-8364-80d9d237cd8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -69,11 +72,20 @@
     <ClInclude Include="LightPanel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PropGridSlider.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="..\..\ToolCommon\ToolCommon.h">
+      <Filter>ToolCommon</Filter>
     </ClInclude>
-    <ClInclude Include="PanelBase.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="..\..\ToolCommon\PropGridSlider.h">
+      <Filter>ToolCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolCommon\UIUtiltity.h">
+      <Filter>ToolCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolCommon\FileTreeCtrl.h">
+      <Filter>ToolCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolCommon\PanelBase.h">
+      <Filter>ToolCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,11 +125,17 @@
     <ClCompile Include="LightPanel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PropGridSlider.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="..\..\ToolCommon\PropGridSlider.cpp">
+      <Filter>ToolCommon</Filter>
     </ClCompile>
-    <ClCompile Include="PanelBase.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="..\..\ToolCommon\UIUtiltity.cpp">
+      <Filter>ToolCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolCommon\FileTreeCtrl.cpp">
+      <Filter>ToolCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolCommon\PanelBase.cpp">
+      <Filter>ToolCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

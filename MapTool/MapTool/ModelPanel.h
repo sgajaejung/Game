@@ -6,7 +6,7 @@
 
 // CModelPanel 대화 상자입니다.
 
-class CModelPanel : public CDialogEx
+class CModelPanel : public CPanelBase
 								, public iObserver2
 {
 public:
@@ -30,12 +30,10 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
-	CMFCEditBrowseCtrl m_modelBrowser;
-	CListBox m_modelList;
 	virtual BOOL OnInitDialog();
-	afx_msg void OnChangeMfceditbrowseModel();
-	afx_msg void OnSelchangeListModel();
 	CListCtrl m_placeModelList;
-	afx_msg void OnDblclkListModel();
 	afx_msg void OnBnClickedButtonRefresh();
+	CFileTreeCtrl m_modelTree;
+	afx_msg void OnTvnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

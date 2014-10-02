@@ -102,6 +102,11 @@
     <None Include="res\MapTool.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ToolCommon\FileTreeCtrl.h" />
+    <ClInclude Include="..\..\ToolCommon\PanelBase.h" />
+    <ClInclude Include="..\..\ToolCommon\PropGridSlider.h" />
+    <ClInclude Include="..\..\ToolCommon\ToolCommon.h" />
+    <ClInclude Include="..\..\ToolCommon\UIUtiltity.h" />
     <ClInclude Include="BrushPanel.h" />
     <ClInclude Include="HeightMapPanel.h" />
     <ClInclude Include="LightPanel.h" />
@@ -111,8 +116,6 @@
     <ClInclude Include="MapToolDlg.h" />
     <ClInclude Include="MapView.h" />
     <ClInclude Include="ModelPanel.h" />
-    <ClInclude Include="PanelBase.h" />
-    <ClInclude Include="PropGridSlider.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TabPanel.h" />
@@ -121,6 +124,10 @@
     <ClInclude Include="TopPanel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ToolCommon\FileTreeCtrl.cpp" />
+    <ClCompile Include="..\..\ToolCommon\PanelBase.cpp" />
+    <ClCompile Include="..\..\ToolCommon\PropGridSlider.cpp" />
+    <ClCompile Include="..\..\ToolCommon\UIUtiltity.cpp" />
     <ClCompile Include="BrushPanel.cpp" />
     <ClCompile Include="HeightMapPanel.cpp" />
     <ClCompile Include="LightPanel.cpp" />
@@ -129,8 +136,6 @@
     <ClCompile Include="MapToolDlg.cpp" />
     <ClCompile Include="MapView.cpp" />
     <ClCompile Include="ModelPanel.cpp" />
-    <ClCompile Include="PanelBase.cpp" />
-    <ClCompile Include="PropGridSlider.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

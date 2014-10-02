@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "MapTool.h"
 #include "PanelBase.h"
 
 

@@ -6,7 +6,7 @@
 
 // CBrushPanel 대화 상자입니다.
 
-class CBrushPanel : public CDialogEx
+class CBrushPanel : public CPanelBase
 								, public common::iObserver2
 {
 public:
@@ -34,7 +34,6 @@ public:
 	afx_msg void OnBnClickedCancel();
 	CListBox m_TextureFiles;
 	virtual BOOL OnInitDialog();
-	afx_msg void OnSelchangeListTextureFiles();
 	afx_msg void OnPaint();
 	CMFCEditBrowseCtrl m_textureBrowser;
 	afx_msg void OnChangeMfceditbrowseTexture();
@@ -52,4 +51,7 @@ public:
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnDeleteLayer();
 	afx_msg void OnBnClickedButtonRefresh();
+	CFileTreeCtrl m_brushTree;
+	afx_msg void OnTvnSelchangedTreeBrush(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

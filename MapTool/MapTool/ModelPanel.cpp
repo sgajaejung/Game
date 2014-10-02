@@ -9,7 +9,7 @@
 
 // CModelPanel 대화 상자입니다.
 CModelPanel::CModelPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CModelPanel::IDD, pParent)
+	: CPanelBase(CModelPanel::IDD, pParent)
 {
 
 }
@@ -20,20 +20,18 @@ CModelPanel::~CModelPanel()
 
 void CModelPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_MFCEDITBROWSE_MODEL, m_modelBrowser);
-	DDX_Control(pDX, IDC_LIST_MODEL, m_modelList);
+	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_PLACE_MODEL, m_placeModelList);
+	DDX_Control(pDX, IDC_TREE_MODEL, m_modelTree);
 }
 
 
-BEGIN_MESSAGE_MAP(CModelPanel, CDialogEx)
+BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CModelPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CModelPanel::OnBnClickedCancel)
-	ON_EN_CHANGE(IDC_MFCEDITBROWSE_MODEL, &CModelPanel::OnChangeMfceditbrowseModel)
-	ON_LBN_SELCHANGE(IDC_LIST_MODEL, &CModelPanel::OnSelchangeListModel)
-	ON_LBN_DBLCLK(IDC_LIST_MODEL, &CModelPanel::OnDblclkListModel)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CModelPanel::OnBnClickedButtonRefresh)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MODEL, &CModelPanel::OnTvnSelchangedTreeModel)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -42,15 +40,11 @@ END_MESSAGE_MAP()
 
 void CModelPanel::OnBnClickedOk()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnOK();
 }
 
 
 void CModelPanel::OnBnClickedCancel()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnCancel();
 }
 
 
@@ -63,8 +57,6 @@ BOOL CModelPanel::OnInitDialog()
 	m_placeModelList.SetExtendedStyle(m_placeModelList.GetExtendedStyle() |
 		LVS_EX_FULLROWSELECT);
 
-	m_modelBrowser.EnableFolderBrowseButton();
-	m_modelBrowser.SetWindowText( L"../../media/" );
 	UpdateModelList("../../media/" );
 
 	return TRUE;
@@ -85,49 +77,11 @@ void CModelPanel::Update(int type)
 
 void CModelPanel::UpdateModelList(const string &directoryPath)
 {
-	// 리스트 박스 초기화.
-	while (0 < m_modelList.GetCount())
-		m_modelList.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("dat");
-	list<string> textureFiles;
-	common::CollectFiles(extList, directoryPath, textureFiles);
 
-	BOOST_FOREACH(auto &fileName, textureFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_modelList.InsertString(m_modelList.GetCount(), wstr.c_str());
-	}	
-}
-
-
-void CModelPanel::OnChangeMfceditbrowseModel()
-{
-	CString wfilePath;
-	m_modelBrowser.GetWindowText(wfilePath);
-	string filePath = common::wstr2str((wstring)wfilePath);
-	filePath += "\\";
-	UpdateModelList(filePath);
-}
-
-
-void CModelPanel::OnSelchangeListModel()
-{
-	// 아직 아무일도 없음.
-}
-
-
-void CModelPanel::OnDblclkListModel()
-{
-	const int idx = m_modelList.GetCurSel();
-	RET (idx < 0);
-
-	CString wfileName;
-	m_modelList.GetText(idx, wfileName);
-	const string fileName = wstr2str((wstring)wfileName);
-	cMapController::Get()->GetTerrainCursor().SelectModel( fileName);	
+	m_modelTree.Update( directoryPath, extList);
 }
 
 
@@ -151,9 +105,27 @@ void CModelPanel::UpdatePlaceModelList()
 
 void CModelPanel::OnBnClickedButtonRefresh()
 {
-	CString wfilePath;
-	m_modelBrowser.GetWindowText(wfilePath);
-	string filePath = common::wstr2str((wstring)wfilePath);
-	filePath += "\\";
-	UpdateModelList(filePath);
+	UpdateModelList("../../media/" );
+}
+
+
+void CModelPanel::OnTvnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_modelTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../../media"))
+		return;
+
+	cMapController::Get()->GetTerrainCursor().SelectModel( fileName);
+}
+
+
+void CModelPanel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(m_modelTree, cx, cy);
+	MoveChildCtrlWindow(m_placeModelList, cx, cy);
 }

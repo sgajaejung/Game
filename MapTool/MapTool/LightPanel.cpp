@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "MapTool.h"
-#include "PropGridSlider.h"
 #include "LightPanel.h"
 #include "afxdialogex.h"
 

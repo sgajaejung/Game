@@ -20,6 +20,8 @@ cSkyBox2::~cSkyBox2()
 
 bool cSkyBox2::Create(const string &skyboxFileName, const float radius)
 {
+	RETV(m_sphere, true);// 이미 생성되었다면 리턴.
+
 	if (FAILED(D3DXCreateSphere(GetDevice(), radius, 30, 30, &m_sphere, 0)))
 	{
 		return false;

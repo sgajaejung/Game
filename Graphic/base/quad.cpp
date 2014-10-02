@@ -81,8 +81,8 @@ void cQuad::Render()
 void cQuad::RenderLine()
 {
 	DWORD flag;
-	graphic::GetDevice()->GetRenderState(D3DRS_FILLMODE, &flag);
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	GetDevice()->GetRenderState(D3DRS_FILLMODE, &flag);
+	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	Render();
-	graphic::GetDevice()->SetRenderState(D3DRS_FILLMODE, flag);
+	GetDevice()->SetRenderState(D3DRS_FILLMODE, flag);
 }

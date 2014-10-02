@@ -44,6 +44,8 @@ cWater::~cWater()
 // 물 클래스 생성.
 bool cWater::Create()
 {
+	RETV(m_grid.GetVertexBuffer().GetVertexCount() > 0, true); // 이미 생성되었다면 리턴
+
 	const int width = 512;
 	const int  height = 512;
 	D3DVIEWPORT9 vp = {0, 0, width, height, 0.0f, 1.0f};

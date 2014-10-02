@@ -10,7 +10,7 @@
 
 // CBrushPanel 대화 상자입니다.
 CBrushPanel::CBrushPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CBrushPanel::IDD, pParent)
+	: CPanelBase(CBrushPanel::IDD, pParent)
 ,	m_texture(NULL)
 , m_innerRadius(0)
 , m_outerRadius(0)
@@ -25,8 +25,7 @@ CBrushPanel::~CBrushPanel()
 
 void CBrushPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST_TEXTURE_FILES, m_TextureFiles);
+	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE_TEXTURE, m_textureBrowser);
 	DDX_Control(pDX, IDC_LIST_LAYER, m_layerList);
 	DDX_Control(pDX, IDC_SLIDER_INNER_RADIUS, m_innerRSlider);
@@ -34,13 +33,13 @@ void CBrushPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_INNER_RADIUS, m_innerRadius);
 	DDX_Text(pDX, IDC_EDIT_OUTER_RADIUS2, m_outerRadius);
 	DDX_Check(pDX, IDC_CHECK_ERASE, m_IsEraseMode);
+	DDX_Control(pDX, IDC_TREE_BRUSH, m_brushTree);
 }
 
 
-BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
+BEGIN_MESSAGE_MAP(CBrushPanel, CPanelBase)
 	ON_BN_CLICKED(IDOK, &CBrushPanel::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CBrushPanel::OnBnClickedCancel)
-	ON_LBN_SELCHANGE(IDC_LIST_TEXTURE_FILES, &CBrushPanel::OnSelchangeListTextureFiles)
 	ON_WM_PAINT()
 	ON_EN_CHANGE(IDC_MFCEDITBROWSE_TEXTURE, &CBrushPanel::OnChangeMfceditbrowseTexture)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_INNER_RADIUS, &CBrushPanel::OnNMCustomdrawSliderInnerRadius)
@@ -51,6 +50,8 @@ BEGIN_MESSAGE_MAP(CBrushPanel, CDialogEx)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_BRUSHMENU_DELETE_LAYER, &CBrushPanel::OnDeleteLayer)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CBrushPanel::OnBnClickedButtonRefresh)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_BRUSH, &CBrushPanel::OnTvnSelchangedTreeBrush)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -64,8 +65,9 @@ BOOL CBrushPanel::OnInitDialog()
 	m_layerList.SetExtendedStyle(m_layerList.GetExtendedStyle() |
 		LVS_EX_FULLROWSELECT);
 
-	m_textureBrowser.EnableFolderBrowseButton();
-	m_textureBrowser.SetWindowText( L"../../media/terrain/" );
+	m_textureBrowser.EnableFileBrowseButton(_T("Texture"), 
+		_T("Image files|*.jpg;*.png;*.bmp|All files|*.*||"));
+
 	UpdateTextureFiles("../../media/terrain/");
 
 	graphic::cTerrainCursor &cursor = cMapController::Get()->GetTerrainCursor();
@@ -86,15 +88,11 @@ BOOL CBrushPanel::OnInitDialog()
 
 void CBrushPanel::OnBnClickedOk()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//CDialogEx::OnOK();
 }
 
 
 void CBrushPanel::OnBnClickedCancel()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//CDialogEx::OnCancel();
 }
 
 
@@ -118,39 +116,14 @@ void CBrushPanel::Update(int type)
 
 void CBrushPanel::UpdateTextureFiles(const string &directoryPath)
 {
-	// 리스트 박스 초기화.
-	while (0 < m_TextureFiles.GetCount())
-		m_TextureFiles.DeleteString(0);
-
 	// 파일 찾기.
 	list<string> extList;
 	extList.push_back("jpg");
 	extList.push_back("png");
 	extList.push_back("bmp");
-	list<string> textureFiles;
-	common::CollectFiles(extList, directoryPath, textureFiles);
 
-	BOOST_FOREACH(auto &fileName, textureFiles)
-	{
-		const wstring wstr = str2wstr(fileName);
-		m_TextureFiles.InsertString(m_TextureFiles.GetCount(), wstr.c_str());
-	}
-}
-
-
-void CBrushPanel::OnSelchangeListTextureFiles()
-{
-	RET(m_TextureFiles.GetCurSel() < 0);
-
-	CString fileName;
-	m_TextureFiles.GetText(m_TextureFiles.GetCurSel(), fileName);
-	SAFE_DELETE(m_texture);
-	m_texture = Image::FromFile(fileName);
-
-	const string strFileName = wstr2str((wstring)fileName);
-	cMapController::Get()->GetTerrainCursor().SelectBrushTexture(strFileName);
-
-	InvalidateRect(NULL, FALSE);
+	m_brushTree.Update( directoryPath, extList);
+	m_brushTree.ExpandAll();
 }
 
 
@@ -177,11 +150,16 @@ void CBrushPanel::OnPaint()
 
 void CBrushPanel::OnChangeMfceditbrowseTexture()
 {
-	CString wfilePath;
-	m_textureBrowser.GetWindowText(wfilePath);
-	string filePath = common::wstr2str((wstring)wfilePath);
-	filePath += "\\";
-	UpdateTextureFiles(filePath);
+	CString wfileName;
+	m_textureBrowser.GetWindowText(wfileName);
+	string fileName = common::wstr2str((wstring)wfileName);
+
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(wfileName);
+
+	cMapController::Get()->GetTerrainCursor().SelectBrushTexture(fileName);
+
+	InvalidateRect(NULL, FALSE);
 }
 
 
@@ -288,9 +266,34 @@ void CBrushPanel::OnDeleteLayer()
 
 void CBrushPanel::OnBnClickedButtonRefresh()
 {
-	CString wfilePath;
-	m_textureBrowser.GetWindowText(wfilePath);
-	string filePath = common::wstr2str((wstring)wfilePath);
-	filePath += "\\";
-	UpdateTextureFiles(filePath);
+	UpdateTextureFiles("../../media/terrain/");
+}
+
+
+void CBrushPanel::OnTvnSelchangedTreeBrush(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const string fileName = m_brushTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
+	if (common::GetFileExt(fileName).empty() || (fileName == "../../media"))
+		return;
+
+	SAFE_DELETE(m_texture);
+	m_texture = Image::FromFile(str2wstr(fileName).c_str());
+
+	cMapController::Get()->GetTerrainCursor().SelectBrushTexture(fileName);
+	m_textureBrowser.SetWindowText(str2wstr(fileName).c_str());
+
+	InvalidateRect(NULL, FALSE);
+}
+
+
+void CBrushPanel::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(m_brushTree, cx, cy);
+	MoveChildCtrlWindow(m_layerList, cx, cy);	
+	MoveChildCtrlWindow(m_textureBrowser, cx-90, cy);	
 }
