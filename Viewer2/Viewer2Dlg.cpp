@@ -352,7 +352,10 @@ void CViewer2Dlg::OnBnClickedCheckBoundingbox()
 	graphic::cCharacter *character = cController::Get()->GetCharacter();
 	RET(!character);
 
-	character->SetRenderBoundingBox(m_RenderBoundingBox? true : false);
+	if (graphic::MODEL_TYPE::RIGID == character->GetModelType())
+		character->SetRenderBoundingBox(m_RenderBoundingBox? true : false);
+	else
+		character->SetRenderBoneBoundingBox(m_RenderBoundingBox? true : false);
 }
 
 

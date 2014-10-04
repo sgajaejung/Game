@@ -9,6 +9,8 @@
 
 using namespace graphic;
 
+CMapView *g_mapView = NULL;
+
 
 // CMapView
 CMapView::CMapView() :
@@ -17,7 +19,7 @@ CMapView::CMapView() :
 ,	m_LButtonDown(false)
 ,	m_MButtonDown(false)
 {
-
+	g_mapView = this;
 }
 
 CMapView::~CMapView()
@@ -211,9 +213,11 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 			if (graphic::cModel *model = 
 				cMapController::Get()->GetTerrain().PickModel(m_ray.orig, m_ray.dir))
 			{
-				cMapController::Get()->GetTerrain().RemoveRigidModel(model, false);
-				cMapController::Get()->GetTerrainCursor().SelectModel(model);
-				cMapController::Get()->UpdatePlaceModel();
+				m_focusModel = model;
+				cMapController::Get()->SendNotifyMessage(NOTIFY_TYPE::NOTIFY_SELECT_PLACE_MODEL);
+				//cMapController::Get()->GetTerrain().RemoveRigidModel(model, false);
+				//cMapController::Get()->GetTerrainCursor().SelectModel(model);
+				//cMapController::Get()->UpdatePlaceModel();
 			}
 
 		}

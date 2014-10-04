@@ -17,6 +17,7 @@ cModel::cModel(const int id) :
 ,	m_isRenderMesh(true)
 ,	m_isRenderBone(false)
 ,	m_isRenderBoundingBox(false)
+,	m_isRenderBoneBoundingBox(false)
 ,	m_isRenderShadow(false)
 ,	m_type(MODEL_TYPE::RIGID)
 ,	m_curAni(NULL)
@@ -162,7 +163,9 @@ void cModel::Render(const Matrix44 &tm)
 	if (m_isRenderBone && m_bone)
 		m_bone->Render(m_TM * tm);
 
-	if (m_bone && m_isRenderBoundingBox)
+	if (m_isRenderBoundingBox)
+		m_renderBoundingBox.Render(m_TM * tm);
+	if (m_isRenderBoneBoundingBox && m_bone)
 		m_bone->RenderBoundingBox(m_TM * tm);
 }
 
@@ -241,22 +244,6 @@ bool cModel::SharePalette(vector<Matrix44> *palette)
 }
 
 
-void cModel::SetRenderMesh(const bool isRenderMesh) 
-{ 
-	m_isRenderMesh = isRenderMesh; 
-}
-
-void cModel::SetRenderBone(const bool isRenderBone) 
-{ 
-	m_isRenderBone = isRenderBone; 
-}
-
-void cModel::SetRenderBoundingBox(const bool isRenderBoundingBox)
-{
-	m_isRenderBoundingBox = isRenderBoundingBox;
-}
-
-
 int cModel::GetCollisionId() 
 {
 	return GetId();
@@ -271,6 +258,7 @@ bool cModel::IsTest( int testNum )
 void cModel::UpdateCollisionBox()
 {
 	m_boundingBox.SetTransform(m_TM);
+	m_renderBoundingBox.SetTransform(m_TM);
 }
 
 
@@ -290,6 +278,8 @@ cBoundingBox* cModel::GetCollisionBox()
 	if (m_boundingBox.Length() >= FLT_MAX)
 		m_boundingBox.SetBoundingBox(Vector3(0,0,0), Vector3(0,0,0));
 
+	m_renderBoundingBox.SetCube(m_boundingBox.m_min, m_boundingBox.m_max);
+	m_renderBoundingBox.SetColor(0x0000ff00);
 	return &m_boundingBox;
 }
 

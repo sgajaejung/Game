@@ -5,6 +5,9 @@
 #include "MapTool.h"
 #include "ModelPanel.h"
 #include "afxdialogex.h"
+#include "MapView.h"
+
+using namespace graphic;
 
 
 // CModelPanel 대화 상자입니다.
@@ -32,17 +35,16 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CModelPanel::OnBnClickedButtonRefresh)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MODEL, &CModelPanel::OnTvnSelchangedTreeModel)
 	ON_WM_SIZE()
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_MODELMENU_DELETEMODEL, &CModelPanel::OnModelmenuDeletemodel)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_PLACE_MODEL, &CModelPanel::OnLvnItemchangedListPlaceModel)
 END_MESSAGE_MAP()
 
 
 // CModelPanel 메시지 처리기입니다.
-
-
 void CModelPanel::OnBnClickedOk()
 {
 }
-
-
 void CModelPanel::OnBnClickedCancel()
 {
 }
@@ -70,8 +72,31 @@ void CModelPanel::Update(int type)
 	case NOTIFY_TYPE::NOTIFY_ADD_PLACE_MODEL:
 		UpdatePlaceModelList();
 		break;
-	}
 
+	case NOTIFY_TYPE::NOTIFY_SELECT_PLACE_MODEL:
+		{
+			if (const cModel *model = g_mapView->GetFocusModel())
+			{
+				LVFINDINFO info;
+				info.flags = LVFI_PARAM;
+				info.lParam = model->GetId();
+				const int index = m_placeModelList.FindItem(&info);
+				if (index >= 0)
+				{
+					// 현재 리스트에서 강조중인 아이템을 초기화 한다.
+					for (int i=0; i < m_placeModelList.GetItemCount(); ++i)
+						m_placeModelList.SetItemState(i, 0, 0xFF);
+
+					// 선택된 모델 강조.
+					m_placeModelList.EnsureVisible(index, FALSE);
+					m_placeModelList.SetSelectionMark(index);
+					m_placeModelList.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, 0xFF);
+					 m_placeModelList.UpdateWindow();
+				}
+			}
+		}
+		break;
+	}
 }
 
 
@@ -128,4 +153,53 @@ void CModelPanel::OnSize(UINT nType, int cx, int cy)
 
 	MoveChildCtrlWindow(m_modelTree, cx, cy);
 	MoveChildCtrlWindow(m_placeModelList, cx, cy);
+}
+
+
+void CModelPanel::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	if (&m_placeModelList == pWnd)
+	{
+		if (m_placeModelList.GetSelectedCount() <= 0)
+			return;
+
+		CPoint p;
+		GetCursorPos(&p);
+
+		CMenu menu;
+		menu.CreatePopupMenu();
+		menu.AppendMenu(MF_STRING, ID_MODELMENU_DELETEMODEL, _T("Delete Model"));
+		menu.TrackPopupMenu(TPM_LEFTALIGN, p.x, p.y, this);		
+	}
+
+}
+
+
+void CModelPanel::OnModelmenuDeletemodel()
+{
+	 const int idx = m_placeModelList.GetSelectionMark();
+	 if (idx >= 0)
+	 {
+		 const int modelId = m_placeModelList.GetItemData(idx);
+		 cMapController::Get()->GetTerrain().RemoveRigidModel(modelId);
+		UpdatePlaceModelList();
+	 }
+}
+
+
+void CModelPanel::OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	*pResult = 0;
+
+	const int modelId =m_placeModelList.GetItemData(pNMLV->iItem);
+	 if (cModel *model = cMapController::Get()->GetTerrain().FindRigidModel(modelId))
+	 {
+		 vector<graphic::cModel*> &models = cMapController::Get()->GetTerrain().GetRigidModels();
+		 for (u_int i=0; i < models.size(); ++i)
+			models[ i]->SetRenderBoundingBox(false);
+
+		 model->SetRenderBoundingBox( !model->IsRenderBoundingBox() );
+	 }
+
 }

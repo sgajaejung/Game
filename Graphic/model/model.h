@@ -54,9 +54,14 @@ namespace graphic
 		virtual void Collision( int testNum, ICollisionable *obj ) override;
 
 		// debug 용 함수.
-		void SetRenderMesh(const bool isRenderMesh);
-		void SetRenderBone(const bool isRenderBone);
-		void SetRenderBoundingBox(const bool isRenderBoundingBox);
+		void SetRenderMesh(const bool isRender);
+		void SetRenderBone(const bool isRender);
+		void SetRenderBoundingBox(const bool isRender);
+		void SetRenderBoneBoundingBox(const bool isRender);
+		bool IsRenderMesh() const;
+		bool IsRenderBone() const;
+		bool IsRenderBoundingBox() const;
+		bool IsRenderBoneBoundingBox() const;
 
 
 	protected:
@@ -65,6 +70,7 @@ namespace graphic
 		vector<cMesh*> m_meshes;
 		cBoneMgr *m_bone;
 		cBoundingBox m_boundingBox; // only rigid mesh model
+		cCube m_renderBoundingBox; // only display bounding box
 		sRawAniGroup *m_curAni; // reference, 애니메이션 정보.
 		cShadow1 m_shadow;
 		bool m_isRenderShadow; // default = false
@@ -73,6 +79,7 @@ namespace graphic
 		bool m_isRenderMesh; // default = true
 		bool m_isRenderBone; // default = false
 		bool m_isRenderBoundingBox; // default = false
+		bool m_isRenderBoneBoundingBox; // default = false
 	};
 
 
@@ -83,4 +90,13 @@ namespace graphic
 	inline cShadow1& cModel::GetShadow() { return m_shadow; }
 	inline bool cModel::IsRenderShadow() const { return m_isRenderShadow; }
 	inline void cModel::SetRenderShadow(const bool show) { m_isRenderShadow = show; }
+
+	inline void cModel::SetRenderMesh(const bool isRender) { m_isRenderMesh = isRender; }
+	inline void cModel::SetRenderBone(const bool isRender) { m_isRenderBone = isRender; }
+	inline void cModel::SetRenderBoundingBox(const bool isRender) { m_isRenderBoundingBox = isRender; }
+	inline void cModel::SetRenderBoneBoundingBox(const bool isRender) { m_isRenderBoneBoundingBox = isRender; }
+	inline bool cModel::IsRenderMesh() const { return m_isRenderMesh; }
+	inline bool cModel::IsRenderBone() const { return m_isRenderBone; }
+	inline bool cModel::IsRenderBoundingBox() const { return m_isRenderBoundingBox; }
+	inline bool cModel::IsRenderBoneBoundingBox() const { return m_isRenderBoneBoundingBox; }
 }

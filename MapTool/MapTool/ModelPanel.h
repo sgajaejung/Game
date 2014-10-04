@@ -36,4 +36,7 @@ public:
 	CFileTreeCtrl m_modelTree;
 	afx_msg void OnTvnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnModelmenuDeletemodel();
+	afx_msg void OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult);
 };

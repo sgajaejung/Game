@@ -13,16 +13,15 @@ public:
 	bool Init();
 	void Render();
 	void Update(float elapseT);
+	graphic::cModel *GetFocusModel();
 
 
 protected:
 	bool m_dxInit;
 	string m_filePath;
-	//Matrix44 m_rotateTm;
-
-	//graphic::cCube m_cube;
-	//graphic::cLine m_line;
 	common::Ray m_ray;
+
+	graphic::cModel *m_focusModel; // refenrece
 
 	graphic::cSphere m_lightSphere;
 	graphic::cLine m_lightLine;
@@ -57,3 +56,4 @@ public:
 };
 
 
+inline graphic::cModel *CMapView::GetFocusModel() { return m_focusModel; }
