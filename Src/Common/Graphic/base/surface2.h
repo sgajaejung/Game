@@ -24,6 +24,7 @@ namespace graphic
 
 		bool IsLoaded() const;
 		IDirect3DTexture9* GetTexture();
+		const IDirect3DTexture9* GetTexture() const;
 
 
 	private:
@@ -44,4 +45,5 @@ namespace graphic
 
 	inline bool cSurface2::IsLoaded() const { return m_texture? true : false; }
 	inline IDirect3DTexture9* cSurface2::GetTexture() { return m_texture; }
+	inline const IDirect3DTexture9* cSurface2::GetTexture() const { return m_texture; }
 }

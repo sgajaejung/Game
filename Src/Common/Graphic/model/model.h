@@ -30,6 +30,7 @@ namespace graphic
 		// shadow
 		void UpdateShadow();
 		cShadow1& GetShadow();
+		const cShadow1& GetShadow() const;
 		bool IsRenderShadow() const;
 		void SetRenderShadow(const bool show);
 
@@ -88,6 +89,7 @@ namespace graphic
 	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 	inline const string& cModel::GetFileName() const { return m_fileName; }
 	inline cShadow1& cModel::GetShadow() { return m_shadow; }
+	inline const cShadow1& cModel::GetShadow() const { return m_shadow; }
 	inline bool cModel::IsRenderShadow() const { return m_isRenderShadow; }
 	inline void cModel::SetRenderShadow(const bool show) { m_isRenderShadow = show; }
 

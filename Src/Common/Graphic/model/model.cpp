@@ -180,7 +180,7 @@ void cModel::RenderShadow(const Matrix44 &viewProj,
 	{
 		const Matrix44 tm = m_TM * parentTm;
 		BOOST_FOREACH (auto node, m_meshes)
-			node->RenderShadow(viewProj, lightDir, lightDir, tm);
+			node->RenderShadow(viewProj, lightPos, lightDir, tm);
 	}
 }
 

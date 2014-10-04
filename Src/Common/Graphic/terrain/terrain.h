@@ -52,6 +52,7 @@ namespace graphic
 
 		bool IsLoaded() const;
 
+
 		//-----------------------------------------------------------------------------
 		// Model
 		bool AddRigidModel(const cModel &model);
@@ -61,9 +62,14 @@ namespace graphic
 		bool RemoveRigidModel(const int id, const bool destruct=true);
 		vector<cModel*>& GetRigidModels();
 
+
+		//-----------------------------------------------------------------------------
+		// Render
 		virtual void PreRender();
 		virtual void Render();
+		void RenderModelShadow(cModel &model);
 		virtual void Move(const float elapseTime);
+
 
 		//-----------------------------------------------------------------------------
 		// Terrain Infomation
@@ -76,6 +82,7 @@ namespace graphic
 		float GetTextureUVFactor() const;
 		float GetHeightFactor() const;
 		const string& GetHeightMapFileName() const;
+
 
 		//-----------------------------------------------------------------------------
 		// Layer

@@ -303,7 +303,7 @@ void cTerrain::RenderShader(cShader &shader, const Matrix44 &tm)
 {
 	if (m_layer.empty())
 	{
-		shader.SetRenderPass(1);
+		shader.SetRenderPass(2);
 
 		if (m_isShowModel && !m_rigids.empty())
 			shader.SetRenderPass(2);
@@ -337,6 +337,21 @@ void cTerrain::RenderRigidModels(const Matrix44 &tm)
 	{
 		model->Render(tm);
 	}
+}
+
+
+// 모델의 그림자를 지형에 출력한다.
+void cTerrain::RenderModelShadow(cModel &model)
+{
+	model.UpdateShadow();
+
+	Vector3 lightPos;
+	Matrix44 view, proj, tt;
+	cLightManager::Get()->GetMainLight().GetShadowMatrix(
+		model.GetTM().GetPosition(), lightPos, view, proj, tt );
+
+	m_shader->SetTexture( "ShadowMap", model.GetShadow().GetTexture() );
+	m_shader->SetMatrix( "mWVPT", view * proj * tt );
 }
 
 

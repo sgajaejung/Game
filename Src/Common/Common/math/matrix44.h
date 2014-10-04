@@ -39,4 +39,6 @@ namespace common
 		Matrix44& operator *= ( const Matrix44& rhs );
 	};
 
+
+	inline Vector3 Matrix44::GetPosition() const { return Vector3(_41, _42, _43); }
 }

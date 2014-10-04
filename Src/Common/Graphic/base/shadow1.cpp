@@ -38,7 +38,7 @@ void cShadow1::UpdateShadow( cNode &node )
 
 	m_surface.Begin();
 
-	GetDevice()->Clear(0L, NULL
+	GetDevice()->Clear(0, NULL
 		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
 		, 0x00000000, 1.0f, 0L);
 

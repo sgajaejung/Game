@@ -73,12 +73,6 @@ void	Matrix44::SetScale( const Vector3& scale)
 }
 
 
-Vector3 Matrix44::GetPosition() const
-{
-	return Vector3(_41, _42, _43);
-}
-
-
 Matrix44 Matrix44::operator * ( const Matrix44& rhs ) const
 {
 	Matrix44 matrix;

@@ -12,6 +12,8 @@ using namespace Gdiplus;
 #include "../../Common/Graphic/character/teracharacter.h"
 #include "../../Common/Graphic/base/billboard.h"
 
+using namespace graphic;
+
 
 DECLARE_TYPE_NAME(cViewer)
 class cViewer : public framework::cGameMain
@@ -31,7 +33,7 @@ public:
 private:
 	LPD3DXSPRITE m_sprite;
 
-	graphic::cLight m_light;
+	//graphic::cLight m_light;
 	graphic::cMaterial m_mtrl;
 	graphic::cTexture m_texture;
 	graphic::cCharacter m_character;
@@ -48,7 +50,7 @@ private:
 	graphic::cSnow m_snow;
 	graphic::cBillboard m_billboard;
 
-	Vector3 m_light2;
+	//Vector3 m_light2;
 	Vector3 m_pos;
 
 	cTestScene *m_scene;
@@ -164,6 +166,7 @@ bool cViewer::OnInit()
 		//	"hlsl_skinning_using_texcoord.fx") );
 		m_character.SetShader( graphic::cResourceManager::Get()->LoadShader(
 			"hlsl_skinning_using_texcoord_sc2.fx") );
+		m_character.SetRenderShadow(true);
 
 		using namespace graphic;
 
@@ -251,23 +254,26 @@ bool cViewer::OnInit()
 
 	m_mtrl.InitWhite();
 
-	Vector4 color(1,1,1,1);
-	m_light.Init( graphic::cLight::LIGHT_DIRECTIONAL, 
-		color * 0.3f, 
-		color * 0.7f, 
-		color, 
-		Vector3(0,-1,0));
-	m_light.Bind(0);
+	//Vector4 color(1,1,1,1);
+	//m_light.Init( graphic::cLight::LIGHT_DIRECTIONAL, 
+	//	color * 0.3f, 
+	//	color * 0.7f, 
+	//	color, 
+	//	Vector3(0,-1,0));
+	//m_light.Bind(0);
 
 	
 	const int WINSIZE_X = 1024;		//초기 윈도우 가로 크기
 	const int WINSIZE_Y = 768;	//초기 윈도우 세로 크기
-	graphic::GetMainCamera()->SetCamera(Vector3(10, 10,-10), Vector3(0,0,0), Vector3(0,1,0));
-	graphic::GetMainCamera()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 1000.0f);
+	GetMainCamera()->SetCamera(Vector3(10, 10,-10), Vector3(0,0,0), Vector3(0,1,0));
+	GetMainCamera()->SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float) WINSIZE_Y, 1.f, 10000.0f);
+	
+	GetMainLight().Init( cLight::LIGHT_DIRECTIONAL );
+	GetMainLight().SetPosition(Vector3(5,5,5));
+	GetMainLight().SetDirection(Vector3(1,-1,1).Normal());
 
-	graphic::GetDevice()->LightEnable (
-		0, // 활성화/ 비활성화 하려는 광원 리스트 내의 요소
-		true); // true = 활성화 ， false = 비활성화
+	GetDevice()->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+	GetDevice()->LightEnable (0,true);
 
 	return true;
 }
@@ -313,6 +319,9 @@ void cViewer::OnUpdate(const float elapseT)
 
 void cViewer::OnRender(const float elapseT)
 {
+	m_terrain.PreRender();
+	m_terrain.RenderModelShadow(m_character);
+
 	//화면 청소
 	if (SUCCEEDED(graphic::GetDevice()->Clear( 
 		0,			//청소할 영역의 D3DRECT 배열 갯수		( 전체 클리어 0 )
@@ -323,16 +332,18 @@ void cViewer::OnRender(const float elapseT)
 		0					//스텐실 버퍼를 채울값
 		)))
 	{
-		m_terrain.PreRender();
 
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
+
+		GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity) );
 
 		if (m_scene)
 			m_scene->Render(Matrix44::Identity);
 
 		//m_grid.RenderLinelist();
 		m_terrain.Render();
+
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
@@ -345,9 +356,9 @@ void cViewer::OnRender(const float elapseT)
 		BOOST_FOREACH (auto &character, m_chars)
 			character.Render(Matrix44::Identity);
 	
-		m_snow.Render();
-
-		m_billboard.Render();
+		//m_snow.Render();
+		//m_billboard.Render();
+		m_character.GetShadow().RenderShadowMap();
 
 		//m_cube.Render(matIdentity);
 
