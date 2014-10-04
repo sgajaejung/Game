@@ -87,6 +87,9 @@
     <ClInclude Include="..\..\ToolCommon\PanelBase.h">
       <Filter>ToolCommon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ToolCommon\LoadingDialog.h">
+      <Filter>ToolCommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapTool.cpp">
@@ -135,6 +138,9 @@
       <Filter>ToolCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ToolCommon\PanelBase.cpp">
+      <Filter>ToolCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolCommon\LoadingDialog.cpp">
       <Filter>ToolCommon</Filter>
     </ClCompile>
   </ItemGroup>

@@ -59,7 +59,8 @@ BOOL CTerrainPanel::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	m_textureBrowser.EnableFileBrowseButton(L"Texture", L"All files(*.*) |*.*||");
+	m_textureBrowser.EnableFileBrowseButton(L"Texture", 
+		_T("Image files|*.jpg;*.png;*.bmp|All files|*.*||"));
 
 	m_ComboEditMode.AddString( L"None" );
 	m_ComboEditMode.AddString( L"Up" );

@@ -143,7 +143,9 @@ void CModelPanel::OnTvnSelchangedTreeModel(NMHDR *pNMHDR, LRESULT *pResult)
 	if (common::GetFileExt(fileName).empty() || (fileName == "../../media"))
 		return;
 
+	ShowLoadingDialog();
 	cMapController::Get()->GetTerrainCursor().SelectModel( fileName);
+	HideLoadingDialog();
 }
 
 
@@ -201,5 +203,4 @@ void CModelPanel::OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult
 
 		 model->SetRenderBoundingBox( !model->IsRenderBoundingBox() );
 	 }
-
 }

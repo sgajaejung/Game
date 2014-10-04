@@ -30,6 +30,7 @@ CMapToolDlg::~CMapToolDlg()
 	Gdiplus::GdiplusShutdown(m_gdiplusToken);
 	graphic::ReleaseRenderer();
 	cMapController::Release();
+	DestroyLoadingDialog();
 }
 
 void CMapToolDlg::DoDataExchange(CDataExchange* pDX)
@@ -137,6 +138,9 @@ BOOL CMapToolDlg::OnInitDialog()
 		m_mainPanel->ShowWindow(SW_SHOW);
 	}
 
+
+	InitLoadingDialog(this);
+	HideLoadingDialog();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }

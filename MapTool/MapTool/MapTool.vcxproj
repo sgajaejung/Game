@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ToolCommon\FileTreeCtrl.h" />
+    <ClInclude Include="..\..\ToolCommon\LoadingDialog.h" />
     <ClInclude Include="..\..\ToolCommon\PanelBase.h" />
     <ClInclude Include="..\..\ToolCommon\PropGridSlider.h" />
     <ClInclude Include="..\..\ToolCommon\ToolCommon.h" />
@@ -125,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ToolCommon\FileTreeCtrl.cpp" />
+    <ClCompile Include="..\..\ToolCommon\LoadingDialog.cpp" />
     <ClCompile Include="..\..\ToolCommon\PanelBase.cpp" />
     <ClCompile Include="..\..\ToolCommon\PropGridSlider.cpp" />
     <ClCompile Include="..\..\ToolCommon\UIUtiltity.cpp" />

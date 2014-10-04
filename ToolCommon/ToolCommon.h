@@ -3,8 +3,9 @@
 #pragma once
 
 
-#include "UIUtiltity.h"
 #include "FileTreeCtrl.h"
 #include "PanelBase.h"
 #include "PropGridSlider.h"
+#include "LoadingDialog.h"
+#include "UIUtiltity.h"
 

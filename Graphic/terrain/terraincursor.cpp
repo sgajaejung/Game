@@ -124,7 +124,6 @@ void cTerrainCursor::SelectModel(const string &fileName)
 
 	SAFE_DELETE (m_selectModel);
 	m_selectModel = new cModel(common::GenerateId());
-	//m_selectModel->SetRenderBoundingBox(true);
 	m_selectModel->Create(fileName);
 
 	cShader *shader = NULL;
