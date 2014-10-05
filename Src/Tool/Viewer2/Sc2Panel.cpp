@@ -55,8 +55,8 @@ BOOL CSc2Panel::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	m_modelBrowser.SetWindowText(L"./media/max script/sc2/");
-	m_animationBrowser.SetWindowText(L"./media/max script/sc2/");
+	m_modelBrowser.SetWindowText(L"./media/sc2/");
+	m_animationBrowser.SetWindowText(L"./media/sc2/");
 
 	UpdateModelTree();
 	UpdateAnimationTree();
