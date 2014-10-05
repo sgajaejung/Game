@@ -87,7 +87,7 @@ void CTeraPanel::UpdateModelTree()
 {
 	list<string> extList;
 	extList.push_back( "dat" );
-	m_fileTree.Update( "./media/max script/tera/", extList );
+	m_fileTree.Update( "./media/tera/", extList );
 	m_fileTree.ExpandAll();
 }
 
@@ -96,7 +96,7 @@ void CTeraPanel::UpdateAnimationTree()
 {
 	list<string> extList;
 	extList.push_back( "ani" );
-	m_animationTree.Update( "./media/max script/tera/", extList );
+	m_animationTree.Update( "./media/tera/", extList );
 	m_animationTree.ExpandAll();
 }
 
