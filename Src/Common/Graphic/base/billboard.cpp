@@ -32,19 +32,21 @@ bool cBillboard::Create( const BILLBOARD_TYPE::TYPE type,
 void cBillboard::Render()
 {
 	Matrix44 mat;
+	const Matrix44 view = cMainCamera::Get()->GetViewMatrix();
+
 	switch (m_type)
 	{
 	case BILLBOARD_TYPE::Y_AXIS:
 		// Y축 빌보드 행렬을 계산한다.
-		mat._11 = cMainCamera::Get()->GetViewMatrix()._11;
-		mat._13 = cMainCamera::Get()->GetViewMatrix()._13;
-		mat._31 = cMainCamera::Get()->GetViewMatrix()._31;
-		mat._33 = cMainCamera::Get()->GetViewMatrix()._33;
+		mat._11 = view._11;
+		mat._13 = view._13;
+		mat._31 = view._31;
+		mat._33 = view._33;
 		break;
 
 	case BILLBOARD_TYPE::ALL_AXIS:
 		// 모든 축에서 빌보드 행렬을 계산한다.
-		mat = cMainCamera::Get()->GetViewMatrix();
+		mat = view;
 		mat._41 = mat._42 = mat._43 = 0;
 		break;
 	}

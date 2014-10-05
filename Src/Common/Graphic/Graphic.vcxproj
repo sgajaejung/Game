@@ -78,7 +78,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="action\action.h" />
     <ClInclude Include="action\actiondef.h" />
     <ClInclude Include="base\billboard.h" />
     <ClInclude Include="base\box.h" />
@@ -148,7 +147,6 @@
     <ClInclude Include="terrain\water.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="action\action.cpp" />
     <ClCompile Include="base\billboard.cpp" />
     <ClCompile Include="base\box.cpp" />
     <ClCompile Include="base\camera.cpp" />

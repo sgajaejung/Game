@@ -10,7 +10,6 @@
 using namespace Gdiplus;
 
 #include "../../Common/Graphic/character/teracharacter.h"
-#include "../../Common/Graphic/base/billboard.h"
 
 using namespace graphic;
 
@@ -287,7 +286,7 @@ void cViewer::OnUpdate(const float elapseT)
 	//m_teraCharacter.Move(elapseT);
 
 	//m_particles.Move(elapseT);
-	m_snow.Move(elapseT);
+	//m_snow.Move(elapseT);
 
 	BOOST_FOREACH (auto &character, m_chars)
 		character.Move(elapseT);
@@ -336,14 +335,11 @@ void cViewer::OnRender(const float elapseT)
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
 
-		GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity) );
-
 		if (m_scene)
 			m_scene->Render(Matrix44::Identity);
 
 		//m_grid.RenderLinelist();
 		m_terrain.Render();
-
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
@@ -355,10 +351,10 @@ void cViewer::OnRender(const float elapseT)
 
 		BOOST_FOREACH (auto &character, m_chars)
 			character.Render(Matrix44::Identity);
-	
+
 		//m_snow.Render();
-		//m_billboard.Render();
-		m_character.GetShadow().RenderShadowMap();
+		m_billboard.Render();
+		//m_character.GetShadow().RenderShadowMap();
 
 		//m_cube.Render(matIdentity);
 

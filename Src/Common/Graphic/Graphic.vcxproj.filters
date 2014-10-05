@@ -136,9 +136,6 @@
     <ClInclude Include="base\shadow1.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="action\action.h">
-      <Filter>action</Filter>
-    </ClInclude>
     <ClInclude Include="character\character.h">
       <Filter>character</Filter>
     </ClInclude>
@@ -318,9 +315,6 @@
     </ClCompile>
     <ClCompile Include="base\shadow1.cpp">
       <Filter>base</Filter>
-    </ClCompile>
-    <ClCompile Include="action\action.cpp">
-      <Filter>action</Filter>
     </ClCompile>
     <ClCompile Include="character\character.cpp">
       <Filter>character</Filter>

@@ -98,7 +98,7 @@ CFileTreeCtrl::sTreeNode* CFileTreeCtrl::GenerateTreeNode(const list<string> &fi
 	BOOST_FOREACH (auto &str, fileList)
 	{
 		vector<string> strs;
-		common::tokenizer( str, "/", "..", strs);
+		common::tokenizer( str, "/", ".", strs);
 
 		sTreeNode *node = rootNode;
 		BOOST_FOREACH (auto &name, strs)
