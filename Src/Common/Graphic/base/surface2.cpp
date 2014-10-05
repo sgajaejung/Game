@@ -76,10 +76,17 @@ void cSurface2::End()
 
 void cSurface2::Render(const int index) // index=1
 {
+	GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity));
+	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE);
 	GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
 	GetDevice()->SetTextureStageState(0,D3DTSS_COLORARG1,	D3DTA_TEXTURE);
-	GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP,    D3DTOP_DISABLE);
-	float scale = 128.0f;
+	GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP, D3DTOP_DISABLE);
+
+	GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	GetDevice()->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+
+	const float scale = 128.0f;
 	typedef struct {FLOAT p[4]; FLOAT tu, tv;} TVERTEX;
 
 	TVERTEX Vertex[4] = {
@@ -92,8 +99,8 @@ void cSurface2::Render(const int index) // index=1
 	GetDevice()->SetTexture( 0, m_texture );
 	GetDevice()->SetVertexShader(NULL);
 	GetDevice()->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
-	GetDevice()->SetPixelShader(0);
-	GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof( TVERTEX ) );
+	GetDevice()->SetPixelShader(NULL);
+	GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof(TVERTEX) );
 }
 
 
