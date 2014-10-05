@@ -52,9 +52,9 @@ BOOL CArchebladePanel::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	m_modelBrowser.SetWindowText(L"./media/max script/archeblade/");
-	m_weaponBrowser.SetWindowText(L"./media/max script/archeblade/");
-	m_animationBrowser.SetWindowText(L"./media/max script/archeblade/");
+	m_modelBrowser.SetWindowText(L"./media/archeblade/");
+	m_weaponBrowser.SetWindowText(L"./media/archeblade/");
+	m_animationBrowser.SetWindowText(L"./media/archeblade/");
 
 	UpdateModelTree();
 	UpdateWeaponTree();

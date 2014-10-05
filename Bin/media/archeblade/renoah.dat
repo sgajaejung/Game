@@ -17,7 +17,7 @@ AMBIENT 0.588 0.588 0.588 1
 SPECULAR 0.9 0.9 0.9 1
 EMISSIVE 0.588 0.588 0.588 0
 POWER 0.0
-TEXTURE_DIR_PATH renoah
+TEXTURE_DIR_PATH archeblade/renoah
 TEXTURE C:\Users\Lee\Desktop\ABresource\model\woman\Renoah\character\Texture2D\head01_d.tga
 SPECULAR_TEXTURE  
 BUMP_TEXTURE  
@@ -27,7 +27,7 @@ AMBIENT 0.588 0.588 0.588 1
 SPECULAR 0.9 0.9 0.9 1
 EMISSIVE 0.588 0.588 0.588 0
 POWER 0.0
-TEXTURE_DIR_PATH renoah
+TEXTURE_DIR_PATH archeblade/renoah
 TEXTURE C:\Users\Lee\Desktop\ABresource\model\woman\Renoah\character\Texture2D\body01_d.tga
 SPECULAR_TEXTURE  
 BUMP_TEXTURE  
@@ -37,7 +37,7 @@ AMBIENT 0.588 0.588 0.588 1
 SPECULAR 0.9 0.9 0.9 1
 EMISSIVE 0.588 0.588 0.588 0
 POWER 0.0
-TEXTURE_DIR_PATH renoah
+TEXTURE_DIR_PATH archeblade/renoah
 TEXTURE C:\Users\Lee\Desktop\ABresource\model\woman\Renoah\character\Texture2D\leisi_d.tga
 SPECULAR_TEXTURE  
 BUMP_TEXTURE C:\Users\Lee\Desktop\ABresource\model\woman\Renoah\character\\Texture2D\\leisi_n.tga:Normal Bump
