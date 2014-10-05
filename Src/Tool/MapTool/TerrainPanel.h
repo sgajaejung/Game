@@ -50,4 +50,8 @@ public:
 	afx_msg void OnBnClickedButtonSaveTerrainTexture();
 	afx_msg void OnBnClickedCheckWater();
 	BOOL m_checkWater;
+	CSliderCtrl m_sliderUVFactor;
+	float m_uvFactor;
+	afx_msg void OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditUvFactor();
 };

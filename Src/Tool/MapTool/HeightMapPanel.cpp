@@ -162,14 +162,12 @@ void CHeightMapPanel::UpdateTextureList()
 // MapController 가 업데이트 될 때 호출된다.
 void CHeightMapPanel::Update(int type)
 {
-
 	switch (type)
 	{
 	case NOTIFY_TYPE::NOTIFY_CHANGE_TERRAIN:
 		UpdateTerrainInfo();
 		break;
 	}
-
 }
 
 

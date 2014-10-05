@@ -16,6 +16,7 @@ CTerrainPanel::CTerrainPanel(CWnd* pParent /*=NULL*/)
 	, m_Radius(0)
 	, m_Speed(0)
 	, m_checkWater(FALSE)
+	, m_uvFactor(0)
 {
 
 }
@@ -37,6 +38,8 @@ void CTerrainPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_SPEED, m_SliderSpeed);
 	DDX_Text(pDX, IDC_EDIT_SPEED, m_Speed);
 	DDX_Check(pDX, IDC_CHECK_WATER, m_checkWater);
+	DDX_Control(pDX, IDC_SLIDER_UV_FACTOR, m_sliderUVFactor);
+	DDX_Text(pDX, IDC_EDIT_UV_FACTOR, m_uvFactor);
 }
 
 
@@ -54,6 +57,8 @@ BEGIN_MESSAGE_MAP(CTerrainPanel, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_SPEED, &CTerrainPanel::OnEnChangeEditSpeed)
 	ON_BN_CLICKED(IDC_BUTTON_SAVE_TERRAIN_TEXTURE, &CTerrainPanel::OnBnClickedButtonSaveTerrainTexture)
 	ON_BN_CLICKED(IDC_CHECK_WATER, &CTerrainPanel::OnBnClickedCheckWater)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_UV_FACTOR, &CTerrainPanel::OnNMCustomdrawSliderUvFactor)
+	ON_EN_CHANGE(IDC_EDIT_UV_FACTOR, &CTerrainPanel::OnEnChangeEditUvFactor)
 END_MESSAGE_MAP()
 
 
@@ -78,6 +83,8 @@ BOOL CTerrainPanel::OnInitDialog()
 	m_SliderRadius.SetRange(0, 300);
 	m_SliderRadius.SetPos(m_Radius);
 
+	m_sliderUVFactor.SetRange(0, 100000);
+
 	UpdateData(FALSE);
 	return TRUE;
 }
@@ -96,6 +103,9 @@ void CTerrainPanel::Update(int type)
 			m_checkWater = cMapController::Get()->GetTerrain().IstRenderWater();
 			const wstring wstr = common::str2wstr(cMapController::Get()->GetTerrain().GetTextureName());
 			m_textureBrowser.SetWindowText(wstr.c_str());
+
+			m_uvFactor = cMapController::Get()->GetTerrain().GetTextureUVFactor();
+			m_sliderUVFactor.SetPos( (int)(m_uvFactor * 100.f) );
 
 			UpdateData(FALSE);
 		}
@@ -274,4 +284,23 @@ void CTerrainPanel::OnBnClickedCheckWater()
 {
 	UpdateData();
 	cMapController::Get()->GetTerrain().SetRenderWater(m_checkWater? true : false);
+}
+
+
+void CTerrainPanel::OnNMCustomdrawSliderUvFactor(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	*pResult = 0;
+
+	m_uvFactor = m_sliderUVFactor.GetPos() / 100.f;
+	cMapController::Get()->GetTerrain().SetTextureUVFactor(m_uvFactor);
+	UpdateData(FALSE);
+}
+
+
+void CTerrainPanel::OnEnChangeEditUvFactor()
+{
+	UpdateData();
+	m_sliderUVFactor.SetPos( m_uvFactor * 100.f );
+	cMapController::Get()->GetTerrain().SetTextureUVFactor(m_uvFactor);
 }
