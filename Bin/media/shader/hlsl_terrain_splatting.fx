@@ -47,7 +47,7 @@ sampler colorMap = sampler_state
     Texture = <colorMapTexture>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 
     AddressU = Wrap;
     AddressV = Wrap;
@@ -63,7 +63,7 @@ sampler ShadowMapSamp = sampler_state
     Texture = <ShadowMap>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 
 	AddressU = Clamp;
 	AddressV = Clamp;
@@ -79,7 +79,7 @@ sampler SplattingMapSamp = sampler_state
     Texture = <SplattingAlphaMap>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 
 	AddressU = Clamp;
 	AddressV = Clamp;
@@ -95,7 +95,7 @@ sampler Samp1 = sampler_state
     Texture = <Tex1>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 };
 
 // ------------------------------------------------------------
@@ -107,7 +107,7 @@ sampler Samp2 = sampler_state
     Texture = <Tex2>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 };
 
 // ------------------------------------------------------------
@@ -119,7 +119,7 @@ sampler Samp3 = sampler_state
     Texture = <Tex3>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 };
 
 
@@ -132,7 +132,7 @@ sampler Samp4 = sampler_state
     Texture = <Tex4>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    MipFilter = NONE;
+    MipFilter = LINEAR;
 };
 
 
