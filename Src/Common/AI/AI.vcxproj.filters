@@ -14,6 +14,15 @@
     <ClInclude Include="action\rootaction.h">
       <Filter>action</Filter>
     </ClInclude>
+    <ClInclude Include="control\messagemanager.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="control\aimain.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="object\aiinterface.h">
+      <Filter>object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -23,6 +32,12 @@
     <ClCompile Include="object\object.cpp">
       <Filter>object</Filter>
     </ClCompile>
+    <ClCompile Include="control\messagemanager.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\aimain.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="action">
@@ -30,6 +45,9 @@
     </Filter>
     <Filter Include="object">
       <UniqueIdentifier>{da742f91-e829-4bfb-962c-8f6ec268f459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="control">
+      <UniqueIdentifier>{3ea91d00-f0eb-4336-bde9-1b6a00d82f7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

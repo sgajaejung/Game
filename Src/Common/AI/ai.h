@@ -2,9 +2,6 @@
 #pragma once
 
 
-#include "../Common/common.h"
-using namespace common;
-
 
 #include "aidef.h"
 
@@ -13,3 +10,4 @@ using namespace common;
 #include "action/action.h"
 
 #include "action/rootaction.h"
+
