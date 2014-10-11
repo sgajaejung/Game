@@ -16,7 +16,7 @@ namespace ai
 		void PostMsg(const sMsg &msg);
 		void SendMsg(const sMsg &msg);
 		void DispatchMsg();
-		void SetDefaultReceiver(cObject *obj);
+		//void SetDefaultReceiver(cObject *obj);
 		void Clear();
 
 
@@ -26,9 +26,9 @@ namespace ai
 
 	private:
 		std::queue<sMsg> m_msgs;
-		cObject *m_defaultObject; // reference
+		//cObject *m_defaultObject; // reference
 	};
 
 
-	inline void cMessageManager::SetDefaultReceiver(cObject *obj) { m_defaultObject = obj; }
+	//inline void cMessageManager::SetDefaultReceiver(cObject *obj) { m_defaultObject = obj; }
 }

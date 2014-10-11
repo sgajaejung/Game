@@ -11,12 +11,17 @@
 namespace ai
 {
 
-	class cObject;
+	//class cObject;
+	class IArtificialIntelligence;
 
 	class cAction
 	{
 	public:
-		cAction(cObject *obj, const string &name, const ACTION_TYPE::TYPE type);
+		cAction(IArtificialIntelligence *obj=NULL, 
+			const string &name="action", 
+			const string &animationName="", 
+			const ACTION_TYPE::TYPE type=ACTION_TYPE::NONE);
+
 		virtual ~cAction();
 
 		virtual void Start(cAction *prevAction);
@@ -24,7 +29,7 @@ namespace ai
 		virtual void End();
 		virtual bool Move(const float elapseTime);
 		virtual bool Update(const float elapseTime);
-		virtual void ActionUpdate(const float elapseTime);
+		virtual bool ActionUpdate(const float elapseTime);
 		virtual bool MessageProccess(const sMsg &msg);
 		virtual void Clear();
 
@@ -43,7 +48,8 @@ namespace ai
 		ACTION_STATE::TYPE GetState() const;
 		virtual int GetSubState() const;
 		const string& GetName() const;
-		cObject* GetOwner();
+		void SetOwner(IArtificialIntelligence *owner);
+		IArtificialIntelligence* GetOwner();
 		cAction* GetCurrentAction();
 
 		void SetName(const string &name);
@@ -55,6 +61,7 @@ namespace ai
 
 
 	protected:
+		void NextAction();
 		cAction* GetNextAction();
 		void SetParent(cAction *pParent);
 
@@ -63,7 +70,8 @@ namespace ai
 		ACTION_STATE::TYPE m_state;
 		ACTION_TYPE::TYPE m_type;
 		string m_name;
-		cObject *m_owner; // reference
+		string m_animationName;
+		IArtificialIntelligence *m_owner; // reference
 		cAction *m_parent;
 		vector<cAction*> m_children;
 		cAction *m_current;
@@ -73,7 +81,8 @@ namespace ai
 	inline ACTION_STATE::TYPE cAction::GetState() const { return m_state; }
 	inline int cAction::GetSubState() const { return 0; }
 	inline const string& cAction::GetName() const { return m_name; }
-	inline cObject* cAction::GetOwner() { return m_owner; }
+	inline IArtificialIntelligence* cAction::GetOwner() { return m_owner; }
+	inline void cAction::SetOwner(IArtificialIntelligence *owner) { m_owner = owner; }
 	inline cAction* cAction::GetCurrentAction() { return m_current; }
 	inline vector<cAction*>& cAction::GetChildren() { return m_children; }
 	inline bool cAction::IsCurrentAction(ACTION_TYPE::TYPE type) { return m_type == type; }

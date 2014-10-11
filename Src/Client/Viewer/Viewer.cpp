@@ -10,6 +10,7 @@
 using namespace Gdiplus;
 
 #include "../../Common/Graphic/character/teracharacter.h"
+#include "../../Common/ai/action/move.h"
 
 using namespace graphic;
 
@@ -176,7 +177,10 @@ bool cViewer::OnInit()
 		actions.push_back( sActionData(CHARACTER_ACTION::ATTACK, "zealot_attack.ani") );
 		m_character.SetActionData(actions);
 
-		m_character.Action( CHARACTER_ACTION::RUN );
+		//m_character.Action( CHARACTER_ACTION::RUN );
+		
+		m_character.SetAction( new ai::cAction(&m_character, "normal", "zealot_stand.ani") );
+		m_character.StartAction();
 	}
 
 	if (0)
@@ -295,24 +299,24 @@ void cViewer::OnUpdate(const float elapseT)
 	//collisionMgr.UpdateCollisionBox();
 	//collisionMgr.CollisionTest(1);
 
-	if (GetAsyncKeyState(VK_LEFT)
-		|| GetAsyncKeyState(VK_RIGHT)
-		|| GetAsyncKeyState(VK_UP)
-		|| GetAsyncKeyState(VK_DOWN))
-	{
-		if (!GetAsyncKeyState(VK_SPACE))
-			m_character.Action(graphic::CHARACTER_ACTION::RUN);
-	}
-	else
-	{
-		if (!GetAsyncKeyState(VK_SPACE))
-			m_character.Action(graphic::CHARACTER_ACTION::NORMAL);
-	}
+	//if (GetAsyncKeyState(VK_LEFT)
+	//	|| GetAsyncKeyState(VK_RIGHT)
+	//	|| GetAsyncKeyState(VK_UP)
+	//	|| GetAsyncKeyState(VK_DOWN))
+	//{
+	//	if (!GetAsyncKeyState(VK_SPACE))
+	//		m_character.Action(graphic::CHARACTER_ACTION::RUN);
+	//}
+	//else
+	//{
+	//	if (!GetAsyncKeyState(VK_SPACE))
+	//		m_character.Action(graphic::CHARACTER_ACTION::NORMAL);
+	//}
 
-	if (GetAsyncKeyState(VK_SPACE))
-	{
-		m_character.Action(graphic::CHARACTER_ACTION::ATTACK);
-	}
+	//if (GetAsyncKeyState(VK_SPACE))
+	//{
+	//	m_character.Action(graphic::CHARACTER_ACTION::ATTACK);
+	//}
 }
 
 
@@ -469,6 +473,27 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			m_RButtonDown = true;
 			m_curPos.x = LOWORD(lParam);
 			m_curPos.y = HIWORD(lParam);
+		
+			// unit ÀÌµ¿.
+			dbg::Print( "x = %d, y = %d", m_curPos.x, m_curPos.y );
+			
+			Ray ray(m_curPos.x, m_curPos.y, 1024, 768,
+				GetMainCamera()->GetProjectionMatrix(), 
+				GetMainCamera()->GetViewMatrix());
+
+			Vector3 pickPos;
+			if (m_terrain.Pick(ray.orig, ray.dir, pickPos))
+			{
+				dbg::Print( "pickpos x = %f, y = %f, z = %f", pickPos.x, pickPos.y, pickPos.z );
+
+				m_character.SetAction(new ai::cAction(&m_character, "normal", "zealot_stand.ani") );
+
+				ai::cMove *action = new ai::cMove();
+				action->Init(&m_character, pickPos);
+				m_character.PushAction( action );
+				m_character.StartAction();
+			}
+		
 		}
 		break;
 

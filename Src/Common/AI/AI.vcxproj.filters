@@ -7,9 +7,6 @@
     <ClInclude Include="action\action.h">
       <Filter>action</Filter>
     </ClInclude>
-    <ClInclude Include="object\object.h">
-      <Filter>object</Filter>
-    </ClInclude>
     <ClInclude Include="aidef.h" />
     <ClInclude Include="action\rootaction.h">
       <Filter>action</Filter>
@@ -23,20 +20,23 @@
     <ClInclude Include="object\aiinterface.h">
       <Filter>object</Filter>
     </ClInclude>
+    <ClInclude Include="action\move.h">
+      <Filter>action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="action\action.cpp">
       <Filter>action</Filter>
     </ClCompile>
-    <ClCompile Include="object\object.cpp">
-      <Filter>object</Filter>
-    </ClCompile>
     <ClCompile Include="control\messagemanager.cpp">
       <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="control\aimain.cpp">
       <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="action\move.cpp">
+      <Filter>action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

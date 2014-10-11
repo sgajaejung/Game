@@ -29,7 +29,7 @@ namespace graphic
 		const cNode* FindNode(const string &name) const;
 		bool RemoveNode(const int id);
 		vector<cNode*>& GetChildren();
-		void Clear();
+		virtual void Clear();
 
 		virtual bool Move(const float elapseTime) {return true;}
 		virtual void Render(const Matrix44 &parentTm);

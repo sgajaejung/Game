@@ -5,10 +5,11 @@
 using namespace ai;
 
 
-cAction::cAction(cObject *obj, const string &name, 
-	const ACTION_TYPE::TYPE type)
+cAction::cAction(IArtificialIntelligence *obj, const string &name, 
+	const string &animationName, const ACTION_TYPE::TYPE type)
 :	m_owner(obj)
 ,	m_name(name)
+,	m_animationName(animationName)
 ,	m_type(type)
 ,	m_state(ACTION_STATE::WAIT)
 ,	m_current(NULL)
@@ -24,14 +25,16 @@ cAction::~cAction()
 void cAction::Start(cAction *prevAction)
 {
 	m_state = ACTION_STATE::RUN;
-	m_current = m_children.empty()? NULL : m_children.front();
+	m_current = m_children.empty()? NULL : m_children.back();
 	if (m_current)
 	{
 		m_current->Start(prevAction);
 	}
 	else
 	{
-
+		// 애니메이션 실행.
+		if (m_owner && !m_animationName.empty())
+			m_owner->aiSetAnimation(m_animationName);
 	}
 }
 
@@ -62,26 +65,32 @@ bool cAction::Move(const float elapseTime)
 			return true;
 
 		if (!m_current->Move(elapseTime))
-		{
-			cAction *prevAction = m_current;
-			m_current = GetNextAction();
-			if (m_current)
-			{
-				if (m_current->GetState() == ACTION_STATE::WAIT)
-					m_current->Start(prevAction);
-				else
-					m_current->Resume(prevAction);
-			}
-
-			SAFE_DELETE(prevAction);
-		}
+			NextAction();
 	}
 	else
 	{
-		ActionUpdate(elapseTime);
+		if (!ActionUpdate(elapseTime))
+			return false;
 	}
 
 	return true;
+}
+
+
+// 다음 액션으로 넘어간다.
+void cAction::NextAction()
+{
+	cAction *prevAction = m_current;
+	m_current = GetNextAction();
+	if (m_current)
+	{
+		if (m_current->GetState() == ACTION_STATE::WAIT)
+			m_current->Start(prevAction);
+		else
+			m_current->Resume(prevAction);
+	}
+
+	SAFE_DELETE(prevAction);
 }
 
 
@@ -95,9 +104,11 @@ bool cAction::Update(const float elapseTime)
 
 // Leaf노드 일때만 호출된다.
 // 행동을 처리할 때 여기에 코딩을 하면된다.
-void cAction::ActionUpdate(const float elapseTime)
+// false 를 리턴하면 행동이 종료되었다는 뜻이다.
+bool cAction::ActionUpdate(const float elapseTime)
 {
 	// 파생된 클래스에서 구현한다.
+	return true;
 }
 
 

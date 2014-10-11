@@ -19,7 +19,7 @@ namespace ai
 
 		
 	private:
-		cObject *m_rootObject;
+		//cObject *m_rootObject;
 	};
 
 }

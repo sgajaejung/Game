@@ -13,6 +13,8 @@ using namespace common;
 
 #include "../wxMemMonitorLib/wxMemMonitor.h" // debug library
 
+#include "../ai/ai.h"
+
 
 #include "base/graphicdef.h"
 #include "model/rawmesh.h"

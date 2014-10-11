@@ -6,12 +6,13 @@
 
 namespace ai
 {
+	class IArtificialIntelligence;
 
 	class cRootAction : public cAction
 	{
 	public:
-		cRootAction(cObject *obj)
-			: cAction(obj, "Root", ACTION_TYPE::ROOT)
+		cRootAction(IArtificialIntelligence *obj)
+			: cAction(obj, "Root", "", ACTION_TYPE::ROOT)
 		{
 		}
 	};

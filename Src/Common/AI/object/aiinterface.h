@@ -9,13 +9,11 @@ namespace ai
 	class IArtificialIntelligence
 	{
 	public:
-		IArtificialIntelligence();
-		virtual ~IArtificialIntelligence();
+		IArtificialIntelligence() {}
+		virtual ~IArtificialIntelligence() {}
 
-		void PushAction(cAction *action);
-
-		virtual Matrix44& GetTransform()=0;
-		virtual void SetAnimation(const string &animationName) = 0;
+		virtual Matrix44& aiGetTransform()=0;
+		virtual void aiSetAnimation(const string &animationName) = 0;
 	};
 
 }

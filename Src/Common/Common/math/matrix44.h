@@ -28,6 +28,7 @@ namespace common
 		void	SetTranslate( const Vector3& pos );
 		void	SetScale( const Vector3& scale);
 		Vector3 GetPosition() const;
+		void SetPosition(const Vector3 &pos);
 		void SetView( const Vector3& pos, const Vector3& dir0, const Vector3& up0);
 		void SetView2( const Vector3& pos, const Vector3& lookAt, const Vector3& up0);
 		void	SetProjection( const float fov, const float aspect, const float nearPlane, const float farPlane );
@@ -41,4 +42,5 @@ namespace common
 
 
 	inline Vector3 Matrix44::GetPosition() const { return Vector3(_41, _42, _43); }
+	inline void Matrix44::SetPosition(const Vector3 &pos) { _41=pos.x; _42 = pos.y; _43 = pos.z; }
 }

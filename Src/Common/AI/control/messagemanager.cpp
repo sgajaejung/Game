@@ -1,14 +1,14 @@
 
 #include "stdafx.h"
 #include "messagemanager.h"
-#include "../object/object.h"
+//#include "../object/object.h"
 
 
 using namespace ai;
 
 
 cMessageManager::cMessageManager()
-	: m_defaultObject(NULL)
+	//: m_defaultObject(NULL)
 {
 }
 
@@ -48,14 +48,14 @@ void cMessageManager::Clear()
 
 void cMessageManager::ProcessMsg(const sMsg &msg)
 {
-	if (msg.receiver)
+	//if (msg.receiver)
 	{
-		msg.receiver->DispatchMessage(msg);
+		//msg.receiver->DispatchMessage(msg);
 	}
-	else
+	//else
 	{
-		if (m_defaultObject)
-			m_defaultObject->DispatchMessage(msg);
+		//if (m_defaultObject)
+		//	m_defaultObject->DispatchMessage(msg);
 	}
 }
 

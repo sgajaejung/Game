@@ -19,7 +19,7 @@ namespace graphic
 		virtual void RenderShadow(const Matrix44 &viewProj, 
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
-		void Clear();
+		virtual void Clear() override;
 
 		// Model Infomations
 		MODEL_TYPE::TYPE GetModelType() const;

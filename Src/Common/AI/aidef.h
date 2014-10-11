@@ -6,7 +6,7 @@
 
 namespace ai
 {
-	class cObject;
+	//class cObject;
 
 
 	namespace ACTION_STATE
@@ -27,6 +27,8 @@ namespace ai
 			NONE,
 			ROOT,
 
+			MOVE, 
+
 			MAX_ACTION_TYPE0,
 		};
 	}
@@ -34,8 +36,8 @@ namespace ai
 
 	struct sMsg
 	{
-		cObject *receiver;
-		cObject *sender;
+		//cObject *receiver;
+		//cObject *sender;
 		int msg;
 		int param1;
 		int param2;
@@ -47,14 +49,14 @@ namespace ai
 			comment[0]=NULL;
 		}
 
-		sMsg(cObject *rcv, cObject *snd, int msg0, 
-			int parameter1, int parameter2, int time) 
-			: receiver(rcv), sender(snd), msg(msg0), 
-			param1(parameter1), param2(parameter2), 
-			sendTime(time)
-		{
-			comment[0]=NULL;
-		}
+		//sMsg(cObject *rcv, cObject *snd, int msg0, 
+		//	int parameter1, int parameter2, int time) 
+		//	: receiver(rcv), sender(snd), msg(msg0), 
+		//	param1(parameter1), param2(parameter2), 
+		//	sendTime(time)
+		//{
+		//	comment[0]=NULL;
+		//}
 
 	};
 
