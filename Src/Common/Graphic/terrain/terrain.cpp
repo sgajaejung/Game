@@ -79,14 +79,14 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 
 
 	// ¸ðµ¨ »ý¼º.
-	cShader *modelShader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_using_texcoord_unlit.fx" );
+	cShader *modelShader = cResourceManager::Get()->LoadShader( "hlsl_skinning_using_texcoord_unlit.fx" );
 
 	for (u_int i=0; i < rawTerrain.models.size(); ++i)
 	{
 		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
 		{
 			model->SetTM(rawTerrain.models[ i].tm);
-			model->SetShader(modelShader);
+			//model->SetShader(modelShader);
 		}
 	}
 
@@ -96,7 +96,6 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 	m_water.Create();
 	m_skybox.Create(
 		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
-
 
 	return true;
 }

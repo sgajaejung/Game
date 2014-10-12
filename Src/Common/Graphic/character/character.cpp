@@ -117,7 +117,12 @@ Matrix44& cCharacter::aiGetTransform()
 
 void cCharacter::aiSetAnimation(const string &animationName)
 {
-	SetAnimation(animationName, 0, true);
+	// 같은 애니메이션이라면 다시 플레이하지 않는다.
+	if (m_curAniName != animationName)
+	{
+		SetAnimation(animationName, 0, true);
+		m_curAniName = animationName;
+	}
 }
 
 

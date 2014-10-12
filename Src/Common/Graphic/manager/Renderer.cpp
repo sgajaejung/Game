@@ -68,7 +68,7 @@ void cRenderer::RenderAxis()
 
 
 	// 가장 위에 출력되기 위해서 zbuffer 를 끈다.
-	m_pDevice->SetRenderState(D3DRS_ZENABLE, 0);
+	//m_pDevice->SetRenderState(D3DRS_ZENABLE, 0);
 
 	DWORD lighting;
 	m_pDevice->GetRenderState( D3DRS_LIGHTING, &lighting );
@@ -81,7 +81,7 @@ void cRenderer::RenderAxis()
 	m_pDevice->DrawPrimitiveUP( D3DPT_LINELIST, 3, &m_axis[0], sizeof(sVertexDiffuse) );
 	m_pDevice->SetRenderState( D3DRS_LIGHTING, lighting );
 
-	m_pDevice->SetRenderState(D3DRS_ZENABLE, 1);
+	//m_pDevice->SetRenderState(D3DRS_ZENABLE, 1);
 }
 
 
@@ -189,11 +189,11 @@ void cRenderer::MakeAxis( const float length, DWORD xcolor, DWORD ycolor, DWORD 
 	sVertexDiffuse v;
 
 	// x axis
-	v.p = Vector3( 0.f, 0.f, 0.f );
+	v.p = Vector3( 0.f, 0.001f, 0.f );
 	v.c = xcolor;
 	out.push_back(v);
 
-	v.p = Vector3( length, 0.f, 0.f );
+	v.p = Vector3( length, 0.001f, 0.f );
 	v.c = xcolor;
 	out.push_back(v);
 
@@ -207,11 +207,11 @@ void cRenderer::MakeAxis( const float length, DWORD xcolor, DWORD ycolor, DWORD 
 	out.push_back(v);
 
 	// z axis
-	v.p = Vector3( 0.f, 0.f, 0.f );
+	v.p = Vector3( 0.f, 0.001f, 0.f );
 	v.c = zcolor;
 	out.push_back(v);
 
-	v.p = Vector3( 0.f, 0.f, length );
+	v.p = Vector3( 0.f, 0.001f, length );
 	v.c = zcolor;
 	out.push_back(v);
 }

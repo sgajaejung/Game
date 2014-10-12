@@ -475,8 +475,6 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			m_curPos.y = HIWORD(lParam);
 		
 			// unit ÀÌµ¿.
-			dbg::Print( "x = %d, y = %d", m_curPos.x, m_curPos.y );
-			
 			Ray ray(m_curPos.x, m_curPos.y, 1024, 768,
 				GetMainCamera()->GetProjectionMatrix(), 
 				GetMainCamera()->GetViewMatrix());
@@ -484,8 +482,6 @@ void cViewer::MessageProc( UINT message, WPARAM wParam, LPARAM lParam)
 			Vector3 pickPos;
 			if (m_terrain.Pick(ray.orig, ray.dir, pickPos))
 			{
-				dbg::Print( "pickpos x = %f, y = %f, z = %f", pickPos.x, pickPos.y, pickPos.z );
-
 				m_character.SetAction(new ai::cAction(&m_character, "normal", "zealot_stand.ani") );
 
 				ai::cMove *action = new ai::cMove();

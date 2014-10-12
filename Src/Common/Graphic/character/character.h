@@ -35,10 +35,11 @@ namespace graphic
 
 
 	private:
-		// action
 		vector<sActionData> m_actions;
 		CHARACTER_ACTION::TYPE m_action;
+		
 		ai::cAction *m_rootAction;
+		string m_curAniName; // 플레이 중인 애니메이션.
 	};
 
 }

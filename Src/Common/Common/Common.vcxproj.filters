@@ -61,6 +61,9 @@
     <ClInclude Include="math\mathutility.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="etc\memorypool.h">
+      <Filter>Etc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
