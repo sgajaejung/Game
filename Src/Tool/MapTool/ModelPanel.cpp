@@ -135,14 +135,14 @@ void CModelPanel::UpdatePlaceModelList()
 
 
 // 모델 정보를 화면에 표시한다.
-void CModelPanel::UpdateModelInfo(const cModel &model)
+void CModelPanel::UpdateModelInfo(const cModel &model, const bool updateList)//updateList=true
 {
 	// 리스트에서 해당 아이템을 활성화 한다.
 	LVFINDINFO info;
 	info.flags = LVFI_PARAM;
 	info.lParam = model.GetId();
 	const int index = m_placeModelList.FindItem(&info);
-	if (index >= 0)
+	if (updateList && index >= 0)
 	{
 		// 현재 리스트에서 강조중인 아이템을 초기화 한다.
 		for (int i=0; i < m_placeModelList.GetItemCount(); ++i)
@@ -161,17 +161,21 @@ void CModelPanel::UpdateModelInfo(const cModel &model)
 
 	const Vector3 pos = model.GetTM().GetPosition();
 	const Vector3 scale = model.GetTM().GetScale();
-	//const Vector3 pos = model.GetTM().GetPosition();
+	const Quaternion q = model.GetTM().GetQuaternion();
+	const Vector3 rot = q.Euler();
+
 	m_PosX = pos.x;
 	m_PosY = pos.y;
 	m_PosZ = pos.z;
+	m_RotX = rot.x;
+	m_RotY = rot.y;
+	m_RotZ = rot.z;
 	m_ScaleX = scale.x;
 	m_ScaleY = scale.y;
 	m_ScaleZ = scale.z;	
 
 	UpdateData(FALSE);
 }
-
 
 
 void CModelPanel::OnBnClickedButtonRefresh()
@@ -240,19 +244,41 @@ void CModelPanel::OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	*pResult = 0;
 
-	const int modelId =m_placeModelList.GetItemData(pNMLV->iItem);
-	 if (cModel *model = cMapController::Get()->GetTerrain().FindRigidModel(modelId))
-	 {
-		 vector<graphic::cModel*> &models = cMapController::Get()->GetTerrain().GetRigidModels();
-		 for (u_int i=0; i < models.size(); ++i)
-			models[ i]->SetRenderBoundingBox(false);
+	if ((pNMLV->uChanged & LVIF_STATE) 
+		&& (pNMLV->uNewState & LVNI_SELECTED))
+	{
+		const int modelId =m_placeModelList.GetItemData(pNMLV->iItem);
+		 if (cModel *model = cMapController::Get()->GetTerrain().FindRigidModel(modelId))
+		 {
+			 vector<graphic::cModel*> &models = cMapController::Get()->GetTerrain().GetRigidModels();
+			 for (u_int i=0; i < models.size(); ++i)
+				models[ i]->SetRenderBoundingBox(false);
 
-		 model->SetRenderBoundingBox( !model->IsRenderBoundingBox() );
-	 }
+			 UpdateModelInfo(*model, false);
+			 model->SetRenderBoundingBox( !model->IsRenderBoundingBox() );
+			 g_mapView->SetFocusModel(model);
+		 }
+	}
 }
 
 
 void CModelPanel::OnEnChangeEditModel(UINT id)
 {
+	if (cModel *model = g_mapView->GetFocusModel())
+	{
+		UpdateData();
 
+		Vector3 pos(m_PosX, m_PosY, m_PosZ);
+		Vector3 rot(m_RotX, m_RotY, m_RotZ);
+		Vector3 scale(m_ScaleX, m_ScaleY, m_ScaleZ);
+
+		Matrix44 R, S, T;
+		T.SetTranslate(pos);
+		Quaternion q;
+		q.Euler(rot);
+		R = q.GetMatrix();
+		S.SetScale(scale);
+		const Matrix44 tm = S * R * T;
+		model->SetTM(tm);
+	}
 }

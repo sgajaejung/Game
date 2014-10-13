@@ -41,8 +41,9 @@ namespace common
 		void	SetRotationY( const float fRadian );
 		void	SetRotationZ( const float fRadian );
 		void	SetRotationArc( const Vector3& vDir, const Vector3& vDir2 );
+		void Euler(const Vector3& euler);
+		Vector3 Euler() const;
 		void	Normalize();
 	};
 
 }
-

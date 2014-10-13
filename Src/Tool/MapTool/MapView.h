@@ -14,6 +14,7 @@ public:
 	void Render();
 	void Update(float elapseT);
 	graphic::cModel *GetFocusModel();
+	void SetFocusModel(graphic::cModel *model);
 
 
 protected:
@@ -56,4 +57,5 @@ public:
 };
 
 
-inline graphic::cModel *CMapView::GetFocusModel() { return m_focusModel; }
+inline graphic::cModel* CMapView::GetFocusModel() { return m_focusModel; }
+inline void CMapView::SetFocusModel(graphic::cModel *model) { m_focusModel = model; }

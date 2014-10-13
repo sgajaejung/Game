@@ -21,7 +21,7 @@ public:
 	virtual void Update(int type) override;
 	void UpdateModelList(const string &directoryPath);
 	void UpdatePlaceModelList();
-	void UpdateModelInfo(const graphic::cModel &model);
+	void UpdateModelInfo(const graphic::cModel &model, const bool updateList=true);
 
 
 protected:

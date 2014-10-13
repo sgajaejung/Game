@@ -248,3 +248,72 @@ void Quaternion::Normalize()
 	LIMIT_RANGE(-1.0f, z, 1.0f);
 } //Quaternion::Normalize
 
+
+
+/**
+    * @brief Computes the quaternion that is equivalent to a given
+    * euler angle rotation.
+    * @param euler A 3-vector in order:  roll-pitch-yaw.
+	* http://ai.stanford.edu/~acoates/quaternion.h
+    */
+void Quaternion::Euler(const Vector3& v) 
+{
+	float euler[ 3];
+	euler[ 0] = ANGLE2RAD(v.x);
+	euler[ 1] = ANGLE2RAD(v.y);
+	euler[ 2] = ANGLE2RAD(v.z);
+
+    float c1 = cos(euler[2] * 0.5f);
+    float c2 = cos(euler[1] * 0.5f);
+    float c3 = cos(euler[0] * 0.5f);
+    float s1 = sin(euler[2] * 0.5f);
+    float s2 = sin(euler[1] * 0.5f);
+    float s3 = sin(euler[0] * 0.5f);
+
+    x = c1*c2*s3 - s1*s2*c3;
+    y = c1*s2*c3 + s1*c2*s3;
+    z = s1*c2*c3 - c1*s2*s3;
+    w = c1*c2*c3 + s1*s2*s3;
+}
+
+
+/** @brief Returns an equivalent euler angle representation of
+	* this quaternion.
+	* @return Euler angles in roll-pitch-yaw order.
+	* http://ai.stanford.edu/~acoates/quaternion.h
+	*/
+Vector3 Quaternion::Euler(void) const 
+{
+	float euler[ 3];
+	const static float PI_OVER_2 = MATH_PI * 0.5f;
+	const static float EPSILON = MATH_EPSILON;
+	float sqw, sqx, sqy, sqz;
+
+	// quick conversion to Euler angles to give tilt to user
+	sqw = w*w;
+	sqx = x*x;
+	sqy = y*y;
+	sqz = z*z;
+
+	euler[1] = asin(2.0f * (w*y - x*z));
+	if (PI_OVER_2 - fabs(euler[1]) > EPSILON) 
+	{
+		euler[2] = atan2(2.0f * (x*y + w*z),
+			sqx - sqy - sqz + sqw);
+		euler[0] = atan2(2.0f * (w*x + y*z),
+			sqw - sqx - sqy + sqz);
+	} 
+	else 
+	{
+		// compute heading from local 'down' vector
+		euler[2] = atan2(2*y*z - 2*x*w,
+			2*x*z + 2*y*w);
+		euler[0] = 0.0f;
+
+		// If facing down, reverse yaw
+		if (euler[1] < 0)
+			euler[2] = MATH_PI - euler[2];
+	}
+
+	return Vector3(euler[0], euler[1], euler[2]);
+}
