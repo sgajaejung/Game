@@ -27,6 +27,7 @@ namespace common
 		void	SetRotationZ( const float angle );
 		void	SetTranslate( const Vector3& pos );
 		void	SetScale( const Vector3& scale);
+		Vector3 GetScale() const;
 		Vector3 GetPosition() const;
 		void SetPosition(const Vector3 &pos);
 		void SetView( const Vector3& pos, const Vector3& dir0, const Vector3& up0);
@@ -41,6 +42,7 @@ namespace common
 	};
 
 
+	inline Vector3 Matrix44::GetScale() const { return Vector3(_11, _22, _33); }
 	inline Vector3 Matrix44::GetPosition() const { return Vector3(_41, _42, _43); }
 	inline void Matrix44::SetPosition(const Vector3 &pos) { _41=pos.x; _42 = pos.y; _43 = pos.z; }
 }

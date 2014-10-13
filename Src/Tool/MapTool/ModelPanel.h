@@ -21,6 +21,7 @@ public:
 	virtual void Update(int type) override;
 	void UpdateModelList(const string &directoryPath);
 	void UpdatePlaceModelList();
+	void UpdateModelInfo(const graphic::cModel &model);
 
 
 protected:
@@ -39,4 +40,15 @@ public:
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnModelmenuDeletemodel();
 	afx_msg void OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult);
+	float m_PosX;
+	float m_PosY;
+	float m_PosZ;
+	float m_RotX;
+	float m_RotY;
+	float m_RotZ;
+	float m_ScaleX;
+	float m_ScaleY;
+	float m_ScaleZ;
+	afx_msg void OnEnChangeEditModel(UINT id);
+	CString m_modelName;
 };

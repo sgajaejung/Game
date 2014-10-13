@@ -13,6 +13,16 @@ using namespace graphic;
 // CModelPanel 대화 상자입니다.
 CModelPanel::CModelPanel(CWnd* pParent /*=NULL*/)
 	: CPanelBase(CModelPanel::IDD, pParent)
+	, m_PosX(0)
+,m_PosY(0)
+,m_PosZ(0)
+,m_RotX(0)
+,m_RotY(0)
+,m_RotZ(0)
+,m_ScaleX(0)
+,m_ScaleY(0)
+,m_ScaleZ(0)
+, m_modelName(_T(""))
 {
 
 }
@@ -26,6 +36,16 @@ void CModelPanel::DoDataExchange(CDataExchange* pDX)
 	CPanelBase::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_PLACE_MODEL, m_placeModelList);
 	DDX_Control(pDX, IDC_TREE_MODEL, m_modelTree);
+	DDX_Text(pDX, IDC_EDIT_POSX, m_PosX);
+	DDX_Text(pDX, IDC_EDIT_POSY, m_PosY);
+	DDX_Text(pDX, IDC_EDIT_POSZ, m_PosZ);
+	DDX_Text(pDX, IDC_EDIT_ROTX, m_RotX);
+	DDX_Text(pDX, IDC_EDIT_ROTY, m_RotY);
+	DDX_Text(pDX, IDC_EDIT_ROTZ, m_RotZ);
+	DDX_Text(pDX, IDC_EDIT_SCALEX, m_ScaleX);
+	DDX_Text(pDX, IDC_EDIT_SCALEY, m_ScaleY);
+	DDX_Text(pDX, IDC_EDIT_SCALEZ, m_ScaleZ);
+	DDX_Text(pDX, IDC_STATIC_MODEL_NAME, m_modelName);
 }
 
 
@@ -38,6 +58,7 @@ BEGIN_MESSAGE_MAP(CModelPanel, CPanelBase)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_MODELMENU_DELETEMODEL, &CModelPanel::OnModelmenuDeletemodel)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_PLACE_MODEL, &CModelPanel::OnLvnItemchangedListPlaceModel)
+	ON_CONTROL_RANGE(EN_CHANGE, IDC_EDIT_POSX, IDC_EDIT_SCALEZ, &CModelPanel::OnEnChangeEditModel)
 END_MESSAGE_MAP()
 
 
@@ -77,22 +98,7 @@ void CModelPanel::Update(int type)
 		{
 			if (const cModel *model = g_mapView->GetFocusModel())
 			{
-				LVFINDINFO info;
-				info.flags = LVFI_PARAM;
-				info.lParam = model->GetId();
-				const int index = m_placeModelList.FindItem(&info);
-				if (index >= 0)
-				{
-					// 현재 리스트에서 강조중인 아이템을 초기화 한다.
-					for (int i=0; i < m_placeModelList.GetItemCount(); ++i)
-						m_placeModelList.SetItemState(i, 0, 0xFF);
-
-					// 선택된 모델 강조.
-					m_placeModelList.EnsureVisible(index, FALSE);
-					m_placeModelList.SetSelectionMark(index);
-					m_placeModelList.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, 0xFF);
-					 m_placeModelList.UpdateWindow();
-				}
+				UpdateModelInfo(*model);
 			}
 		}
 		break;
@@ -126,6 +132,46 @@ void CModelPanel::UpdatePlaceModelList()
 		m_placeModelList.SetItemData(i, models[ i]->GetId() );
 	}
 }
+
+
+// 모델 정보를 화면에 표시한다.
+void CModelPanel::UpdateModelInfo(const cModel &model)
+{
+	// 리스트에서 해당 아이템을 활성화 한다.
+	LVFINDINFO info;
+	info.flags = LVFI_PARAM;
+	info.lParam = model.GetId();
+	const int index = m_placeModelList.FindItem(&info);
+	if (index >= 0)
+	{
+		// 현재 리스트에서 강조중인 아이템을 초기화 한다.
+		for (int i=0; i < m_placeModelList.GetItemCount(); ++i)
+			m_placeModelList.SetItemState(i, 0, 0xFF);
+
+		// 선택된 모델 강조.
+		m_placeModelList.EnsureVisible(index, FALSE);
+		m_placeModelList.SetSelectionMark(index);
+		m_placeModelList.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, 0xFF);
+		m_placeModelList.UpdateWindow();
+	}
+
+	// 모델 정보 업데이트
+	wstring modelName = str2wstr(model.GetName());
+	m_modelName = (LPCTSTR)modelName.c_str();
+
+	const Vector3 pos = model.GetTM().GetPosition();
+	const Vector3 scale = model.GetTM().GetScale();
+	//const Vector3 pos = model.GetTM().GetPosition();
+	m_PosX = pos.x;
+	m_PosY = pos.y;
+	m_PosZ = pos.z;
+	m_ScaleX = scale.x;
+	m_ScaleY = scale.y;
+	m_ScaleZ = scale.z;	
+
+	UpdateData(FALSE);
+}
+
 
 
 void CModelPanel::OnBnClickedButtonRefresh()
@@ -203,4 +249,10 @@ void CModelPanel::OnLvnItemchangedListPlaceModel(NMHDR *pNMHDR, LRESULT *pResult
 
 		 model->SetRenderBoundingBox( !model->IsRenderBoundingBox() );
 	 }
+}
+
+
+void CModelPanel::OnEnChangeEditModel(UINT id)
+{
+
 }

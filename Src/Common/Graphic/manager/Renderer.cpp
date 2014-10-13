@@ -109,7 +109,7 @@ void cRenderer::RenderGrid()
 	if (gridSize > 0)
 	{
 		// 가장 위에 출력되기 위해서 zbuffer 를 끈다.
-		m_pDevice->SetRenderState(D3DRS_ZENABLE, 0);
+		//m_pDevice->SetRenderState(D3DRS_ZENABLE, 0);
 
 		DWORD lighting;
 		m_pDevice->GetRenderState( D3DRS_LIGHTING, &lighting );
@@ -120,7 +120,7 @@ void cRenderer::RenderGrid()
 		m_pDevice->SetFVF( sVertexDiffuse::FVF );
 		m_pDevice->DrawPrimitiveUP( D3DPT_LINELIST, gridSize, &m_grid[0], sizeof(sVertexDiffuse) );
 		m_pDevice->SetRenderState( D3DRS_LIGHTING, lighting);
-		m_pDevice->SetRenderState(D3DRS_ZENABLE, 1);
+		//m_pDevice->SetRenderState(D3DRS_ZENABLE, 1);
 	}
 }
 
@@ -159,7 +159,7 @@ void cRenderer::MakeGrid( const float width, const int count, DWORD color, vecto
 			vtx.c = color;
 			out.push_back(vtx);
 
-			vtx.p += Vector3(0,0,-width*count);
+			vtx.p += Vector3(0, 0.001f,-width*count);
 			out.push_back(vtx);
 		}
 
@@ -171,7 +171,7 @@ void cRenderer::MakeGrid( const float width, const int count, DWORD color, vecto
 			vtx.c = color;
 			out.push_back(vtx);
 
-			vtx.p += Vector3(width*count,0,0);
+			vtx.p += Vector3(width*count, 0.001f, 0);
 			out.push_back(vtx);
 		}
 	}
