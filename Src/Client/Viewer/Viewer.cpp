@@ -215,7 +215,7 @@ bool cViewer::OnInit()
 
 			Matrix44 matT;
 			matT.SetTranslate( Vector3(idx%10, 0, (idx/10)) );
-			character.SetTM(matT);
+			character.SetTransform(matT);
 			++idx;
 		}
 	}
