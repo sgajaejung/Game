@@ -37,3 +37,4 @@ namespace NOTIFY_TYPE
 		NOTIFY_UPDATE_LIGHT_DIRECTION,
 	};
 }
+

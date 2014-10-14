@@ -296,7 +296,7 @@ cModel* cModel::Clone() const
 	cModel *clone = new cModel(GenerateId());
 	clone->Create(m_fileName, m_type);
 
-	clone->SetTM(m_TM);
+	clone->SetTransform(m_TM);
 	clone->SetShader(m_shader);
 	clone->SetRenderMesh(m_isRenderMesh);
 	clone->SetRenderBone(m_isRenderBone);
@@ -339,4 +339,19 @@ void cModel::SetShader(cShader *shader)
 
 	BOOST_FOREACH (auto node, m_meshes)
 		node->SetShader(shader);
+}
+
+
+void cModel::SetToolTransform(const sTransform& tm) 
+{
+	m_transform = tm; 
+
+	Matrix44 R, S, T;
+	T.SetTranslate(tm.pos);
+	Quaternion q;
+	q.Euler(tm.rot);
+	R = q.GetMatrix();
+	S.SetScale(tm.scale);
+
+	SetTransform(S * R * T);
 }

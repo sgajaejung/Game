@@ -198,7 +198,15 @@ void CMapView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			if (const graphic::cModel *model = cMapController::Get()->GetTerrainCursor().GetSelectModel())
 			{
-				cMapController::Get()->GetTerrain().AddRigidModel(*model);
+				graphic::cModel *cloneModel = cMapController::Get()->GetTerrain().AddRigidModel(*model);
+
+				// 툴에서 쓰이는 변환 정보 초기화.
+				sTransform tm;
+				tm.pos = cloneModel->GetTransform().GetPosition();
+				tm.rot = Vector3(0,0,0);
+				tm.scale = Vector3(1,1,1);
+				cloneModel->SetToolTransform(tm);
+
 				cMapController::Get()->UpdatePlaceModel();
 			}
 		}

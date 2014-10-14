@@ -15,9 +15,9 @@ namespace graphic
 		int GetId() const;
 		cNode* GetParent();
 
-		const Matrix44& GetTM() const;
+		const Matrix44& GetTransform() const;
 		const Matrix44& GetLocalTM() const;
-		void SetTM(const Matrix44 &tm);
+		void SetTransform(const Matrix44 &tm);
 		void MultiplyTM(const Matrix44 &tm);
 		void SetLocalTM(const Matrix44 &tm);
 		cShader* GetShader();
@@ -60,8 +60,8 @@ namespace graphic
 	inline const string& cNode::GetName() const { return m_name; }
 	inline int cNode::GetId() const { return m_id; }
 	inline cNode* cNode::GetParent() { return m_parent; }
-	inline const Matrix44& cNode::GetTM() const { return m_TM; }
-	inline void cNode::SetTM(const Matrix44 &tm) { m_TM = tm; }
+	inline const Matrix44& cNode::GetTransform() const { return m_TM; }
+	inline void cNode::SetTransform(const Matrix44 &tm) { m_TM = tm; }
 	inline void cNode::MultiplyTM(const Matrix44 &tm) { m_TM *= tm; }
 	inline const Matrix44& cNode::GetLocalTM() const { return m_localTM; }
 	inline void cNode::SetLocalTM(const Matrix44 &tm) { m_localTM = tm; }

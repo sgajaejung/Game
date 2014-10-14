@@ -64,7 +64,7 @@ void cTerrainEditor::GenerateRawTerrain( OUT sRawTerrain &out )
 	{
 		out.models.push_back( sRawTerrrainModel() );
 		out.models.back().fileName = cResourceManager::Get()->GetRelativePathToMedia(m_rigids[ i]->GetFileName());
-		out.models.back().tm = m_rigids[ i]->GetTM();
+		out.models.back().tm = m_rigids[ i]->GetTransform();
 	}
 
 }

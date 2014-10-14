@@ -85,7 +85,7 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 	{
 		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
 		{
-			model->SetTM(rawTerrain.models[ i].tm);
+			model->SetTransform(rawTerrain.models[ i].tm);
 			//model->SetShader(modelShader);
 		}
 	}
@@ -347,7 +347,7 @@ void cTerrain::RenderModelShadow(cModel &model)
 	Vector3 lightPos;
 	Matrix44 view, proj, tt;
 	cLightManager::Get()->GetMainLight().GetShadowMatrix(
-		model.GetTM().GetPosition(), lightPos, view, proj, tt );
+		model.GetTransform().GetPosition(), lightPos, view, proj, tt );
 
 	m_shader->SetTexture( "ShadowMap", model.GetShadow().GetTexture() );
 	m_shader->SetMatrix( "mWVPT", view * proj * tt );
@@ -476,12 +476,12 @@ const string& cTerrain::GetTextureName()
 
 
 // 정적 모델 추가
-bool cTerrain::AddRigidModel(const cModel &model)
+cModel* cTerrain::AddRigidModel(const cModel &model)
 {
 	RETV(FindRigidModel(model.GetId()), false); // already exist return
 
 	m_rigids.push_back(model.Clone());
-	return true;
+	return m_rigids.back();
 }
 
 

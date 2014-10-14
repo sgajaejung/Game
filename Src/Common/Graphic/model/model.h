@@ -26,6 +26,11 @@ namespace graphic
 		const string& GetFileName() const;
 		cMesh* GetMesh(const string &name);
 		cMesh* GetMesh(const int idx);
+		const sTransform& GetToolTransform() const;
+		void SetToolTransform(const sTransform& tm);
+
+		bool Pick(const Vector3 &orig, const Vector3 &dir);
+		cModel* Clone() const;
 
 		// shadow
 		void UpdateShadow();
@@ -33,7 +38,6 @@ namespace graphic
 		const cShadow1& GetShadow() const;
 		bool IsRenderShadow() const;
 		void SetRenderShadow(const bool show);
-
 
 		// Animation
 		virtual bool SetAnimation(const string &aniFileNameconst, const int nAniFrame=0,  
@@ -43,9 +47,6 @@ namespace graphic
 		sRawAniGroup* GetCurrentAnimation();
 		bool SharePalette(vector<Matrix44> *palette);
 		virtual void SetShader(cShader *shader) override;
-
-		bool Pick(const Vector3 &orig, const Vector3 &dir);
-		cModel* Clone() const;
 
 		// ICollisionable Interface
 		virtual bool IsTest( int testNum ) override;
@@ -75,6 +76,7 @@ namespace graphic
 		sRawAniGroup *m_curAni; // reference, 애니메이션 정보.
 		cShadow1 m_shadow;
 		bool m_isRenderShadow; // default = false
+		sTransform m_transform;
 		
 		// debug 용.
 		bool m_isRenderMesh; // default = true
@@ -88,6 +90,8 @@ namespace graphic
 	inline cBoneMgr* cModel::GetBoneMgr() { return m_bone; }
 	inline sRawAniGroup* cModel::GetCurrentAnimation() { return m_curAni; }
 	inline const string& cModel::GetFileName() const { return m_fileName; }
+	inline const sTransform& cModel::GetToolTransform() const { return m_transform; }
+
 	inline cShadow1& cModel::GetShadow() { return m_shadow; }
 	inline const cShadow1& cModel::GetShadow() const { return m_shadow; }
 	inline bool cModel::IsRenderShadow() const { return m_isRenderShadow; }

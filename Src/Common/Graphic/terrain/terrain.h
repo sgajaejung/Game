@@ -55,7 +55,7 @@ namespace graphic
 
 		//-----------------------------------------------------------------------------
 		// Model
-		bool AddRigidModel(const cModel &model);
+		cModel* AddRigidModel(const cModel &model);
 		cModel* AddRigidModel(const string &fileName);
 		cModel* FindRigidModel(const int id);
 		bool RemoveRigidModel(cModel *model, const bool destruct=true);

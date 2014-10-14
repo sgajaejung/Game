@@ -67,4 +67,12 @@ namespace graphic
 	}
 
 
+	// 툴에서 쓰일 모델 변환 정보.
+	struct sTransform
+	{
+		Vector3 pos;
+		Vector3 rot; // euler angle
+		Vector3 scale;
+	};
+
 }

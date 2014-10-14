@@ -159,20 +159,24 @@ void CModelPanel::UpdateModelInfo(const cModel &model, const bool updateList)//u
 	wstring modelName = str2wstr(model.GetName());
 	m_modelName = (LPCTSTR)modelName.c_str();
 
-	const Vector3 pos = model.GetTM().GetPosition();
-	const Vector3 scale = model.GetTM().GetScale();
-	const Quaternion q = model.GetTM().GetQuaternion();
-	const Vector3 rot = q.Euler();
+	//const Vector3 pos = model.GetTransform().GetPosition();
+	//const Quaternion q = model.GetTransform().GetQuaternion();
+	//Vector3 rot = q.Euler();
+	//rot = Vector3(RAD2ANGLE(rot.x), RAD2ANGLE(rot.y), RAD2ANGLE(rot.z));
 
-	m_PosX = pos.x;
-	m_PosY = pos.y;
-	m_PosZ = pos.z;
-	m_RotX = rot.x;
-	m_RotY = rot.y;
-	m_RotZ = rot.z;
-	m_ScaleX = scale.x;
-	m_ScaleY = scale.y;
-	m_ScaleZ = scale.z;	
+	//Matrix44 m = model.GetTransform();
+	//m = m * q.GetMatrix().Inverse();
+	//const Vector3 scale = m.GetScale();
+
+	m_PosX = model.GetToolTransform().pos.x;
+	m_PosY = model.GetToolTransform().pos.y;
+	m_PosZ = model.GetToolTransform().pos.z;
+	m_RotX = model.GetToolTransform().rot.x;
+	m_RotY = model.GetToolTransform().rot.y;
+	m_RotZ = model.GetToolTransform().rot.z;
+	m_ScaleX = model.GetToolTransform().scale.x;
+	m_ScaleY = model.GetToolTransform().scale.y;
+	m_ScaleZ = model.GetToolTransform().scale.z;
 
 	UpdateData(FALSE);
 }
@@ -268,17 +272,10 @@ void CModelPanel::OnEnChangeEditModel(UINT id)
 	{
 		UpdateData();
 
-		Vector3 pos(m_PosX, m_PosY, m_PosZ);
-		Vector3 rot(m_RotX, m_RotY, m_RotZ);
-		Vector3 scale(m_ScaleX, m_ScaleY, m_ScaleZ);
-
-		Matrix44 R, S, T;
-		T.SetTranslate(pos);
-		Quaternion q;
-		q.Euler(rot);
-		R = q.GetMatrix();
-		S.SetScale(scale);
-		const Matrix44 tm = S * R * T;
-		model->SetTM(tm);
+		sTransform tm;
+		tm.pos = Vector3(m_PosX, m_PosY, m_PosZ);
+		tm.rot = Vector3(m_RotX, m_RotY, m_RotZ);
+		tm.scale = Vector3(m_ScaleX, m_ScaleY, m_ScaleZ);
+		model->SetToolTransform(tm);
 	}
 }

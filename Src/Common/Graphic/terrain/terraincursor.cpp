@@ -84,7 +84,7 @@ void cTerrainCursor::UpdateCursor( graphic::cTerrain &terrain,  const Vector3 &c
 	{
 		Matrix44 matT;
 		matT.SetTranslate(cursorPos);
-		m_selectModel->SetTM(matT);
+		m_selectModel->SetTransform(matT);
 	}
 }
 

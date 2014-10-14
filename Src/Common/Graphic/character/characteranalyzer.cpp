@@ -51,7 +51,7 @@ void cCharacterAnalyzer::Render(const Matrix44 &tm)
 
 	// 선택된 본 경계 박스 출력.
 	GetDevice()->SetRenderState(D3DRS_ZENABLE, 0);	
-	m_selectBoneCube.Render(m_character->GetTM() * tm);
+	m_selectBoneCube.Render(m_character->GetTransform() * tm);
 	GetDevice()->SetRenderState(D3DRS_ZENABLE, 1);
 
 }

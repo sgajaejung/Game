@@ -28,7 +28,7 @@ void cShadow1::UpdateShadow( cNode &node )
 {
 	RET(!m_surface.IsLoaded());
 
-	const Vector3 pos = node.GetTM().GetPosition();
+	const Vector3 pos = node.GetTransform().GetPosition();
 
 	// 전역 광원으로 부터 그림자 생성에 필요한 정보를 얻어온다.
 	Vector3 lightPos;

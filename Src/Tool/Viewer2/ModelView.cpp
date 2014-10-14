@@ -146,7 +146,7 @@ void CModelView::Render()
 		if (cCharacter *character = cController::Get()->GetCharacter())
 		{
 			character->SetRenderShadow(true);
-			character->SetTM(m_rotateTm);
+			character->SetTransform(m_rotateTm);
 
 			// 그림자 텍스쳐, 매트릭스 설정.
 			Vector3 lightPos;

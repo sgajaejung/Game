@@ -138,7 +138,7 @@ bool cArchebladeCharacter::Move(const float elapseTime)
 	cModel::Move(elapseTime);
 
 	if (m_weapon)
-		m_weapon->SetTM(m_TM);
+		m_weapon->SetTransform(m_TM);
 
 	if (m_weapon && m_weaponNode1 && m_weaponBoneNode1)
 	{
