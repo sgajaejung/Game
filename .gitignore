@@ -173,3 +173,7 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 *.exp
+
+# Exe file
+GameApp.exe
+Viewer.exe
