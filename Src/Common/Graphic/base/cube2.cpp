@@ -136,11 +136,14 @@ void cCube2::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 		InitCube();
 
 	const Vector3 center = (vMin + vMax) / 2.f;
-	const float len = (vMin - vMax).Length();
-	const float curLen = (m_max - m_min).Length();
+	const Vector3 v1 = vMin - vMax;
+	const Vector3 v2 = m_max - m_min;
+	Vector3 scale(sqrt(v1.x*v1.x) / sqrt(v2.x*v2.x),
+		sqrt(v1.y*v1.y) / sqrt(v2.y*v2.y),
+		sqrt(v1.z*v1.z) / sqrt(v2.z*v2.z));
 
 	Matrix44 S;
-	S.SetScale(Vector3(1,1,1)*(len/curLen));
+	S.SetScale(scale);
 	Matrix44 T;
 	T.SetTranslate( center );
 	Matrix44 tm = S * T;
